@@ -1,17 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hotlines/view/demo.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
-void main() {
+import 'controller/sport_controller.dart';
+
+Future<void> main() async {
+  // await GetStorage.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false, home: SplashScreen());
+    return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialBinding: BaseBindings(),
+        home: const SplashScreen());
+  }
+}
+
+class BaseBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => SportController(), fenix: true);
   }
 }

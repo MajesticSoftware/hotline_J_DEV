@@ -1,0 +1,630 @@
+{
+  "status": 200,
+  "time": "2023-06-22T06:48:25.086Z",
+  "games": 8,
+  "skip": 0,
+  "results": [
+    {
+      "summary": "Atlanta Braves @ Philadelphia Phillies",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-06-22T17:05:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Atlanta Braves",
+          "location": "Atlanta",
+          "mascot": "Braves",
+          "abbreviation": "ATL",
+          "conference": "National League",
+          "division": "East"
+        },
+        "home": {
+          "team": "Philadelphia Phillies",
+          "location": "Philadelphia",
+          "mascot": "Phillies",
+          "abbreviation": "PHI",
+          "conference": "National League",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.258Z",
+      "gameId": 296124,
+      "venue": {
+        "name": "Citizens Bank Park",
+        "neutralSite": false,
+        "city": "Philadelphia",
+        "state": "PA"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": 125,
+              "homeOdds": -145
+            },
+            "current": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": 140,
+              "homeOdds": -170
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -129,
+              "homeOdds": 109
+            },
+            "current": {
+              "awayOdds": -115,
+              "homeOdds": -104
+            }
+          },
+          "total": {
+            "open": {
+              "total": 9,
+              "overOdds": -105,
+              "underOdds": -115
+            },
+            "current": {
+              "total": 8.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-21T19:18:44.383Z",
+          "lastUpdated": "2023-06-22T06:43:45.281Z"
+        }
+      ]
+    },
+    {
+      "schedule": {
+        "date": "2023-06-22T17:05:00.000Z",
+        "tbaTime": false
+      },
+      "summary": "Arizona Diamondbacks @ Washington Nationals",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Arizona Diamondbacks",
+          "location": "Arizona",
+          "mascot": "Diamondbacks",
+          "abbreviation": "ARI",
+          "conference": "National League",
+          "division": "West"
+        },
+        "home": {
+          "team": "Washington Nationals",
+          "location": "Washington",
+          "mascot": "Nationals",
+          "abbreviation": "WSH",
+          "conference": "National League",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.203Z",
+      "gameId": 299292,
+      "venue": {
+        "name": "Nationals Park",
+        "city": "Washington",
+        "state": "DC",
+        "neutralSite": false
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": -100,
+              "homeOdds": -120
+            },
+            "current": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": 105,
+              "homeOdds": -125
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -150,
+              "homeOdds": 127
+            },
+            "current": {
+              "awayOdds": -151,
+              "homeOdds": 128
+            }
+          },
+          "total": {
+            "open": {
+              "total": 9.5,
+              "overOdds": -115,
+              "underOdds": -105
+            },
+            "current": {
+              "total": 9.5,
+              "overOdds": -115,
+              "underOdds": -105
+            }
+          },
+          "openDate": "2023-06-21T21:33:24.199Z",
+          "lastUpdated": "2023-06-22T06:43:45.340Z"
+        }
+      ]
+    },
+    {
+      "summary": "Oakland Athletics @ Cleveland Guardians",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-06-22T17:10:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Oakland Athletics",
+          "location": "Oakland",
+          "mascot": "Athletics",
+          "abbreviation": "OAK",
+          "conference": "American League",
+          "division": "West"
+        },
+        "home": {
+          "team": "Cleveland Guardians",
+          "location": "Cleveland",
+          "mascot": "Guardians",
+          "abbreviation": "CLE",
+          "conference": "American League",
+          "division": "Central"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.303Z",
+      "gameId": 296126,
+      "venue": {
+        "name": "Progressive Field",
+        "neutralSite": false,
+        "city": "Cleveland",
+        "state": "OH"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -145,
+              "homeOdds": 125
+            },
+            "current": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -140,
+              "homeOdds": 120
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 148,
+              "homeOdds": -176
+            },
+            "current": {
+              "awayOdds": 149,
+              "homeOdds": -177
+            }
+          },
+          "total": {
+            "open": {
+              "total": 8,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 8,
+              "overOdds": -105,
+              "underOdds": -115
+            }
+          },
+          "openDate": "2023-06-21T19:18:44.429Z",
+          "lastUpdated": "2023-06-22T06:43:45.415Z"
+        }
+      ]
+    },
+    {
+      "summary": "Boston Red Sox @ Minnesota Twins",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-06-22T17:10:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Boston Red Sox",
+          "location": "Boston",
+          "mascot": "Red Sox",
+          "abbreviation": "BOS",
+          "conference": "American League",
+          "division": "East"
+        },
+        "home": {
+          "team": "Minnesota Twins",
+          "location": "Minnesota",
+          "mascot": "Twins",
+          "abbreviation": "MIN",
+          "conference": "American League",
+          "division": "Central"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.351Z",
+      "gameId": 296129,
+      "venue": {
+        "name": "Target Field",
+        "neutralSite": false,
+        "city": "Minneapolis",
+        "state": "MN"
+      }
+    },
+    {
+      "summary": "San Diego Padres @ San Francisco Giants",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-06-22T19:45:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "San Diego Padres",
+          "location": "San Diego",
+          "mascot": "Padres",
+          "abbreviation": "SD",
+          "conference": "National League",
+          "division": "West"
+        },
+        "home": {
+          "team": "San Francisco Giants",
+          "location": "San Francisco",
+          "mascot": "Giants",
+          "abbreviation": "SF",
+          "conference": "National League",
+          "division": "West"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.397Z",
+      "gameId": 296131,
+      "venue": {
+        "name": "Oracle Park",
+        "neutralSite": false,
+        "city": "San Francisco",
+        "state": "CA"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": 140,
+              "homeOdds": -165
+            },
+            "current": {
+              "away": -1.5,
+              "home": 1.5,
+              "awayOdds": 130,
+              "homeOdds": -160
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -124,
+              "homeOdds": 104
+            },
+            "current": {
+              "awayOdds": -124,
+              "homeOdds": 105
+            }
+          },
+          "total": {
+            "open": {
+              "total": 8,
+              "overOdds": -110,
+              "underOdds": -115
+            },
+            "current": {
+              "total": 8.5,
+              "overOdds": -105,
+              "underOdds": -115
+            }
+          },
+          "openDate": "2023-06-21T19:36:26.769Z",
+          "lastUpdated": "2023-06-22T06:43:45.496Z"
+        }
+      ]
+    },
+    {
+      "summary": "Pittsburgh Pirates @ Miami Marlins",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-06-22T22:40:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Pittsburgh Pirates",
+          "location": "Pittsburgh",
+          "mascot": "Pirates",
+          "abbreviation": "PIT",
+          "conference": "National League",
+          "division": "Central"
+        },
+        "home": {
+          "team": "Miami Marlins",
+          "location": "Miami",
+          "mascot": "Marlins",
+          "abbreviation": "MIA",
+          "conference": "National League",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.445Z",
+      "gameId": 296133,
+      "venue": {
+        "name": "LoanDepot Park",
+        "neutralSite": false,
+        "city": "Miami",
+        "state": "FL"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -190,
+              "homeOdds": 160
+            },
+            "current": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -190,
+              "homeOdds": 160
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 106,
+              "homeOdds": -126
+            },
+            "current": {
+              "awayOdds": 115,
+              "homeOdds": -136
+            }
+          },
+          "total": {
+            "open": {
+              "total": 7.5,
+              "overOdds": -115,
+              "underOdds": -105
+            },
+            "current": {
+              "total": 7.5,
+              "overOdds": -100,
+              "underOdds": -120
+            }
+          },
+          "openDate": "2023-06-21T19:36:26.814Z",
+          "lastUpdated": "2023-06-22T06:43:45.549Z"
+        }
+      ]
+    },
+    {
+      "summary": "Kansas City Royals @ Tampa Bay Rays",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-06-22T22:40:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Kansas City Royals",
+          "location": "Kansas City",
+          "mascot": "Royals",
+          "abbreviation": "KC",
+          "conference": "American League",
+          "division": "Central"
+        },
+        "home": {
+          "team": "Tampa Bay Rays",
+          "location": "Tampa Bay",
+          "mascot": "Rays",
+          "abbreviation": "TB",
+          "conference": "American League",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.497Z",
+      "gameId": 296134,
+      "venue": {
+        "name": "Tropicana Field",
+        "neutralSite": false,
+        "city": "St. Petersburg",
+        "state": "FL"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": 105,
+              "homeOdds": -125
+            },
+            "current": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": 150,
+              "homeOdds": -175
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 229,
+              "homeOdds": -288
+            },
+            "current": {
+              "awayOdds": 293,
+              "homeOdds": -368
+            }
+          },
+          "total": {
+            "open": {
+              "total": 7.5,
+              "overOdds": -100,
+              "underOdds": -120
+            },
+            "current": {
+              "total": 7.5,
+              "overOdds": -120,
+              "underOdds": -100
+            }
+          },
+          "openDate": "2023-06-22T02:11:00.189Z",
+          "lastUpdated": "2023-06-22T06:43:45.602Z"
+        }
+      ]
+    },
+    {
+      "summary": "Seattle Mariners @ New York Yankees",
+      "details": {
+        "league": "MLB",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-06-22T23:05:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Seattle Mariners",
+          "location": "Seattle",
+          "mascot": "Mariners",
+          "abbreviation": "SEA",
+          "conference": "American League",
+          "division": "West"
+        },
+        "home": {
+          "team": "New York Yankees",
+          "location": "New York",
+          "mascot": "Yankees",
+          "abbreviation": "NYY",
+          "conference": "American League",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-22T06:47:36.537Z",
+      "gameId": 296136,
+      "venue": {
+        "name": "Yankee Stadium",
+        "neutralSite": false,
+        "city": "Bronx",
+        "state": "NY"
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -190,
+              "homeOdds": 160
+            },
+            "current": {
+              "away": 1.5,
+              "home": -1.5,
+              "awayOdds": -200,
+              "homeOdds": 165
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 101,
+              "homeOdds": -121
+            },
+            "current": {
+              "awayOdds": -101,
+              "homeOdds": -119
+            }
+          },
+          "total": {
+            "open": {
+              "total": 8.5,
+              "overOdds": -100,
+              "underOdds": -120
+            },
+            "current": {
+              "total": 7.5,
+              "overOdds": -120,
+              "underOdds": -100
+            }
+          },
+          "openDate": "2023-06-21T19:36:26.863Z",
+          "lastUpdated": "2023-06-22T06:43:45.662Z"
+        }
+      ]
+    }
+  ]
+}
