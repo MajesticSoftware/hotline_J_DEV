@@ -18,12 +18,15 @@ class SelectSportScreen extends StatelessWidget {
           preferredSize: const Size.fromHeight(147.0),
           child: Container(
             height: Get.height * .12,
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
             color: appColor,
-            child: selectGame.appCommonText(
-                color: whiteColor,
-                size: Get.height * .04,
-                weight: FontWeight.w700),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: selectGame.appCommonText(
+                  color: whiteColor,
+                  size: Get.height * .04,
+                  weight: FontWeight.w700),
+            ),
           )),
       body: Column(
         mainAxisSize: MainAxisSize.min,

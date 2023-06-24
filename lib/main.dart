@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/view/demo.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
 import 'controller/sport_controller.dart';

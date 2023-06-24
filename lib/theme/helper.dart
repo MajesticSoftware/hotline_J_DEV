@@ -22,7 +22,7 @@ showAppSnackBar(String tittle, {bool status = false}) {
       status ? Icons.check_circle_outline_rounded : Icons.error_outline,
       color: whiteColor,
     ),
-    backgroundColor: primaryColor,
+    backgroundColor: appColor,
     duration: const Duration(seconds: 3),
   ));
 }

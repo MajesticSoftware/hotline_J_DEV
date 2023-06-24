@@ -9,15 +9,6 @@ import '../model/response_item.dart';
 import '../theme/helper.dart';
 
 class SportController extends GetxController {
-  List _isClick = [];
-
-  List get isClick => _isClick;
-
-  set isClick(List value) {
-    _isClick = value;
-    update();
-  }
-
   List<GameDetailsModel> _gameDetails = [];
 
   List<GameDetailsModel> get gameDetails => _gameDetails;
@@ -33,23 +24,24 @@ class SportController extends GetxController {
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await BaseApiHelper.jasonRequest();
-    try {
-      if (result.status) {
-        GameDetailsModel response = GameDetailsModel.fromJson(result.data);
-        gameDetails.clear();
-        gameDetails.add(response);
-        isLoading.value = false;
-      }
-    } catch (e) {
+    // try {
+    if (result.status) {
+      GameDetailsModel response = GameDetailsModel.fromJson(result.data);
+      gameDetails.clear();
+      gameDetails.add(response);
       isLoading.value = false;
-      showAppSnackBar(errorText);
     }
+    // } catch (e) {
+    //   isLoading.value = false;
+    //   showAppSnackBar(errorText);
+    // }
     update();
   }
 
   RxBool isLoading = false.obs;
   void gameDetailsResponse(BuildContext context, {String sportKey = ''}) async {
     isLoading.value = true;
+    gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameRepo().gameDetails(sportKey);
@@ -59,6 +51,9 @@ class SportController extends GetxController {
         gameDetails.clear();
         gameDetails.add(response);
         isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(result.message);
       }
     } catch (e) {
       isLoading.value = false;

@@ -13,5 +13,5 @@ const String times = '01:00 PM';
 const String injuryReport = 'Injury Report';
 const String teamReport = 'Team Report';
 const String backButton = 'Return To Sport Selection';
-const String errorText = 'Something went to wrong';
+const String errorText = 'Something went to wrong!';
 const String playerPropBets = 'Player prop bets';

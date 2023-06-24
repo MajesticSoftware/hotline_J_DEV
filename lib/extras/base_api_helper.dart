@@ -163,7 +163,7 @@ class BaseApiHelper {
   }
 
   static onError(error, url) {
-    log(url);
+    // log(url);
     printData(tittle: "Error caused: ", val: error.toString());
     bool status = false;
     String message = "Unsuccessful request";

@@ -44,7 +44,7 @@ class Result {
   String summary;
   Details details;
   Schedule schedule;
-  Status status;
+  Status? status;
   Teams teams;
   DateTime lastUpdated;
   int gameId;
@@ -67,7 +67,7 @@ class Result {
         summary: json["summary"],
         details: Details.fromJson(json["details"]),
         schedule: Schedule.fromJson(json["schedule"]),
-        status: statusValues.map[json["status"]]!,
+        status: statusValues.map[json["status"]],
         teams: Teams.fromJson(json["teams"]),
         lastUpdated: DateTime.parse(json["lastUpdated"]),
         gameId: json["gameId"],
@@ -397,10 +397,10 @@ final divisionValues = EnumValues({
 });
 
 class Venue {
-  String name;
-  bool neutralSite;
-  String city;
-  String state;
+  String? name;
+  bool? neutralSite;
+  String? city;
+  String? state;
 
   Venue({
     required this.name,
@@ -410,10 +410,10 @@ class Venue {
   });
 
   factory Venue.fromJson(Map<String, dynamic> json) => Venue(
-        name: json["name"],
-        neutralSite: json["neutralSite"],
-        city: json["city"],
-        state: json["state"],
+        name: json["name"] ?? "",
+        neutralSite: json["neutralSite"] ?? true,
+        city: json["city"] ?? "",
+        state: json["state"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

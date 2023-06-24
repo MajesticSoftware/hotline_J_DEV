@@ -1,13 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/generated/assets.dart';
 import 'package:hotlines/utils/utils.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
 import '../../constant/constant.dart';
 import '../../controller/sport_controller.dart';
 import '../../model/game_detail_model.dart';
@@ -68,34 +64,8 @@ class GameTeamScreen extends StatelessWidget {
       body: Stack(
         children: [
           GetBuilder<SportController>(initState: (state) {
-            sportController.isClick.clear();
-            sportController.isClick.add(1);
-            /* scrollController = ScrollController();
-            scrollController.addListener(() {
-              // log('${scrollController.position.maxScrollExtent}----${scrollController.position.pixels}');
-
-              if (sportController.gameDetails.isNotEmpty) {
-                if (scrollController.position.pixels == 0.0) {
-                  sportController.isClick.clear();
-                  sportController.isClick.add(1);
-                  sportController.update();
-                } else if (sportController.gameDetails[0].results.length > 6) {
-                  sportController.isClick.clear();
-                  sportController.isClick.add(2);
-                  sportController.update();
-                } else if (sportController.gameDetails[0].results.length > 12) {
-                  sportController.isClick.clear();
-                  sportController.isClick.add(3);
-                  sportController.update();
-                } else {
-                  sportController.isClick.clear();
-                  sportController.isClick.add(1);
-                  sportController.update();
-                }
-              }
-            });*/
-            // sportController.gameDetailsResponse(context, sportKey: sportKey);
-            sportController.getSportDataFromJson();
+            sportController.gameDetailsResponse(context, sportKey: sportKey);
+            // sportController.getSportDataFromJson();
           }, builder: (controller) {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -105,7 +75,7 @@ class GameTeamScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Container(
-                      height: Get.height * .8,
+                      height: Get.height * .87,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: whiteColor),
@@ -119,7 +89,7 @@ class GameTeamScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  bottomWidget()
+                  // bottomWidget()
                   // SfDataPager(pageCount: 20, delegate: gameDetailDataSource),
                 ],
               ),
@@ -133,7 +103,7 @@ class GameTeamScreen extends StatelessWidget {
     );
   }
 
-  SizedBox bottomWidget() {
+/*  SizedBox bottomWidget() {
     return SizedBox(
       height: 48,
       child: GetBuilder<SportController>(
@@ -195,7 +165,7 @@ class GameTeamScreen extends StatelessWidget {
             );
           }),
     );
-  }
+  }*/
 
   Expanded tableDetailWidget() {
     return Expanded(child: GetBuilder<SportController>(
@@ -233,10 +203,9 @@ class GameTeamScreen extends StatelessWidget {
                       SvgPicture.asset(Assets.imagesNodataImage),
                       Positioned(
                         bottom: 70,
-                        left: 20,
-                        right: 0,
-                        child: TextButton(
-                            onPressed: () {
+                        left: 75,
+                        child: GestureDetector(
+                            onTap: () {
                               Get.back();
                             },
                             child: Container(
@@ -390,7 +359,7 @@ class GameTeamScreen extends StatelessWidget {
                       'o'.appCommonText(
                           color: whiteColor, size: 16, weight: FontWeight.w600),
                       (results.odds.isNotEmpty
-                              ? results.odds[0].total.current.overOdds
+                              ? results.odds[0].total.current.total
                               : '00')
                           .toString()
                           .appCommonText(
@@ -416,7 +385,7 @@ class GameTeamScreen extends StatelessWidget {
                       'u'.appCommonText(
                           color: whiteColor, size: 16, weight: FontWeight.w600),
                       (results.odds.isNotEmpty
-                              ? results.odds[0].total.current.underOdds
+                              ? results.odds[0].total.current.total
                               : '00')
                           .toString()
                           .appCommonText(
