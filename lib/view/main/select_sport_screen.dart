@@ -17,14 +17,15 @@ class SelectSportScreen extends StatelessWidget {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(147.0),
           child: Container(
-            height: Get.height * .12,
+            height: MediaQuery.of(context).size.height * .12,
             alignment: Alignment.bottomCenter,
             color: appColor,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 24),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * .024),
               child: selectGame.appCommonText(
                   color: whiteColor,
-                  size: Get.height * .04,
+                  size: MediaQuery.of(context).size.height * .03,
                   weight: FontWeight.w700),
             ),
           )),
@@ -33,14 +34,18 @@ class SelectSportScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          20.H(),
+          // 20.H(),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .01,
+          ),
           Wrap(
             runSpacing: 0,
             alignment: WrapAlignment.start,
             spacing: Get.height * .02,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.height * .02),
                 child: commonImageWidget(
                   Assets.imagesNFT,
                   onTap: () {

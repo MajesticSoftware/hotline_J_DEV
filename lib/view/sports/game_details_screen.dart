@@ -72,18 +72,20 @@ class GameTeamScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.height * .02),
                     child: Container(
-                      height: Get.height * .87,
+                      height: MediaQuery.of(context).size.height * .85,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(
+                              MediaQuery.of(context).size.width * .02),
                           color: whiteColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          tabTitleWidget(),
-                          tableDetailWidget(),
+                          tabTitleWidget(context),
+                          tableDetailWidget(context),
                         ],
                       ),
                     ),
@@ -165,7 +167,7 @@ class GameTeamScreen extends StatelessWidget {
     );
   }*/
 
-  Expanded tableDetailWidget() {
+  Expanded tableDetailWidget(BuildContext context) {
     return Expanded(child: GetBuilder<SportController>(
       builder: (controller) {
         return sportController.isLoading.value
@@ -176,7 +178,6 @@ class GameTeamScreen extends StatelessWidget {
                     itemCount: controller.gameDetails[0].results.length,
                     itemBuilder: (context, index) {
                       return SingleChildScrollView(
-                        // controller: scrollController,
                         physics: const BouncingScrollPhysics(),
                         child: Column(
                           children: [
@@ -185,7 +186,8 @@ class GameTeamScreen extends StatelessWidget {
                                   // Get.to(SportDetailsScreen());
                                 },
                                 child: teamWidget(
-                                    controller.gameDetails[0].results[index])),
+                                    controller.gameDetails[0].results[index],
+                                    context)),
                             Container(
                               height: 1,
                               color: dividerColor,
@@ -198,24 +200,30 @@ class GameTeamScreen extends StatelessWidget {
                 : Center(
                     child: Stack(
                     children: [
-                      SvgPicture.asset(Assets.imagesNodataImage),
+                      SvgPicture.asset(
+                        Assets.imagesNodataImage,
+                        width: MediaQuery.of(context).size.width * .349,
+                        height: MediaQuery.of(context).size.height * .329,
+                        fit: BoxFit.contain,
+                      ),
                       Positioned(
-                        bottom: 70,
-                        left: 75,
+                        bottom: MediaQuery.of(context).size.height * .07,
+                        left: MediaQuery.of(context).size.height * .08,
                         child: GestureDetector(
                             onTap: () {
                               Get.back();
                             },
                             child: Container(
-                              height: 32,
-                              width: 218,
+                              height: MediaQuery.of(context).size.height * .032,
+                              width: MediaQuery.of(context).size.width * .34,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: boxColor),
                               child: Center(
                                 child: backButton.appCommonText(
                                     color: whiteColor,
-                                    size: 14,
+                                    size: MediaQuery.of(context).size.height *
+                                        .014,
                                     weight: FontWeight.w500),
                               ),
                             )),
@@ -226,14 +234,14 @@ class GameTeamScreen extends StatelessWidget {
     ));
   }
 
-  Row teamWidget(Result results) {
+  Row teamWidget(Result results, BuildContext context) {
     String dateTime = DateFormat.jm().format(results.schedule.date);
     return Row(
       children: [
         Expanded(
           flex: 3,
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * .02),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,15 +249,20 @@ class GameTeamScreen extends StatelessWidget {
                 Row(
                   children: [
                     commonCachedNetworkImage(
-                        width: 48, height: 48, imageUrl: ''),
-                    10.W(),
+                        width: Get.height * .048,
+                        height: Get.height * .048,
+                        imageUrl: ''),
+                    // 10.W(),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .01,
+                    ),
                     Expanded(
                       flex: 2,
                       child: results.teams.away.team.toString().appCommonText(
                           color: blackColor,
                           align: TextAlign.start,
                           weight: FontWeight.w700,
-                          size: Get.height * .018),
+                          size: MediaQuery.of(context).size.height * .018),
                     ),
                   ],
                 ),
@@ -261,7 +274,7 @@ class GameTeamScreen extends StatelessWidget {
                       flex: 1,
                       child: '@'.appCommonText(
                           color: greyColor,
-                          size: Get.height * .016,
+                          size: MediaQuery.of(context).size.height * .016,
                           weight: FontWeight.w600),
                     ),
                     Expanded(
@@ -277,15 +290,20 @@ class GameTeamScreen extends StatelessWidget {
                 Row(
                   children: [
                     commonCachedNetworkImage(
-                        width: 48, height: 48, imageUrl: ''),
-                    10.W(),
+                        width: Get.height * .048,
+                        height: Get.height * .048,
+                        imageUrl: ''),
+                    // 10.W(),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .013,
+                    ),
                     Expanded(
                       flex: 2,
                       child: (results.teams.home.team).appCommonText(
                           color: blackColor,
                           align: TextAlign.start,
                           weight: FontWeight.w700,
-                          size: Get.height * .018),
+                          size: MediaQuery.of(context).size.height * .018),
                     ),
                   ],
                 ),
@@ -305,8 +323,8 @@ class GameTeamScreen extends StatelessWidget {
                   color: greyColor),
               SvgPicture.asset(
                 Assets.imagesSun,
-                width: Get.width * .068,
-                height: Get.height * .068,
+                width: MediaQuery.of(context).size.width * .068,
+                height: MediaQuery.of(context).size.height * .068,
                 fit: BoxFit.fill,
               ),
               Row(
@@ -315,14 +333,14 @@ class GameTeamScreen extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 verticalDirection: VerticalDirection.up,
                 children: [
-                  '  83'.appCommonText(size: Get.height * .03),
+                  ' 83'.appCommonText(size: Get.height * .03),
                   '°F'.appCommonText(size: Get.height * .01),
                 ],
               )
             ],
           ),
         ),
-        buildExpandedBoxWidget(
+        buildExpandedBoxWidget(context,
             bottomText: results.odds.isNotEmpty
                 ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
                     .toString()
@@ -330,7 +348,7 @@ class GameTeamScreen extends StatelessWidget {
             upText: results.odds.isNotEmpty
                 ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
                 : '00'),
-        buildExpandedBoxWidget(
+        buildExpandedBoxWidget(context,
             bottomText: results.odds.isNotEmpty
                 ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
                     .toString()
@@ -346,10 +364,12 @@ class GameTeamScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 76,
-                  height: 46,
+                  height: MediaQuery.of(context).size.height * .046,
+                  width: MediaQuery.of(context).size.width * .09,
                   decoration: BoxDecoration(
-                      color: boxColor, borderRadius: BorderRadius.circular(5)),
+                      color: boxColor,
+                      borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width * .008)),
                   child: Center(
                       child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -358,24 +378,30 @@ class GameTeamScreen extends StatelessWidget {
                     verticalDirection: VerticalDirection.up,
                     children: [
                       'o'.appCommonText(
-                          color: whiteColor, size: 16, weight: FontWeight.w600),
+                          color: whiteColor,
+                          size: MediaQuery.of(context).size.height * .014,
+                          weight: FontWeight.w600),
                       (results.odds.isNotEmpty
                               ? results.odds[0].total.current.total
                               : '00')
                           .toString()
                           .appCommonText(
                               color: whiteColor,
-                              size: 16,
+                              size: MediaQuery.of(context).size.height * .014,
                               weight: FontWeight.bold),
                     ],
                   )),
                 ),
-                45.H(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .045,
+                ),
                 Container(
-                  width: 76,
-                  height: 46,
+                  height: MediaQuery.of(context).size.height * .046,
+                  width: MediaQuery.of(context).size.width * .09,
                   decoration: BoxDecoration(
-                      color: boxColor, borderRadius: BorderRadius.circular(5)),
+                      color: boxColor,
+                      borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width * .008)),
                   child: Center(
                       child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -384,25 +410,27 @@ class GameTeamScreen extends StatelessWidget {
                     verticalDirection: VerticalDirection.up,
                     children: [
                       'u'.appCommonText(
-                          color: whiteColor, size: 16, weight: FontWeight.w600),
+                          color: whiteColor,
+                          size: MediaQuery.of(context).size.height * .014,
+                          weight: FontWeight.w600),
                       (results.odds.isNotEmpty
                               ? results.odds[0].total.current.total
                               : '00')
                           .toString()
                           .appCommonText(
                               color: whiteColor,
-                              size: 16,
+                              size: MediaQuery.of(context).size.height * .014,
                               weight: FontWeight.bold),
                     ],
                   )),
                 )
               ],
-            ))
+            )),
       ],
     );
   }
 
-  Expanded buildExpandedBoxWidget(
+  Expanded buildExpandedBoxWidget(BuildContext context,
       {String upText = '', String bottomText = ''}) {
     return Expanded(
         flex: 1,
@@ -411,74 +439,87 @@ class GameTeamScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 76,
-              height: 46,
+              height: MediaQuery.of(context).size.height * .046,
+              width: MediaQuery.of(context).size.width * .09,
               decoration: BoxDecoration(
-                  color: boxColor, borderRadius: BorderRadius.circular(5)),
+                  color: boxColor,
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * .008)),
               child: Center(
                 child: upText.appCommonText(
-                    color: whiteColor, size: 16, weight: FontWeight.bold),
+                    color: whiteColor,
+                    size: MediaQuery.of(context).size.height * .014,
+                    weight: FontWeight.bold),
               ),
             ),
-            45.H(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .045,
+            ),
             Container(
-              width: 76,
-              height: 46,
+              height: MediaQuery.of(context).size.height * .046,
+              width: MediaQuery.of(context).size.width * .09,
               decoration: BoxDecoration(
-                  color: boxColor, borderRadius: BorderRadius.circular(5)),
+                  color: boxColor,
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * .008)),
               child: Center(
                 child: bottomText.appCommonText(
-                    color: whiteColor, size: 16, weight: FontWeight.bold),
+                    color: whiteColor,
+                    size: MediaQuery.of(context).size.height * .014,
+                    weight: FontWeight.bold),
               ),
             )
           ],
         ));
   }
 
-  Container tabTitleWidget() {
+  Container tabTitleWidget(BuildContext context) {
     return Container(
-        height: 68,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        height: MediaQuery.of(context).size.height * .068,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(MediaQuery.of(context).size.width * .02)),
             color: appColor),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 3,
                 child: game.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: Get.height * .018),
+                    size: MediaQuery.of(context).size.height * .017),
               ),
               Expanded(
                 flex: 1,
                 child: time.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: Get.height * .018),
+                    size: MediaQuery.of(context).size.height * .017),
               ),
               Expanded(
                 flex: 1,
                 child: spread.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: Get.height * .018),
+                    size: MediaQuery.of(context).size.height * .017),
               ),
               Expanded(
                 flex: 1,
                 child: moneyLine.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: Get.height * .018),
+                    size: MediaQuery.of(context).size.height * .017),
               ),
               Expanded(
                 flex: 1,
                 child: overUnder.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: Get.height * .018),
+                    size: MediaQuery.of(context).size.height * .017),
               ),
             ],
           ),
