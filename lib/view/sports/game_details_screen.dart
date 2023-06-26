@@ -17,7 +17,6 @@ class GameTeamScreen extends StatelessWidget {
   final String sportKey;
   final SportController sportController = Get.find();
   late ScrollController scrollController;
-  // late GameDetailDataSource gameDetailDataSource;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,8 +63,8 @@ class GameTeamScreen extends StatelessWidget {
       body: Stack(
         children: [
           GetBuilder<SportController>(initState: (state) {
-            sportController.gameDetailsResponse(context, sportKey: sportKey);
-            // sportController.getSportDataFromJson();
+            // sportController.gameDetailsResponse(context, sportKey: sportKey);
+            sportController.getSportDataFromJson();
           }, builder: (controller) {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -90,7 +89,6 @@ class GameTeamScreen extends StatelessWidget {
                     ),
                   ),
                   // bottomWidget()
-                  // SfDataPager(pageCount: 20, delegate: gameDetailDataSource),
                 ],
               ),
             );
@@ -283,7 +281,7 @@ class GameTeamScreen extends StatelessWidget {
                     10.W(),
                     Expanded(
                       flex: 2,
-                      child: results.teams.home.team.appCommonText(
+                      child: (results.teams.home.team).appCommonText(
                           color: blackColor,
                           align: TextAlign.start,
                           weight: FontWeight.w700,
@@ -326,17 +324,20 @@ class GameTeamScreen extends StatelessWidget {
         ),
         buildExpandedBoxWidget(
             bottomText: results.odds.isNotEmpty
-                ? results.odds[0].spread.current.home.toString()
+                ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
+                    .toString()
                 : '00',
             upText: results.odds.isNotEmpty
-                ? results.odds[0].spread.current.away.toString()
+                ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
                 : '00'),
         buildExpandedBoxWidget(
             bottomText: results.odds.isNotEmpty
-                ? results.odds[0].moneyline.current.homeOdds.toString()
+                ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
+                    .toString()
                 : "00",
             upText: results.odds.isNotEmpty
-                ? results.odds[0].moneyline.current.awayOdds.toString()
+                ? ('${results.odds[0].moneyline.current.awayOdds.toString().contains('-') ? results.odds[0].moneyline.current.awayOdds : '+${results.odds[0].moneyline.current.awayOdds}'}')
+                    .toString()
                 : '00'),
         Expanded(
             flex: 1,
