@@ -5,12 +5,12 @@ import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:shimmer/shimmer.dart';
 
-showAppSnackBar(String tittle, {bool status = false}) {
+showAppSnackBar(String tittle, BuildContext context, {bool status = false}) {
   return Get.showSnackbar(GetSnackBar(
     // message: tittle,
     messageText: tittle.appCommonText(
         size: 14,
-        color: whiteColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         align: TextAlign.start,
         weight: FontWeight.w600),
     // messageText: tittle.wallyText(fontSize: 24, fontWeight: wallyLightWeight, color: color),
@@ -20,9 +20,9 @@ showAppSnackBar(String tittle, {bool status = false}) {
     shouldIconPulse: false,
     icon: Icon(
       status ? Icons.check_circle_outline_rounded : Icons.error_outline,
-      color: whiteColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
     ),
-    backgroundColor: appColor,
+    backgroundColor: Theme.of(context).primaryColor,
     duration: const Duration(seconds: 3),
   ));
 }

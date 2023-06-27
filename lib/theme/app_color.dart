@@ -8,3 +8,8 @@ const Color dividerColor = Color(0XFFD3D3D3);
 const Color greyColor = Color(0XFF4D4D4D);
 const Color boxColor = Color(0XFF7C8E78);
 const Color primaryColor = Color(0XFFD3D9D2);
+
+///dark theme
+
+const Color darkBackGroundColor = Color(0XFF282838);
+const Color darkScaffoldColor = Color(0XFF1E1E1E);

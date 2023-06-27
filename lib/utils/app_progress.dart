@@ -12,6 +12,8 @@ class AppProgress extends StatelessWidget {
         width: double.infinity,
         height: Get.height,
         color: whiteColor.withOpacity(0.3),
-        child: const Center(child: CircularProgressIndicator(color: appColor)));
+        child: Center(
+            child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor)));
   }
 }

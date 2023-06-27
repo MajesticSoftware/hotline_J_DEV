@@ -1,1 +1,582 @@
-{"status":200,"time":"2023-06-24T04:09:49.587Z","games":15,"skip":0,"results":[{"summary":"Chicago Cubs vs St. Louis Cardinals","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":true},"schedule":{"date":"2023-06-24T17:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Chicago Cubs","location":"Chicago","mascot":"Cubs","abbreviation":"CHC","conference":"National League","division":"Central"},"home":{"team":"St. Louis Cardinals","location":"St. Louis","mascot":"Cardinals","abbreviation":"STL","conference":"National League","division":"Central"}},"lastUpdated":"2023-06-24T04:09:42.319Z","gameId":296147,"venue":{"name":"London Stadium","neutralSite":true,"city":"London"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":110,"homeOdds":-130},"current":{"away":-1.5,"home":1.5,"awayOdds":110,"homeOdds":-130}},"moneyline":{"open":{"awayOdds":-130,"homeOdds":110},"current":{"awayOdds":-130,"homeOdds":110}},"total":{"open":{"total":13.5,"overOdds":-110,"underOdds":-110},"current":{"total":14,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:07:48.331Z","lastUpdated":"2023-06-24T04:04:22.537Z"}]},{"summary":"Texas Rangers @ New York Yankees","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:05:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Texas Rangers","location":"Texas","mascot":"Rangers","abbreviation":"TEX","conference":"American League","division":"West"},"home":{"team":"New York Yankees","location":"New York","mascot":"Yankees","abbreviation":"NYY","conference":"American League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.365Z","gameId":296149,"venue":{"name":"Yankee Stadium","neutralSite":false,"city":"Bronx","state":"NY"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":145,"homeOdds":-175},"current":{"away":-1.5,"home":1.5,"awayOdds":135,"homeOdds":-170}},"moneyline":{"open":{"awayOdds":-115,"homeOdds":-105},"current":{"awayOdds":-121,"homeOdds":102}},"total":{"open":{"total":8.5,"overOdds":-100,"underOdds":-120},"current":{"total":8.5,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:16:12.315Z","lastUpdated":"2023-06-24T04:04:22.735Z"}]},{"summary":"Seattle Mariners @ Baltimore Orioles","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:05:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Seattle Mariners","location":"Seattle","mascot":"Mariners","abbreviation":"SEA","conference":"American League","division":"West"},"home":{"team":"Baltimore Orioles","location":"Baltimore","mascot":"Orioles","abbreviation":"BAL","conference":"American League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.407Z","gameId":296151,"venue":{"name":"Oriole Park at Camden Yards","neutralSite":false,"city":"Baltimore","state":"MD"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":135,"homeOdds":-160},"current":{"away":-1.5,"home":1.5,"awayOdds":145,"homeOdds":-175}},"moneyline":{"open":{"awayOdds":-120,"homeOdds":-100},"current":{"awayOdds":-111,"homeOdds":-108}},"total":{"open":{"total":8.5,"overOdds":-120,"underOdds":-100},"current":{"total":8.5,"overOdds":-115,"underOdds":-105}},"openDate":"2023-06-23T21:16:12.395Z","lastUpdated":"2023-06-24T04:04:22.678Z"}]},{"summary":"New York Mets @ Philadelphia Phillies","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":true},"schedule":{"date":"2023-06-24T20:05:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"New York Mets","location":"New York","mascot":"Mets","abbreviation":"NYM","conference":"National League","division":"East"},"home":{"team":"Philadelphia Phillies","location":"Philadelphia","mascot":"Phillies","abbreviation":"PHI","conference":"National League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.453Z","gameId":296153,"venue":{"name":"Citizens Bank Park","neutralSite":false,"city":"Philadelphia","state":"PA"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":130,"homeOdds":-155},"current":{"away":-1.5,"home":1.5,"awayOdds":125,"homeOdds":-145}},"moneyline":{"open":{"awayOdds":-125,"homeOdds":105},"current":{"awayOdds":-129,"homeOdds":109}},"total":{"open":{"total":9,"overOdds":-110,"underOdds":-110},"current":{"total":9,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T22:05:44.898Z","lastUpdated":"2023-06-24T04:04:22.597Z"}]},{"summary":"Arizona Diamondbacks @ San Francisco Giants","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":true},"schedule":{"date":"2023-06-24T20:05:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Arizona Diamondbacks","location":"Arizona","mascot":"Diamondbacks","abbreviation":"ARI","conference":"National League","division":"West"},"home":{"team":"San Francisco Giants","location":"San Francisco","mascot":"Giants","abbreviation":"SF","conference":"National League","division":"West"}},"lastUpdated":"2023-06-24T04:09:42.493Z","gameId":296155,"venue":{"name":"Oracle Park","neutralSite":false,"city":"San Francisco","state":"CA"}},{"summary":"Oakland Athletics @ Toronto Blue Jays","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:07:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Oakland Athletics","location":"Oakland","mascot":"Athletics","abbreviation":"OAK","conference":"American League","division":"West"},"home":{"team":"Toronto Blue Jays","location":"Toronto","mascot":"Blue Jays","abbreviation":"TOR","conference":"American League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.581Z","gameId":296157,"venue":{"name":"Rogers Centre","neutralSite":false,"city":"Toronto","state":"ON"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":105,"homeOdds":-125},"current":{"away":1.5,"home":-1.5,"awayOdds":105,"homeOdds":-125}},"moneyline":{"open":{"awayOdds":215,"homeOdds":-262},"current":{"awayOdds":215,"homeOdds":-258}},"total":{"open":{"total":8.5,"overOdds":-115,"underOdds":-105},"current":{"total":8.5,"overOdds":-120,"underOdds":-100}},"openDate":"2023-06-23T21:16:12.445Z","lastUpdated":"2023-06-24T04:04:22.790Z"}]},{"summary":"Pittsburgh Pirates @ Miami Marlins","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Pittsburgh Pirates","location":"Pittsburgh","mascot":"Pirates","abbreviation":"PIT","conference":"National League","division":"Central"},"home":{"team":"Miami Marlins","location":"Miami","mascot":"Marlins","abbreviation":"MIA","conference":"National League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.620Z","gameId":296158,"venue":{"name":"LoanDepot Park","neutralSite":false,"city":"Miami","state":"FL"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":-155,"homeOdds":130},"current":{"away":1.5,"home":-1.5,"awayOdds":-150,"homeOdds":125}},"moneyline":{"open":{"awayOdds":131,"homeOdds":-153},"current":{"awayOdds":133,"homeOdds":-156}},"total":{"open":{"total":8.5,"overOdds":-110,"underOdds":-115},"current":{"total":8.5,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:16:12.532Z","lastUpdated":"2023-06-24T04:04:23.048Z"}]},{"summary":"Milwaukee Brewers @ Cleveland Guardians","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":false,"divisionGame":false},"schedule":{"date":"2023-06-24T20:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Milwaukee Brewers","location":"Milwaukee","mascot":"Brewers","abbreviation":"MIL","conference":"National League","division":"Central"},"home":{"team":"Cleveland Guardians","location":"Cleveland","mascot":"Guardians","abbreviation":"CLE","conference":"American League","division":"Central"}},"lastUpdated":"2023-06-24T04:09:42.660Z","gameId":296159,"venue":{"name":"Progressive Field","neutralSite":false,"city":"Cleveland","state":"OH"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":-190,"homeOdds":160},"current":{"away":1.5,"home":-1.5,"awayOdds":-190,"homeOdds":160}},"moneyline":{"open":{"awayOdds":-100,"homeOdds":-120},"current":{"awayOdds":105,"homeOdds":-124}},"total":{"open":{"total":8.5,"overOdds":-100,"underOdds":-120},"current":{"total":8,"overOdds":-115,"underOdds":-105}},"openDate":"2023-06-23T21:16:12.491Z","lastUpdated":"2023-06-24T04:04:22.981Z"}]},{"summary":"Kansas City Royals @ Tampa Bay Rays","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Kansas City Royals","location":"Kansas City","mascot":"Royals","abbreviation":"KC","conference":"American League","division":"Central"},"home":{"team":"Tampa Bay Rays","location":"Tampa Bay","mascot":"Rays","abbreviation":"TB","conference":"American League","division":"East"}},"lastUpdated":"2023-06-24T04:09:42.708Z","gameId":296160,"venue":{"name":"Tropicana Field","neutralSite":false,"city":"St. Petersburg","state":"FL"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":110,"homeOdds":-130},"current":{"away":1.5,"home":-1.5,"awayOdds":120,"homeOdds":-145}},"moneyline":{"open":{"awayOdds":220,"homeOdds":-275},"current":{"awayOdds":220,"homeOdds":-275}},"total":{"open":{"total":9,"overOdds":100,"underOdds":-120},"current":{"total":9,"overOdds":100,"underOdds":-120}},"openDate":"2023-06-24T03:06:37.465Z","lastUpdated":"2023-06-24T04:02:27.892Z"}]},{"summary":"Boston Red Sox @ Chicago White Sox","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Boston Red Sox","location":"Boston","mascot":"Red Sox","abbreviation":"BOS","conference":"American League","division":"East"},"home":{"team":"Chicago White Sox","location":"Chicago","mascot":"White Sox","abbreviation":"CWS","conference":"American League","division":"Central"}},"lastUpdated":"2023-06-24T04:09:42.752Z","gameId":296161,"venue":{"name":"Guaranteed Rate Field","neutralSite":false,"city":"Chicago","state":"IL"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":130,"homeOdds":-150},"current":{"away":-1.5,"home":1.5,"awayOdds":130,"homeOdds":-155}},"moneyline":{"open":{"awayOdds":-124,"homeOdds":104},"current":{"awayOdds":-120,"homeOdds":102}},"total":{"open":{"total":8.5,"overOdds":-120,"underOdds":-100},"current":{"total":8.5,"overOdds":-120,"underOdds":100}},"openDate":"2023-06-23T21:16:12.641Z","lastUpdated":"2023-06-24T04:04:22.927Z"}]},{"summary":"Atlanta Braves @ Cincinnati Reds","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-24T20:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Atlanta Braves","location":"Atlanta","mascot":"Braves","abbreviation":"ATL","conference":"National League","division":"East"},"home":{"team":"Cincinnati Reds","location":"Cincinnati","mascot":"Reds","abbreviation":"CIN","conference":"National League","division":"Central"}},"lastUpdated":"2023-06-24T04:09:42.797Z","gameId":296163,"venue":{"name":"Great American Ball Park","neutralSite":false,"city":"Cincinnati","state":"OH"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":-100,"homeOdds":-120},"current":{"away":-1.5,"home":1.5,"awayOdds":-100,"homeOdds":-120}},"moneyline":{"open":{"awayOdds":-159,"homeOdds":134},"current":{"awayOdds":-150,"homeOdds":127}},"total":{"open":{"total":11.5,"overOdds":-115,"underOdds":-105},"current":{"total":11.5,"overOdds":-115,"underOdds":-105}},"openDate":"2023-06-23T21:16:12.590Z","lastUpdated":"2023-06-24T04:04:22.858Z"}]},{"summary":"Minnesota Twins @ Detroit Tigers","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":true},"schedule":{"date":"2023-06-24T23:15:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Minnesota Twins","location":"Minnesota","mascot":"Twins","abbreviation":"MIN","conference":"American League","division":"Central"},"home":{"team":"Detroit Tigers","location":"Detroit","mascot":"Tigers","abbreviation":"DET","conference":"American League","division":"Central"}},"lastUpdated":"2023-06-24T04:09:42.850Z","gameId":296165,"venue":{"name":"Comerica Park","neutralSite":false,"city":"Detroit","state":"MI"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":-105,"homeOdds":-115},"current":{"away":-1.5,"home":1.5,"awayOdds":100,"homeOdds":-120}},"moneyline":{"open":{"awayOdds":-161,"homeOdds":137},"current":{"awayOdds":-160,"homeOdds":135}},"total":{"open":{"total":8,"overOdds":-120,"underOdds":-100},"current":{"total":8,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:40:17.110Z","lastUpdated":"2023-06-24T04:04:23.173Z"}]},{"summary":"Houston Astros @ Los Angeles Dodgers","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":false,"divisionGame":false},"schedule":{"date":"2023-06-24T23:15:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Houston Astros","location":"Houston","mascot":"Astros","abbreviation":"HOU","conference":"American League","division":"West"},"home":{"team":"Los Angeles Dodgers","location":"Los Angeles","mascot":"Dodgers","abbreviation":"LAD","conference":"National League","division":"West"}},"lastUpdated":"2023-06-24T04:09:42.895Z","gameId":296167,"venue":{"name":"Dodger Stadium","neutralSite":false,"city":"Los Angeles","state":"CA"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":-120,"homeOdds":-100},"current":{"away":1.5,"home":-1.5,"awayOdds":-125,"homeOdds":105}},"moneyline":{"open":{"awayOdds":156,"homeOdds":-187},"current":{"awayOdds":158,"homeOdds":-188}},"total":{"open":{"total":9,"overOdds":-105,"underOdds":-115},"current":{"total":9,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:40:17.069Z","lastUpdated":"2023-06-24T04:04:23.113Z"}]},{"summary":"Washington Nationals @ San Diego Padres","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":true,"divisionGame":false},"schedule":{"date":"2023-06-25T00:40:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Washington Nationals","location":"Washington","mascot":"Nationals","abbreviation":"WSH","conference":"National League","division":"East"},"home":{"team":"San Diego Padres","location":"San Diego","mascot":"Padres","abbreviation":"SD","conference":"National League","division":"West"}},"lastUpdated":"2023-06-24T04:09:42.948Z","gameId":296169,"venue":{"name":"Petco Park","neutralSite":false,"city":"San Diego","state":"CA"},"odds":[{"spread":{"open":{"away":1.5,"home":-1.5,"awayOdds":-110,"homeOdds":-110},"current":{"away":1.5,"home":-1.5,"awayOdds":-120,"homeOdds":-100}},"moneyline":{"open":{"awayOdds":184,"homeOdds":-220},"current":{"awayOdds":170,"homeOdds":-203}},"total":{"open":{"total":8.5,"overOdds":-105,"underOdds":-115},"current":{"total":8.5,"overOdds":-110,"underOdds":-110}},"openDate":"2023-06-23T21:20:29.398Z","lastUpdated":"2023-06-24T04:04:23.220Z"}]},{"summary":"Los Angeles Angels @ Colorado Rockies","details":{"league":"MLB","seasonType":"regular","season":2023,"conferenceGame":false,"divisionGame":false},"schedule":{"date":"2023-06-25T01:10:00.000Z","tbaTime":false},"status":"scheduled","teams":{"away":{"team":"Los Angeles Angels","location":"Los Angeles","mascot":"Angels","abbreviation":"LAA","conference":"American League","division":"West"},"home":{"team":"Colorado Rockies","location":"Colorado","mascot":"Rockies","abbreviation":"COL","conference":"National League","division":"West"}},"lastUpdated":"2023-06-24T04:09:42.983Z","gameId":296171,"venue":{"name":"Coors Field","neutralSite":false,"city":"Denver","state":"CO"},"odds":[{"spread":{"open":{"away":-1.5,"home":1.5,"awayOdds":-120,"homeOdds":-100},"current":{"away":-1.5,"home":1.5,"awayOdds":-110,"homeOdds":-110}},"moneyline":{"open":{"awayOdds":-164,"homeOdds":138},"current":{"awayOdds":-164,"homeOdds":140}},"total":{"open":{"total":12,"overOdds":-115,"underOdds":-105},"current":{"total":12,"overOdds":-115,"underOdds":-105}},"openDate":"2023-06-23T21:40:17.185Z","lastUpdated":"2023-06-24T04:04:23.269Z"}]}]}
+{
+  "status": 200,
+  "time": "2023-06-27T04:22:54.072Z",
+  "games": 14,
+  "skip": 0,
+  "results": [
+    {
+      "summary": "Houston Texans @ Baltimore Ravens",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Houston Texans",
+          "location": "Houston",
+          "mascot": "Texans",
+          "abbreviation": "HOU",
+          "conference": "AFC",
+          "division": "South"
+        },
+        "home": {
+          "team": "Baltimore Ravens",
+          "location": "Baltimore",
+          "mascot": "Ravens",
+          "abbreviation": "BAL",
+          "conference": "AFC",
+          "division": "North"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.352Z",
+      "gameId": 298148,
+      "venue": {
+        "name": "M&T Bank Stadium",
+        "neutralSite": false,
+        "city": "Baltimore",
+        "state": "MD"
+      }
+    },
+    {
+      "summary": "Arizona Cardinals @ Washington Commanders",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Arizona Cardinals",
+          "location": "Arizona",
+          "mascot": "Cardinals",
+          "abbreviation": "ARI",
+          "conference": "NFC",
+          "division": "West"
+        },
+        "home": {
+          "team": "Washington Commanders",
+          "location": "Washington",
+          "mascot": "Commanders",
+          "abbreviation": "WAS",
+          "conference": "NFC",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.390Z",
+      "gameId": 298149,
+      "venue": {
+        "name": "FedExField",
+        "neutralSite": false,
+        "city": "Landover",
+        "state": "MD"
+      }
+    },
+    {
+      "summary": "San Francisco 49ers @ Pittsburgh Steelers",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": false,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "San Francisco 49ers",
+          "location": "San Francisco",
+          "mascot": "49ers",
+          "abbreviation": "SF",
+          "conference": "NFC",
+          "division": "West"
+        },
+        "home": {
+          "team": "Pittsburgh Steelers",
+          "location": "Pittsburgh",
+          "mascot": "Steelers",
+          "abbreviation": "PIT",
+          "conference": "AFC",
+          "division": "North"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.421Z",
+      "gameId": 298150,
+      "venue": {
+        "name": "Acrisure Stadium",
+        "neutralSite": false,
+        "city": "Pittsburgh",
+        "state": "PA"
+      }
+    },
+    {
+      "summary": "Tennessee Titans @ New Orleans Saints",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": false,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Tennessee Titans",
+          "location": "Tennessee",
+          "mascot": "Titans",
+          "abbreviation": "TEN",
+          "conference": "AFC",
+          "division": "South"
+        },
+        "home": {
+          "team": "New Orleans Saints",
+          "location": "New Orleans",
+          "mascot": "Saints",
+          "abbreviation": "NO",
+          "conference": "NFC",
+          "division": "South"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.453Z",
+      "gameId": 298151,
+      "venue": {
+        "name": "Caesars Superdome",
+        "neutralSite": false,
+        "city": "New Orleans",
+        "state": "LA"
+      }
+    },
+    {
+      "summary": "Tampa Bay Buccaneers @ Minnesota Vikings",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Tampa Bay Buccaneers",
+          "location": "Tampa Bay",
+          "mascot": "Buccaneers",
+          "abbreviation": "TB",
+          "conference": "NFC",
+          "division": "South"
+        },
+        "home": {
+          "team": "Minnesota Vikings",
+          "location": "Minnesota",
+          "mascot": "Vikings",
+          "abbreviation": "MIN",
+          "conference": "NFC",
+          "division": "North"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.489Z",
+      "gameId": 298152,
+      "venue": {
+        "name": "U.S. Bank Stadium",
+        "neutralSite": false,
+        "city": "Minneapolis",
+        "state": "MN"
+      }
+    },
+    {
+      "summary": "Jacksonville Jaguars @ Indianapolis Colts",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Jacksonville Jaguars",
+          "location": "Jacksonville",
+          "mascot": "Jaguars",
+          "abbreviation": "JAX",
+          "conference": "AFC",
+          "division": "South"
+        },
+        "home": {
+          "team": "Indianapolis Colts",
+          "location": "Indianapolis",
+          "mascot": "Colts",
+          "abbreviation": "IND",
+          "conference": "AFC",
+          "division": "South"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.522Z",
+      "gameId": 298153,
+      "venue": {
+        "name": "Lucas Oil Stadium",
+        "neutralSite": false,
+        "city": "Indianapolis",
+        "state": "IN"
+      }
+    },
+    {
+      "summary": "Cincinnati Bengals @ Cleveland Browns",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Cincinnati Bengals",
+          "location": "Cincinnati",
+          "mascot": "Bengals",
+          "abbreviation": "CIN",
+          "conference": "AFC",
+          "division": "North"
+        },
+        "home": {
+          "team": "Cleveland Browns",
+          "location": "Cleveland",
+          "mascot": "Browns",
+          "abbreviation": "CLE",
+          "conference": "AFC",
+          "division": "North"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.555Z",
+      "gameId": 298155,
+      "venue": {
+        "name": "Cleveland Browns Stadium",
+        "neutralSite": false,
+        "city": "Cleveland",
+        "state": "OH"
+      }
+    },
+    {
+      "summary": "Carolina Panthers @ Atlanta Falcons",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T17:00:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Carolina Panthers",
+          "location": "Carolina",
+          "mascot": "Panthers",
+          "abbreviation": "CAR",
+          "conference": "NFC",
+          "division": "South"
+        },
+        "home": {
+          "team": "Atlanta Falcons",
+          "location": "Atlanta",
+          "mascot": "Falcons",
+          "abbreviation": "ATL",
+          "conference": "NFC",
+          "division": "South"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.587Z",
+      "gameId": 298156,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "neutralSite": false,
+        "city": "Atlanta",
+        "state": "GA"
+      }
+    },
+    {
+      "summary": "Los Angeles Rams @ Seattle Seahawks",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T20:25:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Los Angeles Rams",
+          "location": "Los Angeles",
+          "mascot": "Rams",
+          "abbreviation": "LAR",
+          "conference": "NFC",
+          "division": "West"
+        },
+        "home": {
+          "team": "Seattle Seahawks",
+          "location": "Seattle",
+          "mascot": "Seahawks",
+          "abbreviation": "SEA",
+          "conference": "NFC",
+          "division": "West"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.618Z",
+      "gameId": 298157,
+      "venue": {
+        "name": "Lumen Field",
+        "neutralSite": false,
+        "city": "Seattle",
+        "state": "WA"
+      }
+    },
+    {
+      "summary": "Miami Dolphins @ Los Angeles Chargers",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T20:25:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Miami Dolphins",
+          "location": "Miami",
+          "mascot": "Dolphins",
+          "abbreviation": "MIA",
+          "conference": "AFC",
+          "division": "East"
+        },
+        "home": {
+          "team": "Los Angeles Chargers",
+          "location": "Los Angeles",
+          "mascot": "Chargers",
+          "abbreviation": "LAC",
+          "conference": "AFC",
+          "division": "West"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.647Z",
+      "gameId": 298158,
+      "venue": {
+        "name": "SoFi Stadium",
+        "neutralSite": false,
+        "city": "Inglewood",
+        "state": "CA"
+      }
+    },
+    {
+      "summary": "Philadelphia Eagles @ New England Patriots",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": false,
+        "divisionGame": false
+      },
+      "schedule": {
+        "date": "2023-09-10T20:25:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Philadelphia Eagles",
+          "location": "Philadelphia",
+          "mascot": "Eagles",
+          "abbreviation": "PHI",
+          "conference": "NFC",
+          "division": "East"
+        },
+        "home": {
+          "team": "New England Patriots",
+          "location": "New England",
+          "mascot": "Patriots",
+          "abbreviation": "NE",
+          "conference": "AFC",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.685Z",
+      "gameId": 298159,
+      "venue": {
+        "name": "Gillette Stadium",
+        "neutralSite": false,
+        "city": "Foxborough",
+        "state": "MA"
+      }
+    },
+    {
+      "summary": "Las Vegas Raiders @ Denver Broncos",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T20:25:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Las Vegas Raiders",
+          "location": "Las Vegas",
+          "mascot": "Raiders",
+          "abbreviation": "LV",
+          "conference": "AFC",
+          "division": "West"
+        },
+        "home": {
+          "team": "Denver Broncos",
+          "location": "Denver",
+          "mascot": "Broncos",
+          "abbreviation": "DEN",
+          "conference": "AFC",
+          "division": "West"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.725Z",
+      "gameId": 298160,
+      "venue": {
+        "name": "Mile High Stadium",
+        "neutralSite": false,
+        "city": "Denver",
+        "state": "CO"
+      }
+    },
+    {
+      "summary": "Green Bay Packers @ Chicago Bears",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-10T20:25:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Green Bay Packers",
+          "location": "Green Bay",
+          "mascot": "Packers",
+          "abbreviation": "GB",
+          "conference": "NFC",
+          "division": "North"
+        },
+        "home": {
+          "team": "Chicago Bears",
+          "location": "Chicago",
+          "mascot": "Bears",
+          "abbreviation": "CHI",
+          "conference": "NFC",
+          "division": "North"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.756Z",
+      "gameId": 298161,
+      "venue": {
+        "name": "Soldier Field",
+        "neutralSite": false,
+        "city": "Chicago",
+        "state": "IL"
+      }
+    },
+    {
+      "summary": "Dallas Cowboys @ New York Giants",
+      "details": {
+        "league": "NFL",
+        "seasonType": "regular",
+        "season": 2023,
+        "conferenceGame": true,
+        "divisionGame": true
+      },
+      "schedule": {
+        "date": "2023-09-11T00:20:00.000Z",
+        "tbaTime": false
+      },
+      "status": "scheduled",
+      "teams": {
+        "away": {
+          "team": "Dallas Cowboys",
+          "location": "Dallas",
+          "mascot": "Cowboys",
+          "abbreviation": "DAL",
+          "conference": "NFC",
+          "division": "East"
+        },
+        "home": {
+          "team": "New York Giants",
+          "location": "New York",
+          "mascot": "Giants",
+          "abbreviation": "NYG",
+          "conference": "NFC",
+          "division": "East"
+        }
+      },
+      "lastUpdated": "2023-06-17T02:17:08.783Z",
+      "gameId": 298162,
+      "venue": {
+        "name": "MetLife Stadium",
+        "neutralSite": false,
+        "city": "East Rutherford",
+        "state": "NJ"
+      }
+    }
+  ]
+}

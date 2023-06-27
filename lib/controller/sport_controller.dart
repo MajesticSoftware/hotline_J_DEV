@@ -19,22 +19,24 @@ class SportController extends GetxController {
   }
 
   ///Api call
-  Future<void> getSportDataFromJson() async {
+  Future<void> getSportDataFromJson(BuildContext context) async {
     isLoading.value = true;
+    gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await BaseApiHelper.jasonRequest();
-    // try {
-    if (result.status) {
-      GameDetailsModel response = GameDetailsModel.fromJson(result.data);
-      gameDetails.clear();
-      gameDetails.add(response);
+    try {
+      if (result.status) {
+        GameDetailsModel response = GameDetailsModel.fromJson(result.data);
+        gameDetails.clear();
+        gameDetails.add(response);
+        isLoading.value = false;
+      }
+    } catch (e) {
       isLoading.value = false;
+      // ignore: use_build_context_synchronously
+      showAppSnackBar(errorText, context);
     }
-    // } catch (e) {
-    //   isLoading.value = false;
-    //   showAppSnackBar(errorText);
-    // }
     update();
   }
 
@@ -44,7 +46,7 @@ class SportController extends GetxController {
     gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().gameDetails(sportKey);
+    result = await GameRepo().gameDetails(sportKey, '2023-09-07,2023-09-24');
     try {
       if (result.status) {
         GameDetailsModel response = GameDetailsModel.fromJson(result.data);
@@ -53,11 +55,13 @@ class SportController extends GetxController {
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        showAppSnackBar(result.message);
+        // ignore: use_build_context_synchronously
+        showAppSnackBar(result.message, context);
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      // ignore: use_build_context_synchronously
+      showAppSnackBar(errorText, context);
     }
     update();
   }

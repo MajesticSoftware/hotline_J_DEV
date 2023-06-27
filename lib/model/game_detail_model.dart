@@ -1,400 +1,206 @@
-// To parse this JSON data, do
-//
-//     final gameDetailsModel = gameDetailsModelFromJson(jsonString);
-
-import 'dart:convert';
-
-GameDetailsModel gameDetailsModelFromJson(String str) =>
-    GameDetailsModel.fromJson(json.decode(str));
-
-String gameDetailsModelToJson(GameDetailsModel data) =>
-    json.encode(data.toJson());
-
 class GameDetailsModel {
-  int status;
-  int games;
-  int skip;
-  List<Result> results;
+  int? status;
+  String? time;
+  int? games;
+  int? skip;
+  List<Results>? results;
 
-  GameDetailsModel({
-    required this.status,
-    required this.games,
-    required this.skip,
-    required this.results,
-  });
+  GameDetailsModel(
+      {this.status, this.time, this.games, this.skip, this.results});
 
-  factory GameDetailsModel.fromJson(Map<String, dynamic> json) =>
-      GameDetailsModel(
-        status: json["status"],
-        games: json["games"],
-        skip: json["skip"],
-        results:
-            List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
-      );
+  GameDetailsModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    time = json['time'];
+    games = json['games'];
+    skip = json['skip'];
+    if (json['results'] != null) {
+      results = <Results>[];
+      json['results'].forEach((v) {
+        results!.add(new Results.fromJson(v));
+      });
+    }
+  }
 
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "games": games,
-        "skip": skip,
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['time'] = this.time;
+    data['games'] = this.games;
+    data['skip'] = this.skip;
+    if (this.results != null) {
+      data['results'] = this.results!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }
 
-class Result {
-  String summary;
-  Details details;
-  Schedule schedule;
-  Status? status;
-  Teams teams;
-  DateTime lastUpdated;
-  int gameId;
-  Venue venue;
-  List<Odd> odds;
+class Results {
+  String? summary;
+  Details? details;
+  Schedule? schedule;
+  String? status;
+  Teams? teams;
+  String? lastUpdated;
+  int? gameId;
+  Venue? venue;
 
-  Result({
-    required this.summary,
-    required this.details,
-    required this.schedule,
-    required this.status,
-    required this.teams,
-    required this.lastUpdated,
-    required this.gameId,
-    required this.venue,
-    required this.odds,
-  });
+  Results(
+      {this.summary,
+      this.details,
+      this.schedule,
+      this.status,
+      this.teams,
+      this.lastUpdated,
+      this.gameId,
+      this.venue});
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
-        summary: json["summary"],
-        details: Details.fromJson(json["details"]),
-        schedule: Schedule.fromJson(json["schedule"]),
-        status: statusValues.map[json["status"]],
-        teams: Teams.fromJson(json["teams"]),
-        lastUpdated: DateTime.parse(json["lastUpdated"]),
-        gameId: json["gameId"],
-        venue: Venue.fromJson(json["venue"]),
-        odds: List<Odd>.from(json["odds"] == null
-            ? []
-            : json["odds"]
-                .map((x) => json["odds"] == null ? [] : Odd.fromJson(x))),
-      );
+  Results.fromJson(Map<String, dynamic> json) {
+    summary = json['summary'];
+    details =
+        json['details'] != null ? new Details.fromJson(json['details']) : null;
+    schedule = json['schedule'] != null
+        ? new Schedule.fromJson(json['schedule'])
+        : null;
+    status = json['status'];
+    teams = json['teams'] != null ? new Teams.fromJson(json['teams']) : null;
+    lastUpdated = json['lastUpdated'];
+    gameId = json['gameId'];
+    venue = json['venue'] != null ? new Venue.fromJson(json['venue']) : null;
+  }
 
-  Map<String, dynamic> toJson() => {
-        "summary": summary,
-        "details": details.toJson(),
-        "schedule": schedule.toJson(),
-        "status": statusValues.reverse[status],
-        "teams": teams.toJson(),
-        "lastUpdated": lastUpdated.toIso8601String(),
-        "gameId": gameId,
-        "venue": venue.toJson(),
-        "odds": List<dynamic>.from(odds.map((x) => x.toJson())),
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['summary'] = this.summary;
+    if (this.details != null) {
+      data['details'] = this.details!.toJson();
+    }
+    if (this.schedule != null) {
+      data['schedule'] = this.schedule!.toJson();
+    }
+    data['status'] = this.status;
+    if (this.teams != null) {
+      data['teams'] = this.teams!.toJson();
+    }
+    data['lastUpdated'] = this.lastUpdated;
+    data['gameId'] = this.gameId;
+    if (this.venue != null) {
+      data['venue'] = this.venue!.toJson();
+    }
+    return data;
+  }
 }
 
 class Details {
-  League league;
-  SeasonType seasonType;
-  int season;
-  bool conferenceGame;
-  bool divisionGame;
+  String? league;
+  String? seasonType;
+  int? season;
+  bool? conferenceGame;
+  bool? divisionGame;
 
-  Details({
-    required this.league,
-    required this.seasonType,
-    required this.season,
-    required this.conferenceGame,
-    required this.divisionGame,
-  });
+  Details(
+      {this.league,
+      this.seasonType,
+      this.season,
+      this.conferenceGame,
+      this.divisionGame});
 
-  factory Details.fromJson(Map<String, dynamic> json) => Details(
-        league: leagueValues.map[json["league"]]!,
-        seasonType: seasonTypeValues.map[json["seasonType"]]!,
-        season: json["season"],
-        conferenceGame: json["conferenceGame"],
-        divisionGame: json["divisionGame"],
-      );
+  Details.fromJson(Map<String, dynamic> json) {
+    league = json['league'];
+    seasonType = json['seasonType'];
+    season = json['season'];
+    conferenceGame = json['conferenceGame'];
+    divisionGame = json['divisionGame'];
+  }
 
-  Map<String, dynamic> toJson() => {
-        "league": leagueValues.reverse[league],
-        "seasonType": seasonTypeValues.reverse[seasonType],
-        "season": season,
-        "conferenceGame": conferenceGame,
-        "divisionGame": divisionGame,
-      };
-}
-
-// ignore: constant_identifier_names
-enum League { MLB }
-
-final leagueValues = EnumValues({"MLB": League.MLB});
-
-// ignore: constant_identifier_names
-enum SeasonType { REGULAR }
-
-final seasonTypeValues = EnumValues({"regular": SeasonType.REGULAR});
-
-class Odd {
-  Spread spread;
-  Moneyline moneyline;
-  Total total;
-  DateTime openDate;
-  DateTime lastUpdated;
-
-  Odd({
-    required this.spread,
-    required this.moneyline,
-    required this.total,
-    required this.openDate,
-    required this.lastUpdated,
-  });
-
-  factory Odd.fromJson(Map<String, dynamic> json) => Odd(
-        spread: Spread.fromJson(json["spread"]),
-        moneyline: Moneyline.fromJson(json["moneyline"]),
-        total: Total.fromJson(json["total"]),
-        openDate: DateTime.parse(json["openDate"]),
-        lastUpdated: DateTime.parse(json["lastUpdated"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "spread": spread.toJson(),
-        "moneyline": moneyline.toJson(),
-        "total": total.toJson(),
-        "openDate": openDate.toIso8601String(),
-        "lastUpdated": lastUpdated.toIso8601String(),
-      };
-}
-
-class Moneyline {
-  MoneylineCurrent open;
-  MoneylineCurrent current;
-
-  Moneyline({
-    required this.open,
-    required this.current,
-  });
-
-  factory Moneyline.fromJson(Map<String, dynamic> json) => Moneyline(
-        open: MoneylineCurrent.fromJson(json["open"]),
-        current: MoneylineCurrent.fromJson(json["current"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "open": open.toJson(),
-        "current": current.toJson(),
-      };
-}
-
-class MoneylineCurrent {
-  int awayOdds;
-  int homeOdds;
-
-  MoneylineCurrent({
-    required this.awayOdds,
-    required this.homeOdds,
-  });
-
-  factory MoneylineCurrent.fromJson(Map<String, dynamic> json) =>
-      MoneylineCurrent(
-        awayOdds: json["awayOdds"],
-        homeOdds: json["homeOdds"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "awayOdds": awayOdds,
-        "homeOdds": homeOdds,
-      };
-}
-
-class Spread {
-  SpreadCurrent open;
-  SpreadCurrent current;
-
-  Spread({
-    required this.open,
-    required this.current,
-  });
-
-  factory Spread.fromJson(Map<String, dynamic> json) => Spread(
-        open: SpreadCurrent.fromJson(json["open"]),
-        current: SpreadCurrent.fromJson(json["current"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "open": open.toJson(),
-        "current": current.toJson(),
-      };
-}
-
-class SpreadCurrent {
-  double away;
-  double home;
-  int awayOdds;
-  int homeOdds;
-
-  SpreadCurrent({
-    required this.away,
-    required this.home,
-    required this.awayOdds,
-    required this.homeOdds,
-  });
-
-  factory SpreadCurrent.fromJson(Map<String, dynamic> json) => SpreadCurrent(
-        away: json["away"]?.toDouble(),
-        home: json["home"]?.toDouble(),
-        awayOdds: json["awayOdds"],
-        homeOdds: json["homeOdds"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "away": away,
-        "home": home,
-        "awayOdds": awayOdds,
-        "homeOdds": homeOdds,
-      };
-}
-
-class Total {
-  TotalCurrent open;
-  TotalCurrent current;
-
-  Total({
-    required this.open,
-    required this.current,
-  });
-
-  factory Total.fromJson(Map<String, dynamic> json) => Total(
-        open: TotalCurrent.fromJson(json["open"]),
-        current: TotalCurrent.fromJson(json["current"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "open": open.toJson(),
-        "current": current.toJson(),
-      };
-}
-
-class TotalCurrent {
-  double total;
-  int overOdds;
-  int underOdds;
-
-  TotalCurrent({
-    required this.total,
-    required this.overOdds,
-    required this.underOdds,
-  });
-
-  factory TotalCurrent.fromJson(Map<String, dynamic> json) => TotalCurrent(
-        total: json["total"]?.toDouble(),
-        overOdds: json["overOdds"],
-        underOdds: json["underOdds"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "total": total,
-        "overOdds": overOdds,
-        "underOdds": underOdds,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['league'] = this.league;
+    data['seasonType'] = this.seasonType;
+    data['season'] = this.season;
+    data['conferenceGame'] = this.conferenceGame;
+    data['divisionGame'] = this.divisionGame;
+    return data;
+  }
 }
 
 class Schedule {
-  DateTime date;
-  bool tbaTime;
+  String? date;
+  bool? tbaTime;
 
-  Schedule({
-    required this.date,
-    required this.tbaTime,
-  });
+  Schedule({this.date, this.tbaTime});
 
-  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
-        date: DateTime.parse(json["date"]),
-        tbaTime: json["tbaTime"],
-      );
+  Schedule.fromJson(Map<String, dynamic> json) {
+    date = json['date'];
+    tbaTime = json['tbaTime'];
+  }
 
-  Map<String, dynamic> toJson() => {
-        "date": date.toIso8601String(),
-        "tbaTime": tbaTime,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['date'] = this.date;
+    data['tbaTime'] = this.tbaTime;
+    return data;
+  }
 }
 
-// ignore: constant_identifier_names
-enum Status { SCHEDULED }
-
-final statusValues = EnumValues({"scheduled": Status.SCHEDULED});
-
 class Teams {
-  Away away;
-  Away home;
+  Away? away;
+  Away? home;
 
-  Teams({
-    required this.away,
-    required this.home,
-  });
+  Teams({this.away, this.home});
 
-  factory Teams.fromJson(Map<String, dynamic> json) => Teams(
-        away: Away.fromJson(json["away"]),
-        home: Away.fromJson(json["home"]),
-      );
+  Teams.fromJson(Map<String, dynamic> json) {
+    away = json['away'] != null ? new Away.fromJson(json['away']) : null;
+    home = json['home'] != null ? new Away.fromJson(json['home']) : null;
+  }
 
-  Map<String, dynamic> toJson() => {
-        "away": away.toJson(),
-        "home": home.toJson(),
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.away != null) {
+      data['away'] = this.away!.toJson();
+    }
+    if (this.home != null) {
+      data['home'] = this.home!.toJson();
+    }
+    return data;
+  }
 }
 
 class Away {
-  String team;
-  String location;
-  String mascot;
-  String abbreviation;
-  Conference conference;
-  Division division;
+  String? team;
+  String? location;
+  String? mascot;
+  String? abbreviation;
+  String? conference;
+  String? division;
 
-  Away({
-    required this.team,
-    required this.location,
-    required this.mascot,
-    required this.abbreviation,
-    required this.conference,
-    required this.division,
-  });
+  Away(
+      {this.team,
+      this.location,
+      this.mascot,
+      this.abbreviation,
+      this.conference,
+      this.division});
 
-  factory Away.fromJson(Map<String, dynamic> json) => Away(
-        team: json["team"],
-        location: json["location"],
-        mascot: json["mascot"],
-        abbreviation: json["abbreviation"],
-        conference: conferenceValues.map[json["conference"]]!,
-        division: divisionValues.map[json["division"]]!,
-      );
+  Away.fromJson(Map<String, dynamic> json) {
+    team = json['team'];
+    location = json['location'];
+    mascot = json['mascot'];
+    abbreviation = json['abbreviation'];
+    conference = json['conference'];
+    division = json['division'];
+  }
 
-  Map<String, dynamic> toJson() => {
-        "team": team,
-        "location": location,
-        "mascot": mascot,
-        "abbreviation": abbreviation,
-        "conference": conferenceValues.reverse[conference],
-        "division": divisionValues.reverse[division],
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['team'] = this.team;
+    data['location'] = this.location;
+    data['mascot'] = this.mascot;
+    data['abbreviation'] = this.abbreviation;
+    data['conference'] = this.conference;
+    data['division'] = this.division;
+    return data;
+  }
 }
-
-// ignore: constant_identifier_names
-enum Conference { AMERICAN_LEAGUE, NATIONAL_LEAGUE }
-
-final conferenceValues = EnumValues({
-  "American League": Conference.AMERICAN_LEAGUE,
-  "National League": Conference.NATIONAL_LEAGUE
-});
-
-// ignore: constant_identifier_names
-enum Division { EAST, CENTRAL, WEST }
-
-final divisionValues = EnumValues({
-  "Central": Division.CENTRAL,
-  "East": Division.EAST,
-  "West": Division.WEST
-});
 
 class Venue {
   String? name;
@@ -402,36 +208,21 @@ class Venue {
   String? city;
   String? state;
 
-  Venue({
-    required this.name,
-    required this.neutralSite,
-    required this.city,
-    required this.state,
-  });
+  Venue({this.name, this.neutralSite, this.city, this.state});
 
-  factory Venue.fromJson(Map<String, dynamic> json) => Venue(
-        name: json["name"] ?? "",
-        neutralSite: json["neutralSite"] ?? true,
-        city: json["city"] ?? "",
-        state: json["state"] ?? '',
-      );
+  Venue.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    neutralSite = json['neutralSite'];
+    city = json['city'];
+    state = json['state'];
+  }
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "neutralSite": neutralSite,
-        "city": city,
-        "state": state,
-      };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['neutralSite'] = this.neutralSite;
+    data['city'] = this.city;
+    data['state'] = this.state;
+    return data;
   }
 }

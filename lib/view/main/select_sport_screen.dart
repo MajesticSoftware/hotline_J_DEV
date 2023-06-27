@@ -13,13 +13,13 @@ class SelectSportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(147.0),
           child: Container(
             height: MediaQuery.of(context).size.height * .12,
             alignment: Alignment.bottomCenter,
-            color: appColor,
+            color: Theme.of(context).secondaryHeaderColor,
             child: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * .024),

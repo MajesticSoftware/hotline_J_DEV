@@ -14,20 +14,20 @@ class SportDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backGroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          headerWidget(),
+          headerWidget(context),
           Expanded(
               child: SingleChildScrollView(
             child: Column(
               children: [
-                teamReports(),
-                injuryReportWidget(),
-                teamReportWidget(),
-                playerPropBetsWidget(),
+                teamReports(context),
+                injuryReportWidget(context),
+                teamReportWidget(context),
+                playerPropBetsWidget(context),
                 40.H(),
               ],
             ),
@@ -45,28 +45,33 @@ class SportDetailsScreen extends StatelessWidget {
     'George Pickens (O)',
   ];
 
-  Padding teamReportWidget() {
+  Padding teamReportWidget(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * .02),
       child: Container(
-        height: 212,
+        height: MediaQuery.of(context).size.height * .227,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: whiteColor),
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .01),
+            color: whiteColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                height: 59,
+                height: MediaQuery.of(context).size.height * .059,
                 width: Get.width,
-                decoration: const BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(10)),
-                    color: appColor),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(
+                            MediaQuery.of(context).size.width * .01)),
+                    color: Theme.of(context).canvasColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * .01),
                   child: Padding(
-                    padding: const EdgeInsets.all(13),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * .013),
                     child: Row(
                       children: [
                         Expanded(
@@ -80,12 +85,16 @@ class SportDetailsScreen extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Image.asset(Assets.imagesBAL,
-                              width: 40, height: 40),
+                              width: MediaQuery.of(context).size.width * .040,
+                              height:
+                                  MediaQuery.of(context).size.height * .040),
                         ),
                         Expanded(
                           flex: 1,
                           child: Image.asset(Assets.imagesPITT,
-                              width: 40, height: 40),
+                              width: MediaQuery.of(context).size.width * .040,
+                              height:
+                                  MediaQuery.of(context).size.height * .040),
                         ),
                       ],
                     ),
@@ -98,40 +107,42 @@ class SportDetailsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    SizedBox(
-                      height: 37,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 4,
-                              child: teamReportName[index]
-                                  .toString()
-                                  .appCommonText(
-                                      color: greyColor,
-                                      align: TextAlign.start,
-                                      weight: FontWeight.w600,
-                                      size: 14),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: '1-3'.appCommonText(
-                                  color: greyColor,
-                                  weight: FontWeight.w700,
-                                  size: 14),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: '3-0'.appCommonText(
-                                  color: greyColor,
-                                  weight: FontWeight.w700,
-                                  size: 14),
-                            )
-                          ],
-                        ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * .016,
+                          vertical: MediaQuery.of(context).size.height * .01),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: teamReportName[index]
+                                .toString()
+                                .appCommonText(
+                                    color: greyColor,
+                                    align: TextAlign.start,
+                                    weight: FontWeight.w600,
+                                    size: MediaQuery.of(context).size.height *
+                                        .014),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: '1-3'.appCommonText(
+                                color: greyColor,
+                                weight: FontWeight.w700,
+                                size:
+                                    MediaQuery.of(context).size.height * .014),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: '3-0'.appCommonText(
+                                color: greyColor,
+                                weight: FontWeight.w700,
+                                size:
+                                    MediaQuery.of(context).size.height * .014),
+                          )
+                        ],
                       ),
                     ),
                     index == 3
@@ -150,42 +161,51 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Padding injuryReportWidget() {
+  Padding injuryReportWidget(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .025),
       child: Container(
-        height: 356,
+        height: MediaQuery.of(context).size.height * .39,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: whiteColor),
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .02),
+            color: whiteColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                height: 54,
+                height: MediaQuery.of(context).size.height * .056,
                 width: Get.width,
-                decoration: const BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                    color: appColor),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(
+                            MediaQuery.of(context).size.width * .02)),
+                    color: Theme.of(context).canvasColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(13),
-                    child: injuryReport.appCommonText(
-                        color: whiteColor,
-                        align: TextAlign.start,
-                        weight: FontWeight.w600,
-                        size: Get.height * .018),
+                  padding: EdgeInsets.all(
+                    MediaQuery.of(context).size.height * .014,
                   ),
+                  child: injuryReport.appCommonText(
+                      color: whiteColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w600,
+                      size: Get.height * .018),
                 )),
             Container(
-                height: 54,
+                height: MediaQuery.of(context).size.height * .054,
                 color: primaryColor,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child:
-                      teamNameWidget(Assets.imagesBAL, baltimoreRavens, 40, 16),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * .002,
+                  ),
+                  child: teamNameWidget(
+                      Assets.imagesBAL,
+                      baltimoreRavens,
+                      MediaQuery.of(context).size.height * .04,
+                      MediaQuery.of(context).size.height * .016,
+                      context),
                 )),
             ListView.builder(
               shrinkWrap: true,
@@ -194,20 +214,20 @@ class SportDetailsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    SizedBox(
-                      height: 37,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            injuryList[index].toString().appCommonText(
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * .016,
+                          vertical: MediaQuery.of(context).size.width * .016),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          injuryList[index].toString().appCommonText(
                                 color: greyColor,
                                 weight: FontWeight.w600,
-                                size: 14),
-                          ],
-                        ),
+                                size: MediaQuery.of(context).size.height * .016,
+                              ),
+                        ],
                       ),
                     ),
                     Container(
@@ -219,12 +239,18 @@ class SportDetailsScreen extends StatelessWidget {
               },
             ),
             Container(
-                height: 54,
+                height: MediaQuery.of(context).size.height * .054,
                 color: primaryColor,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * .002,
+                  ),
                   child: teamNameWidget(
-                      Assets.imagesPITT, ' Pittsburgh Steelers', 40, 16),
+                      Assets.imagesPITT,
+                      'Pittsburgh Steelers',
+                      MediaQuery.of(context).size.height * .04,
+                      MediaQuery.of(context).size.height * .016,
+                      context),
                 )),
             ListView.builder(
               shrinkWrap: true,
@@ -233,20 +259,19 @@ class SportDetailsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    SizedBox(
-                      height: 37,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            injuryList1[index].toString().appCommonText(
-                                color: greyColor,
-                                weight: FontWeight.w600,
-                                size: 14),
-                          ],
-                        ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * .016,
+                          vertical: MediaQuery.of(context).size.width * .016),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          injuryList1[index].toString().appCommonText(
+                              color: greyColor,
+                              weight: FontWeight.w600,
+                              size: MediaQuery.of(context).size.height * .016),
+                        ],
                       ),
                     ),
                     index == 2
@@ -265,34 +290,38 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Padding playerPropBetsWidget() {
+  Padding playerPropBetsWidget(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .02),
       child: Container(
-        height: 245,
+        height: MediaQuery.of(context).size.height * .245,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: whiteColor),
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .02),
+            color: whiteColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                height: 54,
+                height: MediaQuery.of(context).size.height * .054,
                 width: Get.width,
-                decoration: const BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                    color: appColor),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(13),
-                    child: playerPropBets.appCommonText(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(
+                            MediaQuery.of(context).size.width * .020)),
+                    color: Theme.of(context).canvasColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    playerPropBets.appCommonText(
                         color: whiteColor,
                         align: TextAlign.start,
                         weight: FontWeight.w600,
                         size: Get.height * .018),
-                  ),
+                  ],
                 )),
             ListView.builder(
               shrinkWrap: true,
@@ -302,9 +331,11 @@ class SportDetailsScreen extends StatelessWidget {
                 return Column(
                   children: [
                     SizedBox(
-                      height: 62,
+                      height: MediaQuery.of(context).size.height * .062,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * .016),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -314,7 +345,12 @@ class SportDetailsScreen extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Image.asset(Assets.imagesPITT,
-                                      height: 40, width: 40),
+                                      width:
+                                          MediaQuery.of(context).size.height *
+                                              .040,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .040),
                                   5.W(),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -326,11 +362,17 @@ class SportDetailsScreen extends StatelessWidget {
                                           .appCommonText(
                                               color: greyColor,
                                               weight: FontWeight.w600,
-                                              size: 14),
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .014),
                                       'Baltimore Ravens'.appCommonText(
                                           color: greyColor,
                                           weight: FontWeight.w600,
-                                          size: 12),
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .012),
                                     ],
                                   ),
                                 ],
@@ -341,22 +383,26 @@ class SportDetailsScreen extends StatelessWidget {
                               child: '1.5+ rushing TD'.appCommonText(
                                   color: greyColor,
                                   weight: FontWeight.bold,
-                                  size: 16),
+                                  size: MediaQuery.of(context).size.height *
+                                      .016),
                             ),
                             Container(
-                              width: 76,
-                              height: 46,
+                              width: MediaQuery.of(context).size.width * .079,
+                              height: MediaQuery.of(context).size.height * .046,
                               decoration: BoxDecoration(
                                   color: boxColor,
                                   borderRadius: BorderRadius.circular(5)),
                               child: Center(
                                 child: '+320'.appCommonText(
                                     color: whiteColor,
-                                    size: 16,
+                                    size: MediaQuery.of(context).size.height *
+                                        .014,
                                     weight: FontWeight.w600),
                               ),
                             ),
-                            20.W(),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * .02,
+                            ),
                           ],
                         ),
                       ),
@@ -377,28 +423,36 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Padding teamReports() {
+  Padding teamReports(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * .02),
       child: Container(
-        height: 188,
+        height: MediaQuery.of(context).size.height * .2,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: whiteColor),
+            borderRadius: BorderRadius.circular(10),
+            color: Theme.of(context).canvasColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            tabTitleWidget(),
+            tabTitleWidget(context),
+            Container(
+              height: 1,
+              color: dividerColor,
+            ),
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * .01,
+                      vertical: MediaQuery.of(context).size.height * .008),
                   child: Row(
                     children: [
-                      teamName(Assets.imagesBAL, bALRavens, 46, 18),
-                      buildExpandedBoxWidget(upText: '-35'),
-                      buildExpandedBoxWidget(upText: '-140'),
-                      overUpper('o'),
+                      teamName(Assets.imagesBAL, bALRavens, Get.height * .048,
+                          Get.height * .018, context),
+                      buildExpandedBoxWidget(context, upText: '-35'),
+                      buildExpandedBoxWidget(context, upText: '-140'),
+                      overUpper('o', context),
                     ],
                   ),
                 ),
@@ -410,10 +464,11 @@ class SportDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      teamName(Assets.imagesPITT, pITTStreeles, 46, 18),
-                      buildExpandedBoxWidget(upText: '+35'),
-                      buildExpandedBoxWidget(upText: '+140'),
-                      overUpper('u'),
+                      teamName(Assets.imagesPITT, pITTStreeles,
+                          Get.height * .048, Get.height * .018, context),
+                      buildExpandedBoxWidget(context, upText: '+35'),
+                      buildExpandedBoxWidget(context, upText: '+140'),
+                      overUpper('u', context),
                     ],
                   ),
                 ),
@@ -425,7 +480,7 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Expanded overUpper(String text) {
+  Expanded overUpper(String text, BuildContext context) {
     return Expanded(
       flex: 1,
       child: Column(
@@ -433,10 +488,11 @@ class SportDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 76,
-            height: 46,
+            height: MediaQuery.of(context).size.height * .046,
+            width: MediaQuery.of(context).size.width * .09,
             decoration: BoxDecoration(
-                color: boxColor, borderRadius: BorderRadius.circular(5)),
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(5)),
             child: Center(
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -445,9 +501,13 @@ class SportDetailsScreen extends StatelessWidget {
               verticalDirection: VerticalDirection.up,
               children: [
                 text.appCommonText(
-                    color: whiteColor, size: 16, weight: FontWeight.w600),
+                    color: Theme.of(context).cardColor,
+                    size: MediaQuery.of(context).size.height * .016,
+                    weight: FontWeight.w600),
                 '47'.appCommonText(
-                    color: whiteColor, size: 16, weight: FontWeight.w600),
+                    color: Theme.of(context).cardColor,
+                    size: MediaQuery.of(context).size.height * .016,
+                    weight: FontWeight.w600),
               ],
             )),
           ),
@@ -456,33 +516,41 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  teamName(String assets, String title, double width, double size) {
+  teamName(String assets, String title, double width, double size,
+      BuildContext context) {
     return Expanded(
       flex: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * .008),
         child: Row(
           children: [
             Image.asset(assets, width: width, height: width),
-            10.W(),
-            title.appCommonText(
-                color: blackColor,
-                align: TextAlign.start,
-                weight: FontWeight.w700,
-                size: size),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * .01,
+            ),
+            Expanded(
+                child: Text(
+              title,
+              style: Theme.of(context).textTheme.labelLarge,
+              textAlign: TextAlign.start,
+            )),
           ],
         ),
       ),
     );
   }
 
-  teamNameWidget(String assets, String title, double width, double size) {
+  teamNameWidget(String assets, String title, double width, double size,
+      BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
           Image.asset(assets, width: width, height: width),
-          10.W(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .01,
+          ),
           title.appCommonText(
               color: blackColor,
               align: TextAlign.start,
@@ -493,7 +561,7 @@ class SportDetailsScreen extends StatelessWidget {
     );
   }
 
-  Expanded buildExpandedBoxWidget({String upText = ''}) {
+  Expanded buildExpandedBoxWidget(BuildContext context, {String upText = ''}) {
     return Expanded(
         flex: 1,
         child: Column(
@@ -501,27 +569,32 @@ class SportDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 76,
-              height: 46,
+              height: MediaQuery.of(context).size.height * .046,
+              width: MediaQuery.of(context).size.width * .09,
               decoration: BoxDecoration(
-                  color: boxColor, borderRadius: BorderRadius.circular(5)),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.height * .005)),
               child: Center(
                 child: upText.appCommonText(
-                    color: whiteColor, size: 16, weight: FontWeight.w600),
+                    color: Theme.of(context).cardColor,
+                    size: MediaQuery.of(context).size.height * .016,
+                    weight: FontWeight.w600),
               ),
             ),
           ],
         ));
   }
 
-  Container tabTitleWidget() {
+  Container tabTitleWidget(BuildContext context) {
     return Container(
-        height: 53,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-            color: appColor),
+        height: MediaQuery.of(context).size.height * .053,
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+            color: Theme.of(context).secondaryHeaderColor),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .010),
           child: Row(
             children: [
               Expanded(
@@ -557,18 +630,21 @@ class SportDetailsScreen extends StatelessWidget {
         ));
   }
 
-  Container headerWidget() {
+  Container headerWidget(BuildContext context) {
     return Container(
       width: Get.width,
-      height: 325,
+      height: MediaQuery.of(context).size.height * .345,
       decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage(Assets.imagesSportDetail), fit: BoxFit.fill)),
       child: Column(
         children: [
-          40.H(),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .04,
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * .02),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -577,7 +653,8 @@ class SportDetailsScreen extends StatelessWidget {
                     Get.back();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.height * .008),
                     child: SvgPicture.asset(
                       Assets.imagesBackArrow,
                       alignment: Alignment.centerLeft,
@@ -585,23 +662,41 @@ class SportDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 'BAL @ PIT'.appCommonText(
-                    weight: FontWeight.w700, size: 24, color: whiteColor),
+                    weight: FontWeight.w700,
+                    size: MediaQuery.of(context).size.height * .024,
+                    color: whiteColor),
                 '  '.appCommonText(),
               ],
             ),
           ),
-          40.H(),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .04,
+          ),
           Row(
             children: [
+              20.W(),
               Expanded(
                   child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Image.asset(Assets.imagesBAL),
-                  10.H(),
+                  Image.asset(
+                    Assets.imagesBAL,
+                    width: Get.height * .109,
+                    height: Get.height * .109,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .03,
+                  ),
                   'Baltimore Ravens'.appCommonText(
-                      weight: FontWeight.w700, size: 20, color: whiteColor),
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .02,
+                      color: whiteColor),
                   '7-6'.appCommonText(
-                      weight: FontWeight.w700, size: 14, color: whiteColor)
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .014,
+                      color: whiteColor)
                 ],
               )),
               Expanded(
@@ -610,27 +705,39 @@ class SportDetailsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: 20,
-                    width: 63,
+                    height: MediaQuery.of(context).size.height * .02,
+                    width: MediaQuery.of(context).size.width * .13,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .005),
                         color: whiteColor),
                     child: Center(
                       child: 'Ongoing'.appCommonText(
-                          color: blackColor, size: 12, weight: FontWeight.w400),
+                          color: blackColor,
+                          size: MediaQuery.of(context).size.height * .012,
+                          weight: FontWeight.w400),
                     ),
                   ),
                   '10 - 7'.appCommonText(
-                      color: whiteColor, size: 48, weight: FontWeight.w700),
+                      color: whiteColor,
+                      size: MediaQuery.of(context).size.height * .048,
+                      weight: FontWeight.w700),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .02,
+                  ),
                   '01:00 PM'.appCommonText(
-                      color: primaryColor, size: 14, weight: FontWeight.w600),
+                      color: primaryColor,
+                      size: MediaQuery.of(context).size.height * .014,
+                      weight: FontWeight.w600),
                   'Sat, Jun 10th 2023'.appCommonText(
-                      color: primaryColor, size: 14, weight: FontWeight.w600),
+                      color: primaryColor,
+                      size: MediaQuery.of(context).size.height * .014,
+                      weight: FontWeight.w600),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       '83'.appCommonText(
-                          size: 18,
+                          size: MediaQuery.of(context).size.height * .018,
                           color: primaryColor,
                           weight: FontWeight.w400),
                       ' °F'.appCommonText(
@@ -639,7 +746,7 @@ class SportDetailsScreen extends StatelessWidget {
                           color: primaryColor),
                       SvgPicture.asset(
                         Assets.imagesSun,
-                        width: Get.width * .068,
+                        width: Get.height * .068,
                         height: Get.height * .068,
                         fit: BoxFit.fill,
                       ),
@@ -650,14 +757,26 @@ class SportDetailsScreen extends StatelessWidget {
               Expanded(
                   child: Column(
                 children: [
-                  Image.asset(Assets.imagesPITT),
-                  10.H(),
+                  Image.asset(
+                    Assets.imagesPITT,
+                    width: Get.height * .109,
+                    height: Get.height * .109,
+                    fit: BoxFit.fill,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .03,
+                  ),
                   'Baltimore Ravens'.appCommonText(
-                      weight: FontWeight.w700, size: 20, color: whiteColor),
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .02,
+                      color: whiteColor),
                   '7-6'.appCommonText(
-                      weight: FontWeight.w700, size: 14, color: whiteColor)
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .014,
+                      color: whiteColor)
                 ],
-              ))
+              )),
+              20.W(),
             ],
           )
         ],
