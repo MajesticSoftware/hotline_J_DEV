@@ -10,7 +10,7 @@ import '../../controller/selecte_game_con.dart';
 import '../../generated/assets.dart';
 import '../../theme/theme.dart';
 import '../../utils/utils.dart';
-import '../sports/game_details_screen.dart';
+import '../sports/game_listing_screen.dart';
 
 // ignore: must_be_immutable
 class SelectSportScreen extends StatelessWidget {

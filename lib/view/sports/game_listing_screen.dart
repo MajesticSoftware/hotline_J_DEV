@@ -12,7 +12,7 @@ import '../../model/game_detail_model.dart';
 import '../../theme/helper.dart';
 import '../../theme/theme.dart';
 import '../../utils/app_progress.dart';
-import 'sport_details_screen.dart';
+import 'base_balls_screen.dart';
 
 // ignore: must_be_immutable
 class GameTeamScreen extends StatelessWidget {
