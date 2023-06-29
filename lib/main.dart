@@ -7,21 +7,23 @@ import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
+import 'controller/selecte_game_con.dart';
 import 'controller/sport_controller.dart';
 
 Future<void> main() async {
-  // await GetStorage.init();
-  runApp(const MyApp());
+  await GetStorage.init();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  bool isDarkMode = PreferenceManager.getIsDarkMode() ?? false;
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.system,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         initialBinding: BaseBindings(),
@@ -33,5 +35,6 @@ class BaseBindings extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => SportController(), fenix: true);
+    Get.lazyPut(() => SelectGameController(), fenix: true);
   }
 }

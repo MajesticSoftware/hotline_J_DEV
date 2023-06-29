@@ -4,13 +4,19 @@ class Assets {
 
   static const String assetsGamesReponse = 'assets/games_reponse.json';
   static const String assetsImagesBAL = 'assets/images/BAL.svg';
+  static const String assetsImagesFire = 'assets/images/fire.svg';
   static const String assetsImagesPITT = 'assets/images/PITT.svg';
   static const String hotlinesAssetsGamesReponse = 'assets/games_reponse.json';
   static const String imagesAUTO = 'assets/images/AUTO.png';
   static const String imagesBAL = 'assets/images/BAL.png';
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
+  static const String imagesBackDark = 'assets/images/backDark.png';
+  static const String imagesBackLight = 'assets/images/backLight.png';
   static const String imagesDotes = 'assets/images/dotes.svg';
+  static const String imagesFire = 'assets/images/fire.png';
+  static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
   static const String imagesMLB = 'assets/images/MLB.png';
+  static const String imagesMoon = 'assets/images/moon.svg';
   static const String imagesNBA = 'assets/images/NBA.png';
   static const String imagesNCAA = 'assets/images/NCAA.png';
   static const String imagesNFT = 'assets/images/NFT.png';
@@ -22,5 +28,12 @@ class Assets {
   static const String imagesSplashImage = 'assets/images/splash_image.svg';
   static const String imagesSportDetail = 'assets/images/sport_detail.png';
   static const String imagesSun = 'assets/images/sun.svg';
+  static const String imagesSun1 = 'assets/images/sun1.svg';
+  static const String imagesSun2 = 'assets/images/sun2.svg';
+  static const String imagesSun3 = 'assets/images/sun3.svg';
+  static const String imagesSun4 = 'assets/images/sun4.svg';
+  static const String imagesSunLight = 'assets/images/sunLight.svg';
+  static const String imagesThemeDark = 'assets/images/themeDark.svg';
+  static const String imagesThemeLight = 'assets/images/themeLight.svg';
   static const String imagesUFC = 'assets/images/UFC.png';
 }

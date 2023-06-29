@@ -1,6 +1,6 @@
 {
   "status": 200,
-  "time": "2023-06-27T04:22:54.072Z",
+  "time": "2023-06-28T07:04:17.221Z",
   "games": 14,
   "skip": 0,
   "results": [
@@ -43,7 +43,49 @@
         "neutralSite": false,
         "city": "Baltimore",
         "state": "MD"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 9.5,
+              "home": -9.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 9.5,
+              "home": -9.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 330,
+              "homeOdds": -440
+            },
+            "current": {
+              "awayOdds": 330,
+              "homeOdds": -440
+            }
+          },
+          "total": {
+            "open": {
+              "total": 44.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 44.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:07.045Z",
+          "lastUpdated": "2023-06-27T16:36:07.042Z"
+        }
+      ]
     },
     {
       "summary": "Arizona Cardinals @ Washington Commanders",
@@ -84,7 +126,49 @@
         "neutralSite": false,
         "city": "Landover",
         "state": "MD"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 6,
+              "home": -6,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 6,
+              "home": -6,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 210,
+              "homeOdds": -250
+            },
+            "current": {
+              "awayOdds": 210,
+              "homeOdds": -250
+            }
+          },
+          "total": {
+            "open": {
+              "total": 40,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 40,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:06.288Z",
+          "lastUpdated": "2023-06-27T16:36:06.287Z"
+        }
+      ]
     },
     {
       "summary": "San Francisco 49ers @ Pittsburgh Steelers",
@@ -125,7 +209,49 @@
         "neutralSite": false,
         "city": "Pittsburgh",
         "state": "PA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -2.5,
+              "home": 2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": -2.5,
+              "home": 2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -150,
+              "homeOdds": 130
+            },
+            "current": {
+              "awayOdds": -150,
+              "homeOdds": 130
+            }
+          },
+          "total": {
+            "open": {
+              "total": 41.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 41.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:07.815Z",
+          "lastUpdated": "2023-06-27T16:36:07.814Z"
+        }
+      ]
     },
     {
       "summary": "Tennessee Titans @ New Orleans Saints",
@@ -166,7 +292,49 @@
         "neutralSite": false,
         "city": "New Orleans",
         "state": "LA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 3.5,
+              "home": -3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 3.5,
+              "home": -3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 155,
+              "homeOdds": -180
+            },
+            "current": {
+              "awayOdds": 155,
+              "homeOdds": -180
+            }
+          },
+          "total": {
+            "open": {
+              "total": 41.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 41.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:08.296Z",
+          "lastUpdated": "2023-06-27T16:36:08.296Z"
+        }
+      ]
     },
     {
       "summary": "Tampa Bay Buccaneers @ Minnesota Vikings",
@@ -207,7 +375,49 @@
         "neutralSite": false,
         "city": "Minneapolis",
         "state": "MN"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 6.5,
+              "home": -6.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 6.5,
+              "home": -6.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 230,
+              "homeOdds": -280
+            },
+            "current": {
+              "awayOdds": 230,
+              "homeOdds": -280
+            }
+          },
+          "total": {
+            "open": {
+              "total": 45.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 45.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:08.059Z",
+          "lastUpdated": "2023-06-27T16:36:08.058Z"
+        }
+      ]
     },
     {
       "summary": "Jacksonville Jaguars @ Indianapolis Colts",
@@ -248,7 +458,49 @@
         "neutralSite": false,
         "city": "Indianapolis",
         "state": "IN"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -3.5,
+              "home": 3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": -3.5,
+              "home": 3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -180,
+              "homeOdds": 155
+            },
+            "current": {
+              "awayOdds": -180,
+              "homeOdds": 155
+            }
+          },
+          "total": {
+            "open": {
+              "total": 43.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 43.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:07.300Z",
+          "lastUpdated": "2023-06-27T16:36:07.298Z"
+        }
+      ]
     },
     {
       "summary": "Cincinnati Bengals @ Cleveland Browns",
@@ -289,7 +541,49 @@
         "neutralSite": false,
         "city": "Cleveland",
         "state": "OH"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -2.5,
+              "home": 2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": -2.5,
+              "home": 2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -140,
+              "homeOdds": 120
+            },
+            "current": {
+              "awayOdds": -140,
+              "homeOdds": 120
+            }
+          },
+          "total": {
+            "open": {
+              "total": 47,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 47,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:06.800Z",
+          "lastUpdated": "2023-06-27T16:36:06.799Z"
+        }
+      ]
     },
     {
       "summary": "Carolina Panthers @ Atlanta Falcons",
@@ -330,7 +624,49 @@
         "neutralSite": false,
         "city": "Atlanta",
         "state": "GA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 3,
+              "home": -3,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 3,
+              "home": -3,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 130,
+              "homeOdds": -150
+            },
+            "current": {
+              "awayOdds": 130,
+              "homeOdds": -150
+            }
+          },
+          "total": {
+            "open": {
+              "total": 43,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 43,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:06.540Z",
+          "lastUpdated": "2023-06-27T16:36:06.539Z"
+        }
+      ]
     },
     {
       "summary": "Los Angeles Rams @ Seattle Seahawks",
@@ -371,7 +707,49 @@
         "neutralSite": false,
         "city": "Seattle",
         "state": "WA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 6,
+              "home": -6,
+              "awayOdds": -115,
+              "homeOdds": -105
+            },
+            "current": {
+              "away": 6,
+              "home": -6,
+              "awayOdds": -115,
+              "homeOdds": -105
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 210,
+              "homeOdds": -250
+            },
+            "current": {
+              "awayOdds": 210,
+              "homeOdds": -250
+            }
+          },
+          "total": {
+            "open": {
+              "total": 46.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 46.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:08.760Z",
+          "lastUpdated": "2023-06-27T16:36:08.759Z"
+        }
+      ]
     },
     {
       "summary": "Miami Dolphins @ Los Angeles Chargers",
@@ -412,7 +790,49 @@
         "neutralSite": false,
         "city": "Inglewood",
         "state": "CA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 2.5,
+              "home": -2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 2.5,
+              "home": -2.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 120,
+              "homeOdds": -140
+            },
+            "current": {
+              "awayOdds": 120,
+              "homeOdds": -140
+            }
+          },
+          "total": {
+            "open": {
+              "total": 50,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 50,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:09.018Z",
+          "lastUpdated": "2023-06-27T16:36:09.017Z"
+        }
+      ]
     },
     {
       "summary": "Philadelphia Eagles @ New England Patriots",
@@ -453,7 +873,49 @@
         "neutralSite": false,
         "city": "Foxborough",
         "state": "MA"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -5,
+              "home": 5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": -5,
+              "home": 5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -220,
+              "homeOdds": 180
+            },
+            "current": {
+              "awayOdds": -220,
+              "homeOdds": 180
+            }
+          },
+          "total": {
+            "open": {
+              "total": 46,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 46,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:09.245Z",
+          "lastUpdated": "2023-06-27T16:36:09.245Z"
+        }
+      ]
     },
     {
       "summary": "Las Vegas Raiders @ Denver Broncos",
@@ -494,7 +956,49 @@
         "neutralSite": false,
         "city": "Denver",
         "state": "CO"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 3.5,
+              "home": -3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            },
+            "current": {
+              "away": 3.5,
+              "home": -3.5,
+              "awayOdds": -110,
+              "homeOdds": -110
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 155,
+              "homeOdds": -180
+            },
+            "current": {
+              "awayOdds": 155,
+              "homeOdds": -180
+            }
+          },
+          "total": {
+            "open": {
+              "total": 45,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 45,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:07.554Z",
+          "lastUpdated": "2023-06-27T16:36:07.553Z"
+        }
+      ]
     },
     {
       "summary": "Green Bay Packers @ Chicago Bears",
@@ -535,7 +1039,49 @@
         "neutralSite": false,
         "city": "Chicago",
         "state": "IL"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": 2.5,
+              "home": -2.5,
+              "awayOdds": -105,
+              "homeOdds": -115
+            },
+            "current": {
+              "away": 2.5,
+              "home": -2.5,
+              "awayOdds": -105,
+              "homeOdds": -115
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": 120,
+              "homeOdds": -140
+            },
+            "current": {
+              "awayOdds": 120,
+              "homeOdds": -140
+            }
+          },
+          "total": {
+            "open": {
+              "total": 44.5,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 44.5,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:08.522Z",
+          "lastUpdated": "2023-06-27T16:36:08.521Z"
+        }
+      ]
     },
     {
       "summary": "Dallas Cowboys @ New York Giants",
@@ -576,7 +1122,49 @@
         "neutralSite": false,
         "city": "East Rutherford",
         "state": "NJ"
-      }
+      },
+      "odds": [
+        {
+          "spread": {
+            "open": {
+              "away": -3,
+              "home": 3,
+              "awayOdds": -120,
+              "homeOdds": 100
+            },
+            "current": {
+              "away": -3,
+              "home": 3,
+              "awayOdds": -120,
+              "homeOdds": 100
+            }
+          },
+          "moneyline": {
+            "open": {
+              "awayOdds": -160,
+              "homeOdds": 135
+            },
+            "current": {
+              "awayOdds": -160,
+              "homeOdds": 135
+            }
+          },
+          "total": {
+            "open": {
+              "total": 47,
+              "overOdds": -110,
+              "underOdds": -110
+            },
+            "current": {
+              "total": 47,
+              "overOdds": -110,
+              "underOdds": -110
+            }
+          },
+          "openDate": "2023-06-27T16:36:09.480Z",
+          "lastUpdated": "2023-06-27T16:36:09.480Z"
+        }
+      ]
     }
   ]
 }

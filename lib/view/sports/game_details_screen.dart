@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/generated/assets.dart';
 import 'package:hotlines/utils/utils.dart';
-import 'package:hotlines/view/sports/sport_details_screen.dart';
 import 'package:intl/intl.dart';
 import '../../constant/constant.dart';
 import '../../controller/sport_controller.dart';
@@ -11,6 +12,7 @@ import '../../model/game_detail_model.dart';
 import '../../theme/helper.dart';
 import '../../theme/theme.dart';
 import '../../utils/app_progress.dart';
+import 'sport_details_screen.dart';
 
 // ignore: must_be_immutable
 class GameTeamScreen extends StatelessWidget {
@@ -18,6 +20,7 @@ class GameTeamScreen extends StatelessWidget {
   final String sportKey;
   final SportController sportController = Get.find();
   late ScrollController scrollController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +46,7 @@ class GameTeamScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: SvgPicture.asset(
                         Assets.imagesBackArrow,
+                        height: MediaQuery.of(context).size.height * .015,
                         alignment: Alignment.centerLeft,
                       ),
                     ),
@@ -86,10 +90,7 @@ class GameTeamScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           tabTitleWidget(context),
-                          Container(
-                            height: 1,
-                            color: dividerColor,
-                          ),
+                          commonDivider(context),
                           tableDetailWidget(context),
                         ],
                       ),
@@ -173,14 +174,16 @@ class GameTeamScreen extends StatelessWidget {
   }*/
 
   tableDetailWidget(BuildContext context) {
-    return Expanded(child: GetBuilder<SportController>(
+    return Expanded(
+        child: GetBuilder<SportController>(
+      initState: (state) {},
       builder: (controller) {
         return sportController.isLoading.value
             ? const SizedBox()
             : controller.gameDetails.isNotEmpty
                 ? ListView.builder(
                     // controller: scrollController,
-                    itemCount: controller.gameDetails[0].results?.length,
+                    itemCount: controller.gameDetails[0].results.length,
                     itemBuilder: (context, index) {
                       return SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -188,15 +191,13 @@ class GameTeamScreen extends StatelessWidget {
                           children: [
                             GestureDetector(
                                 onTap: () {
-                                  // Get.to(SportDetailsScreen());
+                                  Get.to(SportDetailsScreen());
                                 },
                                 child: teamWidget(
-                                    controller.gameDetails[0].results?[index],
-                                    context)),
-                            Container(
-                              height: 1,
-                              color: dividerColor,
-                            ),
+                                    controller.gameDetails[0].results[index],
+                                    context,
+                                    index: index)),
+                            commonDivider(context)
                           ],
                         ),
                       );
@@ -223,8 +224,7 @@ class GameTeamScreen extends StatelessWidget {
                               width: MediaQuery.of(context).size.width * .34,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: Theme.of(context)
-                                      .scaffoldBackgroundColor),
+                                  color: Theme.of(context).backgroundColor),
                               child: Center(
                                 child: backButton.appCommonText(
                                     color: whiteColor,
@@ -240,241 +240,210 @@ class GameTeamScreen extends StatelessWidget {
     ));
   }
 
-  Row teamWidget(Results? results, BuildContext context) {
-    String dateTime =
-        DateFormat.jm().format(DateTime.parse(results?.schedule?.date ?? ''));
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height * .02),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    commonCachedNetworkImage(
-                        width: Get.height * .048,
-                        height: Get.height * .048,
-                        imageUrl: ''),
-                    // 10.W(),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .01,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        (results?.teams?.away?.team ?? "").toString(),
-                        style: Theme.of(context).textTheme.labelLarge,
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                  ],
-                ),
-                5.H(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        '@',
-                        style: Theme.of(context).textTheme.labelSmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        height: 1,
-                        color: dividerColor,
-                      ),
-                    ),
-                  ],
-                ),
-                5.H(),
-                Row(
-                  children: [
-                    commonCachedNetworkImage(
-                        width: Get.height * .048,
-                        height: Get.height * .048,
-                        imageUrl: ''),
-                    // 10.W(),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .013,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        (results?.teams?.home?.team ?? "").toString(),
-                        style: Theme.of(context).textTheme.labelLarge,
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                dateTime,
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-              SvgPicture.asset(
-                Assets.imagesSun,
-                width: MediaQuery.of(context).size.width * .068,
-                height: MediaQuery.of(context).size.height * .068,
-                fit: BoxFit.fill,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                textBaseline: TextBaseline.alphabetic,
-                verticalDirection: VerticalDirection.up,
+  teamWidget(Result? results, BuildContext context, {int index = 0}) {
+    String date = DateFormat.MMMd()
+        .format(results?.schedule.date.toLocal() ?? DateTime.now().toLocal());
+
+    String dateTime = DateFormat.jm()
+        .format(results?.schedule.date.toLocal() ?? DateTime.now().toLocal());
+    try {
+      return Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height * .02),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    ' 83',
-                    style: Theme.of(context).textTheme.displayMedium,
+                  Row(
+                    children: [
+                      commonCachedNetworkImage(
+                          width: Get.height * .048,
+                          height: Get.height * .048,
+                          imageUrl: ''),
+                      // 10.W(),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .01,
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          (results?.teams.away.team ?? "").toString(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '°F',
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  5.H(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          '@',
+                          style: Theme.of(context).textTheme.labelSmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(flex: 4, child: commonDivider(context)),
+                    ],
+                  ),
+                  5.H(),
+                  Row(
+                    children: [
+                      commonCachedNetworkImage(
+                          width: Get.height * .048,
+                          height: Get.height * .048,
+                          imageUrl: ''),
+                      // 10.W(),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .013,
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          (results?.teams.home.team ?? "").toString(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
-        buildExpandedBoxWidget(context,
-            bottomText: /* results.odds.isNotEmpty
-                ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
-                    .toString()
-                :*/
-                '00',
-            upText: /* results.odds.isNotEmpty
-                ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
-                :*/
-                '00'),
-        buildExpandedBoxWidget(context,
-            bottomText: /*results.odds.isNotEmpty
-                ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
-                    .toString()
-                :*/
-                "00",
-            upText: /*results.odds.isNotEmpty
-                ? ('${results.odds[0].moneyline.current.awayOdds.toString().contains('-') ? results.odds[0].moneyline.current.awayOdds : '+${results.odds[0].moneyline.current.awayOdds}'}')
-                    .toString()
-                : */
-                '00'),
-        Expanded(
+          Expanded(
             flex: 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * .046,
-                  width: MediaQuery.of(context).size.width * .09,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(
-                          MediaQuery.of(context).size.width * .008)),
-                  child: Center(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    textBaseline: TextBaseline.alphabetic,
-                    verticalDirection: VerticalDirection.up,
-                    children: [
-                      Text('o', style: Theme.of(context).textTheme.bodySmall),
-                      Text(
-                          (/*results.odds.isNotEmpty
-                              ? results.odds[0].total.current.total
-                              :*/
-                              '00'),
-                          style: Theme.of(context).textTheme.bodySmall),
-                    ],
-                  )),
+                Text(
+                  '$date, $dateTime',
+                  style: Theme.of(context).textTheme.displaySmall,
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * .045,
+                  height: MediaQuery.of(context).size.height * .004,
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * .046,
-                  width: MediaQuery.of(context).size.width * .09,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(
-                          MediaQuery.of(context).size.width * .008)),
-                  child: Center(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    textBaseline: TextBaseline.alphabetic,
-                    verticalDirection: VerticalDirection.up,
-                    children: [
-                      Text('u', style: Theme.of(context).textTheme.bodySmall),
-                      Text(
-                          (/*results.odds.isNotEmpty
-                              ? results.odds[0].total.current.total
-                              :*/
-                              '00'),
-                          style: Theme.of(context).textTheme.bodySmall),
-                    ],
-                  )),
+                getWeatherIcon(results?.venue.weather ?? 0, context),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  textBaseline: TextBaseline.alphabetic,
+                  verticalDirection: VerticalDirection.up,
+                  children: [
+                    Text(
+                      '${results?.venue.tmpInFahrenheit}',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    Text(
+                      '°F',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ],
                 )
               ],
-            )),
-      ],
-    );
-  }
-
-  Expanded buildExpandedBoxWidget(BuildContext context,
-      {String upText = '', String bottomText = ''}) {
-    return Expanded(
-        flex: 1,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * .046,
-              width: MediaQuery.of(context).size.width * .09,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(
-                      MediaQuery.of(context).size.width * .008)),
-              child: Center(
-                child:
-                    Text(upText, style: Theme.of(context).textTheme.bodySmall),
-              ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .045,
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * .046,
-              width: MediaQuery.of(context).size.width * .09,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(
-                      MediaQuery.of(context).size.width * .008)),
-              child: Center(
-                child: Text(bottomText,
-                    style: Theme.of(context).textTheme.bodySmall),
-              ),
-            )
-          ],
-        ));
+          ),
+          buildExpandedBoxWidget(context,
+              bottomText: results != null
+                  ? results.odds.isNotEmpty
+                      ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
+                          .toString()
+                      : '00'
+                  : '',
+              upText: results != null
+                  ? results.odds.isNotEmpty
+                      ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
+                      : '00'
+                  : ''),
+          buildExpandedBoxWidget(context,
+              bottomText: results != null
+                  ? results.odds.isNotEmpty
+                      ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
+                          .toString()
+                      : "00"
+                  : '',
+              upText: results != null
+                  ? results.odds.isNotEmpty
+                      ? ('${results.odds[0].moneyline.current.awayOdds.toString().contains('-') ? results.odds[0].moneyline.current.awayOdds : '+${results.odds[0].moneyline.current.awayOdds}'}')
+                          .toString()
+                      : '00'
+                  : ""),
+          Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * .046,
+                    width: MediaQuery.of(context).size.width * .09,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .008)),
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      textBaseline: TextBaseline.alphabetic,
+                      verticalDirection: VerticalDirection.up,
+                      children: [
+                        Text('o', style: Theme.of(context).textTheme.bodySmall),
+                        Text(
+                            (results != null
+                                    ? results.odds.isNotEmpty
+                                        ? results.odds[0].total.current.total
+                                        : '00'
+                                    : "")
+                                .toString(),
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    )),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .045,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .046,
+                    width: MediaQuery.of(context).size.width * .09,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .008)),
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      textBaseline: TextBaseline.alphabetic,
+                      verticalDirection: VerticalDirection.up,
+                      children: [
+                        Text('u', style: Theme.of(context).textTheme.bodySmall),
+                        Text(
+                            (results != null
+                                    ? results.odds.isNotEmpty
+                                        ? results.odds[0].total.current.total
+                                        : '00'
+                                    : "")
+                                .toString(),
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    )),
+                  )
+                ],
+              )),
+        ],
+      );
+    } catch (e) {
+      return const SizedBox();
+    }
   }
 
   Container tabTitleWidget(BuildContext context) {

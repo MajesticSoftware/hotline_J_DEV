@@ -14,6 +14,11 @@ class AppTheme {
       primaryColor: boxColor,
       canvasColor: whiteColor,
       cardColor: whiteColor,
+      disabledColor: appColor,
+      backgroundColor: appColor,
+      highlightColor: blackColor,
+      hoverColor: successColor,
+      dialogBackgroundColor: filterColor,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.nunitoSans(
             color: appColor, fontWeight: FontWeight.w500, fontSize: 16),
@@ -45,7 +50,11 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           fontSize: Get.height * .03,
         ),
-
+        displaySmall: GoogleFonts.nunitoSans(
+          color: greyColor,
+          fontWeight: FontWeight.w600,
+          fontSize: Get.height * .01,
+        ),
         headlineSmall: GoogleFonts.nunitoSans(
           color: blackColor,
           fontWeight: FontWeight.w600,
@@ -112,7 +121,11 @@ class AppTheme {
       scaffoldBackgroundColor: darkScaffoldColor,
       primaryColor: whiteColor,
       cardColor: blackColor,
+      backgroundColor: blackColor,
+      disabledColor: whiteColor,
       canvasColor: darkBackGroundColor,
+      highlightColor: whiteColor,
+      hoverColor: darkBackGroundColor,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.nunitoSans(
             color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
@@ -151,6 +164,11 @@ class AppTheme {
           color: whiteColor,
           fontWeight: FontWeight.w600,
           fontSize: Get.height * .03,
+        ),
+        displaySmall: GoogleFonts.nunitoSans(
+          color: whiteColor,
+          fontWeight: FontWeight.w600,
+          fontSize: Get.height * .01,
         ),
         headlineSmall: GoogleFonts.nunitoSans(
           color: whiteColor,
