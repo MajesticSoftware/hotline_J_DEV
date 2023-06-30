@@ -12,6 +12,7 @@ class Assets {
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
   static const String imagesBackDark = 'assets/images/backDark.png';
   static const String imagesBackLight = 'assets/images/backLight.png';
+  static const String imagesCommingSoon = 'assets/images/commingSoon.svg';
   static const String imagesDotes = 'assets/images/dotes.svg';
   static const String imagesFire = 'assets/images/fire.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';

@@ -132,15 +132,14 @@ class Result {
         "lastUpdated": lastUpdated.toIso8601String(),
         "gameId": gameId,
         "venue": venue.toJson(),
-        "odds": odds != null
-            ? List<dynamic>.from(odds!.map((x) => x.toJson()))
-            : [],
+        "odds":
+            odds != null ? List<dynamic>.from(odds.map((x) => x.toJson())) : [],
       };
 }
 
 class Details {
-  League league;
-  SeasonType seasonType;
+  League? league;
+  SeasonType? seasonType;
   int season;
   bool conferenceGame;
   bool divisionGame;
@@ -173,8 +172,8 @@ class Details {
   String toRawJson() => json.encode(toJson());
 
   factory Details.fromJson(Map<String, dynamic> json) => Details(
-        league: leagueValues.map[json["league"]]!,
-        seasonType: seasonTypeValues.map[json["seasonType"]]!,
+        league: leagueValues.map[json["league"] ?? ""],
+        seasonType: seasonTypeValues.map[json["seasonType"] ?? ""],
         season: json["season"],
         conferenceGame: json["conferenceGame"],
         divisionGame: json["divisionGame"],
@@ -545,8 +544,8 @@ class Away {
   String location;
   String mascot;
   String abbreviation;
-  Conference conference;
-  Division division;
+  Conference? conference;
+  Division? division;
 
   Away({
     required this.team,
@@ -583,8 +582,8 @@ class Away {
         location: json["location"],
         mascot: json["mascot"],
         abbreviation: json["abbreviation"],
-        conference: conferenceValues.map[json["conference"]]!,
-        division: divisionValues.map[json["division"]]!,
+        conference: conferenceValues.map[json["conference"] ?? ''],
+        division: divisionValues.map[json["division"] ?? ''],
       );
 
   Map<String, dynamic> toJson() => {
@@ -615,12 +614,12 @@ class Venue {
   String name;
   bool neutralSite;
   String city;
-  String state;
+  String? state;
   int temp;
   int weather;
 
   int get tmpInFahrenheit {
-    return temp == 0 ? 0 : ((temp - 273.15) * (9 ~/ 5) + 32).toInt();
+    return temp == 0 ? 0 : ((temp - 273.15) * (9 / 5) + 32).toInt();
   }
 
   Venue({
@@ -653,7 +652,7 @@ class Venue {
         name: json["name"],
         neutralSite: json["neutralSite"],
         city: json["city"],
-        state: json["state"],
+        state: json["state"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

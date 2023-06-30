@@ -12,11 +12,11 @@ import '../model/weather_model.dart';
 import '../theme/helper.dart';
 
 class SportController extends GetxController {
-  List<GameDetailsModel> _gameDetails = [];
+  List<Result> _gameDetails = [];
 
-  List<GameDetailsModel> get gameDetails => _gameDetails;
+  List<Result> get gameDetails => _gameDetails;
 
-  set gameDetails(List<GameDetailsModel> value) {
+  set gameDetails(List<Result> value) {
     _gameDetails = value;
     update();
   }
@@ -32,14 +32,16 @@ class SportController extends GetxController {
       if (result.status) {
         GameDetailsModel response = GameDetailsModel.fromJson(result.data);
         gameDetails.clear();
-        gameDetails.add(response);
+        if (response.results.isNotEmpty) {
+          gameDetails = response.results;
+        }
         if (gameDetails.isNotEmpty) {
-          for (int i = 0; i < gameDetails.first.results.length; i++) {
-            log('element.venue.city--${gameDetails.first.results[i].venue.city}');
+          for (int i = 0; i < gameDetails.length; i++) {
+            log('element.venue.city--${gameDetails[i].venue.city}');
             // ignore: use_build_context_synchronously
             weatherDetailsResponse(context,
-                cityName: gameDetails.first.results[i].venue.city.isNotEmpty
-                    ? gameDetails.first.results[i].venue.city
+                cityName: gameDetails[i].venue.city.isNotEmpty
+                    ? gameDetails[i].venue.city
                     : 'california',
                 index: i);
             // element.venue.weather = weather["temp"];
@@ -59,24 +61,27 @@ class SportController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  void gameDetailsResponse(BuildContext context, {String sportKey = ''}) async {
+  void gameDetailsResponse(BuildContext context,
+      {String sportKey = '', String date = ""}) async {
     isLoading.value = true;
     gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().gameDetails(sportKey, '2023-09-07,2023-09-24');
+    result = await GameRepo().gameDetails(sportKey, date);
     try {
       if (result.status) {
         GameDetailsModel response = GameDetailsModel.fromJson(result.data);
         gameDetails.clear();
-        gameDetails.add(response);
+        if (response.results.isNotEmpty) {
+          gameDetails = response.results;
+        }
         if (gameDetails.isNotEmpty) {
-          for (int i = 0; i < gameDetails.first.results.length; i++) {
-            log('element.venue.city--${gameDetails.first.results[i].venue.city}');
+          for (int i = 0; i < gameDetails.length; i++) {
+            log('element.venue.city--${gameDetails[i].venue.city}');
             // ignore: use_build_context_synchronously
             weatherDetailsResponse(context,
-                cityName: gameDetails.first.results[i].venue.city.isNotEmpty
-                    ? gameDetails.first.results[i].venue.city
+                cityName: gameDetails[i].venue.city.isNotEmpty
+                    ? gameDetails[i].venue.city
                     : 'california',
                 index: i);
             // element.venue.weather = weather["temp"];
@@ -98,24 +103,6 @@ class SportController extends GetxController {
     update();
   }
 
-  List<int> _weatherData = [];
-
-  List<int> get weatherData => _weatherData;
-
-  set weatherData(List<int> value) {
-    _weatherData = value;
-    update();
-  }
-
-  List<int> _temp = [];
-
-  List<int> get temp => _weatherData;
-
-  set temp(List<int> value) {
-    _weatherData = value;
-    update();
-  }
-
   weatherDetailsResponse(BuildContext context,
       {String cityName = '', required int index}) async {
     Map<String, dynamic> weatherData = {"temp": 0, "weather": 0};
@@ -129,14 +116,12 @@ class SportController extends GetxController {
         final weather = response.weather;
         if (weather != null) {
           for (var element in weather) {
-            gameDetails.first.results[index].venue.weather =
-                (element.id ?? 0.0).toInt();
+            gameDetails[index].venue.weather = (element.id ?? 0.0).toInt();
           }
         }
         final tempData = response.main;
         if (tempData != null) {
-          gameDetails.first.results[index].venue.temp =
-              (tempData.temp ?? 0.0).toInt();
+          gameDetails[index].venue.temp = (tempData.temp ?? 0.0).toInt();
         }
       } else {
         // ignore: use_build_context_synchronously

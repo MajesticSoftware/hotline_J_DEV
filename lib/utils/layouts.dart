@@ -2,84 +2,91 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:shimmer/shimmer.dart';
 
-import '../constant/shred_preference.dart';
 import '../controller/selecte_game_con.dart';
 import '../generated/assets.dart';
 import '../theme/app_color.dart';
 
-commonImageWidget(String image, {void Function()? onTap}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Image.asset(
-        image,
-        width: Get.width * .29,
-        fit: BoxFit.contain,
+commonImageWidget(String image, BuildContext context,
+    {void Function()? onTap, bool isComingSoon = false}) {
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * .01),
+          child: isComingSoon
+              ? Image.asset(
+                  image,
+                  width: Get.width * .29,
+                  fit: BoxFit.contain,
+                )
+              : ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context)
+                          .scaffoldBackgroundColor
+                          .withOpacity(0.5),
+                      BlendMode.dstATop),
+                  child: Image.asset(
+                    image,
+                    width: Get.width * .29,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+        ),
       ),
-    ),
+      isComingSoon
+          ? const SizedBox()
+          : SvgPicture.asset(
+              Assets.imagesCommingSoon,
+              width: Get.width * .2,
+              fit: BoxFit.contain,
+            ),
+    ],
   );
 }
 
-SvgPicture getWeatherIcon(int condition, BuildContext context) {
-  if (condition < 300) {
-    return SvgPicture.asset(
-      Assets.imagesSun3,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
+getWeatherIcon(int condition, BuildContext context, double height) {
+  if (condition == 0) {
+    return Shimmer.fromColors(
+      baseColor: greyColor.withOpacity(0.3),
+      highlightColor: greyColor.withOpacity(0.2),
+      enabled: true,
+      child: svgPicture(context, Assets.imagesSun1, height),
     );
+  } else if (condition < 300) {
+    return svgPicture(context, Assets.imagesSun3, height);
   } else if (condition < 400) {
-    return SvgPicture.asset(
-      Assets.imagesSun3,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun3, height);
   } else if (condition < 600) {
-    return SvgPicture.asset(
-      Assets.imagesSun2,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun2, height);
   } else if (condition < 700) {
-    return SvgPicture.asset(
-      Assets.imagesSun1,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun1, height);
   } else if (condition < 800) {
-    return SvgPicture.asset(
-      Assets.imagesSun1,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun1, height);
   } else if (condition == 800) {
-    return SvgPicture.asset(
-      Assets.imagesSun,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun, height);
   } else if (condition <= 804) {
-    return SvgPicture.asset(
-      Assets.imagesSun4,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .02),
+      child: svgPicture(context, Assets.imagesSun4, height),
     );
   } else {
-    return SvgPicture.asset(
-      Assets.imagesSun,
-      width: MediaQuery.of(context).size.width * .068,
-      height: MediaQuery.of(context).size.height * .068,
-      fit: BoxFit.contain,
-    );
+    return svgPicture(context, Assets.imagesSun, height);
   }
+}
+
+SvgPicture svgPicture(BuildContext context, String image, double height) {
+  return SvgPicture.asset(
+    image,
+    width: height,
+    height: height,
+    fit: BoxFit.contain,
+  );
 }
 
 Expanded buildExpandedBoxWidget(BuildContext context,
@@ -91,7 +98,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * .046,
+            height: MediaQuery.of(context).size.height * .04,
             width: MediaQuery.of(context).size.width * .09,
             decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -102,10 +109,10 @@ Expanded buildExpandedBoxWidget(BuildContext context,
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * .045,
+            height: MediaQuery.of(context).size.height * .02,
           ),
           Container(
-            height: MediaQuery.of(context).size.height * .046,
+            height: MediaQuery.of(context).size.height * .04,
             width: MediaQuery.of(context).size.width * .09,
             decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -122,7 +129,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
 
 Container commonBoxWidget(BuildContext context, {String title = ''}) {
   return Container(
-    height: MediaQuery.of(context).size.height * .036,
+    height: MediaQuery.of(context).size.height * .032,
     width: MediaQuery.of(context).size.width * .09,
     decoration: BoxDecoration(
         color: whiteColor,
@@ -143,7 +150,7 @@ bool isDark = false;
 Container commonDivider(BuildContext context) {
   return Container(
     height: isDark || selectGameController.isDarkMode
-        ? MediaQuery.of(context).size.height * .00016
+        ? MediaQuery.of(context).size.height * .00018
         : MediaQuery.of(context).size.height * .001,
     color: backGroundColor,
   );

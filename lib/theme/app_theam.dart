@@ -37,7 +37,7 @@ class AppTheme {
         labelLarge: GoogleFonts.nunitoSans(
           color: blackColor,
           fontWeight: FontWeight.w700,
-          fontSize: Get.height * .018,
+          fontSize: Get.height * .016,
         ),
 
         labelSmall: GoogleFonts.nunitoSans(
@@ -146,7 +146,7 @@ class AppTheme {
         labelLarge: GoogleFonts.nunitoSans(
           color: whiteColor,
           fontWeight: FontWeight.w700,
-          fontSize: Get.height * .018,
+          fontSize: Get.height * .016,
         ),
         labelMedium: GoogleFonts.nunitoSans(
           color: whiteColor,

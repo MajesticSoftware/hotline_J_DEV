@@ -32,17 +32,18 @@ extension AddText on String {
       double size = 20,
       TextAlign align = TextAlign.center,
       FontWeight weight = FontWeight.w500,
-      TextDecoration? decoration}) {
+      TextDecoration? decoration,
+      int? maxLine}) {
     return Text(
       this,
       style: GoogleFonts.nunitoSans(
           fontSize: size,
           color: color,
-
           // color: isDarkMode ? Colors.white : color,
           fontWeight: weight,
           decoration: decoration),
       textAlign: align,
+      maxLines: maxLine,
     );
   }
 

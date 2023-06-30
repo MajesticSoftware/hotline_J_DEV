@@ -52,13 +52,13 @@ SizedBox commonCachedNetworkImage(
                   ),
                 ),
             placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.grey.withOpacity(0.4),
-                  highlightColor: Colors.grey.withOpacity(0.2),
+                  baseColor: greyColor.withOpacity(0.3),
+                  highlightColor: greyColor.withOpacity(0.2),
                   enabled: true,
                   child: Container(
                     height: height,
                     width: width,
-                    color: primaryColor.withOpacity(0.5),
+                    color: dividerColor.withOpacity(0.5),
                   ),
                 ),
             errorWidget: (context, url, error) => ClipRRect(
@@ -66,7 +66,7 @@ SizedBox commonCachedNetworkImage(
                   child: Container(
                     height: height,
                     width: width,
-                    color: primaryColor,
+                    color: dividerColor.withOpacity(0.6),
                   ),
                 ))),
   );
