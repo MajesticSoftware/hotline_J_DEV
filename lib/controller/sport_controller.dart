@@ -61,13 +61,13 @@ class SportController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  void gameDetailsResponse(BuildContext context,
+  void gameListingsResponse(BuildContext context,
       {String sportKey = '', String date = ""}) async {
     isLoading.value = true;
     gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().gameDetails(sportKey, date);
+    result = await GameRepo().gameListings(sportKey, date);
     try {
       if (result.status) {
         GameDetailsModel response = GameDetailsModel.fromJson(result.data);

@@ -28,7 +28,7 @@ class BaseApiHelper {
       Uri requestUrl, Map<String, String> headers) async {
     printData(tittle: "request", val: requestUrl);
     return await http
-        .get(requestUrl, headers: requestHeader())
+        .get(requestUrl, headers: headers)
         .then((response) => baseOnValue(response))
         .onError((error, stackTrace) => onError(error, requestUrl));
   }
@@ -139,11 +139,12 @@ class BaseApiHelper {
 
   static Future baseOnValue(http.Response response) async {
     ResponseItem result;
-
-    final Map<String, dynamic> responseData = json.decode(response.body);
+    log('response.body---${response.body.toString()}');
+    var responseData = jsonDecode(response.body.toString());
+    log('responseData---${responseData.runtimeType}');
     bool status = false;
     String message;
-    dynamic data = responseData;
+    var data = responseData;
 
     printData(tittle: "responseCode:", val: response.statusCode.toString());
     if (response.statusCode == 200) {

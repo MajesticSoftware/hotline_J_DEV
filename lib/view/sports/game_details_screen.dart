@@ -8,9 +8,11 @@ import 'package:intl/intl.dart';
 
 import '../../constant/constant.dart';
 import '../../constant/shred_preference.dart';
+import '../../controller/game_details_controller.dart';
 import '../../controller/selecte_game_con.dart';
 import '../../model/game_detail_model.dart';
 import '../../theme/helper.dart';
+import '../../utils/app_progress.dart';
 import '../../utils/layouts.dart';
 
 // ignore: must_be_immutable
@@ -27,6 +29,15 @@ class SportDetailsScreen extends StatefulWidget {
 
 class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final SelectGameController selectGameController = Get.find();
+  final GameDetailsController gameDetailsController = Get.find();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    gameDetailsController.injuriesReportAwayResponse(context,
+        teamAwayName: widget.gameDetails.teams.away.abbreviation,
+        teamHomeName: widget.gameDetails.teams.home.abbreviation);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +45,29 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          Expanded(
-              child: SingleChildScrollView(
-            child: Column(
-              children: [
-                headerWidget(context),
-                playerPropBetsWidget(context),
-                teamReportWidget(context),
-                injuryReportWidget(context),
-                40.H(),
-              ],
-            ),
-          ))
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    headerWidget(context),
+                    playerPropBetsWidget(context),
+                    teamReportWidget(context),
+                    injuryReportWidget(context),
+                    40.H(),
+                  ],
+                ),
+              ))
+            ],
+          ),
+          Obx(() => gameDetailsController.isLoading.value
+              ? const AppProgress()
+              : const SizedBox())
         ],
       ),
     );
@@ -285,72 +303,240 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     );
   }
 
-  Padding injuryReportWidget(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.height * .02),
-      child: Container(
-        // height: MediaQuery.of(context).size.height * .12,
-        decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.circular(MediaQuery.of(context).size.width * .01),
-            color: Theme.of(context).canvasColor),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            headerTitleWidget(context, injuryReport),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: injuryList.length,
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * .038,
-                      child: Row(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: '${injuryList[index]}'
-                                .toString()
-                                .appCommonText(
+  injuryReportWidget(BuildContext context) {
+    try {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.height * .02),
+        child: Container(
+          // height: MediaQuery.of(context).size.height * .12,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  MediaQuery.of(context).size.width * .01),
+              color: Theme.of(context).canvasColor),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerTitleWidget(context, injuryReport),
+              GetBuilder<GameDetailsController>(builder: (controller) {
+                return controller.isLoading.value
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * .1,
+                      )
+                    : controller.injuredAwayPlayerList.isEmpty &&
+                            controller.injuredHomePlayerList.isEmpty
+                        ? SizedBox(
+                            height: MediaQuery.of(context).size.height * .1,
+                            child: Center(
+                              child: 'No Data'.appCommonText(
                                   color: Theme.of(context).highlightColor,
                                   weight: FontWeight.w700,
-                                  align: TextAlign.end,
-                                  size:
-                                      MediaQuery.of(context).size.height * .016,
-                                ),
-                          ),
-                          const Expanded(flex: 1, child: SizedBox()),
-                          Expanded(
-                            flex: 1,
-                            child: '${injuryList1[index]}'
-                                .toString()
-                                .appCommonText(
-                                    color: Theme.of(context).highlightColor,
-                                    weight: FontWeight.w700,
-                                    align: TextAlign.start,
-                                    size: MediaQuery.of(context).size.height *
-                                        .016),
-                          ),
-                        ],
-                      ),
-                    ),
-                    index == injuryList.length - 1
-                        ? const SizedBox()
-                        : commonDivider(context),
-                  ],
-                );
-              },
-            ),
-          ],
+                                  align: TextAlign.start,
+                                  size: MediaQuery.of(context).size.height *
+                                      .016),
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              controller.injuredAwayPlayerList.isNotEmpty
+                                  ? Expanded(
+                                      flex: 1,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: controller
+                                                    .injuredAwayPlayerList
+                                                    .length >=
+                                                controller.injuredHomePlayerList
+                                                    .length
+                                            ? controller
+                                                .injuredAwayPlayerList.length
+                                            : controller
+                                                .injuredHomePlayerList.length,
+                                        padding: EdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .038,
+                                                  child: controller
+                                                      .injuredAwayPlayerList[
+                                                          index]
+                                                      .shortName
+                                                      .toString()
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          weight:
+                                                              FontWeight.w700,
+                                                          align:
+                                                              TextAlign.start,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .016),
+                                                ),
+                                                index ==
+                                                        (controller
+                                                                        .injuredAwayPlayerList
+                                                                        .length >=
+                                                                    controller
+                                                                        .injuredHomePlayerList
+                                                                        .length
+                                                                ? controller
+                                                                    .injuredAwayPlayerList
+                                                                    .length
+                                                                : controller
+                                                                    .injuredHomePlayerList
+                                                                    .length) -
+                                                            1
+                                                    ? const SizedBox()
+                                                    : commonDivider(context),
+                                              ],
+                                            );
+                                          } catch (e) {
+                                            return commonCatchWidget(
+                                                context, index, controller);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : commonEmptyInjuryReportWidget(controller),
+                              commonEmptyInjuryReportWidget(controller),
+                              controller.injuredHomePlayerList.isNotEmpty
+                                  ? Expanded(
+                                      flex: 1,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: controller
+                                                    .injuredHomePlayerList
+                                                    .length >=
+                                                controller.injuredAwayPlayerList
+                                                    .length
+                                            ? controller
+                                                .injuredHomePlayerList.length
+                                            : controller
+                                                .injuredAwayPlayerList.length,
+                                        padding: EdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .038,
+                                                  child: controller
+                                                      .injuredHomePlayerList[
+                                                          index]
+                                                      .shortName
+                                                      .toString()
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          weight:
+                                                              FontWeight.w700,
+                                                          align:
+                                                              TextAlign.start,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .016),
+                                                ),
+                                                index ==
+                                                        (controller
+                                                                        .injuredAwayPlayerList
+                                                                        .length >=
+                                                                    controller
+                                                                        .injuredHomePlayerList
+                                                                        .length
+                                                                ? controller
+                                                                    .injuredAwayPlayerList
+                                                                    .length
+                                                                : controller
+                                                                    .injuredHomePlayerList
+                                                                    .length) -
+                                                            1
+                                                    ? const SizedBox()
+                                                    : commonDivider(context),
+                                              ],
+                                            );
+                                          } catch (e) {
+                                            return commonCatchWidget(
+                                                context, index, controller);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : commonEmptyInjuryReportWidget(controller),
+                            ],
+                          );
+              }),
+            ],
+          ),
         ),
+      );
+    } catch (e) {
+      return SizedBox();
+    }
+  }
+
+  Expanded commonEmptyInjuryReportWidget(GameDetailsController controller) {
+    return Expanded(
+      flex: 1,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.injuredAwayPlayerList.length >=
+                controller.injuredHomePlayerList.length
+            ? controller.injuredAwayPlayerList.length
+            : controller.injuredHomePlayerList.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          return commonCatchWidget(context, index, controller);
+        },
       ),
+    );
+  }
+
+  Column commonCatchWidget(
+      BuildContext context, int index, GameDetailsController controller) {
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.width * .038,
+        ),
+        index ==
+                (controller.injuredAwayPlayerList.length >=
+                            controller.injuredHomePlayerList.length
+                        ? controller.injuredAwayPlayerList.length
+                        : controller.injuredHomePlayerList.length) -
+                    1
+            ? const SizedBox()
+            : commonDivider(context),
+      ],
     );
   }
 
@@ -690,11 +876,13 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 .split(',')
                 .first;
             if (date == '1') {
-              date = '1st';
-            } else if (date == '2') {
-              date = '2nd';
-            } else if (date == '3') {
-              date = '3rd';
+              date = '${date}th';
+            } else if (date.endsWith('1') && !date.startsWith('1')) {
+              date = '${date}st';
+            } else if (date.endsWith('2') && !date.startsWith('1')) {
+              date = '${date}nd';
+            } else if (date.endsWith('3') && !date.startsWith('1')) {
+              date = '${date}rd';
             } else {
               date = '${date}th';
             }

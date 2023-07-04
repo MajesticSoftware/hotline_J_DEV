@@ -72,7 +72,7 @@ class GameListingScreen extends StatelessWidget {
       body: Stack(
         children: [
           GetBuilder<SportController>(initState: (state) {
-            sportController.gameDetailsResponse(context,
+            sportController.gameListingsResponse(context,
                 sportKey: sportKey, date: date);
             // sportController.getSportDataFromJson(context);
           }, builder: (controller) {
