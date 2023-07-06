@@ -20,8 +20,10 @@ class SportDetailsScreen extends StatefulWidget {
   const SportDetailsScreen({
     Key? key,
     required this.gameDetails,
+    required this.sportKey,
   }) : super(key: key);
   final Result gameDetails;
+  final String sportKey;
 
   @override
   State<SportDetailsScreen> createState() => _SportDetailsScreenState();
@@ -34,9 +36,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    gameDetailsController.injuriesReportAwayResponse(context,
-        teamAwayName: widget.gameDetails.teams.away.abbreviation,
-        teamHomeName: widget.gameDetails.teams.home.abbreviation);
+
+    widget.sportKey == 'MLB'
+        ? gameDetailsController.mlbInjuriesReportResponse(context,
+            teamAwayName: widget.gameDetails.teams.away.abbreviation,
+            teamHomeName: widget.gameDetails.teams.home.abbreviation,
+            league: widget.sportKey)
+        : gameDetailsController.nflInjuriesReportResponse(context,
+            teamAwayName: widget.gameDetails.teams.away.abbreviation,
+            teamHomeName: widget.gameDetails.teams.home.abbreviation,
+            league: widget.sportKey);
   }
 
   @override
@@ -58,7 +67,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     headerWidget(context),
                     playerPropBetsWidget(context),
                     teamReportWidget(context),
-                    injuryReportWidget(context),
+                    widget.sportKey == 'MLB'
+                        ? mlbInjuryReportWidget(context)
+                        : nflInjuryReportWidget(context),
                     40.H(),
                   ],
                 ),
@@ -152,6 +163,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 children: [
                                   SvgPicture.asset(
                                     Assets.imagesSunLight,
+                                    // ignore: deprecated_member_use
                                     color: isDark || con.isDarkMode
                                         ? darkSunColor
                                         : blackColor,
@@ -190,6 +202,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               children: [
                                 SvgPicture.asset(
                                   Assets.imagesMoon,
+                                  // ignore: deprecated_member_use
                                   color: isDark || con.isDarkMode
                                       ? whiteColor
                                       : greyDarkColor,
@@ -303,7 +316,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     );
   }
 
-  injuryReportWidget(BuildContext context) {
+  nflInjuryReportWidget(BuildContext context) {
     try {
       return Padding(
         padding: EdgeInsets.symmetric(
@@ -370,10 +383,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                                           .size
                                                           .width *
                                                       .038,
-                                                  child: controller
-                                                      .injuredAwayPlayerList[
-                                                          index]
-                                                      .shortName
+                                                  child: '${controller.injuredAwayPlayerList[index].shortName}(${controller.injuredAwayPlayerList[index].currentStatus})'
                                                       .toString()
                                                       .appCommonText(
                                                           color: Theme.of(
@@ -446,10 +456,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                                           .size
                                                           .width *
                                                       .038,
-                                                  child: controller
-                                                      .injuredHomePlayerList[
-                                                          index]
-                                                      .shortName
+                                                  child: '${controller.injuredHomePlayerList[index].shortName}(${controller.injuredHomePlayerList[index].currentStatus})'
                                                       .toString()
                                                       .appCommonText(
                                                           color: Theme.of(
@@ -499,7 +506,207 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         ),
       );
     } catch (e) {
-      return SizedBox();
+      return const SizedBox();
+    }
+  }
+
+  mlbInjuryReportWidget(BuildContext context) {
+    try {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.height * .02),
+        child: Container(
+          // height: MediaQuery.of(context).size.height * .12,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  MediaQuery.of(context).size.width * .01),
+              color: Theme.of(context).canvasColor),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerTitleWidget(context, injuryReport),
+              GetBuilder<GameDetailsController>(builder: (controller) {
+                return controller.isLoading.value
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * .1,
+                      )
+                    : controller.mlbInjuredAwayPlayerList.isEmpty &&
+                            controller.mlbInjuredHomePlayerList.isEmpty
+                        ? SizedBox(
+                            height: MediaQuery.of(context).size.height * .1,
+                            child: Center(
+                              child: 'No Data'.appCommonText(
+                                  color: Theme.of(context).highlightColor,
+                                  weight: FontWeight.w700,
+                                  align: TextAlign.start,
+                                  size: MediaQuery.of(context).size.height *
+                                      .016),
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              controller.mlbInjuredAwayPlayerList.isNotEmpty
+                                  ? Expanded(
+                                      flex: 1,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: controller
+                                                    .mlbInjuredAwayPlayerList
+                                                    .length >=
+                                                controller
+                                                    .mlbInjuredHomePlayerList
+                                                    .length
+                                            ? controller
+                                                .mlbInjuredAwayPlayerList.length
+                                            : controller
+                                                .mlbInjuredHomePlayerList
+                                                .length,
+                                        padding: EdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .038,
+                                                  child: '${controller.mlbInjuredAwayPlayerList[index].firstName}(${controller.mlbInjuredAwayPlayerList[index].injuryStatus})'
+                                                      .toString()
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          weight:
+                                                              FontWeight.w700,
+                                                          maxLine: 2,
+                                                          align:
+                                                              TextAlign.start,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .016),
+                                                ),
+                                                index ==
+                                                        (controller
+                                                                        .mlbInjuredAwayPlayerList
+                                                                        .length >=
+                                                                    controller
+                                                                        .mlbInjuredHomePlayerList
+                                                                        .length
+                                                                ? controller
+                                                                    .mlbInjuredAwayPlayerList
+                                                                    .length
+                                                                : controller
+                                                                    .mlbInjuredHomePlayerList
+                                                                    .length) -
+                                                            1
+                                                    ? const SizedBox()
+                                                    : commonDivider(context),
+                                              ],
+                                            );
+                                          } catch (e) {
+                                            return commonCatchWidget(
+                                                context, index, controller);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : commonEmptyInjuryReportWidget(controller),
+                              commonEmptyInjuryReportWidget(controller),
+                              controller.mlbInjuredHomePlayerList.isNotEmpty
+                                  ? Expanded(
+                                      flex: 1,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: controller
+                                                    .mlbInjuredHomePlayerList
+                                                    .length >=
+                                                controller
+                                                    .mlbInjuredAwayPlayerList
+                                                    .length
+                                            ? controller
+                                                .mlbInjuredHomePlayerList.length
+                                            : controller
+                                                .mlbInjuredAwayPlayerList
+                                                .length,
+                                        padding: EdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .038,
+                                                  child: '${controller.mlbInjuredHomePlayerList[index].firstName}(${controller.mlbInjuredHomePlayerList[index].injuryStatus})'
+                                                      .toString()
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          weight:
+                                                              FontWeight.w700,
+                                                          maxLine: 2,
+                                                          align:
+                                                              TextAlign.start,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .016),
+                                                ),
+                                                index ==
+                                                        (controller
+                                                                        .mlbInjuredAwayPlayerList
+                                                                        .length >=
+                                                                    controller
+                                                                        .mlbInjuredHomePlayerList
+                                                                        .length
+                                                                ? controller
+                                                                    .mlbInjuredAwayPlayerList
+                                                                    .length
+                                                                : controller
+                                                                    .mlbInjuredHomePlayerList
+                                                                    .length) -
+                                                            1
+                                                    ? const SizedBox()
+                                                    : commonDivider(context),
+                                              ],
+                                            );
+                                          } catch (e) {
+                                            return commonCatchWidget(
+                                                context, index, controller);
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  : commonEmptyInjuryReportWidget(controller),
+                            ],
+                          );
+              }),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      return const SizedBox();
     }
   }
 
@@ -509,10 +716,15 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: controller.injuredAwayPlayerList.length >=
-                controller.injuredHomePlayerList.length
-            ? controller.injuredAwayPlayerList.length
-            : controller.injuredHomePlayerList.length,
+        itemCount: widget.sportKey == 'MLB'
+            ? controller.mlbInjuredAwayPlayerList.length >=
+                    controller.mlbInjuredHomePlayerList.length
+                ? controller.mlbInjuredAwayPlayerList.length
+                : controller.mlbInjuredHomePlayerList.length
+            : controller.injuredAwayPlayerList.length >=
+                    controller.injuredHomePlayerList.length
+                ? controller.injuredAwayPlayerList.length
+                : controller.injuredHomePlayerList.length,
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           return commonCatchWidget(context, index, controller);
@@ -528,12 +740,19 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         SizedBox(
           height: MediaQuery.of(context).size.width * .038,
         ),
-        index ==
-                (controller.injuredAwayPlayerList.length >=
-                            controller.injuredHomePlayerList.length
-                        ? controller.injuredAwayPlayerList.length
-                        : controller.injuredHomePlayerList.length) -
-                    1
+        (widget.sportKey == 'MLB'
+                ? (index ==
+                    (controller.mlbInjuredAwayPlayerList.length >=
+                                controller.mlbInjuredHomePlayerList.length
+                            ? controller.mlbInjuredAwayPlayerList.length
+                            : controller.mlbInjuredHomePlayerList.length) -
+                        1)
+                : (index ==
+                    (controller.injuredAwayPlayerList.length >=
+                                controller.injuredHomePlayerList.length
+                            ? controller.injuredAwayPlayerList.length
+                            : controller.injuredHomePlayerList.length) -
+                        1))
             ? const SizedBox()
             : commonDivider(context),
       ],
@@ -876,7 +1095,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 .split(',')
                 .first;
             if (date == '1') {
-              date = '${date}th';
+              date = '${date}st';
             } else if (date.endsWith('1') && !date.startsWith('1')) {
               date = '${date}st';
             } else if (date.endsWith('2') && !date.startsWith('1')) {
@@ -888,7 +1107,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             }
             return Container(
               width: Get.width,
-              height: MediaQuery.of(context).size.height * .17,
+              height: MediaQuery.of(context).size.height * .175,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(
                       top: Radius.circular(
@@ -935,7 +1154,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       commonCachedNetworkImage(
                           width: Get.height * .048,
                           height: Get.height * .048,
-                          imageUrl: ''),
+                          imageUrl: widget.gameDetails.awayGameLogo),
                       (widget.gameDetails.teams.away.mascot)
                           .toString()
                           .appCommonText(
@@ -957,7 +1176,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.width * .02,
+                            height: MediaQuery.of(context).size.width * .01,
                           ),
                           '$day, $month $date $year'.appCommonText(
                               color: whiteColor,
@@ -966,10 +1185,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.width * .01,
                           ),
-                          '10 - 7'.appCommonText(
-                              color: whiteColor,
-                              size: MediaQuery.of(context).size.height * .048,
-                              weight: FontWeight.w700),
+                          '${widget.gameDetails.awayScores.isEmpty ? '0' : widget.gameDetails.awayScores} - ${widget.gameDetails.homeScores.isEmpty ? '0' : widget.gameDetails.homeScores}'
+                              .appCommonText(
+                                  color: whiteColor,
+                                  size:
+                                      MediaQuery.of(context).size.height * .048,
+                                  weight: FontWeight.w700),
                           '${widget.gameDetails.venue.name}, ${widget.gameDetails.venue.state}'
                               .appCommonText(
                                   color: primaryColor,
@@ -1011,7 +1232,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       commonCachedNetworkImage(
                           width: Get.height * .048,
                           height: Get.height * .048,
-                          imageUrl: ''),
+                          imageUrl: widget.gameDetails.homeGameLogo),
                       widget.gameDetails.teams.home.mascot.appCommonText(
                           weight: FontWeight.bold,
                           size: MediaQuery.of(context).size.height * .016,

@@ -10,13 +10,13 @@ import 'package:hotlines/view/main/splash_screen.dart';
 
 import 'controller/selecte_game_con.dart';
 import 'controller/sport_controller.dart';
-import 'model/game_detail_model.dart';
 
 Future<void> main() async {
   await GetStorage.init();
   runApp(MyApp());
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   MyApp({super.key});
   bool isDarkMode = PreferenceManager.getIsDarkMode() ?? false;

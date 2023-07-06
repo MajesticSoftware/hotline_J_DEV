@@ -69,6 +69,10 @@ class Result {
   int gameId;
   Venue venue;
   List<Odd> odds;
+  String homeGameLogo;
+  String awayGameLogo;
+  String awayScore;
+  String homeScore;
 
   Result({
     required this.summary,
@@ -80,7 +84,26 @@ class Result {
     required this.gameId,
     required this.venue,
     required this.odds,
+    this.homeGameLogo = '',
+    this.awayGameLogo = '',
+    this.awayScore = '',
+    this.homeScore = '',
   });
+  String get gameHomeLogoLink {
+    return homeGameLogo;
+  }
+
+  String get gameLogoAwayLink {
+    return awayGameLogo;
+  }
+
+  String get homeScores {
+    return homeScore;
+  }
+
+  String get awayScores {
+    return awayScore;
+  }
 
   Result copyWith({
     String? summary,
@@ -133,6 +156,7 @@ class Result {
         "gameId": gameId,
         "venue": venue.toJson(),
         "odds":
+            // ignore: unnecessary_null_comparison
             odds != null ? List<dynamic>.from(odds.map((x) => x.toJson())) : [],
       };
 }
@@ -188,10 +212,12 @@ class Details {
       };
 }
 
+// ignore: constant_identifier_names
 enum League { NFL }
 
 final leagueValues = EnumValues({"NFL": League.NFL});
 
+// ignore: constant_identifier_names
 enum SeasonType { REGULAR }
 
 final seasonTypeValues = EnumValues({"regular": SeasonType.REGULAR});
@@ -502,6 +528,7 @@ class Schedule {
       };
 }
 
+// ignore: constant_identifier_names
 enum Status { SCHEDULED }
 
 final statusValues = EnumValues({"scheduled": Status.SCHEDULED});
@@ -596,11 +623,13 @@ class Away {
       };
 }
 
+// ignore: constant_identifier_names
 enum Conference { AFC, NFC }
 
 final conferenceValues =
     EnumValues({"AFC": Conference.AFC, "NFC": Conference.NFC});
 
+// ignore: constant_identifier_names
 enum Division { SOUTH, WEST, NORTH, EAST }
 
 final divisionValues = EnumValues({

@@ -7,6 +7,7 @@ import 'package:hotlines/network/game_repo.dart';
 
 import '../constant/app_strings.dart';
 import '../model/game_detail_model.dart';
+import '../model/game_team_logo.dart';
 import '../model/response_item.dart';
 import '../model/weather_model.dart';
 import '../theme/helper.dart';
@@ -18,6 +19,76 @@ class SportController extends GetxController {
 
   set gameDetails(List<Result> value) {
     _gameDetails = value;
+    update();
+  }
+
+  List<Competition> _games = [];
+
+  List<Competition> get games => _games;
+
+  set games(List<Competition> value) {
+    _games = value;
+    update();
+  }
+
+  String _gameLogo = '';
+
+  String get gameLogo => _gameLogo;
+
+  set gameLogo(String value) {
+    _gameLogo = value;
+    update();
+  }
+
+  void gameListingsWithLogoResponse(
+      BuildContext context, String year, String sportKey) async {
+    isLoading.value = true;
+
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    // result = await GameRepo().gameListingsWithLogo(year, sportKey);
+    result = await BaseApiHelper.jasonRequestNew();
+
+    try {
+      Map<String, dynamic> data = result.data;
+      if (result.status) {
+        log('result.data---${result.data}');
+        data.forEach((key, value) {
+          if (result.data[key] != null) {
+            (result.data[key]['games']).forEach((games) {
+              games['competitions'].forEach((teams) {
+                teams['competitors'].forEach((details) {
+                  for (var element in gameDetails) {
+                    if (element.teams.home.abbreviation ==
+                        details['team']['abbreviation']) {
+                      element.homeGameLogo = details['team']['logo'];
+                    }
+                    if (element.teams.away.abbreviation ==
+                        details['team']['abbreviation']) {
+                      element.awayGameLogo = details['team']['logo'];
+                    }
+                    if (element.teams.away.abbreviation ==
+                        details['team']['abbreviation']) {
+                      element.awayScore = details['team']['score'];
+                    }
+                    if (element.teams.home.abbreviation ==
+                        details['team']['abbreviation']) {
+                      element.homeScore = details['team']['score'];
+                    }
+                  }
+                });
+              });
+            });
+          }
+        });
+
+        isLoading.value = false;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      // ignore: use_build_context_synchronously
+      showAppSnackBar(errorText, context);
+    }
     update();
   }
 
@@ -61,7 +132,7 @@ class SportController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  void gameListingsResponse(BuildContext context,
+  Future gameListingsResponse(BuildContext context,
       {String sportKey = '', String date = ""}) async {
     isLoading.value = true;
     gameDetails.clear();
@@ -78,6 +149,8 @@ class SportController extends GetxController {
         if (gameDetails.isNotEmpty) {
           for (int i = 0; i < gameDetails.length; i++) {
             log('element.venue.city--${gameDetails[i].venue.city}');
+            // ignore: use_build_context_synchronously
+
             // ignore: use_build_context_synchronously
             weatherDetailsResponse(context,
                 cityName: gameDetails[i].venue.city.isNotEmpty

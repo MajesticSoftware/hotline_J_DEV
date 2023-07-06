@@ -44,19 +44,36 @@ class GameRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  Future<ResponseItem> injuriesReport() async {
+  Future<ResponseItem> injuriesReport({String league = ''}) async {
     ResponseItem result;
-    bool status = true;
-    dynamic data;
-    String message = "";
-
+    String leagueText =
+        league == 'NCAA' ? 'cfb' : league.toLowerCase().split('.').last;
+    String key = leagueText == 'nfl'
+        ? 'e4fa0e9f6e1d41d6862141c0959c8a65'
+        : leagueText == 'mlb'
+            ? 'f8fc1e2d640646079ee44e659989aa24'
+            : '9129c2df275a49c59f59c4fba8d29a79';
     Uri uri = Uri.parse(
-        'https://api.sportsdata.io/v3/nfl/projections/json/InjuredPlayers?key=e4fa0e9f6e1d41d6862141c0959c8a65');
+        "https://api.sportsdata.io/v3/$leagueText/projections/json/InjuredPlayers?key=$key");
     result = await BaseApiHelper.getRequest(uri, {});
-    status = result.status;
-    data = result.data;
-    message = result.message;
 
+    return result;
+  }
+
+  Future<ResponseItem> gameListingsWithLogo(
+      String year, String sportKey) async {
+    ResponseItem result;
+    var params = {"year": year};
+
+    Uri parameter;
+    Uri uri = Uri.parse(
+        '${AppUrls.BASE_URL}${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : 'nfl'}/schedule?year=$year');
+    parameter = uri.replace(queryParameters: params);
+
+    result = await BaseApiHelper.getRequest(parameter, {
+      'X-RapidAPI-Key': '78e30a3a3dmshe7054166b9cf8d0p1155a6jsnfa46541e0c50',
+      'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
+    });
     return result;
   }
 }

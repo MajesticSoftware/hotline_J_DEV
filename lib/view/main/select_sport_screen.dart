@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -83,6 +81,7 @@ class SelectSportScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * .04,
                   width: MediaQuery.of(context).size.width * .086,
                   child: SvgPicture.asset(Assets.imagesThemeDark,
+                      // ignore: deprecated_member_use
                       color: Colors.transparent),
                 ),
                 selectGame.appCommonText(
@@ -133,6 +132,7 @@ class SelectSportScreen extends StatelessWidget {
                               children: [
                                 SvgPicture.asset(
                                   Assets.imagesSunLight,
+                                  // ignore: deprecated_member_use
                                   color: isDark || controller.isDarkMode
                                       ? darkSunColor
                                       : blackColor,
@@ -171,6 +171,7 @@ class SelectSportScreen extends StatelessWidget {
                             children: [
                               SvgPicture.asset(
                                 Assets.imagesMoon,
+                                // ignore: deprecated_member_use
                                 color: isDark || controller.isDarkMode
                                     ? whiteColor
                                     : greyDarkColor,

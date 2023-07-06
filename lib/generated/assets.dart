@@ -3,6 +3,7 @@ class Assets {
   Assets._();
 
   static const String assetsGamesReponse = 'assets/games_reponse.json';
+  static const String assetsGamesReponseNew = 'assets/games_reponse_new.json';
   static const String assetsImagesBAL = 'assets/images/BAL.svg';
   static const String assetsImagesFire = 'assets/images/fire.svg';
   static const String assetsImagesPITT = 'assets/images/PITT.svg';

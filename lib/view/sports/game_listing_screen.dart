@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -72,8 +70,11 @@ class GameListingScreen extends StatelessWidget {
       body: Stack(
         children: [
           GetBuilder<SportController>(initState: (state) {
-            sportController.gameListingsResponse(context,
-                sportKey: sportKey, date: date);
+            sportController
+                .gameListingsResponse(context, sportKey: sportKey, date: date)
+                .then((value) => sportController.gameListingsWithLogoResponse(
+                    context, '2023', sportKey));
+
             // sportController.getSportDataFromJson(context);
           }, builder: (controller) {
             return SingleChildScrollView(
@@ -133,6 +134,7 @@ class GameListingScreen extends StatelessWidget {
                           onTap: () {
                             Get.to(SportDetailsScreen(
                               gameDetails: controller.gameDetails[index],
+                              sportKey: sportKey,
                             ));
                           },
                           child: teamWidget(
@@ -183,229 +185,251 @@ class GameListingScreen extends StatelessWidget {
   teamWidget(Result? results, BuildContext context, {int index = 0}) {
     String date = DateFormat.MMMd()
         .format(results?.schedule.date.toLocal() ?? DateTime.now().toLocal());
-
     String dateTime = DateFormat.jm()
         .format(results?.schedule.date.toLocal() ?? DateTime.now().toLocal());
     try {
-      return Padding(
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * .02,
-            top: MediaQuery.of(context).size.width * .014,
-            right: MediaQuery.of(context).size.width * .02),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-              border: Border.all(
-                  color: isDark || selectGameController.isDarkMode
-                      ? greyColor
-                      : dividerColor),
-              borderRadius: BorderRadius.circular(
-                  MediaQuery.of(context).size.width * .02)),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * .006,
-                      horizontal: MediaQuery.of(context).size.width * .02),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          commonCachedNetworkImage(
-                              width: Get.height * .044,
-                              height: Get.height * .044,
-                              imageUrl: ''),
-                          // 10.W(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .01,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              (results?.teams.away.team ?? "").toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      5.H(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 0,
-                            child: Text(
-                              '  Vs',
-                              style: Theme.of(context).textTheme.labelSmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(flex: 4, child: commonDivider(context)),
-                        ],
-                      ),
-                      5.H(),
-                      Row(
-                        children: [
-                          commonCachedNetworkImage(
-                              width: Get.height * .044,
-                              height: Get.height * .044,
-                              imageUrl: ''),
-                          // 10.W(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .01,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              (results?.teams.home.team ?? "").toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      return (results?.odds ?? []).isEmpty && sportKey == 'MLB'
+          ? const SizedBox()
+          : Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * .02,
+                  top: MediaQuery.of(context).size.width * .014,
+                  right: MediaQuery.of(context).size.width * .02),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).canvasColor,
+                    border: Border.all(
+                        color: isDark || selectGameController.isDarkMode
+                            ? greyColor
+                            : dividerColor),
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * .02)),
+                child: Row(
                   children: [
-                    Text(
-                      '$date, $dateTime',
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .001,
-                    ),
-                    getWeatherIcon(results?.venue.weather ?? 0, context,
-                        MediaQuery.of(context).size.height * .064),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      verticalDirection: VerticalDirection.up,
-                      children: [
-                        Text(
-                          '${results?.venue.tmpInFahrenheit}',
-                          style: Theme.of(context).textTheme.displayMedium,
+                    Expanded(
+                      flex: 3,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * .006,
+                            horizontal:
+                                MediaQuery.of(context).size.width * .02),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                commonCachedNetworkImage(
+                                  width: Get.height * .044,
+                                  height: Get.height * .044,
+                                  imageUrl: results?.gameLogoAwayLink ?? '',
+                                ),
+                                // 10.W(),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .01,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    (results?.teams.away.team ?? "").toString(),
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                    textAlign: TextAlign.start,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            5.H(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: Text(
+                                    '  Vs',
+                                    style:
+                                        Theme.of(context).textTheme.labelSmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 4, child: commonDivider(context)),
+                              ],
+                            ),
+                            5.H(),
+                            Row(
+                              children: [
+                                commonCachedNetworkImage(
+                                    width: Get.height * .044,
+                                    height: Get.height * .044,
+                                    imageUrl:
+                                        (results?.gameHomeLogoLink ?? "")),
+                                // 10.W(),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .01,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    (results?.teams.home.team ?? "").toString(),
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                    textAlign: TextAlign.start,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Text(
-                          '°F',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                    )
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '$date, $dateTime',
+                            style: Theme.of(context).textTheme.displaySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .001,
+                          ),
+                          getWeatherIcon(results?.venue.weather ?? 0, context,
+                              MediaQuery.of(context).size.height * .064),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            textBaseline: TextBaseline.alphabetic,
+                            verticalDirection: VerticalDirection.up,
+                            children: [
+                              Text(
+                                '${results?.venue.tmpInFahrenheit}',
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
+                              ),
+                              Text(
+                                '°F',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    buildExpandedBoxWidget(context,
+                        bottomText: results != null
+                            ? results.odds.isNotEmpty
+                                ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
+                                    .toString()
+                                : '00'
+                            : '',
+                        upText: results != null
+                            ? results.odds.isNotEmpty
+                                ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
+                                : '00'
+                            : ''),
+                    buildExpandedBoxWidget(context,
+                        bottomText: results != null
+                            ? results.odds.isNotEmpty
+                                ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
+                                    .toString()
+                                : "00"
+                            : '',
+                        upText: results != null
+                            ? results.odds.isNotEmpty
+                                ? ('${results.odds[0].moneyline.current.awayOdds.toString().contains('-') ? results.odds[0].moneyline.current.awayOdds : '+${results.odds[0].moneyline.current.awayOdds}'}')
+                                    .toString()
+                                : '00'
+                            : ""),
+                    Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * .04,
+                              width: MediaQuery.of(context).size.width * .09,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width *
+                                          .008)),
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text('o',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text(
+                                      (results != null
+                                              ? results.odds.isNotEmpty
+                                                  ? results.odds[0].total
+                                                      .current.total
+                                                  : '00'
+                                              : "")
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                ],
+                              )),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .02,
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * .04,
+                              width: MediaQuery.of(context).size.width * .09,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width *
+                                          .008)),
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text('u',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text(
+                                      (results != null
+                                              ? results.odds.isNotEmpty
+                                                  ? results.odds[0].total
+                                                      .current.total
+                                                  : '00'
+                                              : "")
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                ],
+                              )),
+                            )
+                          ],
+                        )),
                   ],
                 ),
               ),
-              buildExpandedBoxWidget(context,
-                  bottomText: results != null
-                      ? results.odds.isNotEmpty
-                          ? ('${results.odds[0].spread.current.home.toString().contains('-') ? results.odds[0].spread.current.home : '+${results.odds[0].spread.current.home}'}')
-                              .toString()
-                          : '00'
-                      : '',
-                  upText: results != null
-                      ? results.odds.isNotEmpty
-                          ? ('${results.odds[0].spread.current.away.toString().contains('-') ? results.odds[0].spread.current.away : '+${results.odds[0].spread.current.away}'}')
-                          : '00'
-                      : ''),
-              buildExpandedBoxWidget(context,
-                  bottomText: results != null
-                      ? results.odds.isNotEmpty
-                          ? ('${results.odds[0].moneyline.current.homeOdds.toString().contains('-') ? results.odds[0].moneyline.current.homeOdds : '+${results.odds[0].moneyline.current.homeOdds}'}')
-                              .toString()
-                          : "00"
-                      : '',
-                  upText: results != null
-                      ? results.odds.isNotEmpty
-                          ? ('${results.odds[0].moneyline.current.awayOdds.toString().contains('-') ? results.odds[0].moneyline.current.awayOdds : '+${results.odds[0].moneyline.current.awayOdds}'}')
-                              .toString()
-                          : '00'
-                      : ""),
-              Expanded(
-                  flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * .008)),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          textBaseline: TextBaseline.alphabetic,
-                          verticalDirection: VerticalDirection.up,
-                          children: [
-                            Text('o',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            Text(
-                                (results != null
-                                        ? results.odds.isNotEmpty
-                                            ? results
-                                                .odds[0].total.current.total
-                                            : '00'
-                                        : "")
-                                    .toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        )),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .02,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * .008)),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          textBaseline: TextBaseline.alphabetic,
-                          verticalDirection: VerticalDirection.up,
-                          children: [
-                            Text('u',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            Text(
-                                (results != null
-                                        ? results.odds.isNotEmpty
-                                            ? results
-                                                .odds[0].total.current.total
-                                            : '00'
-                                        : "")
-                                    .toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        )),
-                      )
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      );
+            );
     } catch (e) {
       return const SizedBox();
     }

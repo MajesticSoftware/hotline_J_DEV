@@ -9,14 +9,16 @@ class InjuriesDataModel {
   dynamic team;
   String name;
   String shortName;
-  String collegeDraftTeam;
+  String currentTeam;
+  String currentStatus;
 
   InjuriesDataModel({
     required this.playerId,
     required this.team,
     required this.name,
     required this.shortName,
-    required this.collegeDraftTeam,
+    required this.currentTeam,
+    required this.currentStatus,
   });
 
   InjuriesDataModel copyWith({
@@ -24,14 +26,16 @@ class InjuriesDataModel {
     dynamic team,
     String? name,
     String? shortName,
-    String? collegeDraftTeam,
+    String? currentTeam,
+    String? currentStatus,
   }) =>
       InjuriesDataModel(
         playerId: playerId ?? this.playerId,
         team: team ?? this.team,
         name: name ?? this.name,
         shortName: shortName ?? this.shortName,
-        collegeDraftTeam: collegeDraftTeam ?? this.collegeDraftTeam,
+        currentTeam: currentTeam ?? this.currentTeam,
+        currentStatus: currentStatus ?? this.currentStatus,
       );
 
   factory InjuriesDataModel.fromRawJson(String str) =>
@@ -41,11 +45,12 @@ class InjuriesDataModel {
 
   factory InjuriesDataModel.fromJson(Map<String, dynamic> json) =>
       InjuriesDataModel(
-        playerId: json["PlayerID"],
-        team: json["Team"],
-        name: json["Name"],
-        shortName: json["ShortName"],
-        collegeDraftTeam: json["CollegeDraftTeam"],
+        playerId: json["PlayerID"] ?? 0,
+        team: json["Team"] ?? "",
+        name: json["Name"] ?? "",
+        shortName: json["ShortName"] ?? "",
+        currentTeam: json["CurrentTeam"] ?? "",
+        currentStatus: json["CurrentStatus"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +58,7 @@ class InjuriesDataModel {
         "Team": team,
         "Name": name,
         "ShortName": shortName,
-        "CollegeDraftTeam": collegeDraftTeam,
+        "CurrentTeam": currentTeam,
+        "CurrentStatus": currentStatus,
       };
 }

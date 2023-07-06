@@ -40,6 +40,13 @@ class BaseApiHelper {
     return ResponseItem(status: true, message: "Sucsess.", data: data);
   }
 
+  static Future<ResponseItem> jasonRequestNew() async {
+    final String response =
+        await rootBundle.loadString('assets/games_reponse_new.json');
+    final data = await json.decode(response);
+    return ResponseItem(status: true, message: "Sucsess.", data: data);
+  }
+
   static Future<ResponseItem> uploadFile(
       String requestUrl, Map<String, String> requestData,
       {http.MultipartFile? profileImage}) async {
