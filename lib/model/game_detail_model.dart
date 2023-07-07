@@ -63,7 +63,6 @@ class Result {
   String summary;
   Details details;
   Schedule schedule;
-  Status status;
   Teams teams;
   DateTime lastUpdated;
   int gameId;
@@ -73,12 +72,13 @@ class Result {
   String awayGameLogo;
   String awayScore;
   String homeScore;
+  String spreadAwayRecord;
+  String spreadHomeRecord;
 
   Result({
     required this.summary,
     required this.details,
     required this.schedule,
-    required this.status,
     required this.teams,
     required this.lastUpdated,
     required this.gameId,
@@ -88,7 +88,17 @@ class Result {
     this.awayGameLogo = '',
     this.awayScore = '',
     this.homeScore = '',
+    this.spreadAwayRecord = '',
+    this.spreadHomeRecord = '',
   });
+  String get liveSpreadHomeRecord {
+    return spreadHomeRecord.isEmpty ? '0-0' : spreadHomeRecord;
+  }
+
+  String get liveSpreadAwayRecord {
+    return spreadAwayRecord.isEmpty ? '0-0' : spreadAwayRecord;
+  }
+
   String get gameHomeLogoLink {
     return homeGameLogo;
   }
@@ -97,19 +107,18 @@ class Result {
     return awayGameLogo;
   }
 
-  String get homeScores {
-    return homeScore;
+  String get homeLiveScores {
+    return homeScore.isEmpty ? '0' : homeScore;
   }
 
-  String get awayScores {
-    return awayScore;
+  String get awayLiveScores {
+    return awayScore.isEmpty ? '0' : awayScore;
   }
 
   Result copyWith({
     String? summary,
     Details? details,
     Schedule? schedule,
-    Status? status,
     Teams? teams,
     DateTime? lastUpdated,
     int? gameId,
@@ -120,7 +129,6 @@ class Result {
         summary: summary ?? this.summary,
         details: details ?? this.details,
         schedule: schedule ?? this.schedule,
-        status: status ?? this.status,
         teams: teams ?? this.teams,
         lastUpdated: lastUpdated ?? this.lastUpdated,
         gameId: gameId ?? this.gameId,
@@ -136,7 +144,6 @@ class Result {
         summary: json["summary"],
         details: Details.fromJson(json["details"]),
         schedule: Schedule.fromJson(json["schedule"]),
-        status: statusValues.map[json["status"]]!,
         teams: Teams.fromJson(json["teams"]),
         lastUpdated: DateTime.parse(json["lastUpdated"]),
         gameId: json["gameId"],
@@ -150,7 +157,6 @@ class Result {
         "summary": summary,
         "details": details.toJson(),
         "schedule": schedule.toJson(),
-        "status": statusValues.reverse[status],
         "teams": teams.toJson(),
         "lastUpdated": lastUpdated.toIso8601String(),
         "gameId": gameId,

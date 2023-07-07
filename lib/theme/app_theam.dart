@@ -60,6 +60,12 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           fontSize: Get.height * .01,
         ),
+        headlineLarge: GoogleFonts.nunitoSans(
+          color: blackColor,
+          fontWeight: FontWeight.w700,
+          fontSize: Get.height * .02,
+        ),
+
         /*   displayLarge: GoogleFonts.nunitoSans(
           color: appColor,
           fontWeight: FontWeight.w400,
@@ -174,6 +180,11 @@ class AppTheme {
           color: whiteColor,
           fontWeight: FontWeight.w600,
           fontSize: Get.height * .01,
+        ),
+        headlineLarge: GoogleFonts.nunitoSans(
+          color: whiteColor,
+          fontWeight: FontWeight.w700,
+          fontSize: Get.height * .02,
         ),
         /* displayLarge: const TextStyle(
           color: Color(0XFFFF6666),

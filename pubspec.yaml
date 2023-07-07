@@ -74,6 +74,7 @@ flutter:
   assets:
      - assets/games_reponse.json
      - assets/games_reponse_new.json
+     - assets/nfl_res.json
      - assets/images/
 
 

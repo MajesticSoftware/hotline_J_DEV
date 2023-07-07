@@ -5,8 +5,6 @@ import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../controller/selecte_game_con.dart';
-
 showAppSnackBar(String tittle, BuildContext context, {bool status = false}) {
   return Get.showSnackbar(GetSnackBar(
     // message: tittle,
@@ -45,9 +43,10 @@ SizedBox commonCachedNetworkImage(
                   height: height,
                   width: width,
                   decoration: BoxDecoration(
+                    color: backGroundColor,
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
@@ -58,7 +57,7 @@ SizedBox commonCachedNetworkImage(
                   child: Container(
                     height: height,
                     width: width,
-                    color: dividerColor.withOpacity(0.5),
+                    color: backGroundColor,
                   ),
                 ),
             errorWidget: (context, url, error) => ClipRRect(
@@ -66,7 +65,7 @@ SizedBox commonCachedNetworkImage(
                   child: Container(
                     height: height,
                     width: width,
-                    color: dividerColor.withOpacity(0.6),
+                    color: backGroundColor,
                   ),
                 ))),
   );

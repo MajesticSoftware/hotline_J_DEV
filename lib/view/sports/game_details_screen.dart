@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -789,7 +791,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   commonCachedNetworkImage(
                       width: Get.height * .025,
                       height: Get.height * .025,
-                      imageUrl: ''),
+                      imageUrl: widget.gameDetails.awayGameLogo),
                 ],
               ),
             ),
@@ -810,7 +812,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   commonCachedNetworkImage(
                       width: Get.height * .025,
                       height: Get.height * .025,
-                      imageUrl: ''),
+                      imageUrl: widget.gameDetails.homeGameLogo),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .01,
                   ),
@@ -1105,6 +1107,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             } else {
               date = '${date}th';
             }
+            log('widget.gameDetails.awayLiveScores---${widget.gameDetails.awayLiveScores}');
             return Container(
               width: Get.width,
               height: MediaQuery.of(context).size.height * .175,
@@ -1163,7 +1166,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               align: TextAlign.end,
                               maxLine: 1,
                               color: whiteColor),
-                      '7-6'.appCommonText(
+                      widget.gameDetails.liveSpreadAwayRecord.appCommonText(
                           align: TextAlign.end,
                           weight: FontWeight.w700,
                           size: MediaQuery.of(context).size.height * .014,
@@ -1185,7 +1188,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.width * .01,
                           ),
-                          '${widget.gameDetails.awayScores.isEmpty ? '0' : widget.gameDetails.awayScores} - ${widget.gameDetails.homeScores.isEmpty ? '0' : widget.gameDetails.homeScores}'
+                          '${widget.gameDetails.awayLiveScores} - ${widget.gameDetails.homeLiveScores}'
                               .appCommonText(
                                   color: whiteColor,
                                   size:
@@ -1239,7 +1242,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           align: TextAlign.start,
                           maxLine: 1,
                           color: whiteColor),
-                      '11-2'.appCommonText(
+                      widget.gameDetails.liveSpreadHomeRecord.appCommonText(
                           align: TextAlign.end,
                           weight: FontWeight.w700,
                           size: MediaQuery.of(context).size.height * .014,

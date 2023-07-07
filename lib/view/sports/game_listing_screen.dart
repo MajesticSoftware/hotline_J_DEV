@@ -239,6 +239,13 @@ class GameListingScreen extends StatelessWidget {
                                     maxLines: 2,
                                   ),
                                 ),
+                                Text(
+                                  (results?.awayLiveScores ?? "0").toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                )
                               ],
                             ),
                             5.H(),
@@ -281,6 +288,13 @@ class GameListingScreen extends StatelessWidget {
                                     maxLines: 2,
                                   ),
                                 ),
+                                Text(
+                                  (results?.homeLiveScores ?? "0").toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                )
                               ],
                             ),
                           ],

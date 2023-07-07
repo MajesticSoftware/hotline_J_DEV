@@ -46,43 +46,59 @@ class SportController extends GetxController {
 
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    // result = await GameRepo().gameListingsWithLogo(year, sportKey);
-    result = await BaseApiHelper.jasonRequestNew();
-
+    result = await GameRepo().gameListingsWithLogo(year, sportKey);
+    // result = await BaseApiHelper.jasonRequestNew(sportKey);
     try {
       Map<String, dynamic> data = result.data;
       if (result.status) {
-        log('result.data---${result.data}');
-        data.forEach((key, value) {
-          if (result.data[key] != null) {
-            (result.data[key]['games']).forEach((games) {
-              games['competitions'].forEach((teams) {
-                teams['competitors'].forEach((details) {
-                  for (var element in gameDetails) {
-                    if (element.teams.home.abbreviation ==
-                        details['team']['abbreviation']) {
-                      element.homeGameLogo = details['team']['logo'];
+        try {
+          data.forEach((key, value) {
+            if (result.data[key] != null) {
+              (result.data[key]['games']).forEach((games) {
+                games['competitions'].forEach((teams) {
+                  teams['competitors'].forEach((details) {
+                    for (var element in gameDetails) {
+                      if (element.teams.home.abbreviation ==
+                              details['team']['abbreviation'] ||
+                          element.teams.home.team ==
+                              details['team']['displayName']) {
+                        element.homeGameLogo = details['team']['logo'];
+                        if (details['records'] != null) {
+                          details['records'].forEach((records) {
+                            if (records['type'] == 'total') {
+                              element.spreadHomeRecord = records['summary'];
+                            }
+                          });
+                        }
+
+                        element.homeScore = details['score'];
+                      }
+                      if (element.teams.away.abbreviation ==
+                          details['team']['abbreviation']) {
+                        element.awayGameLogo = details['team']['logo'];
+                        element.awayScore = details['score'];
+                        if (details['records'] != null) {
+                          details['records'].forEach((records) {
+                            if (records['type'] == 'total') {
+                              element.spreadAwayRecord = records['summary'];
+                            }
+                          });
+                        }
+                      }
                     }
-                    if (element.teams.away.abbreviation ==
-                        details['team']['abbreviation']) {
-                      element.awayGameLogo = details['team']['logo'];
-                    }
-                    if (element.teams.away.abbreviation ==
-                        details['team']['abbreviation']) {
-                      element.awayScore = details['team']['score'];
-                    }
-                    if (element.teams.home.abbreviation ==
-                        details['team']['abbreviation']) {
-                      element.homeScore = details['team']['score'];
-                    }
-                  }
+                  });
                 });
               });
-            });
-          }
-        });
-
+            }
+          });
+        } catch (e) {
+          log('error--$e');
+        }
         isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        // ignore: use_build_context_synchronously
+        showAppSnackBar(errorText, context);
       }
     } catch (e) {
       isLoading.value = false;

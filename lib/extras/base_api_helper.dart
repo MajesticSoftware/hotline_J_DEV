@@ -40,11 +40,12 @@ class BaseApiHelper {
     return ResponseItem(status: true, message: "Sucsess.", data: data);
   }
 
-  static Future<ResponseItem> jasonRequestNew() async {
-    final String response =
-        await rootBundle.loadString('assets/games_reponse_new.json');
+  static Future<ResponseItem> jasonRequestNew(String sportKey) async {
+    final String response = sportKey == 'MLB'
+        ? await rootBundle.loadString('assets/games_reponse_new.json')
+        : await rootBundle.loadString('assets/nfl_res.json');
     final data = await json.decode(response);
-    return ResponseItem(status: true, message: "Sucsess.", data: data);
+    return ResponseItem(status: true, message: "Success.", data: data);
   }
 
   static Future<ResponseItem> uploadFile(

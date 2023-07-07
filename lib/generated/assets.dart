@@ -7,7 +7,10 @@ class Assets {
   static const String assetsImagesBAL = 'assets/images/BAL.svg';
   static const String assetsImagesFire = 'assets/images/fire.svg';
   static const String assetsImagesPITT = 'assets/images/PITT.svg';
+  static const String assetsNflRes = 'assets/nfl_res.json';
   static const String hotlinesAssetsGamesReponse = 'assets/games_reponse.json';
+  static const String hotlinesAssetsGamesReponseNew =
+      'assets/games_reponse_new.json';
   static const String imagesAUTO = 'assets/images/AUTO.png';
   static const String imagesBAL = 'assets/images/BAL.png';
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
