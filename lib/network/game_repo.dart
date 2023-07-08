@@ -71,7 +71,7 @@ class GameRepo {
     parameter = uri.replace(queryParameters: params);
 
     result = await BaseApiHelper.getRequest(parameter, {
-      'X-RapidAPI-Key': '6fbed89295msh04c792b166057b7p143931jsn6a9bbe835e35',
+      'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
       'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
     });
     return result;

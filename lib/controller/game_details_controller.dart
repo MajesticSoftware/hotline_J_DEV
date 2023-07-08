@@ -109,7 +109,6 @@ class GameDetailsController extends GetxController {
     result = await GameRepo().injuriesReport(league: league);
     try {
       if (result.status) {
-        log('MLB DATA---${result.data[0]}');
         List<MLBInjuryReportModel> response = (result.data as List)
             .map((i) => MLBInjuryReportModel.fromJson(i))
             .toList();

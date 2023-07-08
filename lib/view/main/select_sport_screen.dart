@@ -31,29 +31,32 @@ class SelectSportScreen extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * .01,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.height * .02),
-              child: Wrap(
-                  runSpacing: 0,
-                  alignment: WrapAlignment.start,
-                  spacing: Get.height * .02,
-                  children: List.generate(
-                    sportsLeagueList.length,
-                    (index) => commonImageWidget(
-                      sportsLeagueList[index].image,
-                      isComingSoon: sportsLeagueList[index].isAvailable,
-                      context,
-                      onTap: sportsLeagueList[index].isAvailable == true
-                          ? () {
-                              Get.to(GameListingScreen(
-                                sportKey: sportsLeagueList[index].key,
-                                date: sportsLeagueList[index].date,
-                              ));
-                            }
-                          : () {},
-                    ),
-                  )),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.height * .0),
+                child: Wrap(
+                    runSpacing: 0,
+                    alignment: WrapAlignment.start,
+                    spacing: Get.height * .02,
+                    children: List.generate(
+                      sportsLeagueList.length,
+                      (index) => commonImageWidget(
+                        sportsLeagueList[index].image,
+                        isComingSoon: sportsLeagueList[index].isAvailable,
+                        context,
+                        onTap: sportsLeagueList[index].isAvailable == true
+                            ? () {
+                                Get.to(GameListingScreen(
+                                  sportKey: sportsLeagueList[index].key,
+                                  date: sportsLeagueList[index].date,
+                                ));
+                              }
+                            : () {},
+                      ),
+                    )),
+              ),
             ),
           ],
         ),
@@ -84,10 +87,13 @@ class SelectSportScreen extends StatelessWidget {
                       // ignore: deprecated_member_use
                       color: Colors.transparent),
                 ),
-                selectGame.appCommonText(
-                    color: whiteColor,
-                    size: MediaQuery.of(context).size.height * .03,
-                    weight: FontWeight.w700),
+                SvgPicture.asset(Assets.imagesLogo,
+                    height: MediaQuery.of(context).size.height * .025,
+                    fit: BoxFit.fill),
+                // selectGame.appCommonText(
+                //     color: whiteColor,
+                //     size: MediaQuery.of(context).size.height * .03,
+                //     weight: FontWeight.w700),
                 Container(
                   height: MediaQuery.of(context).size.height * .033,
                   // width: MediaQuery.of(context).size.width * .099,

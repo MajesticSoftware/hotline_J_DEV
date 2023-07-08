@@ -11,6 +11,7 @@ class Assets {
   static const String hotlinesAssetsGamesReponse = 'assets/games_reponse.json';
   static const String hotlinesAssetsGamesReponseNew =
       'assets/games_reponse_new.json';
+  static const String hotlinesAssetsNflRes = 'assets/nfl_res.json';
   static const String imagesAUTO = 'assets/images/AUTO.png';
   static const String imagesBAL = 'assets/images/BAL.png';
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
@@ -20,6 +21,7 @@ class Assets {
   static const String imagesDotes = 'assets/images/dotes.svg';
   static const String imagesFire = 'assets/images/fire.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
+  static const String imagesLogo = 'assets/images/logo.svg';
   static const String imagesMLB = 'assets/images/MLB.png';
   static const String imagesMoon = 'assets/images/moon.svg';
   static const String imagesNBA = 'assets/images/NBA.png';
