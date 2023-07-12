@@ -41,8 +41,9 @@ class SportController extends GetxController {
   }
 
   void gameListingsWithLogoResponse(
-      BuildContext context, String year, String sportKey) async {
-    isLoading.value = true;
+      BuildContext context, String year, String sportKey,
+      {bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
 
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
@@ -54,41 +55,43 @@ class SportController extends GetxController {
         try {
           data.forEach((key, value) {
             if (result.data[key] != null) {
-              (result.data[key]['games']).forEach((games) {
-                games['competitions'].forEach((teams) {
-                  teams['competitors'].forEach((details) {
-                    for (var element in gameDetails) {
-                      if (element.teams.home.abbreviation ==
-                              details['team']['abbreviation'] ||
-                          element.teams.home.team ==
-                              details['team']['displayName']) {
-                        element.homeGameLogo = details['team']['logo'];
-                        if (details['records'] != null) {
-                          details['records'].forEach((records) {
-                            if (records['type'] == 'total') {
-                              element.spreadHomeRecord = records['summary'];
-                            }
-                          });
-                        }
+              if (result.data[key]['games'] != null) {
+                (result.data[key]['games']).forEach((games) {
+                  games['competitions'].forEach((teams) {
+                    teams['competitors'].forEach((details) {
+                      for (var element in gameDetails) {
+                        if (element.teams.home.abbreviation ==
+                                details['team']['abbreviation'] ||
+                            element.teams.home.team ==
+                                details['team']['displayName']) {
+                          element.homeGameLogo = details['team']['logo'];
+                          if (details['records'] != null) {
+                            details['records'].forEach((records) {
+                              if (records['type'] == 'total') {
+                                element.spreadHomeRecord = records['summary'];
+                              }
+                            });
+                          }
 
-                        element.homeScore = details['score'];
-                      }
-                      if (element.teams.away.abbreviation ==
-                          details['team']['abbreviation']) {
-                        element.awayGameLogo = details['team']['logo'];
-                        element.awayScore = details['score'];
-                        if (details['records'] != null) {
-                          details['records'].forEach((records) {
-                            if (records['type'] == 'total') {
-                              element.spreadAwayRecord = records['summary'];
-                            }
-                          });
+                          element.homeScore = details['score'];
+                        }
+                        if (element.teams.away.abbreviation ==
+                            details['team']['abbreviation']) {
+                          element.awayGameLogo = details['team']['logo'];
+                          element.awayScore = details['score'];
+                          if (details['records'] != null) {
+                            details['records'].forEach((records) {
+                              if (records['type'] == 'total') {
+                                element.spreadAwayRecord = records['summary'];
+                              }
+                            });
+                          }
                         }
                       }
-                    }
+                    });
                   });
                 });
-              });
+              }
             }
           });
         } catch (e) {
@@ -149,8 +152,8 @@ class SportController extends GetxController {
   RxBool isLoading = false.obs;
 
   Future gameListingsResponse(BuildContext context,
-      {String sportKey = '', String date = ""}) async {
-    isLoading.value = true;
+      {String sportKey = '', String date = "", bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
     gameDetails.clear();
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);

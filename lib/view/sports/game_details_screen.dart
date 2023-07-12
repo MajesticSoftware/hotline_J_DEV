@@ -38,7 +38,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     widget.sportKey == 'MLB'
         ? gameDetailsController.mlbInjuriesReportResponse(context,
             teamAwayName: widget.gameDetails.teams.away.abbreviation,
@@ -50,38 +49,49 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             league: widget.sportKey);
   }
 
+  Future _refreshLocalGallery() async {
+    // getRanking();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDark = PreferenceManager.getIsDarkMode() ?? false;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
-      body: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    headerWidget(context),
-                    playerPropBetsWidget(context),
-                    teamReportWidget(context),
-                    widget.sportKey == 'MLB'
-                        ? mlbInjuryReportWidget(context)
-                        : nflInjuryReportWidget(context),
-                    40.H(),
-                  ],
-                ),
-              ))
-            ],
-          ),
-          Obx(() => gameDetailsController.isLoading.value
-              ? const AppProgress()
-              : const SizedBox())
-        ],
+      body: RefreshIndicator(
+        onRefresh: () {
+          return _refreshLocalGallery();
+        },
+        color: Theme.of(context).disabledColor,
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      headerWidget(context),
+                      playerPropBetsWidget(context),
+                      teamReportWidget(context),
+                      widget.sportKey == 'MLB'
+                          ? mlbInjuryReportWidget(context)
+                          : nflInjuryReportWidget(context),
+                      40.H(),
+                    ],
+                  ),
+                ))
+              ],
+            ),
+            Obx(() => gameDetailsController.isLoading.value
+                ? const AppProgress()
+                : const SizedBox())
+          ],
+        ),
       ),
     );
   }
@@ -228,25 +238,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         }));
   }
 
-  List injuryList = [lamarJackson, odellBeckham, 'Patrick Queen (O)'];
-
-  List teamReportName = [
-    'Last 3 games',
-    '@Home',
-    'Away',
-    'Against the spread',
-    'Last 3 games',
-    '@Home',
-    'Away',
-    'Against the spread'
-  ];
-
-  List injuryList1 = [
-    'Kenny Pickett (O)',
-    'T.J. Watt (O)',
-    'George Pickens (O)',
-  ];
-
   Padding teamReportWidget(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(MediaQuery.of(context).size.height * .02),
@@ -256,63 +247,142 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             borderRadius:
                 BorderRadius.circular(MediaQuery.of(context).size.width * .01),
             color: Theme.of(context).canvasColor),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            headerTitleWidget(context, teamReport),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 8,
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * .016,
-                          vertical: MediaQuery.of(context).size.height * .003),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: '1-3'.appCommonText(
-                                color: Theme.of(context).highlightColor,
-                                weight: FontWeight.w700,
-                                align: TextAlign.end,
-                                size:
-                                    MediaQuery.of(context).size.height * .014),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: '${teamReportName[index]}'
-                                .toString()
-                                .appCommonText(
-                                    color: darkGreyColor,
-                                    align: TextAlign.center,
-                                    weight: FontWeight.w600,
-                                    size: MediaQuery.of(context).size.height *
-                                        .016),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: '  3-0'.appCommonText(
-                                color: Theme.of(context).highlightColor,
-                                weight: FontWeight.w700,
-                                align: TextAlign.start,
-                                size:
-                                    MediaQuery.of(context).size.height * .014),
-                          )
-                        ],
-                      ),
-                    ),
-                    index == 7 ? const SizedBox() : commonDivider(context),
-                  ],
-                );
-              },
-            ),
-          ],
+        child: GetBuilder<GameDetailsController>(initState: (state) {
+          getRanking();
+        }, builder: (controller) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerTitleWidget(context, teamReport, isTeamReport: true),
+              rankingCommonWidget(context, 'Offensive Rankings'),
+              commonRankingWidget(context,
+                  teamReports: controller.offensive[4],
+                  awayText: controller.awayRushingOffenseYards,
+                  homeText: controller.homeRushingOffenseYards),
+              commonRankingWidget(context,
+                  teamReports: controller.offensive[6],
+                  awayText: controller.awayRushingOffenseTDs,
+                  homeText: controller.homeRushingOffenseTDs),
+              commonRankingWidget(context,
+                  teamReports: controller.offensive[5],
+                  awayText: controller.awayPassingOffenseYards,
+                  homeText: controller.homePassingOffenseYards),
+              commonRankingWidget(context,
+                  teamReports: controller.offensive[7],
+                  awayText: controller.awayPassingOffenseTDs,
+                  homeText: controller.homePassingOffenseTDs),
+              rankingCommonWidget(context, 'Defensive Rankings'),
+              commonRankingWidget(context,
+                  teamReports: controller.defensive[4],
+                  awayText: controller.awayRushingDefenseYards,
+                  homeText: controller.homeRushingDefenseYards),
+              commonRankingWidget(context,
+                  teamReports: controller.defensive[6],
+                  awayText: controller.awayRushingDefenseTDs,
+                  homeText: controller.homeRushingDefenseTDs),
+              commonRankingWidget(context,
+                  teamReports: controller.defensive[5],
+                  awayText: controller.awayPassingDefenseYards,
+                  homeText: controller.homePassingDefenseYards),
+              commonRankingWidget(context,
+                  teamReports: controller.defensive[7],
+                  awayText: controller.awayPassingDefenseTDs,
+                  homeText: controller.homePassingDefenseTDs),
+              rankingCommonWidget(context, 'Team Stats'),
+              commonRankingWidget(context,
+                  teamReports: controller.teamStatus[0],
+                  awayText: controller.lastAwayGameRecord,
+                  homeText: controller.lastHomeGameRecord),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Future getRanking() {
+    gameDetailsController.nflRushingOffenseRankingResponse(context,
+        awayTeam: widget.gameDetails.teams.away.mascot,
+        homeTeam: widget.gameDetails.teams.home.mascot,
+        year: '2022',
+        isLoad: true);
+    gameDetailsController.nflRushingDefenseRankingResponse(context,
+        awayTeam: widget.gameDetails.teams.away.mascot,
+        homeTeam: widget.gameDetails.teams.home.mascot,
+        year: '2022',
+        isLoad: true);
+    gameDetailsController.nflPassingOffenseRankingResponse(context,
+        awayTeam: widget.gameDetails.teams.away.mascot,
+        homeTeam: widget.gameDetails.teams.home.mascot,
+        year: '2022',
+        isLoad: true);
+    gameDetailsController.nflPassingDefenseRankingResponse(context,
+        awayTeam: widget.gameDetails.teams.away.mascot,
+        homeTeam: widget.gameDetails.teams.home.mascot,
+        year: '2022',
+        isLoad: true);
+    return gameDetailsController.nflLastRecordResponse(context,
+        awayTeam: widget.gameDetails.teams.away.team,
+        homeTeam: widget.gameDetails.teams.home.team,
+        year: '2022',
+        isLoad: true);
+  }
+
+  Column commonRankingWidget(BuildContext context,
+      {String homeText = '', String awayText = '', String teamReports = ''}) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .016,
+              vertical: MediaQuery.of(context).size.height * .003),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: awayText.appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    weight: FontWeight.w700,
+                    align: TextAlign.end,
+                    size: MediaQuery.of(context).size.height * .014),
+              ),
+              Expanded(
+                flex: 2,
+                child: teamReports.toString().appCommonText(
+                    color: darkGreyColor,
+                    align: TextAlign.center,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .016),
+              ),
+              Expanded(
+                flex: 1,
+                child: homeText.appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    weight: FontWeight.w700,
+                    align: TextAlign.start,
+                    size: MediaQuery.of(context).size.height * .014),
+              )
+            ],
+          ),
+        ),
+        commonDivider(context),
+      ],
+    );
+  }
+
+  Container rankingCommonWidget(BuildContext context, String title) {
+    return Container(
+      color: darkGreyColor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height * .003),
+        child: Center(
+          child: title.appCommonText(
+              color: Theme.of(context).highlightColor,
+              weight: FontWeight.bold,
+              align: TextAlign.end,
+              size: MediaQuery.of(context).size.height * .014),
         ),
       ),
     );
@@ -761,7 +831,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     );
   }
 
-  Container headerTitleWidget(BuildContext context, String title) {
+  Container headerTitleWidget(BuildContext context, String title,
+      {bool isTeamReport = false}) {
     return Container(
         height: MediaQuery.of(context).size.height * .032,
         width: Get.width,
@@ -780,6 +851,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   Expanded(
                     child: widget.gameDetails.teams.away.team.appCommonText(
                       weight: FontWeight.w600,
+                      maxLine: 1,
                       size: MediaQuery.of(context).size.height * .016,
                       align: TextAlign.end,
                       color: Theme.of(context).cardColor,
@@ -796,7 +868,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: isTeamReport ? 2 : 1,
               child: title.appCommonText(
                   color: Theme.of(context).cardColor,
                   align: TextAlign.center,
@@ -1107,7 +1179,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             } else {
               date = '${date}th';
             }
-            log('widget.gameDetails.awayLiveScores---${widget.gameDetails.awayLiveScores}');
+            // log('widget.gameDetails.awayLiveScores---${widget.gameDetails.awayLiveScores}');
             return Container(
               width: Get.width,
               height: MediaQuery.of(context).size.height * .175,

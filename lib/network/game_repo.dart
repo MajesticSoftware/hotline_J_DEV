@@ -76,4 +76,66 @@ class GameRepo {
     });
     return result;
   }
+
+  Future<ResponseItem> nflRushingRanking(String year,
+      {isOffense = true}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://nfl-team-stats.p.rapidapi.com/v1/nfl-stats/teams/rushing-stats/${isOffense ? 'offense' : 'defense'}/$year');
+
+    result = await BaseApiHelper.getRequest(uri, {
+      'X-RapidAPI-Host': 'nfl-team-stats.p.rapidapi.com',
+      'X-RapidAPI-Key': 'd95a925a59mshe22d68977f46b96p119cfajsn56b144b5a86f'
+    });
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  Future<ResponseItem> nflPassingRanking(String year,
+      {isOffense = true}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://nfl-team-stats.p.rapidapi.com/v1/nfl-stats/teams/passing-stats/${isOffense ? 'offense' : 'defense'}/$year');
+
+    result = await BaseApiHelper.getRequest(uri, {
+      'X-RapidAPI-Host': 'nfl-team-stats.p.rapidapi.com',
+      'X-RapidAPI-Key': 'd95a925a59mshe22d68977f46b96p119cfajsn56b144b5a86f'
+    });
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  Future<ResponseItem> nflLastGameRecord(String year) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://nfl-team-stats.p.rapidapi.com/v1/nfl-stats/teams/win-stats/$year');
+
+    result = await BaseApiHelper.getRequest(uri, {
+      'X-RapidAPI-Host': 'nfl-team-stats.p.rapidapi.com',
+      'X-RapidAPI-Key': 'd95a925a59mshe22d68977f46b96p119cfajsn56b144b5a86f'
+    });
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
 }
