@@ -74,6 +74,7 @@ class Result {
   String homeScore;
   String spreadAwayRecord;
   String spreadHomeRecord;
+  Scoreboard? scoreboard;
 
   Result({
     required this.summary,
@@ -90,6 +91,7 @@ class Result {
     this.homeScore = '',
     this.spreadAwayRecord = '',
     this.spreadHomeRecord = '',
+    required this.scoreboard,
   });
   String get liveSpreadHomeRecord {
     return spreadHomeRecord.isEmpty ? '0-0' : spreadHomeRecord;
@@ -115,19 +117,20 @@ class Result {
     return awayScore.isEmpty ? '0' : awayScore;
   }
 
-  Result copyWith({
-    String? summary,
-    Details? details,
-    Schedule? schedule,
-    Teams? teams,
-    DateTime? lastUpdated,
-    int? gameId,
-    Venue? venue,
-    List<Odd>? odds,
-  }) =>
+  Result copyWith(
+          {String? summary,
+          Details? details,
+          Schedule? schedule,
+          Teams? teams,
+          DateTime? lastUpdated,
+          int? gameId,
+          Venue? venue,
+          List<Odd>? odds,
+          Scoreboard? scoreboard}) =>
       Result(
         summary: summary ?? this.summary,
         details: details ?? this.details,
+        scoreboard: scoreboard ?? this.scoreboard,
         schedule: schedule ?? this.schedule,
         teams: teams ?? this.teams,
         lastUpdated: lastUpdated ?? this.lastUpdated,
@@ -143,6 +146,9 @@ class Result {
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         summary: json["summary"],
         details: Details.fromJson(json["details"]),
+        scoreboard: json["scoreboard"] != null
+            ? Scoreboard.fromJson(json["scoreboard"])
+            : Scoreboard(),
         schedule: Schedule.fromJson(json["schedule"]),
         teams: Teams.fromJson(json["teams"]),
         lastUpdated: DateTime.parse(json["lastUpdated"]),
@@ -156,6 +162,7 @@ class Result {
   Map<String, dynamic> toJson() => {
         "summary": summary,
         "details": details.toJson(),
+        "scoreboard": scoreboard != null ? scoreboard?.toJson() : [],
         "schedule": schedule.toJson(),
         "teams": teams.toJson(),
         "lastUpdated": lastUpdated.toIso8601String(),
@@ -165,6 +172,50 @@ class Result {
             // ignore: unnecessary_null_comparison
             odds != null ? List<dynamic>.from(odds.map((x) => x.toJson())) : [],
       };
+}
+
+class Scoreboard {
+  Score? score;
+
+  Scoreboard({this.score});
+
+  Scoreboard.fromJson(Map<String, dynamic> json) {
+    score = json['score'] != null ? new Score.fromJson(json['score']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.score != null) {
+      data['score'] = this.score!.toJson();
+    }
+
+    return data;
+  }
+}
+
+class Score {
+  int? away;
+  int? home;
+  List<int>? awayPeriods;
+  List<int>? homePeriods;
+
+  Score({this.away, this.home, this.awayPeriods, this.homePeriods});
+
+  Score.fromJson(Map<String, dynamic> json) {
+    away = json['away'];
+    home = json['home'];
+    awayPeriods = json['awayPeriods'].cast<int>();
+    homePeriods = json['homePeriods'].cast<int>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['away'] = this.away;
+    data['home'] = this.home;
+    data['awayPeriods'] = this.awayPeriods;
+    data['homePeriods'] = this.homePeriods;
+    return data;
+  }
 }
 
 class Details {
