@@ -27,7 +27,8 @@ class BaseApiHelper {
   static Future<ResponseItem> getRequest(
       Uri requestUrl, Map<String, String> headers) async {
     printData(tittle: "request", val: requestUrl);
-    return await http
+    var client = http.Client();
+    return await client
         .get(requestUrl, headers: headers)
         .then((response) => baseOnValue(response))
         .onError((error, stackTrace) => onError(error, requestUrl));

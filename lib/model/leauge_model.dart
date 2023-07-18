@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../generated/assets.dart';
 
 class LeagueModel {
@@ -13,6 +15,10 @@ class LeagueModel {
       required this.isAvailable});
 }
 
+final DateTime now = DateTime.now().subtract(const Duration(days: 1));
+final DateFormat formatter = DateFormat('yyyy-MM-dd');
+final String formatted = formatter.format(now);
+
 List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       image: Assets.imagesNFT,
@@ -24,18 +30,19 @@ List<LeagueModel> sportsLeagueList = [
       date: '2023-08-26,2023-12-31',
       key: 'NCAA',
       isAvailable: true),
-  LeagueModel(image: Assets.imagesMLB, date: '', key: 'MLB', isAvailable: true),
+  LeagueModel(
+      image: Assets.imagesMLB, date: formatted, key: 'MLB', isAvailable: true),
   LeagueModel(
       image: Assets.imagesNHL, date: '', key: 'NHL', isAvailable: false),
   LeagueModel(
       image: Assets.imagesNBA, date: '', key: 'NBA', isAvailable: false),
   LeagueModel(
-      image: Assets.imagesSOCCER, date: '', key: 'SOCCER', isAvailable: false),
-  LeagueModel(
-      image: Assets.imagesUFC, date: '', key: 'UFC', isAvailable: false),
-  LeagueModel(
-      image: Assets.imagesAUTO,
-      date: '',
-      key: 'AUTO RACING',
-      isAvailable: false),
+      image: Assets.imagesGOLF, date: '', key: 'GOLF', isAvailable: false),
+  // LeagueModel(
+  //     image: Assets.imagesUFC, date: '', key: 'UFC', isAvailable: false),
+  // LeagueModel(
+  //     image: Assets.imagesAUTO,
+  //     date: '',
+  //     key: 'AUTO RACING',
+  //     isAvailable: false),
 ];

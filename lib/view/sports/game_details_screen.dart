@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -40,11 +38,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     // TODO: implement initState
     super.initState();
     widget.sportKey == 'MLB'
-        ? gameDetailsController.mlbInjuriesReportResponse(context,
+        ? gameDetailsController.mlbInjuriesReportResponse(
             teamAwayName: widget.gameDetails.teams.away.abbreviation,
             teamHomeName: widget.gameDetails.teams.home.abbreviation,
             league: widget.sportKey)
-        : gameDetailsController.nflInjuriesReportResponse(context,
+        : gameDetailsController.nflInjuriesReportResponse(
             teamAwayName: widget.gameDetails.teams.away.abbreviation,
             teamHomeName: widget.gameDetails.teams.home.abbreviation,
             league: widget.sportKey);
@@ -256,125 +254,134 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               headerTitleWidget(context, teamReport, isTeamReport: true),
-              rankingCommonWidget(context, 'Offensive Rankings'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[0],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[1],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[2],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[3],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[4],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[5],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[6],
-                  awayText: controller.awayRushingOffenseTDs,
-                  homeText: controller.homeRushingOffenseTDs),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[7],
-                  awayText: controller.awayPassingOffenseTDs,
-                  homeText: controller.homePassingOffenseTDs),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[8],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[9],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[10],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.offensive[11],
-                  awayText: '0',
-                  homeText: '0'),
-              rankingCommonWidget(context, 'Defensive Rankings'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[0],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[1],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[2],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[3],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[4],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[5],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[6],
-                  awayText: controller.awayRushingDefenseTDs,
-                  homeText: controller.homeRushingDefenseTDs),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[7],
-                  awayText: controller.awayPassingDefenseTDs,
-                  homeText: controller.homePassingDefenseTDs),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[8],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[9],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.defensive[10],
-                  awayText: '0',
-                  homeText: '0'),
+              rankingCommonWidget(
+                  context,
+                  widget.sportKey == 'MLB'
+                      ? 'Team Hitting Rankings'
+                      : 'Offensive Rankings'),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.sportKey == 'MLB'
+                    ? controller.offensiveMLB.length
+                    : controller.offensive.length,
+                itemBuilder: (context, index) {
+                  return widget.sportKey == 'MLB'
+                      ? commonRankingWidget(context,
+                          teamReports: controller.offensiveMLB[index],
+                          awayText: '0',
+                          homeText: '0')
+                      : commonRankingWidget(context,
+                          teamReports: controller.offensive[index],
+                          awayText: index == 2
+                              ? controller.awayScore
+                              : index == 4
+                                  ? controller.awayRushingOffenseYards
+                                  : index == 5
+                                      ? controller.awayPassingOffenseYards
+                                      : index == 6
+                                          ? controller.awayRushingOffenseTDs
+                                          : index == 7
+                                              ? controller.awayPassingOffenseTDs
+                                              : index == 9
+                                                  ? controller.awayThirdDown
+                                                  : index == 10
+                                                      ? controller
+                                                          .awayFourthDown
+                                                      : '0',
+                          homeText: index == 2
+                              ? controller.homeScore
+                              : index == 4
+                                  ? controller.homeRushingOffenseYards
+                                  : index == 5
+                                      ? controller.homePassingOffenseYards
+                                      : index == 6
+                                          ? controller.homeRushingOffenseTDs
+                                          : index == 7
+                                              ? controller.homePassingOffenseTDs
+                                              : index == 9
+                                                  ? controller.homeThirdDown
+                                                  : index == 10
+                                                      ? controller
+                                                          .homeFourthDown
+                                                      : '0');
+                },
+              ),
+              rankingCommonWidget(
+                  context,
+                  widget.sportKey == 'MLB'
+                      ? 'Team Pitching Rankings'
+                      : 'Defensive Rankings'),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.sportKey == 'MLB'
+                    ? controller.defensiveMLB.length
+                    : controller.defensive.length,
+                itemBuilder: (context, index) {
+                  return widget.sportKey == 'MLB'
+                      ? commonRankingWidget(context,
+                          teamReports: controller.defensiveMLB[index],
+                          homeText: '0',
+                          awayText: '0')
+                      : commonRankingWidget(context,
+                          teamReports: controller.defensive[index],
+                          awayText: index == 2
+                              ? controller.awayOpponentScore
+                              : index == 4
+                                  ? controller.awayRushingDefenseYards
+                                  : index == 5
+                                      ? controller.awayPassingDefenseYards
+                                      : index == 6
+                                          ? controller.awayRushingDefenseTDs
+                                          : index == 7
+                                              ? controller.awayPassingDefenseTDs
+                                              : index == 9
+                                                  ? controller
+                                                      .awayOpponentThirdDown
+                                                  : index == 10
+                                                      ? controller
+                                                          .awayOpponentFourthDown
+                                                      : '0',
+                          homeText: index == 2
+                              ? controller.homeOpponentScore
+                              : index == 4
+                                  ? controller.homeRushingDefenseYards
+                                  : index == 5
+                                      ? controller.homePassingDefenseYards
+                                      : index == 6
+                                          ? controller.homeRushingDefenseTDs
+                                          : index == 7
+                                              ? controller.homePassingDefenseTDs
+                                              : index == 9
+                                                  ? controller
+                                                      .homeOpponentThirdDown
+                                                  : index == 10
+                                                      ? controller
+                                                          .homeOpponentFourthDown
+                                                      : '0');
+                },
+              ),
               rankingCommonWidget(context, 'Team Stats'),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[0],
-                  awayText: controller.lastAwayGameRecord,
-                  homeText: controller.lastHomeGameRecord),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[1],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[2],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[3],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[4],
-                  awayText: '0',
-                  homeText: '0'),
-              commonRankingWidget(context,
-                  teamReports: controller.teamStatus[5],
-                  awayText: '0',
-                  homeText: '0'),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.sportKey == 'MLB'
+                    ? controller.teamStatusMLB.length
+                    : controller.teamStatus.length,
+                itemBuilder: (context, index) {
+                  return commonRankingWidget(context,
+                      teamReports: widget.sportKey == 'MLB'
+                          ? controller.teamStatusMLB[index]
+                          : controller.teamStatus[index],
+                      awayText: index == 0 && widget.sportKey != 'MLB'
+                          ? controller.lastAwayGameRecord
+                          : '0',
+                      homeText: index == 0 && widget.sportKey != 'MLB'
+                          ? controller.lastHomeGameRecord
+                          : '0');
+                },
+              ),
             ],
           );
         }),
@@ -383,27 +390,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   }
 
   Future getRanking() {
-    gameDetailsController.nflRushingOffenseRankingResponse(context,
-        awayTeam: widget.gameDetails.teams.away.mascot,
-        homeTeam: widget.gameDetails.teams.home.mascot,
+    gameDetailsController.nflAnalysisStatResponse(
+        awayTeam: widget.gameDetails.teams.away.abbreviation,
+        homeTeam: widget.gameDetails.teams.home.abbreviation,
         year: '2022',
         isLoad: true);
-    gameDetailsController.nflRushingDefenseRankingResponse(context,
-        awayTeam: widget.gameDetails.teams.away.mascot,
-        homeTeam: widget.gameDetails.teams.home.mascot,
-        year: '2022',
-        isLoad: true);
-    gameDetailsController.nflPassingOffenseRankingResponse(context,
-        awayTeam: widget.gameDetails.teams.away.mascot,
-        homeTeam: widget.gameDetails.teams.home.mascot,
-        year: '2022',
-        isLoad: true);
-    gameDetailsController.nflPassingDefenseRankingResponse(context,
-        awayTeam: widget.gameDetails.teams.away.mascot,
-        homeTeam: widget.gameDetails.teams.home.mascot,
-        year: '2022',
-        isLoad: true);
-    return gameDetailsController.nflLastRecordResponse(context,
+    return gameDetailsController.nflLastRecordResponse(
         awayTeam: widget.gameDetails.teams.away.team,
         homeTeam: widget.gameDetails.teams.home.team,
         year: '2022',

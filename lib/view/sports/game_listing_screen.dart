@@ -12,15 +12,32 @@ import '../../theme/helper.dart';
 import '../../theme/theme.dart';
 import '../../utils/app_progress.dart';
 import 'game_details_screen.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
-class GameListingScreen extends StatelessWidget {
-  GameListingScreen({Key? key, required this.sportKey, required this.date})
+class GameListingScreen extends StatefulWidget {
+  const GameListingScreen(
+      {Key? key, required this.sportKey, required this.date})
       : super(key: key);
   final String sportKey;
   final String date;
+
+  @override
+  State<GameListingScreen> createState() => _GameListingScreenState();
+}
+
+class _GameListingScreenState extends State<GameListingScreen> {
   final SportController sportController = Get.find();
+
   late ScrollController scrollController;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    var client = http.Client();
+    client.close();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +71,7 @@ class GameListingScreen extends StatelessWidget {
                     ),
                   )),
                   Expanded(
-                    child: sportKey.appCommonText(
+                    child: widget.sportKey.appCommonText(
                         color: whiteColor,
                         weight: FontWeight.w700,
                         size: Get.height * .024),
@@ -71,10 +88,10 @@ class GameListingScreen extends StatelessWidget {
         children: [
           GetBuilder<SportController>(initState: (state) {
             sportController
-                .gameListingsResponse(context,
-                    sportKey: sportKey, date: date, isLoad: true)
+                .gameListingsResponse(
+                    sportKey: widget.sportKey, date: widget.date, isLoad: true)
                 .then((value) => sportController.gameListingsWithLogoResponse(
-                    context, '2023', sportKey,
+                    '2023', widget.sportKey,
                     isLoad: true));
 
             // sportController.getSportDataFromJson(context);
@@ -131,11 +148,11 @@ class GameListingScreen extends StatelessWidget {
                 ? RefreshIndicator(
                     onRefresh: () {
                       return sportController
-                          .gameListingsResponse(context,
-                              sportKey: sportKey, date: date)
+                          .gameListingsResponse(
+                              sportKey: widget.sportKey, date: widget.date)
                           .then((value) =>
                               sportController.gameListingsWithLogoResponse(
-                                  context, '2023', sportKey));
+                                  '2023', widget.sportKey));
                     },
                     color: Theme.of(context).disabledColor,
                     child: ListView.builder(
@@ -148,12 +165,18 @@ class GameListingScreen extends StatelessWidget {
                               onTap: () {
                                 Get.to(SportDetailsScreen(
                                   gameDetails: controller.gameDetails[index],
-                                  sportKey: sportKey,
+                                  sportKey: widget.sportKey,
                                 ));
                               },
-                              child: teamWidget(
-                                  controller.gameDetails[index], context,
-                                  index: index));
+                              child: controller.gameDetails[index].schedule.date
+                                              .toLocal()
+                                              .day !=
+                                          DateTime.now().toLocal().day &&
+                                      widget.sportKey == 'MLB'
+                                  ? const SizedBox()
+                                  : teamWidget(
+                                      controller.gameDetails[index], context,
+                                      index: index));
                         } catch (e) {
                           return const SizedBox();
                         }

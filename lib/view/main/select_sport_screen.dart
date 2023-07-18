@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import '../../constant/constant.dart';
 import '../../constant/shred_preference.dart';
 import '../../controller/selecte_game_con.dart';
 import '../../generated/assets.dart';

@@ -138,4 +138,21 @@ class GameRepo {
 
     return ResponseItem(data: data, message: message, status: status);
   }
+
+  Future<ResponseItem> nflAnalysisStat(String year) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/$year?key=e4fa0e9f6e1d41d6862141c0959c8a65');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
 }

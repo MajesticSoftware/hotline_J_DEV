@@ -20,6 +20,7 @@ class Assets {
   static const String imagesCommingSoon = 'assets/images/commingSoon.svg';
   static const String imagesDotes = 'assets/images/dotes.svg';
   static const String imagesFire = 'assets/images/fire.png';
+  static const String imagesGOLF = 'assets/images/GOLF.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
   static const String imagesLogo = 'assets/images/logo.svg';
   static const String imagesMLB = 'assets/images/MLB.png';

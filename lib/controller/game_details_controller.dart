@@ -1,14 +1,13 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/injuries_data_model.dart';
 import 'package:hotlines/model/mlb_injury_report_model.dart';
+import 'package:hotlines/model/nfl_ranking_model.dart';
+import 'package:hotlines/model/nfl_stat_model.dart';
 import 'package:hotlines/model/nfl_win_losses_record_model.dart';
 
 import '../constant/app_strings.dart';
-import '../model/nfl_passing_ranking_model.dart';
-import '../model/nfl_rushing_ranking_model.dart';
 import '../model/response_item.dart';
 import '../network/game_repo.dart';
 import '../theme/helper.dart';
@@ -28,6 +27,20 @@ class GameDetailsController extends GetxController {
     '4th Down Efficiency',
     'Field goal Percentage',
   ];
+  List offensiveMLB = [
+    'Runs Scored',
+    'Hits',
+    'HRs (Homeruns)',
+    'RBI’s (Runs Batted In)',
+    'Walks',
+    'Strike Outs',
+    'Stolen Bases',
+    'Batting Average',
+    'Slugging Percentage (SLG)',
+    'On-Base + Slugging (OPS)',
+    'Ground Into Double Play',
+    'At Bats per home run',
+  ];
 
   List defensive = [
     'Defensive DVOA',
@@ -43,7 +56,35 @@ class GameDetailsController extends GetxController {
     'Opponent 4th Down Efficiency',
   ];
 
+  List defensiveMLB = [
+    'Wins',
+    'Losses',
+    'Earned Run Average (ERA)',
+    'Shut Outs',
+    'Save Percentage',
+    'Quality Starts',
+    'Runs Allowed',
+    'Home runs Allowed',
+    'Walks Allowed',
+    'Strike Outs',
+    'Walks & Hits Per Innings Pitched (WHIP)',
+    'Opponents Batting Average',
+    'Opponents Ground into Double Play',
+    'Strike Out Per 9 innings Pitched',
+    'Walks Per 9 Innings Pitched',
+    'Strike out to walk ratio',
+  ];
+
   List teamStatus = [
+    'W/L record (last 5 games)',
+    'Home/Away record',
+    'Division vs. Non-division record',
+    'Head to head record (last 5 games)',
+    'Against the spread',
+    'Point Differential',
+  ];
+  List teamStatusMLB = [
+    'W/L Record (overall)',
     'W/L record (last 5 games)',
     'Home/Away record',
     'Division vs. Non-division record',
@@ -72,7 +113,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  void nflInjuriesReportResponse(BuildContext context,
+  void nflInjuriesReportResponse(
       {String teamHomeName = '',
       String teamAwayName = '',
       String league = ''}) async {
@@ -105,13 +146,15 @@ class GameDetailsController extends GetxController {
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        // showAppSnackBar('Resource not found', context);
+
+        // showAppSnackBar('Resource not found', );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+
+      showAppSnackBar(
+        errorText,
+      );
     }
 
     update();
@@ -138,7 +181,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  void mlbInjuriesReportResponse(BuildContext context,
+  void mlbInjuriesReportResponse(
       {String teamHomeName = '',
       String teamAwayName = '',
       String league = ''}) async {
@@ -170,57 +213,52 @@ class GameDetailsController extends GetxController {
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        // showAppSnackBar('Resource not found', context);
+        // showAppSnackBar('Resource not found', );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+
+      showAppSnackBar(
+        errorText,
+      );
     }
 
     update();
   }
 
   ///RUSHING RANKING
-  String _homeRushingOffenseTDs = '0';
 
-  String get homeRushingOffenseTDs => _homeRushingOffenseTDs;
+  String homeRushingOffenseTDs = '0';
+  String homeRushingOffenseYards = '0';
+  String awayRushingOffenseTDs = '0';
+  String awayRushingOffenseYards = '0';
+  String homeRushingDefenseTDs = '0';
+  String homeRushingDefenseYards = '0';
+  String awayRushingDefenseTDs = '0';
+  String awayRushingDefenseYards = '0';
+  String homePassingOffenseTDs = '0';
+  String homePassingOffenseYards = '0';
+  String awayPassingOffenseTDs = '0';
+  String awayPassingOffenseYards = '0';
+  String homePassingDefenseTDs = '0';
+  String homePassingDefenseYards = '0';
+  String awayPassingDefenseTDs = '0';
+  String awayPassingDefenseYards = '0';
+  String homeThirdDown = '0';
+  String homeFourthDown = '0';
+  String awayThirdDown = '0';
+  String awayFourthDown = '0';
+  String homeOpponentThirdDown = '0';
+  String homeOpponentFourthDown = '0';
+  String awayOpponentThirdDown = '0';
+  String awayOpponentFourthDown = '0';
+  String awayScore = '0';
+  String homeScore = '0';
+  String awayOpponentScore = '0';
+  String homeOpponentScore = '0';
+  // Map<BuffaloBills, dynamic> teamList = {};
 
-  set homeRushingOffenseTDs(String value) {
-    _homeRushingOffenseTDs = value;
-    update();
-  }
-
-  String _homeRushingOffenseYards = '0';
-
-  String get homeRushingOffenseYards => _homeRushingOffenseYards;
-
-  set homeRushingOffenseYards(String value) {
-    _homeRushingOffenseYards = value;
-    update();
-  }
-
-  String _awayRushingOffenseTDs = '0';
-
-  String get awayRushingOffenseTDs => _awayRushingOffenseTDs;
-
-  set awayRushingOffenseTDs(String value) {
-    _awayRushingOffenseTDs = value;
-    update();
-  }
-
-  String _awayRushingOffenseYards = '0';
-
-  String get awayRushingOffenseYards => _awayRushingOffenseYards;
-
-  set awayRushingOffenseYards(String value) {
-    _awayRushingOffenseYards = value;
-    update();
-  }
-
-  Future nflRushingOffenseRankingResponse(
-    BuildContext context, {
+  nflAnalysisStatResponse({
     String year = "",
     bool isLoad = false,
     String homeTeam = '',
@@ -229,280 +267,101 @@ class GameDetailsController extends GetxController {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().nflRushingRanking(year, isOffense: true);
+    result = await GameRepo().nflAnalysisStat(year);
     try {
       if (result.status) {
-        NFLRushingStatModel response =
-            NFLRushingStatModel.fromJson(result.data);
-
-        if ((response.eEmbedded?.teamRushingStatsList ?? []).isNotEmpty) {
-          response.eEmbedded?.teamRushingStatsList?.forEach((element) {
-            if (element.name == homeTeam) {
-              homeRushingOffenseTDs = element.touchdowns.toString();
-              homeRushingOffenseYards = element.yards.toString();
+        List<NFLRankingModel> response = (result.data as List)
+            .map((i) => NFLRankingModel.fromJson(i))
+            .toList();
+        // NFLStatModel res = NFLStatModel.fromJson(result.data);
+        // teamList.addAll({
+        //   (res.stats!.buffaloBills!): res.stats!.buffaloBills!.defensePerGame!
+        // });
+        // teamList.forEach((key, value) {
+        //   if (key.toString() == homeTeam) {
+        //     log('TEAMS----->>>${key.defensePerGame?.tm ?? ''}');
+        //   }
+        // });
+        if (response.isNotEmpty) {
+          for (var element in response) {
+            if (element.team == homeTeam) {
+              homePassingOffenseTDs =
+                  ((element.passingTouchdowns ?? 0) / (element.games ?? 1))
+                      .toStringAsFixed(2);
+              homeRushingOffenseTDs =
+                  ((element.rushingTouchdowns ?? 0) / (element.games ?? 1))
+                      .toStringAsFixed(2);
+              homeRushingOffenseYards =
+                  element.rushingYardsPerAttempt.toString();
+              homePassingOffenseYards =
+                  element.passingYardsPerAttempt.toString();
+              homePassingDefenseTDs =
+                  ((element.opponentPassingTouchdowns ?? 0) /
+                          (element.games ?? 1))
+                      .toStringAsFixed(2);
+              homeRushingDefenseTDs =
+                  ((element.opponentRushingTouchdowns ?? 0) /
+                          (element.games ?? 1))
+                      .toStringAsFixed(2);
+              homeRushingDefenseYards =
+                  element.opponentRushingYardsPerAttempt.toString();
+              homePassingDefenseYards =
+                  element.opponentPassingYardsPerAttempt.toString();
+              homeThirdDown = element.thirdDownPercentage.toString();
+              homeFourthDown = element.fourthDownPercentage.toString();
+              homeOpponentThirdDown =
+                  element.opponentThirdDownPercentage.toString();
+              homeOpponentFourthDown =
+                  element.opponentFourthDownPercentage.toString();
+              homeScore = element.score.toString();
+              homeOpponentScore = element.opponentScore.toString();
             }
-            if (element.name == awayTeam) {
-              awayRushingOffenseTDs = element.touchdowns.toString();
-              awayRushingOffenseYards = element.yards.toString();
+            if (element.team == awayTeam) {
+              awayPassingOffenseTDs =
+                  ((element.passingTouchdowns ?? 0) / (element.games ?? 1))
+                      .toStringAsFixed(2);
+              awayRushingOffenseTDs =
+                  ((element.rushingTouchdowns ?? 0) / (element.games ?? 1))
+                      .toStringAsFixed(2);
+              awayRushingOffenseYards =
+                  element.rushingYardsPerAttempt.toString();
+              awayPassingOffenseYards =
+                  element.passingYardsPerAttempt.toString();
+              awayPassingDefenseTDs =
+                  ((element.opponentPassingTouchdowns ?? 0) /
+                          (element.games ?? 1))
+                      .toStringAsFixed(2);
+              awayRushingDefenseTDs =
+                  ((element.opponentRushingTouchdowns ?? 0) /
+                          (element.games ?? 1))
+                      .toStringAsFixed(2);
+              awayRushingDefenseYards =
+                  element.opponentRushingYardsPerAttempt.toString();
+              awayPassingDefenseYards =
+                  element.opponentPassingYardsPerAttempt.toString();
+              awayThirdDown = element.thirdDownPercentage.toString();
+              awayFourthDown = element.fourthDownPercentage.toString();
+              awayOpponentThirdDown =
+                  element.opponentThirdDownPercentage.toString();
+              awayOpponentFourthDown =
+                  element.opponentFourthDownPercentage.toString();
+              awayScore = element.score.toString();
+              awayOpponentScore = element.opponentScore.toString();
             }
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          showAppSnackBar('No data', context);
+          }
         }
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
+
+        showAppSnackBar(
+          result.message,
+        );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
-    }
-    update();
-  }
 
-  String _homeRushingDefenseTDs = '0';
-
-  String get homeRushingDefenseTDs => _homeRushingDefenseTDs;
-
-  set homeRushingDefenseTDs(String value) {
-    _homeRushingDefenseTDs = value;
-    update();
-  }
-
-  String _homeRushingDefenseYards = '0';
-
-  String get homeRushingDefenseYards => _homeRushingDefenseYards;
-
-  set homeRushingDefenseYards(String value) {
-    _homeRushingDefenseYards = value;
-    update();
-  }
-
-  String _awayRushingDefenseTDs = '0';
-
-  String get awayRushingDefenseTDs => _awayRushingDefenseTDs;
-
-  set awayRushingDefenseTDs(String value) {
-    _awayRushingDefenseTDs = value;
-    update();
-  }
-
-  String _awayRushingDefenseYards = '0';
-
-  String get awayRushingDefenseYards => _awayRushingDefenseYards;
-
-  set awayRushingDefenseYards(String value) {
-    _awayRushingDefenseYards = value;
-    update();
-  }
-
-  Future nflRushingDefenseRankingResponse(
-    BuildContext context, {
-    String year = "",
-    bool isLoad = false,
-    String homeTeam = '',
-    String awayTeam = '',
-  }) async {
-    isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().nflRushingRanking(year, isOffense: false);
-    try {
-      if (result.status) {
-        NFLRushingStatModel response =
-            NFLRushingStatModel.fromJson(result.data);
-        if ((response.eEmbedded?.teamRushingStatsList ?? []).isNotEmpty) {
-          response.eEmbedded?.teamRushingStatsList?.forEach((element) {
-            if (element.name == homeTeam) {
-              homeRushingDefenseTDs = element.touchdowns.toString();
-              homeRushingDefenseYards = element.yards.toString();
-            }
-            if (element.name == awayTeam) {
-              awayRushingDefenseTDs = element.touchdowns.toString();
-              awayRushingDefenseYards = element.yards.toString();
-            }
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          showAppSnackBar('No data', context);
-        }
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
-      }
-    } catch (e) {
-      isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
-    }
-    update();
-  }
-
-  ///PASSING RANKING
-
-  String _homePassingOffenseTDs = '0';
-
-  String get homePassingOffenseTDs => _homePassingOffenseTDs;
-
-  set homePassingOffenseTDs(String value) {
-    _homePassingOffenseTDs = value;
-    update();
-  }
-
-  String _homePassingOffenseYards = '0';
-
-  String get homePassingOffenseYards => _homePassingOffenseYards;
-
-  set homePassingOffenseYards(String value) {
-    _homePassingOffenseYards = value;
-    update();
-  }
-
-  String _awayPassingOffenseTDs = '0';
-
-  String get awayPassingOffenseTDs => _awayPassingOffenseTDs;
-
-  set awayPassingOffenseTDs(String value) {
-    _awayPassingOffenseTDs = value;
-    update();
-  }
-
-  String _awayPassingOffenseYards = '0';
-
-  String get awayPassingOffenseYards => _awayPassingOffenseYards;
-
-  set awayPassingOffenseYards(String value) {
-    _awayPassingOffenseYards = value;
-    update();
-  }
-
-  Future nflPassingOffenseRankingResponse(
-    BuildContext context, {
-    String year = "",
-    bool isLoad = false,
-    String homeTeam = '',
-    String awayTeam = '',
-  }) async {
-    isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().nflPassingRanking(year, isOffense: true);
-    try {
-      if (result.status) {
-        NFLPassingStatModel response =
-            NFLPassingStatModel.fromJson(result.data);
-
-        if ((response.eEmbedded?.teamPassingStatsList ?? []).isNotEmpty) {
-          response.eEmbedded?.teamPassingStatsList?.forEach((element) {
-            if (element.name == homeTeam) {
-              homePassingOffenseTDs = element.touchdowns.toString();
-              homePassingOffenseYards = element.passYards.toString();
-            }
-            if (element.name == awayTeam) {
-              awayPassingOffenseTDs = element.touchdowns.toString();
-              awayPassingOffenseYards = element.passYards.toString();
-            }
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          showAppSnackBar('No data', context);
-        }
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
-      }
-    } catch (e) {
-      isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
-    }
-    update();
-  }
-
-  String _homePassingDefenseTDs = '0';
-
-  String get homePassingDefenseTDs => _homePassingDefenseTDs;
-
-  set homePassingDefenseTDs(String value) {
-    _homePassingDefenseTDs = value;
-    update();
-  }
-
-  String _homePassingDefenseYards = '0';
-
-  String get homePassingDefenseYards => _homePassingDefenseYards;
-
-  set homePassingDefenseYards(String value) {
-    _homePassingDefenseYards = value;
-    update();
-  }
-
-  String _awayPassingDefenseTDs = '0';
-
-  String get awayPassingDefenseTDs => _awayPassingDefenseTDs;
-
-  set awayPassingDefenseTDs(String value) {
-    _awayPassingDefenseTDs = value;
-    update();
-  }
-
-  String _awayPassingDefenseYards = '0';
-
-  String get awayPassingDefenseYards => _awayPassingDefenseYards;
-
-  set awayPassingDefenseYards(String value) {
-    _awayPassingDefenseYards = value;
-    update();
-  }
-
-  Future nflPassingDefenseRankingResponse(
-    BuildContext context, {
-    String year = "",
-    bool isLoad = false,
-    String homeTeam = '',
-    String awayTeam = '',
-  }) async {
-    isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().nflPassingRanking(year, isOffense: false);
-    try {
-      if (result.status) {
-        NFLPassingStatModel response =
-            NFLPassingStatModel.fromJson(result.data);
-        if ((response.eEmbedded?.teamPassingStatsList ?? []).isNotEmpty) {
-          response.eEmbedded?.teamPassingStatsList?.forEach((element) {
-            if (element.name == homeTeam) {
-              homePassingDefenseTDs = element.touchdowns.toString();
-              homePassingDefenseYards = element.passYards.toString();
-            }
-            if (element.name == awayTeam) {
-              awayPassingDefenseTDs = element.touchdowns.toString();
-              awayPassingDefenseYards = element.passYards.toString();
-            }
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          showAppSnackBar('No data', context);
-        }
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
-      }
-    } catch (e) {
-      isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+      showAppSnackBar(errorText);
     }
     update();
   }
@@ -527,8 +386,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  nflLastRecordResponse(
-    BuildContext context, {
+  nflLastRecordResponse({
     String year = "",
     bool isLoad = false,
     String homeTeam = '',
@@ -551,19 +409,24 @@ class GameDetailsController extends GetxController {
             }
           });
         } else {
-          // ignore: use_build_context_synchronously
-          showAppSnackBar('No data', context);
+          showAppSnackBar(
+            'No data',
+          );
         }
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
+
+        showAppSnackBar(
+          result.message,
+        );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
   }

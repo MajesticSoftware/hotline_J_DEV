@@ -1,13 +1,10 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/extras/base_api_helper.dart';
 import 'package:hotlines/network/game_repo.dart';
 
 import '../constant/app_strings.dart';
 import '../model/game_detail_model.dart';
-import '../model/game_team_logo.dart';
 import '../model/response_item.dart';
 import '../model/weather_model.dart';
 import '../theme/helper.dart';
@@ -22,15 +19,6 @@ class SportController extends GetxController {
     update();
   }
 
-  List<Competition> _games = [];
-
-  List<Competition> get games => _games;
-
-  set games(List<Competition> value) {
-    _games = value;
-    update();
-  }
-
   String _gameLogo = '';
 
   String get gameLogo => _gameLogo;
@@ -40,8 +28,7 @@ class SportController extends GetxController {
     update();
   }
 
-  void gameListingsWithLogoResponse(
-      BuildContext context, String year, String sportKey,
+  void gameListingsWithLogoResponse(String year, String sportKey,
       {bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
 
@@ -100,19 +87,21 @@ class SportController extends GetxController {
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(errorText, context);
+        showAppSnackBar(
+          errorText,
+        );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
   }
 
   ///Api call
-  Future<void> getSportDataFromJson(BuildContext context) async {
+  Future<void> getSportDataFromJson() async {
     isLoading.value = true;
     gameDetails.clear();
     ResponseItem result =
@@ -128,14 +117,11 @@ class SportController extends GetxController {
         if (gameDetails.isNotEmpty) {
           for (int i = 0; i < gameDetails.length; i++) {
             log('element.venue.city--${gameDetails[i].venue.city}');
-            // ignore: use_build_context_synchronously
-            weatherDetailsResponse(context,
+            weatherDetailsResponse(
                 cityName: gameDetails[i].venue.city.isNotEmpty
                     ? gameDetails[i].venue.city
                     : 'california',
                 index: i);
-            // element.venue.weather = weather["temp"];
-            // element.venue.weather = weather["weather"];
           }
         }
 
@@ -143,15 +129,16 @@ class SportController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
   }
 
   RxBool isLoading = false.obs;
 
-  Future gameListingsResponse(BuildContext context,
+  Future gameListingsResponse(
       {String sportKey = '', String date = "", bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
     gameDetails.clear();
@@ -168,35 +155,32 @@ class SportController extends GetxController {
         if (gameDetails.isNotEmpty) {
           for (int i = 0; i < gameDetails.length; i++) {
             log('element.venue.city--${gameDetails[i].venue.city}');
-            // ignore: use_build_context_synchronously
 
-            // ignore: use_build_context_synchronously
-            weatherDetailsResponse(context,
+            weatherDetailsResponse(
                 cityName: gameDetails[i].venue.city.isNotEmpty
                     ? gameDetails[i].venue.city
                     : 'california',
                 index: i);
-            // element.venue.weather = weather["temp"];
-            // element.venue.weather = weather["weather"];
           }
         }
 
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
+        showAppSnackBar(
+          result.message,
+        );
       }
     } catch (e) {
       isLoading.value = false;
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
   }
 
-  weatherDetailsResponse(BuildContext context,
-      {String cityName = '', required int index}) async {
+  weatherDetailsResponse({String cityName = '', required int index}) async {
     Map<String, dynamic> weatherData = {"temp": 0, "weather": 0};
     weatherData.clear();
     ResponseItem result =
@@ -216,12 +200,14 @@ class SportController extends GetxController {
           gameDetails[index].venue.temp = (tempData.temp ?? 0.0).toInt();
         }
       } else {
-        // ignore: use_build_context_synchronously
-        showAppSnackBar(result.message, context);
+        showAppSnackBar(
+          result.message,
+        );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showAppSnackBar(errorText, context);
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
   }

@@ -180,13 +180,13 @@ class Scoreboard {
   Scoreboard({this.score});
 
   Scoreboard.fromJson(Map<String, dynamic> json) {
-    score = json['score'] != null ? new Score.fromJson(json['score']) : null;
+    score = json['score'] != null ? Score.fromJson(json['score']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.score != null) {
-      data['score'] = this.score!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (score != null) {
+      data['score'] = score!.toJson();
     }
 
     return data;
@@ -209,11 +209,11 @@ class Score {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['away'] = this.away;
-    data['home'] = this.home;
-    data['awayPeriods'] = this.awayPeriods;
-    data['homePeriods'] = this.homePeriods;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['away'] = away;
+    data['home'] = home;
+    data['awayPeriods'] = awayPeriods;
+    data['homePeriods'] = homePeriods;
     return data;
   }
 }
