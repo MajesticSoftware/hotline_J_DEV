@@ -140,7 +140,7 @@ Container commonBoxWidget(BuildContext context, {String title = ''}) {
         child: title.appCommonText(
             color: blackColor,
             weight: FontWeight.w700,
-            size: MediaQuery.of(context).size.height * .016,
+            size: MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),
   );
 }

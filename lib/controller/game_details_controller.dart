@@ -78,8 +78,6 @@ class GameDetailsController extends GetxController {
   List teamStatus = [
     'W/L record (last 5 games)',
     'Home/Away record',
-    'Division vs. Non-division record',
-    'Head to head record (last 5 games)',
     'Against the spread',
     'Point Differential',
   ];
@@ -87,8 +85,6 @@ class GameDetailsController extends GetxController {
     'W/L Record (overall)',
     'W/L record (last 5 games)',
     'Home/Away record',
-    'Division vs. Non-division record',
-    'Head to head record (last 5 games)',
     'Against the spread',
     'Point Differential',
   ];

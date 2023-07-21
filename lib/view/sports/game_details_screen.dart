@@ -10,6 +10,7 @@ import '../../constant/constant.dart';
 import '../../constant/shred_preference.dart';
 import '../../controller/game_details_controller.dart';
 import '../../controller/selecte_game_con.dart';
+import '../../model/DET_KC_model.dart';
 import '../../model/game_detail_model.dart';
 import '../../theme/helper.dart';
 import '../../utils/app_progress.dart';
@@ -79,7 +80,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       teamReportWidget(context),
                       widget.sportKey == 'MLB'
                           ? mlbInjuryReportWidget(context)
-                          : nflInjuryReportWidget(context),
+                          : widget.gameDetails.teams.away.abbreviation ==
+                                      'DET' &&
+                                  widget.gameDetails.teams.home.abbreviation ==
+                                      'KC'
+                              ? nflStaticInjuryReportWidget(context)
+                              : nflInjuryReportWidget(context),
                       40.H(),
                     ],
                   ),
@@ -157,7 +163,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           },
                           child: Padding(
                             padding: EdgeInsets.all(
-                                MediaQuery.of(context).size.width * .004),
+                                MediaQuery.of(context).size.width * .002),
                             child: Container(
                               width: MediaQuery.of(context).size.width * .039,
                               height: MediaQuery.of(context).size.height * .04,
@@ -247,7 +253,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 BorderRadius.circular(MediaQuery.of(context).size.width * .01),
             color: Theme.of(context).canvasColor),
         child: GetBuilder<GameDetailsController>(initState: (state) {
-          getRanking();
+          // getRanking();
         }, builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -262,6 +268,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 itemCount: widget.sportKey == 'MLB'
                     ? controller.offensiveMLB.length
                     : controller.offensive.length,
@@ -273,38 +280,52 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           homeText: '0')
                       : commonRankingWidget(context,
                           teamReports: controller.offensive[index],
-                          awayText: index == 2
-                              ? controller.awayScore
-                              : index == 4
-                                  ? controller.awayRushingOffenseYards
-                                  : index == 5
-                                      ? controller.awayPassingOffenseYards
-                                      : index == 6
-                                          ? controller.awayRushingOffenseTDs
-                                          : index == 7
-                                              ? controller.awayPassingOffenseTDs
-                                              : index == 9
-                                                  ? controller.awayThirdDown
-                                                  : index == 10
-                                                      ? controller
-                                                          .awayFourthDown
-                                                      : '0',
-                          homeText: index == 2
-                              ? controller.homeScore
-                              : index == 4
-                                  ? controller.homeRushingOffenseYards
-                                  : index == 5
-                                      ? controller.homePassingOffenseYards
-                                      : index == 6
-                                          ? controller.homeRushingOffenseTDs
-                                          : index == 7
-                                              ? controller.homePassingOffenseTDs
-                                              : index == 9
-                                                  ? controller.homeThirdDown
-                                                  : index == 10
-                                                      ? controller
-                                                          .homeFourthDown
-                                                      : '0');
+                          awayText: widget.gameDetails.teams.away
+                                          .abbreviation ==
+                                      'DET' &&
+                                  widget.gameDetails.teams.home.abbreviation ==
+                                      'KC'
+                              ? awayTeamOffenseValue[index]
+                              : index == 2
+                                  ? controller.awayScore
+                                  : index == 4
+                                      ? controller.awayRushingOffenseYards
+                                      : index == 5
+                                          ? controller.awayPassingOffenseYards
+                                          : index == 6
+                                              ? controller.awayRushingOffenseTDs
+                                              : index == 7
+                                                  ? controller
+                                                      .awayPassingOffenseTDs
+                                                  : index == 9
+                                                      ? controller.awayThirdDown
+                                                      : index == 10
+                                                          ? controller
+                                                              .awayFourthDown
+                                                          : '0',
+                          homeText: widget.gameDetails.teams.away
+                                          .abbreviation ==
+                                      'DET' &&
+                                  widget.gameDetails.teams.home.abbreviation ==
+                                      'KC'
+                              ? homeTeamOffenseValue[index]
+                              : index == 2
+                                  ? controller.homeScore
+                                  : index == 4
+                                      ? controller.homeRushingOffenseYards
+                                      : index == 5
+                                          ? controller.homePassingOffenseYards
+                                          : index == 6
+                                              ? controller.homeRushingOffenseTDs
+                                              : index == 7
+                                                  ? controller
+                                                      .homePassingOffenseTDs
+                                                  : index == 9
+                                                      ? controller.homeThirdDown
+                                                      : index == 10
+                                                          ? controller
+                                                              .homeFourthDown
+                                                          : '0');
                 },
               ),
               rankingCommonWidget(
@@ -313,6 +334,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       ? 'Team Pitching Rankings'
                       : 'Defensive Rankings'),
               ListView.builder(
+                padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: widget.sportKey == 'MLB'
@@ -326,46 +348,61 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           awayText: '0')
                       : commonRankingWidget(context,
                           teamReports: controller.defensive[index],
-                          awayText: index == 2
-                              ? controller.awayOpponentScore
-                              : index == 4
-                                  ? controller.awayRushingDefenseYards
-                                  : index == 5
-                                      ? controller.awayPassingDefenseYards
-                                      : index == 6
-                                          ? controller.awayRushingDefenseTDs
-                                          : index == 7
-                                              ? controller.awayPassingDefenseTDs
-                                              : index == 9
+                          awayText: widget.gameDetails.teams.away
+                                          .abbreviation ==
+                                      'DET' &&
+                                  widget.gameDetails.teams.home.abbreviation ==
+                                      'KC'
+                              ? awayTeamDefenseValue[index]
+                              : index == 2
+                                  ? controller.awayOpponentScore
+                                  : index == 4
+                                      ? controller.awayRushingDefenseYards
+                                      : index == 5
+                                          ? controller.awayPassingDefenseYards
+                                          : index == 6
+                                              ? controller.awayRushingDefenseTDs
+                                              : index == 7
                                                   ? controller
-                                                      .awayOpponentThirdDown
-                                                  : index == 10
+                                                      .awayPassingDefenseTDs
+                                                  : index == 9
                                                       ? controller
-                                                          .awayOpponentFourthDown
-                                                      : '0',
-                          homeText: index == 2
-                              ? controller.homeOpponentScore
-                              : index == 4
-                                  ? controller.homeRushingDefenseYards
-                                  : index == 5
-                                      ? controller.homePassingDefenseYards
-                                      : index == 6
-                                          ? controller.homeRushingDefenseTDs
-                                          : index == 7
-                                              ? controller.homePassingDefenseTDs
-                                              : index == 9
+                                                          .awayOpponentThirdDown
+                                                      : index == 10
+                                                          ? controller
+                                                              .awayOpponentFourthDown
+                                                          : '0',
+                          homeText: widget.gameDetails.teams.away
+                                          .abbreviation ==
+                                      'DET' &&
+                                  widget.gameDetails.teams.home.abbreviation ==
+                                      'KC'
+                              ? homeTeamDefenseValue[index]
+                              : index == 2
+                                  ? controller.homeOpponentScore
+                                  : index == 4
+                                      ? controller.homeRushingDefenseYards
+                                      : index == 5
+                                          ? controller.homePassingDefenseYards
+                                          : index == 6
+                                              ? controller.homeRushingDefenseTDs
+                                              : index == 7
                                                   ? controller
-                                                      .homeOpponentThirdDown
-                                                  : index == 10
+                                                      .homePassingDefenseTDs
+                                                  : index == 9
                                                       ? controller
-                                                          .homeOpponentFourthDown
-                                                      : '0');
+                                                          .homeOpponentThirdDown
+                                                      : index == 10
+                                                          ? controller
+                                                              .homeOpponentFourthDown
+                                                          : '0');
                 },
               ),
               rankingCommonWidget(context, 'Team Stats'),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 itemCount: widget.sportKey == 'MLB'
                     ? controller.teamStatusMLB.length
                     : controller.teamStatus.length,
@@ -374,12 +411,20 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       teamReports: widget.sportKey == 'MLB'
                           ? controller.teamStatusMLB[index]
                           : controller.teamStatus[index],
-                      awayText: index == 0 && widget.sportKey != 'MLB'
-                          ? controller.lastAwayGameRecord
-                          : '0',
-                      homeText: index == 0 && widget.sportKey != 'MLB'
-                          ? controller.lastHomeGameRecord
-                          : '0');
+                      awayText: widget.gameDetails.teams.away.abbreviation ==
+                                  'DET' &&
+                              widget.gameDetails.teams.home.abbreviation == 'KC'
+                          ? awayTeamStat[index]
+                          : index == 0 && widget.sportKey != 'MLB'
+                              ? controller.lastAwayGameRecord
+                              : '0',
+                      homeText: widget.gameDetails.teams.away.abbreviation ==
+                                  'DET' &&
+                              widget.gameDetails.teams.home.abbreviation == 'KC'
+                          ? homeTeamStat[index]
+                          : index == 0 && widget.sportKey != 'MLB'
+                              ? controller.lastHomeGameRecord
+                              : '0');
                 },
               ),
             ],
@@ -390,11 +435,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   }
 
   Future getRanking() {
-    gameDetailsController.nflAnalysisStatResponse(
-        awayTeam: widget.gameDetails.teams.away.abbreviation,
-        homeTeam: widget.gameDetails.teams.home.abbreviation,
-        year: '2022',
-        isLoad: true);
+    // gameDetailsController.nflAnalysisStatResponse(
+    //     awayTeam: widget.gameDetails.teams.away.abbreviation,
+    //     homeTeam: widget.gameDetails.teams.home.abbreviation,
+    //     year: '2022',
+    //     isLoad: true);
     return gameDetailsController.nflLastRecordResponse(
         awayTeam: widget.gameDetails.teams.away.team,
         homeTeam: widget.gameDetails.teams.home.team,
@@ -456,6 +501,108 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               weight: FontWeight.bold,
               align: TextAlign.end,
               size: MediaQuery.of(context).size.height * .014),
+        ),
+      ),
+    );
+  }
+
+  nflStaticInjuryReportWidget(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.height * .02),
+      child: Container(
+        // height: MediaQuery.of(context).size.height * .12,
+        decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .01),
+            color: Theme.of(context).canvasColor),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            headerTitleWidget(context, injuryReport),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: awayTeamInjury.length,
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * .038,
+                            child: awayTeamInjury[index]
+                                .toString()
+                                .appCommonText(
+                                    color: Theme.of(context).highlightColor,
+                                    weight: FontWeight.w700,
+                                    maxLine: 2,
+                                    align: TextAlign.start,
+                                    size: MediaQuery.of(context).size.height *
+                                        .016),
+                          ),
+                          index == 1
+                              ? const SizedBox()
+                              : commonDivider(context),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.width * .038,
+                              child: ''.toString().appCommonText(
+                                  color: Theme.of(context).highlightColor,
+                                  weight: FontWeight.w700,
+                                  maxLine: 2,
+                                  align: TextAlign.start,
+                                  size: MediaQuery.of(context).size.height *
+                                      .016),
+                            ),
+                            index == 1
+                                ? const SizedBox()
+                                : commonDivider(context),
+                          ],
+                        )),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * .038,
+                            child: homeTeamInjury[index]
+                                .toString()
+                                .appCommonText(
+                                    color: Theme.of(context).highlightColor,
+                                    weight: FontWeight.w700,
+                                    maxLine: 2,
+                                    align: TextAlign.start,
+                                    size: MediaQuery.of(context).size.height *
+                                        .016),
+                          ),
+                          index == 1
+                              ? const SizedBox()
+                              : commonDivider(context),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            )
+          ],
         ),
       ),
     );
@@ -1012,7 +1159,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 )),
             ListView.builder(
               shrinkWrap: true,
-              itemCount: 3,
+              itemCount: hotlinesList.length,
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
@@ -1030,22 +1177,37 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           children: [
                             Expanded(
                               flex: 2,
-                              child: widget.gameDetails.teams.home.team
+                              child: (widget.gameDetails.teams.away
+                                                  .abbreviation ==
+                                              'DET' &&
+                                          widget.gameDetails.teams.home
+                                                  .abbreviation ==
+                                              'KC'
+                                      ? hotlinesList[index].teamName
+                                      : widget.gameDetails.teams.home.team)
                                   .appCommonText(
                                       color: Theme.of(context).highlightColor,
                                       weight: FontWeight.w400,
-                                      align: TextAlign.start,
+                                      align: TextAlign.center,
                                       size: MediaQuery.of(context).size.height *
                                           .016),
                             ),
                             Expanded(
                               flex: 2,
-                              child: '1.5+ rushing TD'.appCommonText(
-                                  color: Theme.of(context).highlightColor,
-                                  weight: FontWeight.bold,
-                                  align: TextAlign.start,
-                                  size: MediaQuery.of(context).size.height *
-                                      .016),
+                              child: (widget.gameDetails.teams.away
+                                                  .abbreviation ==
+                                              'DET' &&
+                                          widget.gameDetails.teams.home
+                                                  .abbreviation ==
+                                              'KC'
+                                      ? hotlinesList[index].valueTDs
+                                      : '1.5+ rushing TD')
+                                  .appCommonText(
+                                      color: Theme.of(context).highlightColor,
+                                      weight: FontWeight.bold,
+                                      align: TextAlign.center,
+                                      size: MediaQuery.of(context).size.height *
+                                          .016),
                             ),
                             Expanded(
                               flex: 1,
@@ -1061,12 +1223,21 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       color: Theme.of(context).primaryColor,
                                       borderRadius: BorderRadius.circular(0)),
                                   child: Center(
-                                    child: '+320'.appCommonText(
-                                        color: Theme.of(context).cardColor,
-                                        size:
-                                            MediaQuery.of(context).size.height *
+                                    child: (widget.gameDetails.teams.away
+                                                        .abbreviation ==
+                                                    'DET' &&
+                                                widget.gameDetails.teams.home
+                                                        .abbreviation ==
+                                                    'KC'
+                                            ? hotlinesList[index].value
+                                            : '+320')
+                                        .appCommonText(
+                                            color: Theme.of(context).cardColor,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
                                                 .014,
-                                        weight: FontWeight.w600),
+                                            weight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -1288,9 +1459,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 : "00"),
                         commonBoxWidget(context,
                             title: data.isNotEmpty
-                                ? ('o/u ${data[0].total.current.total.toInt()}')
+                                ? ('o/u${data[0].total.current.total.toInt()}')
                                     .toString()
-                                : 'o/u 00')
+                                : 'o/u00')
                       ],
                     ),
                   )),
@@ -1413,9 +1584,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 : "00"),
                         commonBoxWidget(context,
                             title: data.isNotEmpty
-                                ? ('o/u ${data[0].total.current.total.toInt()}')
+                                ? ('o/u${data[0].total.current.total.toInt()}')
                                     .toString()
-                                : 'o/u 00')
+                                : 'o/u00')
                       ],
                     ),
                   ))

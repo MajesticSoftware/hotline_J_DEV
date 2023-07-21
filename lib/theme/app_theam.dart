@@ -18,6 +18,7 @@ class AppTheme {
       backgroundColor: appColor,
       highlightColor: blackColor,
       hoverColor: successColor,
+      dividerColor: greyColor,
       dialogBackgroundColor: filterColor,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.nunitoSans(
@@ -132,6 +133,7 @@ class AppTheme {
       canvasColor: darkBackGroundColor,
       highlightColor: whiteColor,
       hoverColor: darkBackGroundColor,
+      dividerColor: whiteColor,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.nunitoSans(
             color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),

@@ -15,3 +15,9 @@ const String teamReport = 'Analysis Stats and Game Trends';
 const String backButton = 'Return To Sport Selection';
 const String errorText = 'Something went to wrong!';
 const String hotlines = 'Hotlines';
+const String gambling = 'Gambling 101';
+const String wantToDownloadTheAppOnYourDevice =
+    'Want to download the app on your device?';
+const String contactUs = ' Contact Us';
+const String msg =
+    '**Gambling involves financial risk and can be addictive. Please play responsibly.**';
