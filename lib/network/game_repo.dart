@@ -12,7 +12,8 @@ class GameRepo {
     var params = {"league": sportKey, 'date': date};
 
     Uri parameter;
-    Uri uri = Uri.parse(AppUrls.BASE_URL + MethodNames.games);
+    Uri uri = Uri.parse(
+        'https://sportspage-feeds.p.rapidapi.com/${MethodNames.games}');
     parameter = uri.replace(queryParameters: params);
 
     result = await BaseApiHelper.getRequest(parameter, {
@@ -67,7 +68,7 @@ class GameRepo {
 
     Uri parameter;
     Uri uri = Uri.parse(
-        '${AppUrls.BASE_URL}${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : 'nfl'}/schedule?year=$year');
+        'https://sports-information.p.rapidapi.com/${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : 'nfl'}/schedule?year=$year');
     parameter = uri.replace(queryParameters: params);
 
     result = await BaseApiHelper.getRequest(parameter, {
@@ -147,6 +148,66 @@ class GameRepo {
 
     Uri uri = Uri.parse(
         'https://api.sportsdata.io/v3/nfl/scores/json/TeamSeasonStats/$year?key=e4fa0e9f6e1d41d6862141c0959c8a65');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///SPOT-RADAR API IMPLEMENTATION
+  Future<ResponseItem> gameListingsApi(
+      String year, String sportKey, String key) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = sportKey == 'mlb'
+        ? Uri.parse(
+            'https://api.sportradar.com/mlb/production/v7/en/games/$year/schedule.json?api_key=$key')
+        : Uri.parse(
+            '${AppUrls.BASE_URL_SPORTRADAR}${sportKey == 'ncaa' ? 'ncaafb' : '$sportKey/official'}/production/v7/en/${MethodNames.games}/$year/REG/schedule.json?api_key=$key');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///MLB GAME LISTING
+  Future<ResponseItem> mlbGameListingsApi(
+      String year, String sportKey, String key) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://api.sportradar.com/mlb/production/v7/en/games/$year/schedule.json?api_key=$key');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///MLB BOX SCORE
+  Future<ResponseItem> mlbGameBoxScoreApi(
+      String year, String sportKey, String key) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        'https://api.sportradar.com/mlb/production/v7/en/games/$year/schedule.json?api_key=$key');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

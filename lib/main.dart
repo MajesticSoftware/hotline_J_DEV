@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hotlines/constant/shred_preference.dart';
-import 'package:hotlines/controller/game_details_controller.dart';
+import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
-import 'controller/selecte_game_con.dart';
+import 'view/sports/selectSport/selecte_game_con.dart';
 import 'controller/sport_controller.dart';
+import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
   await GetStorage.init();
@@ -36,8 +37,8 @@ class MyApp extends StatelessWidget {
 class BaseBindings extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SportController(), fenix: true);
     Get.lazyPut(() => SelectGameController(), fenix: true);
     Get.lazyPut(() => GameDetailsController(), fenix: true);
+    Get.lazyPut(() => GameListingController(), fenix: true);
   }
 }

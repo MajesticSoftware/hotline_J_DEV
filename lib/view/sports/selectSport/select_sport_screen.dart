@@ -3,16 +3,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../constant/app_strings.dart';
-import '../../constant/shred_preference.dart';
-import '../../controller/selecte_game_con.dart';
-import '../../generated/assets.dart';
-import '../../model/DET_KC_model.dart';
-import '../../model/leauge_model.dart';
-import '../../theme/helper.dart';
-import '../../theme/theme.dart';
-import '../../utils/utils.dart';
-import '../sports/game_listing_screen.dart';
+import '../../../constant/app_strings.dart';
+import '../../../constant/shred_preference.dart';
+import 'selecte_game_con.dart';
+import '../../../generated/assets.dart';
+import '../../../model/DET_KC_model.dart';
+import '../../../model/leauge_model.dart';
+import '../../../theme/helper.dart';
+import '../../../theme/theme.dart';
+import '../../../utils/utils.dart';
+import '../gameListing/game_listing_screen.dart';
 
 // ignore: must_be_immutable
 class SelectSportScreen extends StatelessWidget {
@@ -54,6 +54,8 @@ class SelectSportScreen extends StatelessWidget {
                                 Get.to(GameListingScreen(
                                   sportKey: sportsLeagueList[index].key,
                                   date: sportsLeagueList[index].date,
+                                  keys: sportsLeagueList[index].apiKey,
+                                  sportId: sportsLeagueList[index].sportId,
                                 ));
                               }
                             : () {},
@@ -114,6 +116,7 @@ class SelectSportScreen extends StatelessWidget {
                 color: Theme.of(context).dividerColor,
                 size: Get.height * .016,
                 weight: FontWeight.w300,
+                fontStyle: FontStyle.italic,
                 align: TextAlign.center),
             SizedBox(
               height: Get.height * .02,

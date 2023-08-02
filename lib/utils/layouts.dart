@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../controller/selecte_game_con.dart';
+import '../view/sports/selectSport/selecte_game_con.dart';
 import '../generated/assets.dart';
 import '../theme/app_color.dart';
 

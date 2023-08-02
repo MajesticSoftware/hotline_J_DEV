@@ -1,11 +1,15 @@
 class AppUrls {
   /// Create request with query parameter
   // ignore: constant_identifier_names
-  static const String BASE_URL = "https://sportspage-feeds.p.rapidapi.com/";
+
+  static const String BASE_URL =
+      "https://api.sportradar.us/oddscomparison-ust1/";
+  static const String BASE_URL_SPORTRADAR = "https://api.sportradar.us/";
 }
 
 class MethodNames {
   static const games = "games";
+  static const gamesSchedule = "games";
 }
 
 // ignore: constant_identifier_names

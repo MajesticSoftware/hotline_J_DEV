@@ -7,10 +7,10 @@ import 'package:hotlines/model/nfl_ranking_model.dart';
 import 'package:hotlines/model/nfl_stat_model.dart';
 import 'package:hotlines/model/nfl_win_losses_record_model.dart';
 
-import '../constant/app_strings.dart';
-import '../model/response_item.dart';
-import '../network/game_repo.dart';
-import '../theme/helper.dart';
+import '../../../constant/app_strings.dart';
+import '../../../model/response_item.dart';
+import '../../../network/game_repo.dart';
+import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
   List offensive = [

@@ -33,6 +33,7 @@ extension AddText on String {
       TextAlign align = TextAlign.center,
       FontWeight weight = FontWeight.w500,
       TextDecoration? decoration,
+      FontStyle fontStyle = FontStyle.normal,
       int? maxLine}) {
     return Text(
       this,
@@ -41,6 +42,7 @@ extension AddText on String {
           color: color,
           // color: isDarkMode ? Colors.white : color,
           fontWeight: weight,
+          fontStyle: fontStyle,
           decoration: decoration),
       textAlign: align,
       maxLines: maxLine,

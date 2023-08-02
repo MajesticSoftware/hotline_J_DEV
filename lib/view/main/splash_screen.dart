@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import '../../generated/assets.dart';
 import '../../theme/app_color.dart';
-import 'select_sport_screen.dart';
+import '../sports/selectSport/select_sport_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
