@@ -73,7 +73,15 @@ class SportEvents {
   String homeOU = '00';
   String awayMoneyLine = '00';
   String awaySpread = '00';
-  String awayOU = '00';
+  String awayOU = '0';
+  String awayScore = '0';
+  String homeScore = '0';
+  String awayWin = '0';
+  String homeWin = '0';
+  String awayLoss = '0';
+  String homeLoss = '0';
+  List awayTeamInjuredPlayer = [];
+  List homeTeamInjuredPlayer = [];
   SportEvents({
     this.id,
     this.scheduled,
@@ -96,7 +104,16 @@ class SportEvents {
     this.awayMoneyLine = '',
     this.awaySpread = '',
     this.awayOU = '',
+    this.awayScore = '',
+    this.homeScore = '',
+    this.awayWin = '',
+    this.homeWin = '',
+    this.awayLoss = '',
+    this.homeLoss = '',
+    this.homeTeamInjuredPlayer = const [],
+    this.awayTeamInjuredPlayer = const [],
   });
+
   String get gameHomeLogoLink {
     return homeGameLogo ?? '';
   }
@@ -371,11 +388,7 @@ class Venue {
   int? weather;
 
   int get tmpInFahrenheit {
-    return temp == 0
-        ? 0
-        : temp != null
-            ? (((temp ?? 0) - 273.15) * (9 / 5) + 32).toInt()
-            : 0;
+    return temp == 0 ? 0 : temp ?? 0;
   }
 
   Venue(

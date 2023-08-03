@@ -2,13 +2,14 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
+import 'package:hotlines/model/mlb_statics_model.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/response_item.dart';
 import '../../../model/weather_model.dart';
 import '../../../network/game_listing_repo.dart';
-import '../../../network/game_repo.dart';
+
 import '../../../theme/helper.dart';
 
 class GameListingController extends GetxController {
@@ -28,27 +29,11 @@ class GameListingController extends GetxController {
         .gameListingRepo(key: key, date: date, spotId: sportId);
     try {
       if (result.status) {
-        sportEventsList.clear();
         GameListingDataModel response =
             GameListingDataModel.fromJson(result.data);
         if (response.sportEvents != null) {
-          sportEventsList = response.sportEvents ?? [];
+          sportEventsList.addAll(response.sportEvents ?? []);
         }
-        if (sportEventsList.isNotEmpty) {
-          for (int i = 0; i < sportEventsList.length; i++) {
-            // boxScoreResponse(
-            //     gameId: sportEventsList[i].uuids ??
-            //         'f6dfdb4f-9305-4974-80fc-0503c5e5c1af',
-            //     index: i);
-            weatherDetailsResponse(
-                cityName: sportEventsList[i].venue?.cityName != null
-                    ? (sportEventsList[i].venue?.cityName ?? 'california')
-                        .toString()
-                    : 'california',
-                index: i);
-          }
-        }
-        isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(
@@ -67,6 +52,8 @@ class GameListingController extends GetxController {
 
   Future boxScoreResponse(
       {String gameId = '',
+      String homeTeamId = '',
+      String awayTeamId = '',
       bool isLoad = false,
       String key = '',
       int index = 0}) async {
@@ -78,11 +65,23 @@ class GameListingController extends GetxController {
       if (result.status) {
         MLBBoxScoreModel response = MLBBoxScoreModel.fromJson(result.data);
         final game = response.game;
-        if (game.id == gameId) {
-          sportEventsList[index].venue?.temp = game.weather.forecast.tempF;
-          // sportEventsList[index].season. = game.weather.forecast.tempF;
+        if (game != null) {
+          if (game.id == gameId) {
+            sportEventsList[index].venue?.temp = game.weather?.forecast?.tempF;
+            sportEventsList[index].venue?.weather =
+                game.weather?.forecast?.tempF;
+            if (game.home?.id == homeTeamId) {
+              sportEventsList[index].homeScore = (game.home?.runs).toString();
+              sportEventsList[index].homeWin = (game.home?.win).toString();
+              sportEventsList[index].homeLoss = (game.home?.loss).toString();
+            }
+            if (game.away?.id == awayTeamId) {
+              sportEventsList[index].awayScore = (game.away?.runs).toString();
+              sportEventsList[index].awayWin = (game.away?.win).toString();
+              sportEventsList[index].awayLoss = (game.away?.loss).toString();
+            }
+          }
         }
-        isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(
@@ -91,7 +90,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE----$e');
+      log('ERORE1----$e');
       showAppSnackBar(
         errorText,
       );
@@ -99,6 +98,7 @@ class GameListingController extends GetxController {
     update();
   }
 
+  ///other apis
   weatherDetailsResponse({String cityName = '', required int index}) async {
     Map<String, dynamic> weatherData = {"temp": 0, "weather": 0};
     weatherData.clear();
@@ -137,7 +137,7 @@ class GameListingController extends GetxController {
 
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameRepo().gameListingsWithLogo(year, sportKey);
+    result = await GameListingRepo().gameListingsWithLogo(year, sportKey);
     // result = await BaseApiHelper.jasonRequestNew(sportKey);
     try {
       Map<String, dynamic> data = result.data;
@@ -152,15 +152,15 @@ class GameListingController extends GetxController {
                       for (var element in sportEventsList) {
                         Competitors? homeTeam;
                         Competitors? awayTeam;
-                        if (element.competitors?[0].qualifier == 'home') {
-                          homeTeam = element.competitors?[0];
+                        if (element.competitors[0].qualifier == 'home') {
+                          homeTeam = element.competitors[0];
                         } else {
-                          awayTeam = element.competitors?[0];
+                          awayTeam = element.competitors[0];
                         }
-                        if (element.competitors?[1].qualifier == 'away') {
-                          awayTeam = element.competitors?[1];
+                        if (element.competitors[1].qualifier == 'away') {
+                          awayTeam = element.competitors[1];
                         } else {
-                          homeTeam = element.competitors?[1];
+                          homeTeam = element.competitors[1];
                         }
                         if ((homeTeam?.abbreviation ?? '') ==
                                 details['team']['abbreviation'] ||

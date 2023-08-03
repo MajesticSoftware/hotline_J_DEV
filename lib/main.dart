@@ -9,7 +9,6 @@ import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
 import 'view/sports/selectSport/selecte_game_con.dart';
-import 'controller/sport_controller.dart';
 import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {

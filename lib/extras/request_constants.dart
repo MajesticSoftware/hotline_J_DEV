@@ -4,12 +4,12 @@ class AppUrls {
 
   static const String BASE_URL =
       "https://api.sportradar.us/oddscomparison-ust1/";
-  static const String BASE_URL_SPORTRADAR = "https://api.sportradar.us/";
+  static const String MLB_BASE_URL =
+      "https://api.sportradar.com/mlb/production/v7/en/";
 }
 
 class MethodNames {
   static const games = "games";
-  static const gamesSchedule = "games";
 }
 
 // ignore: constant_identifier_names

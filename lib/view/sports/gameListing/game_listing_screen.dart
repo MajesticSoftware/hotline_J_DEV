@@ -56,15 +56,42 @@ class _GameListingScreenState extends State<GameListingScreen> {
       body: Stack(
         children: [
           GetBuilder<GameListingController>(initState: (state) async {
-            await gameListingController
-                .gameListingApiRes(
-                    key: widget.keys,
-                    isLoad: true,
-                    date: widget.date,
-                    sportId: widget.sportId)
-                .then((value) => gameListingController
-                    .gameListingsWithLogoResponse(widget.date, widget.sportKey,
-                        isLoad: true));
+            if (widget.sportKey == 'MLB') {
+              getGameListingDataRes(true);
+            } else {
+              gameListingController
+                  .gameListingApiRes(
+                      key: widget.keys,
+                      isLoad: true,
+                      date: widget.date,
+                      sportId: widget.sportId)
+                  .then((value) {
+                if (gameListingController.sportEventsList.isNotEmpty) {
+                  for (int i = 0;
+                      i < gameListingController.sportEventsList.length;
+                      i++) {
+                    int index = gameListingController.sportEventsList
+                        .indexWhere((element) => element.uuids != null);
+                    if (index >= 0) {
+                      gameListingController.boxScoreResponse(
+                          homeTeamId: gameListingController
+                                  .sportEventsList[i].competitors[0].uuids ??
+                              "",
+                          awayTeamId: gameListingController
+                                  .sportEventsList[i].competitors[1].uuids ??
+                              "",
+                          gameId:
+                              gameListingController.sportEventsList[i].uuids ??
+                                  '1ec03c45-ce1b-4908-a507-9678e2d14628',
+                          index: i);
+                    }
+                  }
+                }
+                gameListingController.gameListingsWithLogoResponse(
+                    widget.date, widget.sportKey,
+                    isLoad: true);
+              });
+            }
           }, builder: (controller) {
             return gameListingView(context);
           }),
@@ -74,6 +101,52 @@ class _GameListingScreenState extends State<GameListingScreen> {
         ],
       ),
     );
+  }
+
+  getGameListingDataRes(bool isLoad) async {
+    gameListingController.sportEventsList.clear();
+    final DateTime now = DateTime.now().add(const Duration(days: 1));
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(now);
+    await gameListingController
+        .gameListingApiRes(
+            key: widget.keys,
+            isLoad: isLoad,
+            date: widget.date,
+            sportId: widget.sportId)
+        .then((value) {
+      gameListingController
+          .gameListingApiRes(
+              key: widget.keys,
+              isLoad: isLoad,
+              date: formatted,
+              sportId: widget.sportId)
+          .then((value) {
+        if (gameListingController.sportEventsList.isNotEmpty) {
+          for (int i = 0;
+              i < gameListingController.sportEventsList.length;
+              i++) {
+            int index = gameListingController.sportEventsList
+                .indexWhere((element) => element.uuids != null);
+            if (index >= 0) {
+              gameListingController.boxScoreResponse(
+                  homeTeamId: gameListingController
+                          .sportEventsList[i].competitors[0].uuids ??
+                      "",
+                  awayTeamId: gameListingController
+                          .sportEventsList[i].competitors[1].uuids ??
+                      "",
+                  gameId: gameListingController.sportEventsList[i].uuids ??
+                      '1ec03c45-ce1b-4908-a507-9678e2d14628',
+                  index: i);
+            }
+          }
+        }
+        gameListingController.gameListingsWithLogoResponse(
+            widget.date, widget.sportKey,
+            isLoad: isLoad);
+      });
+    });
   }
 
   SingleChildScrollView gameListingView(BuildContext context) {
@@ -163,14 +236,50 @@ class _GameListingScreenState extends State<GameListingScreen> {
             : controller.sportEventsList.isNotEmpty
                 ? RefreshIndicator(
                     onRefresh: () {
-                      return controller
-                          .gameListingApiRes(
-                              date: widget.date,
-                              sportId: widget.sportId,
-                              key: widget.keys)
-                          .then((value) =>
-                              controller.gameListingsWithLogoResponse(
-                                  '2023', widget.sportKey));
+                      if (widget.sportKey == 'MLB') {
+                        return getGameListingDataRes(false);
+                      } else {
+                        return gameListingController
+                            .gameListingApiRes(
+                                key: widget.keys,
+                                isLoad: false,
+                                date: widget.date,
+                                sportId: widget.sportId)
+                            .then((value) {
+                          if (gameListingController
+                              .sportEventsList.isNotEmpty) {
+                            for (int i = 0;
+                                i <
+                                    gameListingController
+                                        .sportEventsList.length;
+                                i++) {
+                              int index = gameListingController.sportEventsList
+                                  .indexWhere(
+                                      (element) => element.uuids != null);
+                              if (index >= 0) {
+                                gameListingController.boxScoreResponse(
+                                    homeTeamId: gameListingController
+                                            .sportEventsList[i]
+                                            .competitors[0]
+                                            .uuids ??
+                                        "",
+                                    awayTeamId: gameListingController
+                                            .sportEventsList[i]
+                                            .competitors[1]
+                                            .uuids ??
+                                        "",
+                                    gameId: gameListingController
+                                            .sportEventsList[i].uuids ??
+                                        '1ec03c45-ce1b-4908-a507-9678e2d14628',
+                                    index: i);
+                              }
+                            }
+                          }
+                          gameListingController.gameListingsWithLogoResponse(
+                              widget.date, widget.sportKey,
+                              isLoad: false);
+                        });
+                      }
                     },
                     color: Theme.of(context).disabledColor,
                     child: ListView.builder(
@@ -179,6 +288,13 @@ class _GameListingScreenState extends State<GameListingScreen> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         try {
+                          DateTime time = (DateTime.parse(
+                              controller.sportEventsList[index].scheduled ??
+                                  ''));
+                          var difference = (time
+                              .toUtc()
+                              .difference((DateTime.now().toUtc())));
+
                           return GestureDetector(
                               onTap: () {
                                 Get.to(SportDetailsScreen(
@@ -187,9 +303,25 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                   sportKey: widget.sportKey,
                                 ));
                               },
-                              child: teamWidget(
-                                  controller.sportEventsList[index], context,
-                                  index: index));
+                              child: (controller.sportEventsList[index].season
+                                                  ?.id ==
+                                              'sr:season:100127' &&
+                                          widget.sportKey == 'MLB' &&
+                                          difference >=
+                                              const Duration(hours: -6) ||
+                                      controller.sportEventsList[index].season
+                                                  ?.id ==
+                                              'sr:season:102797' &&
+                                          widget.sportKey == 'NFL' ||
+                                      controller.sportEventsList[index].season
+                                                  ?.id ==
+                                              'sr:season:101983' &&
+                                          widget.sportKey == 'NCAA')
+                                  ? teamWidget(
+                                      controller.sportEventsList[index],
+                                      context,
+                                      index: index)
+                                  : const SizedBox());
                         } catch (e) {
                           return const SizedBox();
                         }
@@ -376,211 +508,241 @@ class _GameListingScreenState extends State<GameListingScreen> {
     String dateTime = DateFormat.jm()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     try {
-      return Padding(
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * .02,
-            top: MediaQuery.of(context).size.width * .014,
-            right: MediaQuery.of(context).size.width * .02),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-              border: Border.all(
-                  color: isDark || selectGameController.isDarkMode
-                      ? greyColor
-                      : dividerColor),
-              borderRadius: BorderRadius.circular(
-                  MediaQuery.of(context).size.width * .02)),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * .006,
-                      horizontal: MediaQuery.of(context).size.width * .02),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          commonCachedNetworkImage(
-                            width: Get.height * .044,
-                            height: Get.height * .044,
-                            imageUrl: competitors.gameLogoAwayLink,
-                          ),
-                          // 10.W(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .01,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              (awayTeam?.name ?? "").toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                            ),
-                          ),
-                          Text(
-                            // (results?.scoreboard?.score?.away ?? "0")
-                            '0'.toString(),
-                            style: Theme.of(context).textTheme.headlineLarge,
-                            textAlign: TextAlign.start,
-                            maxLines: 2,
-                          )
-                        ],
-                      ),
-                      5.H(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 0,
-                            child: Text(
-                              '  Vs',
-                              style: Theme.of(context).textTheme.labelSmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(flex: 4, child: commonDivider(context)),
-                        ],
-                      ),
-                      5.H(),
-                      Row(
-                        children: [
-                          commonCachedNetworkImage(
-                              width: Get.height * .044,
-                              height: Get.height * .044,
-                              imageUrl: competitors.gameHomeLogoLink),
-                          // 10.W(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .01,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              (homeTeam?.name ?? "").toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
-                            ),
-                          ),
-                          Text(
-                            // (results?.scoreboard?.score?.home ?? "0")
-                            '0'.toString(),
-                            style: Theme.of(context).textTheme.headlineLarge,
-                            textAlign: TextAlign.start,
-                            maxLines: 2,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      return DateTime.parse(competitors.scheduled ?? '').toUtc().day ==
+                  DateTime.now().toUtc().day ||
+              DateTime.parse(competitors.scheduled ?? '').toUtc().day ==
+                  DateTime.now().add(const Duration(days: 1)).toUtc().day
+          ? Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * .02,
+                  top: MediaQuery.of(context).size.width * .014,
+                  right: MediaQuery.of(context).size.width * .02),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).canvasColor,
+                    border: Border.all(
+                        color: isDark || selectGameController.isDarkMode
+                            ? greyColor
+                            : dividerColor),
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * .02)),
+                child: Row(
                   children: [
-                    Text(
-                      '$date, $dateTime',
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .001,
-                    ),
-                    getWeatherIcon(competitors.venue?.weather ?? 1, context,
-                        MediaQuery.of(context).size.height * .064),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      verticalDirection: VerticalDirection.up,
-                      children: [
-                        Text(
-                          '${competitors.venue?.tmpInFahrenheit ?? 0}',
-                          style: Theme.of(context).textTheme.displayMedium,
+                    Expanded(
+                      flex: 3,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * .006,
+                            horizontal:
+                                MediaQuery.of(context).size.width * .02),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                commonCachedNetworkImage(
+                                  width: Get.height * .044,
+                                  height: Get.height * .044,
+                                  imageUrl: competitors.gameLogoAwayLink,
+                                ),
+                                // 10.W(),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .01,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    (awayTeam?.name ?? "").toString(),
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                    textAlign: TextAlign.start,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                Text(
+                                  (gameListingController
+                                          .sportEventsList[index].awayScore)
+                                      .toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                )
+                              ],
+                            ),
+                            5.H(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: Text(
+                                    '  Vs',
+                                    style:
+                                        Theme.of(context).textTheme.labelSmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 4, child: commonDivider(context)),
+                              ],
+                            ),
+                            5.H(),
+                            Row(
+                              children: [
+                                commonCachedNetworkImage(
+                                    width: Get.height * .044,
+                                    height: Get.height * .044,
+                                    imageUrl: competitors.gameHomeLogoLink),
+                                // 10.W(),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .01,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    (homeTeam?.name ?? "").toString(),
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                    textAlign: TextAlign.start,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                                Text(
+                                  gameListingController
+                                      .sportEventsList[index].homeScore
+                                      .toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                )
+                              ],
+                            ),
+                          ],
                         ),
-                        Text(
-                          '°F',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                    )
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '$date, $dateTime',
+                            style: Theme.of(context).textTheme.displaySmall,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .001,
+                          ),
+                          getWeatherIcon(
+                              competitors.venue?.weather ?? 1,
+                              context,
+                              MediaQuery.of(context).size.height * .064),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            textBaseline: TextBaseline.alphabetic,
+                            verticalDirection: VerticalDirection.up,
+                            children: [
+                              Text(
+                                '${competitors.venue?.tmpInFahrenheit ?? 0}',
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
+                              ),
+                              Text(
+                                '°F',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    buildExpandedBoxWidget(context,
+                        bottomText: competitors.homeSpreadValue.contains('-')
+                            ? competitors.homeSpreadValue
+                            : '+${competitors.homeSpreadValue}',
+                        upText: competitors.awaySpreadValue.contains('-')
+                            ? competitors.awaySpreadValue
+                            : '+${competitors.awaySpreadValue}'),
+                    buildExpandedBoxWidget(context,
+                        bottomText: competitors.homeMoneyLineValue,
+                        upText: competitors.awayMoneyLineValue),
+                    Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * .04,
+                              width: MediaQuery.of(context).size.width * .09,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width *
+                                          .008)),
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text('o',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text((competitors.awayOUValue).toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                ],
+                              )),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .02,
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * .04,
+                              width: MediaQuery.of(context).size.width * .09,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width *
+                                          .008)),
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text('u',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text((competitors.homeOUValue).toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                ],
+                              )),
+                            )
+                          ],
+                        )),
                   ],
                 ),
               ),
-              buildExpandedBoxWidget(context,
-                  bottomText: competitors.homeSpreadValue.contains('-')
-                      ? competitors.homeSpreadValue
-                      : '+${competitors.homeSpreadValue}',
-                  upText: competitors.awaySpreadValue.contains('-')
-                      ? competitors.awaySpreadValue
-                      : '+${competitors.awaySpreadValue}'),
-              buildExpandedBoxWidget(context,
-                  bottomText: competitors.homeMoneyLineValue,
-                  upText: competitors.awayMoneyLineValue),
-              Expanded(
-                  flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * .008)),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          textBaseline: TextBaseline.alphabetic,
-                          verticalDirection: VerticalDirection.up,
-                          children: [
-                            Text('o',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            Text((competitors.awayOUValue).toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        )),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .02,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * .008)),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          textBaseline: TextBaseline.alphabetic,
-                          verticalDirection: VerticalDirection.up,
-                          children: [
-                            Text('u',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            Text((competitors.homeOUValue).toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        )),
-                      )
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      );
+            )
+          : SizedBox();
     } catch (e) {
       return const SizedBox();
     }
