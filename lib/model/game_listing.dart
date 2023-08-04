@@ -68,6 +68,8 @@ class SportEvents {
   String? uuids;
   String? homeGameLogo;
   String? awayGameLogo;
+  String awayTeam = '';
+  String homeTeam = '';
   String homeMoneyLine = '00';
   String homeSpread = '00';
   String homeOU = '00';
@@ -96,6 +98,8 @@ class SportEvents {
     this.marketsLastUpdated,
     this.consensus,
     this.uuids,
+    this.awayTeam = '',
+    this.homeTeam = '',
     this.homeGameLogo = '',
     this.awayGameLogo = '',
     this.homeMoneyLine = '',

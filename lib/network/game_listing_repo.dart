@@ -56,6 +56,22 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> hotlinesDataRepo() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(
+        'https://api.sportradar.com/oddscomparison-player-props/production/v2/en/competitions/sr:competition:109/players_props.json?api_key=u647s6e6thkuae4n63kkcvhz');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   Future<ResponseItem> mlbInjuriesRepo() async {
     ResponseItem result;
     bool status = true;

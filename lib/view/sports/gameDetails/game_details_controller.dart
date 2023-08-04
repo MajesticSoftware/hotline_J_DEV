@@ -5,6 +5,7 @@ import 'package:hotlines/model/mlb_injuries_model.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
+import '../../../model/hotlines_data_model.dart';
 import '../../../model/mlb_statics_model.dart';
 import '../../../model/response_item.dart';
 import '../../../network/game_listing_repo.dart';
@@ -67,7 +68,7 @@ class GameDetailsController extends GetxController {
     'Strike Outs',
     'Walks & Hits Per Innings Pitched (WHIP)',
     'Opponents Batting Average',
-    'Opponents Ground into Double Play',
+    'Ground into Double Play',
     'Strike Out Per 9 innings Pitched',
     'Walks Per 9 Innings Pitched',
     'Strike out to walk ratio',
@@ -133,6 +134,39 @@ class GameDetailsController extends GetxController {
         MLBStaticsModel response = MLBStaticsModel.fromJson(result.data);
         if (response.statistics != null) {
           mlbStaticsAwayList = response.statistics;
+        }
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE1----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future hotlinesDataResponse(
+      {String awayTeamId = '', bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().hotlinesDataRepo();
+    try {
+      if (result.status) {
+        HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
+        final competitionSportEventsPlayersProps =
+            response.competitionSportEventsPlayersProps;
+        if (competitionSportEventsPlayersProps != null) {
+          for (var event in competitionSportEventsPlayersProps) {
+            // event.sportEvent.competitors[0].id
+          }
         }
         isLoading.value = false;
       } else {

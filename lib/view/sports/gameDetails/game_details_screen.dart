@@ -303,21 +303,26 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       ? '${awayHitting?.onbase?.hr ?? "0"}'
                                       : index == 3
                                           ? '${awayHitting?.rbi ?? "0"}'
-                                          : index == 5
-                                              ? '${awayHitting?.outcome?.ktotal ?? "0"}'
-                                              : index == 6
-                                                  ? '${awayHitting?.steal?.stolen ?? "0"}'
-                                                  : index == 8
-                                                      ? '${((awayHitting?.slg?.toDouble() ?? 0.0) * 100).toStringAsFixed(1)}%'
-                                                      : index == 9
-                                                          ? '${((awayHitting?.ops?.toDouble() ?? 0.0) * 100).toStringAsFixed(1)}%'
-                                                          : index == 11
-                                                              ? awayHitting
-                                                                      ?.abhr
-                                                                      ?.toStringAsFixed(
-                                                                          2) ??
-                                                                  "0"
-                                                              : '0',
+                                          : index == 4
+                                              ? '${awayHitting?.onbase?.bb ?? "0"}'
+                                              : index == 5
+                                                  ? '${awayHitting?.outs?.ktotal ?? "0"}'
+                                                  : index == 6
+                                                      ? '${awayHitting?.steal?.stolen ?? "0"}'
+                                                      : index == 7
+                                                          ? awayHitting?.avg ??
+                                                              "0"
+                                                          : index == 8
+                                                              ? '${awayHitting?.slg ?? '0'}'
+                                                              : index == 9
+                                                                  ? '${awayHitting?.ops ?? '0'}'
+                                                                  : index == 10
+                                                                      ? '${awayHitting?.outs?.gidp ?? '0'}'
+                                                                      : index ==
+                                                                              11
+                                                                          ? awayHitting?.abhr?.toStringAsFixed(2) ??
+                                                                              "0"
+                                                                          : '0',
                           homeText: index == 0
                               ? '${homeHitting?.runs?.total ?? "0"}'
                               : index == 1
@@ -326,21 +331,26 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       ? '${homeHitting?.onbase?.hr ?? "0"}'
                                       : index == 3
                                           ? '${homeHitting?.rbi ?? "0"}'
-                                          : index == 5
-                                              ? '${homeHitting?.outcome?.ktotal ?? "0"}'
-                                              : index == 6
-                                                  ? '${homeHitting?.steal?.stolen ?? "0"}'
-                                                  : index == 8
-                                                      ? '${((homeHitting?.slg?.toDouble() ?? 0.0) * 100).toStringAsFixed(1)}%'
-                                                      : index == 9
-                                                          ? '${((homeHitting?.ops?.toDouble() ?? 0.0) * 100).toStringAsFixed(1)}%'
-                                                          : index == 11
-                                                              ? homeHitting
-                                                                      ?.abhr
-                                                                      ?.toStringAsFixed(
-                                                                          2) ??
-                                                                  "0"
-                                                              : '0')
+                                          : index == 4
+                                              ? '${homeHitting?.onbase?.bb ?? "0"}'
+                                              : index == 5
+                                                  ? '${homeHitting?.outs?.ktotal ?? "0"}'
+                                                  : index == 6
+                                                      ? '${homeHitting?.steal?.stolen ?? "0"}'
+                                                      : index == 7
+                                                          ? homeHitting?.avg ??
+                                                              "0"
+                                                          : index == 8
+                                                              ? '${homeHitting?.slg ?? '0'}'
+                                                              : index == 9
+                                                                  ? '${homeHitting?.ops ?? '0'}'
+                                                                  : index == 10
+                                                                      ? '${homeHitting?.outs?.gidp ?? '0'}'
+                                                                      : index ==
+                                                                              11
+                                                                          ? homeHitting?.abhr?.toStringAsFixed(2) ??
+                                                                              "0"
+                                                                          : '0')
                       : commonRankingWidget(context,
                           teamReports: controller.offensive[index],
                           awayText: awayTeam?.abbreviation == 'DET' &&
@@ -373,20 +383,52 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   return widget.sportKey == 'MLB'
                       ? commonRankingWidget(context,
                           teamReports: controller.defensiveMLB[index],
-                          homeText: index == 2
-                              ? '${homePitching?.era ?? '0'}'
-                              : index == 10
-                                  ? '${homePitching?.whip ?? "0"}'
-                                  : index == 11
-                                      ? '${homePitching?.oba ?? "0"}'
-                                      : '0',
-                          awayText: index == 2
-                              ? '${awayPitching?.era ?? "0"}'
-                              : index == 10
-                                  ? '${awayPitching?.whip ?? "0"}'
-                                  : index == 11
-                                      ? '${awayPitching?.oba ?? "0"}'
-                                      : '0')
+                          homeText: index == 0
+                              ? '${homePitching?.games?.win ?? '0'}'
+                              : index == 1
+                                  ? '${homePitching?.games?.loss ?? '0'}'
+                                  : index == 2
+                                      ? '${homePitching?.era ?? '0'}'
+                                      : index == 3
+                                          ? '${homePitching?.games?.shutout ?? '0'}'
+                                          : index == 5
+                                              ? '${homePitching?.games?.qstart ?? '0'}'
+                                              : index == 7
+                                                  ? '${homePitching?.onbase?.hr ?? '0'}'
+                                                  : index == 8
+                                                      ? '${homePitching?.onbase?.bb ?? '0'}'
+                                                      : index == 9
+                                                          ? '${homePitching?.outs?.ktotal ?? '0'}'
+                                                          : index == 10
+                                                              ? '${homePitching?.whip ?? "0"}'
+                                                              : index == 11
+                                                                  ? '${homePitching?.oba ?? "0"}'
+                                                                  : index == 12
+                                                                      ? '${homePitching?.outs?.gidp ?? "0"}'
+                                                                      : '0',
+                          awayText: index == 0
+                              ? '${awayPitching?.games?.win ?? "0"}'
+                              : index == 1
+                                  ? '${awayPitching?.games?.loss ?? "0"}'
+                                  : index == 2
+                                      ? '${awayPitching?.era ?? "0"}'
+                                      : index == 3
+                                          ? '${awayPitching?.games?.shutout ?? "0"}'
+                                          : index == 5
+                                              ? '${awayPitching?.games?.qstart ?? "0"}'
+                                              : index == 7
+                                                  ? '${awayPitching?.onbase?.hr ?? "0"}'
+                                                  : index == 8
+                                                      ? '${awayPitching?.onbase?.bb ?? "0"}'
+                                                      : index == 9
+                                                          ? '${awayPitching?.outs?.ktotal ?? "0"}'
+                                                          : index == 10
+                                                              ? '${awayPitching?.whip ?? "0"}'
+                                                              : index == 11
+                                                                  ? '${awayPitching?.oba ?? "0"}'
+                                                                  : index == 12
+                                                                      ? '${awayPitching?.outs?.gidp ?? "0"}'
+                                                                      : '0')
                       : commonRankingWidget(context,
                           teamReports: controller.defensive[index],
                           awayText: awayTeam?.abbreviation == 'DET' &&
@@ -431,6 +473,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Column commonRankingWidget(BuildContext context,
       {String homeText = '', String awayText = '', String teamReports = ''}) {
+    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+
     return Column(
       children: [
         Padding(
@@ -444,7 +488,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 child: awayText.appCommonText(
                     color: Theme.of(context).highlightColor,
                     weight: FontWeight.w700,
-                    align: TextAlign.end,
+                    align: data.size.shortestSide < 600
+                        ? TextAlign.center
+                        : TextAlign.end,
                     size: MediaQuery.of(context).size.height * .014),
               ),
               Expanded(
@@ -460,7 +506,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 child: homeText.appCommonText(
                     color: Theme.of(context).highlightColor,
                     weight: FontWeight.w700,
-                    align: TextAlign.start,
+                    align: data.size.shortestSide < 600
+                        ? TextAlign.center
+                        : TextAlign.start,
                     size: MediaQuery.of(context).size.height * .014),
               )
             ],

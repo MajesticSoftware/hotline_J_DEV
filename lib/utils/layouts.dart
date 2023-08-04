@@ -54,7 +54,9 @@ commonImageWidget(String image, BuildContext context,
 getWeatherIcon(int condition, BuildContext context, double height) {
   int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();
   log('data---${data}');
-  if (data < 300) {
+  if (condition == 1) {
+    return svgPicture(context, Assets.imagesSun, height);
+  } else if (data < 300) {
     return svgPicture(context, Assets.imagesSun3, height);
   } else if (data < 400) {
     return svgPicture(context, Assets.imagesSun3, height);
