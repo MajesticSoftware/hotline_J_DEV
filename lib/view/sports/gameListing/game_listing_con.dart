@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/model/mlb_statics_model.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
@@ -45,7 +46,7 @@ class GameListingController extends GetxController {
             log('difference----->>  ${difference.inHours}');
             if (event.season?.id == 'sr:season:100127' &&
                 sportKey == 'MLB' &&
-                (difference.inHours >= (-6) || difference.inHours >= 0)) {
+                (difference.inHours >= (-6))) {
               todayEventsList.add(event);
             } else if (event.season?.id == 'sr:season:102797' &&
                 sportKey == 'NFL') {
@@ -58,9 +59,9 @@ class GameListingController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
@@ -85,7 +86,6 @@ class GameListingController extends GetxController {
         .gameListingRepo(key: key, date: date, spotId: sportId);
     try {
       if (result.status) {
-        tomorrowEventsList.clear();
         GameListingDataModel response =
             GameListingDataModel.fromJson(result.data);
         final sportEvents = response.sportEvents;
@@ -107,9 +107,9 @@ class GameListingController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
@@ -302,6 +302,132 @@ class GameListingController extends GetxController {
       );
     }
     update();
+  }
+
+  getGameListingForNCAAGame(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) {
+    // final DateTime now =
+    // DateTime.parse(widget.date).add(const Duration(days: 1));
+    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
+    tomorrowEventsList.clear();
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTomorrowApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: '2023-08-31',
+              sportId: sportId)
+          .then((value) {
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: '2023-09-01',
+                sportId: sportId)
+            .then((value) {
+          gameListingTomorrowApiRes(
+                  key: apiKey,
+                  isLoad: isLoad,
+                  sportKey: sportKey,
+                  date: '2023-09-02',
+                  sportId: sportId)
+              .then((value) {
+            getAllEventList(sportKey);
+            gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+          });
+        });
+      });
+    });
+  }
+
+  getGameListingForNFLGame(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) {
+    final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(now);
+    tomorrowEventsList.clear();
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTomorrowApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: '2023-09-10',
+              sportId: sportId)
+          .then((value) {
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: '2023-09-11',
+                sportId: sportId)
+            .then((value) {
+          getAllEventList(sportKey);
+          gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+        });
+      });
+    });
+  }
+
+  getGameListingForMLBRes(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(now);
+    tomorrowEventsList.clear();
+    await gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTomorrowApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: formatted,
+              sportId: sportId)
+          .then((value) {
+        getAllEventList(sportKey);
+        if (sportEventsList.isNotEmpty) {
+          for (int i = 0; i < sportEventsList.length; i++) {
+            int index =
+                sportEventsList.indexWhere((element) => element.uuids != null);
+            if (index >= 0) {
+              boxScoreResponse(
+                  homeTeamId: sportEventsList[i].competitors[0].uuids ?? "",
+                  awayTeamId: sportEventsList[i].competitors[1].uuids ?? "",
+                  gameId: sportEventsList[i].uuids ??
+                      '1ec03c45-ce1b-4908-a507-9678e2d14628',
+                  index: i);
+            }
+          }
+        }
+        gameListingsWithLogoResponse('2023', sportKey, isLoad: isLoad);
+      });
+    });
   }
 
   ///other apis

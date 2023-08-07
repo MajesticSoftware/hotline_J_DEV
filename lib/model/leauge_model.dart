@@ -19,7 +19,7 @@ class LeagueModel {
       required this.isAvailable});
 }
 
-final DateTime now = DateTime.now();
+final DateTime now = DateTime.now().toUtc();
 final DateFormat formatter = DateFormat('yyyy-MM-dd');
 final String formatted = formatter.format(now);
 
@@ -34,7 +34,7 @@ List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       image: Assets.imagesNCAA,
       //date: '2023',
-      date: '2023-09-09',
+      date: '2023-08-26',
       key: 'NCAA',
       sportId: 'sr:sport:16',
       apiKey: '3xtbdf9h3669rn4rf6x87c4a',

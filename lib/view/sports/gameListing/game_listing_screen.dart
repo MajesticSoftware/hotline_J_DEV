@@ -56,11 +56,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
       body: Stack(
         children: [
           GetBuilder<GameListingController>(initState: (state) async {
-            if (widget.sportKey == 'MLB') {
-              getGameListingDataRes(true);
-            } else {
-              getGameListingForOtherGame(true);
-            }
+            return getResponse(true);
           }, builder: (controller) {
             return gameListingView(context);
           }),
@@ -72,81 +68,26 @@ class _GameListingScreenState extends State<GameListingScreen> {
     );
   }
 
-  getGameListingDataRes(bool isLoad) async {
-    final DateTime now = DateTime.now().add(const Duration(days: 1));
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now);
-    await gameListingController
-        .gameListingTodayApiRes(
-            key: widget.keys,
-            isLoad: isLoad,
-            sportKey: widget.sportKey,
-            date: widget.date,
-            sportId: widget.sportId)
-        .then((value) {
-      gameListingController
-          .gameListingTomorrowApiRes(
-              key: widget.keys,
-              isLoad: isLoad,
-              sportKey: widget.sportKey,
-              date: formatted,
-              sportId: widget.sportId)
-          .then((value) {
-        gameListingController.getAllEventList(widget.sportKey);
-        if (gameListingController.sportEventsList.isNotEmpty) {
-          for (int i = 0;
-              i < gameListingController.sportEventsList.length;
-              i++) {
-            int index = gameListingController.sportEventsList
-                .indexWhere((element) => element.uuids != null);
-            if (index >= 0) {
-              gameListingController.boxScoreResponse(
-                  homeTeamId: gameListingController
-                          .sportEventsList[i].competitors[0].uuids ??
-                      "",
-                  awayTeamId: gameListingController
-                          .sportEventsList[i].competitors[1].uuids ??
-                      "",
-                  gameId: gameListingController.sportEventsList[i].uuids ??
-                      '1ec03c45-ce1b-4908-a507-9678e2d14628',
-                  index: i);
-            }
-          }
-        }
-        gameListingController.gameListingsWithLogoResponse(
-            widget.date, widget.sportKey,
-            isLoad: isLoad);
-      });
-    });
-  }
-
-  getGameListingForOtherGame(bool isLoad) {
-    final DateTime now =
-        DateTime.parse(widget.date).add(const Duration(days: 1));
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now);
-    gameListingController
-        .gameListingTodayApiRes(
-            key: widget.keys,
-            isLoad: isLoad,
-            sportKey: widget.sportKey,
-            date: widget.date,
-            sportId: widget.sportId)
-        .then((value) {
-      gameListingController
-          .gameListingTomorrowApiRes(
-              key: widget.keys,
-              isLoad: isLoad,
-              sportKey: widget.sportKey,
-              date: formatted,
-              sportId: widget.sportId)
-          .then((value) {
-        gameListingController.getAllEventList(widget.sportKey);
-        gameListingController.gameListingsWithLogoResponse(
-            widget.date, widget.sportKey,
-            isLoad: true);
-      });
-    });
+  getResponse(bool isLoad) {
+    if (widget.sportKey == 'MLB') {
+      return gameListingController.getGameListingForMLBRes(isLoad,
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
+    } else if (widget.sportKey == 'NFL') {
+      return gameListingController.getGameListingForNFLGame(isLoad,
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
+    } else {
+      return gameListingController.getGameListingForNCAAGame(isLoad,
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
+    }
   }
 
   SingleChildScrollView gameListingView(BuildContext context) {
@@ -236,11 +177,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
             : controller.sportEventsList.isNotEmpty
                 ? RefreshIndicator(
                     onRefresh: () {
-                      if (widget.sportKey == 'MLB') {
-                        return getGameListingDataRes(false);
-                      } else {
-                        return getGameListingForOtherGame(false);
-                      }
+                      return getResponse(false);
                     },
                     color: Theme.of(context).disabledColor,
                     child: ListView.builder(

@@ -6,6 +6,7 @@ import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/theme/app_color.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:intl/intl.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../constant/constant.dart';
 import '../../../constant/shred_preference.dart';
@@ -33,6 +34,13 @@ class SportDetailsScreen extends StatefulWidget {
 
 class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final GameDetailsController gameDetailsController = Get.find();
+  late ScrollController _controller;
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+    super.initState();
+  }
 
   Future _refreshLocalGallery() async {
     // getRanking();
@@ -44,6 +52,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     // TODO: implement dispose
     super.dispose();
     var client = http.Client();
+    _controller.dispose();
     client.close();
   }
 
@@ -89,6 +98,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 children: [
                   Expanded(
                       child: SingleChildScrollView(
+                    controller: _controller,
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
@@ -152,7 +162,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           color: whiteColor,
                           size: MediaQuery.of(context).size.height * .024,
                           weight: FontWeight.w700),
-                  Container(
+                  /* Container(
                     height: MediaQuery.of(context).size.height * .033,
                     // width: MediaQuery.of(context).size.width * .099,
                     decoration: BoxDecoration(
@@ -251,7 +261,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         ),
                       ],
                     ),
-                  )
+                  )*/
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .099,
+                  ),
                 ],
               ),
             ),
@@ -269,203 +282,211 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 BorderRadius.circular(MediaQuery.of(context).size.width * .01),
             color: Theme.of(context).canvasColor),
         child: GetBuilder<GameDetailsController>(builder: (controller) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              headerTitleWidget(context, teamReport, isTeamReport: true),
-              rankingCommonWidget(
-                  context,
-                  widget.sportKey == 'MLB'
-                      ? 'Team Hitting Rankings'
-                      : 'Offensive Rankings'),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: widget.sportKey == 'MLB'
-                    ? controller.offensiveMLB.length
-                    : controller.offensive.length,
-                itemBuilder: (context, index) {
-                  var homeHitting =
-                      controller.mlbStaticsHomeList?.hitting?.overall;
-                  var awayHitting =
-                      controller.mlbStaticsAwayList?.hitting?.overall;
+          return StickyHeader(
+              header:
+                  headerTitleWidget(context, teamReport, isTeamReport: true),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  rankingCommonWidget(
+                      context,
+                      widget.sportKey == 'MLB'
+                          ? 'Team Hitting Rankings'
+                          : 'Offensive Rankings'),
+                  ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: widget.sportKey == 'MLB'
+                        ? controller.offensiveMLB.length
+                        : controller.offensive.length,
+                    itemBuilder: (context, index) {
+                      var homeHitting =
+                          controller.mlbStaticsHomeList?.hitting?.overall;
+                      var awayHitting =
+                          controller.mlbStaticsAwayList?.hitting?.overall;
 
-                  return widget.sportKey == 'MLB'
-                      ? commonRankingWidget(context,
-                          teamReports: controller.offensiveMLB[index],
-                          awayText: index == 0
-                              ? '${awayHitting?.runs?.total ?? "0"}'
-                              : index == 1
-                                  ? '${awayHitting?.onbase?.h ?? "0"}'
-                                  : index == 2
-                                      ? '${awayHitting?.onbase?.hr ?? "0"}'
-                                      : index == 3
-                                          ? '${awayHitting?.rbi ?? "0"}'
-                                          : index == 4
-                                              ? '${awayHitting?.onbase?.bb ?? "0"}'
-                                              : index == 5
-                                                  ? '${awayHitting?.outs?.ktotal ?? "0"}'
-                                                  : index == 6
-                                                      ? '${awayHitting?.steal?.stolen ?? "0"}'
-                                                      : index == 7
-                                                          ? awayHitting?.avg ??
-                                                              "0"
-                                                          : index == 8
-                                                              ? '${awayHitting?.slg ?? '0'}'
-                                                              : index == 9
-                                                                  ? '${awayHitting?.ops ?? '0'}'
-                                                                  : index == 10
-                                                                      ? '${awayHitting?.outs?.gidp ?? '0'}'
+                      return widget.sportKey == 'MLB'
+                          ? commonRankingWidget(context,
+                              teamReports: controller.offensiveMLB[index],
+                              awayText: index == 0
+                                  ? '${awayHitting?.runs?.total ?? "0"}'
+                                  : index == 1
+                                      ? '${awayHitting?.onbase?.h ?? "0"}'
+                                      : index == 2
+                                          ? '${awayHitting?.onbase?.hr ?? "0"}'
+                                          : index == 3
+                                              ? '${awayHitting?.rbi ?? "0"}'
+                                              : index == 4
+                                                  ? '${awayHitting?.onbase?.bb ?? "0"}'
+                                                  : index == 5
+                                                      ? '${awayHitting?.outs?.ktotal ?? "0"}'
+                                                      : index == 6
+                                                          ? '${awayHitting?.steal?.stolen ?? "0"}'
+                                                          : index == 7
+                                                              ? awayHitting
+                                                                      ?.avg ??
+                                                                  "0"
+                                                              : index == 8
+                                                                  ? '${awayHitting?.slg ?? '0'}'
+                                                                  : index == 9
+                                                                      ? '${awayHitting?.ops ?? '0'}'
                                                                       : index ==
-                                                                              11
-                                                                          ? awayHitting?.abhr?.toStringAsFixed(2) ??
-                                                                              "0"
+                                                                              10
+                                                                          ? '${awayHitting?.outs?.gidp ?? '0'}'
+                                                                          : index ==
+                                                                                  11
+                                                                              ? awayHitting?.abhr?.toStringAsFixed(2) ??
+                                                                                  "0"
+                                                                              : '0',
+                              homeText: index == 0
+                                  ? '${homeHitting?.runs?.total ?? "0"}'
+                                  : index == 1
+                                      ? '${homeHitting?.onbase?.h ?? "0"}'
+                                      : index == 2
+                                          ? '${homeHitting?.onbase?.hr ?? "0"}'
+                                          : index == 3
+                                              ? '${homeHitting?.rbi ?? "0"}'
+                                              : index == 4
+                                                  ? '${homeHitting?.onbase?.bb ?? "0"}'
+                                                  : index == 5
+                                                      ? '${homeHitting?.outs?.ktotal ?? "0"}'
+                                                      : index == 6
+                                                          ? '${homeHitting?.steal?.stolen ?? "0"}'
+                                                          : index == 7
+                                                              ? homeHitting
+                                                                      ?.avg ??
+                                                                  "0"
+                                                              : index == 8
+                                                                  ? '${homeHitting?.slg ?? '0'}'
+                                                                  : index == 9
+                                                                      ? '${homeHitting?.ops ?? '0'}'
+                                                                      : index ==
+                                                                              10
+                                                                          ? '${homeHitting?.outs?.gidp ?? '0'}'
+                                                                          : index ==
+                                                                                  11
+                                                                              ? homeHitting?.abhr?.toStringAsFixed(2) ??
+                                                                                  "0"
+                                                                              : '0')
+                          : commonRankingWidget(context,
+                              teamReports: controller.offensive[index],
+                              awayText: awayTeam?.abbreviation == 'DET' &&
+                                      homeTeam?.abbreviation == 'KC'
+                                  ? awayTeamOffenseValue[index]
+                                  : '0',
+                              homeText: awayTeam?.abbreviation == 'DET' &&
+                                      homeTeam?.abbreviation == 'KC'
+                                  ? homeTeamOffenseValue[index]
+                                  : '0');
+                    },
+                  ),
+                  rankingCommonWidget(
+                      context,
+                      widget.sportKey == 'MLB'
+                          ? 'Team Pitching Rankings'
+                          : 'Defensive Rankings'),
+                  ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: widget.sportKey == 'MLB'
+                        ? controller.defensiveMLB.length
+                        : controller.defensive.length,
+                    itemBuilder: (context, index) {
+                      var homePitching =
+                          controller.mlbStaticsHomeList?.pitching?.overall;
+                      var awayPitching =
+                          controller.mlbStaticsAwayList?.pitching?.overall;
+                      return widget.sportKey == 'MLB'
+                          ? commonRankingWidget(context,
+                              teamReports: controller.defensiveMLB[index],
+                              homeText: index == 0
+                                  ? '${homePitching?.games?.win ?? '0'}'
+                                  : index == 1
+                                      ? '${homePitching?.games?.loss ?? '0'}'
+                                      : index == 2
+                                          ? '${homePitching?.era ?? '0'}'
+                                          : index == 3
+                                              ? '${homePitching?.games?.shutout ?? '0'}'
+                                              : index == 5
+                                                  ? '${homePitching?.games?.qstart ?? '0'}'
+                                                  : index == 7
+                                                      ? '${homePitching?.onbase?.hr ?? '0'}'
+                                                      : index == 8
+                                                          ? '${homePitching?.onbase?.bb ?? '0'}'
+                                                          : index == 9
+                                                              ? '${homePitching?.outs?.ktotal ?? '0'}'
+                                                              : index == 10
+                                                                  ? '${homePitching?.whip ?? "0"}'
+                                                                  : index == 11
+                                                                      ? '${homePitching?.oba ?? "0"}'
+                                                                      : index ==
+                                                                              12
+                                                                          ? '${homePitching?.outs?.gidp ?? "0"}'
                                                                           : '0',
-                          homeText: index == 0
-                              ? '${homeHitting?.runs?.total ?? "0"}'
-                              : index == 1
-                                  ? '${homeHitting?.onbase?.h ?? "0"}'
-                                  : index == 2
-                                      ? '${homeHitting?.onbase?.hr ?? "0"}'
-                                      : index == 3
-                                          ? '${homeHitting?.rbi ?? "0"}'
-                                          : index == 4
-                                              ? '${homeHitting?.onbase?.bb ?? "0"}'
+                              awayText: index == 0
+                                  ? '${awayPitching?.games?.win ?? "0"}'
+                                  : index == 1
+                                      ? '${awayPitching?.games?.loss ?? "0"}'
+                                      : index == 2
+                                          ? '${awayPitching?.era ?? "0"}'
+                                          : index == 3
+                                              ? '${awayPitching?.games?.shutout ?? "0"}'
                                               : index == 5
-                                                  ? '${homeHitting?.outs?.ktotal ?? "0"}'
-                                                  : index == 6
-                                                      ? '${homeHitting?.steal?.stolen ?? "0"}'
-                                                      : index == 7
-                                                          ? homeHitting?.avg ??
-                                                              "0"
-                                                          : index == 8
-                                                              ? '${homeHitting?.slg ?? '0'}'
-                                                              : index == 9
-                                                                  ? '${homeHitting?.ops ?? '0'}'
-                                                                  : index == 10
-                                                                      ? '${homeHitting?.outs?.gidp ?? '0'}'
+                                                  ? '${awayPitching?.games?.qstart ?? "0"}'
+                                                  : index == 7
+                                                      ? '${awayPitching?.onbase?.hr ?? "0"}'
+                                                      : index == 8
+                                                          ? '${awayPitching?.onbase?.bb ?? "0"}'
+                                                          : index == 9
+                                                              ? '${awayPitching?.outs?.ktotal ?? "0"}'
+                                                              : index == 10
+                                                                  ? '${awayPitching?.whip ?? "0"}'
+                                                                  : index == 11
+                                                                      ? '${awayPitching?.oba ?? "0"}'
                                                                       : index ==
-                                                                              11
-                                                                          ? homeHitting?.abhr?.toStringAsFixed(2) ??
-                                                                              "0"
+                                                                              12
+                                                                          ? '${awayPitching?.outs?.gidp ?? "0"}'
                                                                           : '0')
-                      : commonRankingWidget(context,
-                          teamReports: controller.offensive[index],
+                          : commonRankingWidget(context,
+                              teamReports: controller.defensive[index],
+                              awayText: awayTeam?.abbreviation == 'DET' &&
+                                      homeTeam?.abbreviation == 'KC'
+                                  ? awayTeamDefenseValue[index]
+                                  : '0',
+                              homeText: awayTeam?.abbreviation == 'DET' &&
+                                      homeTeam?.abbreviation == 'KC'
+                                  ? homeTeamDefenseValue[index]
+                                  : '0');
+                    },
+                  ),
+                  rankingCommonWidget(context, 'Team Stats'),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemCount: widget.sportKey == 'MLB'
+                        ? controller.teamStatusMLB.length
+                        : controller.teamStatus.length,
+                    itemBuilder: (context, index) {
+                      return commonRankingWidget(context,
+                          teamReports: widget.sportKey == 'MLB'
+                              ? controller.teamStatusMLB[index]
+                              : controller.teamStatus[index],
                           awayText: awayTeam?.abbreviation == 'DET' &&
                                   homeTeam?.abbreviation == 'KC'
-                              ? awayTeamOffenseValue[index]
+                              ? awayTeamStat[index]
                               : '0',
                           homeText: awayTeam?.abbreviation == 'DET' &&
                                   homeTeam?.abbreviation == 'KC'
-                              ? homeTeamOffenseValue[index]
+                              ? homeTeamStat[index]
                               : '0');
-                },
-              ),
-              rankingCommonWidget(
-                  context,
-                  widget.sportKey == 'MLB'
-                      ? 'Team Pitching Rankings'
-                      : 'Defensive Rankings'),
-              ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget.sportKey == 'MLB'
-                    ? controller.defensiveMLB.length
-                    : controller.defensive.length,
-                itemBuilder: (context, index) {
-                  var homePitching =
-                      controller.mlbStaticsHomeList?.pitching?.overall;
-                  var awayPitching =
-                      controller.mlbStaticsAwayList?.pitching?.overall;
-                  return widget.sportKey == 'MLB'
-                      ? commonRankingWidget(context,
-                          teamReports: controller.defensiveMLB[index],
-                          homeText: index == 0
-                              ? '${homePitching?.games?.win ?? '0'}'
-                              : index == 1
-                                  ? '${homePitching?.games?.loss ?? '0'}'
-                                  : index == 2
-                                      ? '${homePitching?.era ?? '0'}'
-                                      : index == 3
-                                          ? '${homePitching?.games?.shutout ?? '0'}'
-                                          : index == 5
-                                              ? '${homePitching?.games?.qstart ?? '0'}'
-                                              : index == 7
-                                                  ? '${homePitching?.onbase?.hr ?? '0'}'
-                                                  : index == 8
-                                                      ? '${homePitching?.onbase?.bb ?? '0'}'
-                                                      : index == 9
-                                                          ? '${homePitching?.outs?.ktotal ?? '0'}'
-                                                          : index == 10
-                                                              ? '${homePitching?.whip ?? "0"}'
-                                                              : index == 11
-                                                                  ? '${homePitching?.oba ?? "0"}'
-                                                                  : index == 12
-                                                                      ? '${homePitching?.outs?.gidp ?? "0"}'
-                                                                      : '0',
-                          awayText: index == 0
-                              ? '${awayPitching?.games?.win ?? "0"}'
-                              : index == 1
-                                  ? '${awayPitching?.games?.loss ?? "0"}'
-                                  : index == 2
-                                      ? '${awayPitching?.era ?? "0"}'
-                                      : index == 3
-                                          ? '${awayPitching?.games?.shutout ?? "0"}'
-                                          : index == 5
-                                              ? '${awayPitching?.games?.qstart ?? "0"}'
-                                              : index == 7
-                                                  ? '${awayPitching?.onbase?.hr ?? "0"}'
-                                                  : index == 8
-                                                      ? '${awayPitching?.onbase?.bb ?? "0"}'
-                                                      : index == 9
-                                                          ? '${awayPitching?.outs?.ktotal ?? "0"}'
-                                                          : index == 10
-                                                              ? '${awayPitching?.whip ?? "0"}'
-                                                              : index == 11
-                                                                  ? '${awayPitching?.oba ?? "0"}'
-                                                                  : index == 12
-                                                                      ? '${awayPitching?.outs?.gidp ?? "0"}'
-                                                                      : '0')
-                      : commonRankingWidget(context,
-                          teamReports: controller.defensive[index],
-                          awayText: awayTeam?.abbreviation == 'DET' &&
-                                  homeTeam?.abbreviation == 'KC'
-                              ? awayTeamDefenseValue[index]
-                              : '0',
-                          homeText: awayTeam?.abbreviation == 'DET' &&
-                                  homeTeam?.abbreviation == 'KC'
-                              ? homeTeamDefenseValue[index]
-                              : '0');
-                },
-              ),
-              rankingCommonWidget(context, 'Team Stats'),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: widget.sportKey == 'MLB'
-                    ? controller.teamStatusMLB.length
-                    : controller.teamStatus.length,
-                itemBuilder: (context, index) {
-                  return commonRankingWidget(context,
-                      teamReports: widget.sportKey == 'MLB'
-                          ? controller.teamStatusMLB[index]
-                          : controller.teamStatus[index],
-                      awayText: awayTeam?.abbreviation == 'DET' &&
-                              homeTeam?.abbreviation == 'KC'
-                          ? awayTeamStat[index]
-                          : '0',
-                      homeText: awayTeam?.abbreviation == 'DET' &&
-                              homeTeam?.abbreviation == 'KC'
-                          ? homeTeamStat[index]
-                          : '0');
-                },
-              ),
-            ],
-          );
+                    },
+                  ),
+                ],
+              ));
         }),
       ),
     );
@@ -1095,6 +1116,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Container headerTitleWidget(BuildContext context, String title,
       {bool isTeamReport = false}) {
+    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
     return Container(
         height: MediaQuery.of(context).size.height * .032,
         width: Get.width,
@@ -1108,10 +1130,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             Expanded(
               flex: 1,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Expanded(
-                    child: (awayTeam?.name ?? '').appCommonText(
+                    child: (isTeamReport
+                            ? (awayTeam?.abbreviation ?? '')
+                            : (awayTeam?.name ?? ''))
+                        .appCommonText(
                       weight: FontWeight.w600,
                       maxLine: 1,
                       size: MediaQuery.of(context).size.height * .016,
@@ -1151,7 +1175,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     width: MediaQuery.of(context).size.width * .01,
                   ),
                   Expanded(
-                    child: (homeTeam?.name ?? "").appCommonText(
+                    child: (isTeamReport
+                            ? (homeTeam?.abbreviation ?? "")
+                            : (homeTeam?.name ?? ""))
+                        .appCommonText(
                       weight: FontWeight.w600,
                       maxLine: 1,
                       size: MediaQuery.of(context).size.height * .016,
@@ -1397,6 +1424,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   headerWidget(BuildContext context) {
     isDark = PreferenceManager.getIsDarkMode() ?? false;
+
     return Stack(
       fit: StackFit.loose,
       alignment: Alignment.topCenter,
@@ -1405,6 +1433,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.height * .02),
           child: GetBuilder<SelectGameController>(builder: (con) {
+            String dateTime = DateFormat.jm().format(
+                DateTime.parse(widget.gameDetails.scheduled ?? '').toLocal());
             String date = DateFormat.d().format(
                 (DateTime.parse(widget.gameDetails.scheduled ?? '')).toLocal());
             String month = DateFormat.MMM().format(
@@ -1430,7 +1460,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             // log('widget.gameDetails??.awayLiveScores---${widget.gameDetails??.awayLiveScores}');
             return Container(
               width: Get.width,
-              height: MediaQuery.of(context).size.height * .175,
+              // height: MediaQuery.of(context).size.height * .175,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(
                       top: Radius.circular(
@@ -1456,8 +1486,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                   ? widget.gameDetails.awaySpreadValue
                                   : '+${widget.gameDetails.awaySpreadValue}',
                         ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * .025,
+                        ),
                         commonBoxWidget(context,
                             title: widget.gameDetails.awayMoneyLineValue),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * .025,
+                        ),
                         commonBoxWidget(context,
                             title: 'o/u${widget.gameDetails.awayOUValue}')
                       ],
@@ -1498,8 +1534,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               color: whiteColor,
                               size: MediaQuery.of(context).size.height * .014,
                               weight: FontWeight.w600),
+                          dateTime.appCommonText(
+                              color: whiteColor,
+                              size: MediaQuery.of(context).size.height * .014,
+                              weight: FontWeight.w600),
                           SizedBox(
-                            height: MediaQuery.of(context).size.width * .01,
+                            height: MediaQuery.of(context).size.width * .003,
                           ),
                           '${widget.gameDetails.awayScore}-${widget.gameDetails.homeScore}'
                               .appCommonText(
@@ -1584,8 +1624,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                   ? widget.gameDetails.homeSpreadValue
                                   : '+${widget.gameDetails.homeSpreadValue}',
                         ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * .025,
+                        ),
                         commonBoxWidget(context,
                             title: widget.gameDetails.homeMoneyLineValue),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * .025,
+                        ),
                         commonBoxWidget(context,
                             title: 'o/u${widget.gameDetails.homeOUValue}')
                       ],
@@ -1596,21 +1642,25 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             );
           }),
         ),
-        Positioned(
-          top: MediaQuery.of(context).size.height * .010,
-          child: Container(
-            height: MediaQuery.of(context).size.height * .02,
-            width: MediaQuery.of(context).size.width * .07,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(105), color: redColor),
-            child: Center(
-              child: 'LIVE'.appCommonText(
-                  color: whiteColor,
-                  size: MediaQuery.of(context).size.height * .012,
-                  weight: FontWeight.bold),
-            ),
-          ),
-        ),
+        DateTime.parse(widget.gameDetails.scheduled ?? "").toLocal() ==
+                DateTime.now().toLocal()
+            ? Positioned(
+                top: MediaQuery.of(context).size.height * .010,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .02,
+                  width: MediaQuery.of(context).size.width * .07,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(105),
+                      color: redColor),
+                  child: Center(
+                    child: 'LIVE'.appCommonText(
+                        color: whiteColor,
+                        size: MediaQuery.of(context).size.height * .012,
+                        weight: FontWeight.bold),
+                  ),
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

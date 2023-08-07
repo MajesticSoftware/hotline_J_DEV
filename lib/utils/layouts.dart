@@ -57,7 +57,7 @@ getWeatherIcon(int condition, BuildContext context, double height) {
   if (condition == 1) {
     return svgPicture(context, Assets.imagesSun, height);
   } else if (data < 300) {
-    return svgPicture(context, Assets.imagesSun3, height);
+    return svgPicture(context, Assets.imagesSun2, height);
   } else if (data < 400) {
     return svgPicture(context, Assets.imagesSun3, height);
   } else if (data < 600) {
@@ -127,6 +127,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
 }
 
 Container commonBoxWidget(BuildContext context, {String title = ''}) {
+  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
   return Container(
     height: MediaQuery.of(context).size.height * .032,
     width: MediaQuery.of(context).size.width * .09,
@@ -139,7 +140,10 @@ Container commonBoxWidget(BuildContext context, {String title = ''}) {
         child: title.appCommonText(
             color: blackColor,
             weight: FontWeight.w700,
-            size: MediaQuery.of(context).size.height * .014,
+            maxLine: 1,
+            size: data.size.shortestSide < 600
+                ? MediaQuery.of(context).size.height * .012
+                : MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),
   );
 }
