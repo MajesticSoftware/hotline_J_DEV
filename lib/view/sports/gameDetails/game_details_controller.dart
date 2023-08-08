@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 
 import '../../../constant/constant.dart';
+import '../../../model/DET_KC_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/hotlines_data_model.dart';
 import '../../../model/mlb_statics_model.dart';
@@ -91,7 +92,7 @@ class GameDetailsController extends GetxController {
   RxBool isLoading = false.obs;
   Statistics? mlbStaticsHomeList;
   Statistics? mlbStaticsAwayList;
-
+  List<MLBStaticsDataModel> mlbStaticsData = [];
   Future mlbStaticsHomeTeamResponse(
       {String homeTeamId = '', bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
@@ -135,7 +136,7 @@ class GameDetailsController extends GetxController {
         if (response.statistics != null) {
           mlbStaticsAwayList = response.statistics;
         }
-        isLoading.value = false;
+        // isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(
@@ -152,23 +153,64 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  List<HotlinesModel> _hotlinesData = [];
+
+  List<HotlinesModel> get hotlinesData => _hotlinesData;
+
+  set hotlinesData(List<HotlinesModel> value) {
+    _hotlinesData = value;
+    update();
+  }
+
+  String hotlinesOdd = '';
+  String hotlinesDecimal = '';
+  String hotlinesDec = '';
+  String hotlinesType = '';
   Future hotlinesDataResponse(
-      {String awayTeamId = '', bool isLoad = false}) async {
+      {String awayTeamId = '',
+      String sportId = '',
+      String date = '',
+      bool isLoad = false,
+      String homeTeamId = ''}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().hotlinesDataRepo();
+    result =
+        await GameListingRepo().hotlinesDataRepo(sportId: sportId, date: date);
     try {
+      hotlinesData.clear();
       if (result.status) {
         HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
-        final competitionSportEventsPlayersProps =
-            response.competitionSportEventsPlayersProps;
-        if (competitionSportEventsPlayersProps != null) {
-          for (var event in competitionSportEventsPlayersProps) {
-            // event.sportEvent.competitors[0].id
+        final sportScheduleSportEventsPlayersProps =
+            response.sportScheduleSportEventsPlayersProps;
+        if (sportScheduleSportEventsPlayersProps != null) {
+          for (var event in sportScheduleSportEventsPlayersProps) {
+            if (event.sportEvent?.competitors?[0].id == homeTeamId &&
+                event.sportEvent?.competitors?[1].id == awayTeamId) {
+              event.playersProps?.forEach((playersProp) {
+                playersProp.markets?.forEach((market) {
+                  market.books?.forEach((book) {
+                    if (book.id == 'sr:book:18186') {
+                      book.outcomes?.forEach((outcome) {
+                        if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
+                          log('AMERICAN OUTCOMES---->> ${outcome.oddsAmerican}');
+                          hotlinesData.add(HotlinesModel(
+                              teamName:
+                                  '${outcome.type.toString().capitalizeFirst} ${outcome.oddsDecimal} ${market.name?.split('(').first.toString().capitalize}',
+                              value: '${outcome.oddsAmerican}'));
+                          hotlinesData
+                              .sort((a, b) => b.value.compareTo(a.value));
+                          log('hotlinesDatahotlinesData--${hotlinesData[0].teamName}');
+                        }
+                      });
+                    }
+                  });
+                });
+              });
+            }
           }
         }
-        isLoading.value = false;
+        // isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(
@@ -177,7 +219,7 @@ class GameDetailsController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE1----$e');
+      log('ERORE>>>>>>>>----$e');
       showAppSnackBar(
         errorText,
       );
@@ -219,7 +261,7 @@ class GameDetailsController extends GetxController {
             }
           });
         }
-        isLoading.value = false;
+        // isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(

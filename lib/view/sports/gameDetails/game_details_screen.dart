@@ -24,9 +24,13 @@ class SportDetailsScreen extends StatefulWidget {
     Key? key,
     required this.gameDetails,
     required this.sportKey,
+    required this.sportId,
+    required this.date,
   }) : super(key: key);
   final SportEvents gameDetails;
   final String sportKey;
+  final String sportId;
+  final String date;
 
   @override
   State<SportDetailsScreen> createState() => _SportDetailsScreenState();
@@ -79,6 +83,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               sportEvent: widget.gameDetails,
               awayTeamId: awayTeam?.uuids ?? "",
               homeTeamId: homeTeam?.uuids ?? "");
+          gameDetailsController.hotlinesDataResponse(
+              awayTeamId: awayTeam?.id ?? "",
+              sportId: widget.sportId,
+              date: widget.date,
+              homeTeamId: homeTeam?.id ?? "",
+              isLoad: true);
           gameDetailsController.mlbStaticsAwayTeamResponse(
               isLoad: true, awayTeamId: awayTeam?.uuids ?? '');
           gameDetailsController.mlbStaticsHomeTeamResponse(
@@ -103,7 +113,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     child: Column(
                       children: [
                         headerWidget(context),
-                        hotlinesWidget(context),
+                        hotlinesWidget(context, con),
                         teamReportWidget(context),
                         widget.sportKey == 'MLB'
                             ? mlbInjuryReportWidget(context)
@@ -1193,7 +1203,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         ));
   }
 
-  Padding hotlinesWidget(BuildContext context) {
+  Padding hotlinesWidget(BuildContext context, GameDetailsController con) {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.height * .02),
@@ -1226,105 +1236,110 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         size: Get.height * .018),
                   ],
                 )),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: hotlinesList.length,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .038,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * .016),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: (awayTeam?.abbreviation == 'DET' &&
-                                          homeTeam?.abbreviation == 'KC'
-                                      ? hotlinesList[index].teamName
-                                      : homeTeam?.name ?? '')
-                                  .appCommonText(
-                                      color: Theme.of(context).highlightColor,
-                                      weight: FontWeight.w400,
-                                      align: TextAlign.center,
-                                      size: MediaQuery.of(context).size.height *
-                                          .016),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: (awayTeam?.abbreviation == 'DET' &&
-                                          homeTeam?.abbreviation == 'KC'
-                                      ? hotlinesList[index].valueTDs
-                                      : '1.5+ rushing TD')
-                                  .appCommonText(
-                                      color: Theme.of(context).highlightColor,
-                                      weight: FontWeight.bold,
-                                      align: TextAlign.center,
-                                      size: MediaQuery.of(context).size.height *
-                                          .016),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.width *
-                                            .002),
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * .096,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(0)),
-                                  child: Center(
-                                    child: (awayTeam?.abbreviation == 'DET' &&
-                                                homeTeam?.abbreviation == 'KC'
-                                            ? hotlinesList[index].value
-                                            : '+320')
+            con.hotlinesData.isEmpty
+                ? SizedBox(
+                    height: MediaQuery.of(context).size.height * .038,
+                    child: Center(
+                        child: 'No Data'.appCommonText(
+                            weight: FontWeight.w700,
+                            color: Theme.of(context).highlightColor)),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: con.hotlinesData.length >= 3
+                        ? 3
+                        : con.hotlinesData.length,
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .038,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * .016),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: (con.hotlinesData[index].teamName ??
+                                            '')
                                         .appCommonText(
-                                            color: Theme.of(context).cardColor,
+                                            color: Theme.of(context)
+                                                .highlightColor,
+                                            weight: FontWeight.bold,
+                                            align: TextAlign.center,
                                             size: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                .014,
-                                            weight: FontWeight.w600),
+                                                .016),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * .02,
-                            ),
-                            Expanded(
-                                child: index == 1 || index == 0
-                                    ? Image.asset(
-                                        Assets.imagesFire,
-                                        alignment: Alignment.centerLeft,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .028,
+                                  Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .002),
+                                      child: Container(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                .028,
-                                        fit: BoxFit.contain,
-                                      )
-                                    : const SizedBox()),
-                          ],
-                        ),
-                      ),
-                    ),
-                    index == 2 ? const SizedBox() : commonDivider(context),
-                  ],
-                );
-              },
-            ),
+                                                .096,
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(0)),
+                                        child: Center(
+                                          child: con.hotlinesData[index].value
+                                              .appCommonText(
+                                                  color: Theme.of(context)
+                                                      .cardColor,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .014,
+                                                  weight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * .02,
+                                  ),
+                                  Expanded(
+                                      child: index == 1 || index == 0
+                                          ? Image.asset(
+                                              Assets.imagesFire,
+                                              alignment: Alignment.centerLeft,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .028,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .028,
+                                              fit: BoxFit.contain,
+                                            )
+                                          : const SizedBox()),
+                                ],
+                              ),
+                            ),
+                          ),
+                          index == 2
+                              ? const SizedBox()
+                              : commonDivider(context),
+                        ],
+                      );
+                    },
+                  ),
           ],
         ),
       ),
@@ -1579,8 +1594,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               ),
                               getWeatherIcon(
                                   (widget.gameDetails.venue != null
-                                      ? widget.gameDetails.venue?.weather ?? 1
-                                      : 1),
+                                      ? widget.gameDetails.venue?.weather ??
+                                          'Sunny'
+                                      : 'Sunny'),
                                   context,
                                   MediaQuery.of(context).size.height * .024),
                             ],
@@ -1638,12 +1654,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     ),
                   ))
                 ],
-              ),
+              ).paddingSymmetric(vertical: 10),
             );
           }),
         ),
-        DateTime.parse(widget.gameDetails.scheduled ?? "").toLocal() ==
-                DateTime.now().toLocal()
+        widget.gameDetails.status == 'live'
             ? Positioned(
                 top: MediaQuery.of(context).size.height * .010,
                 child: Container(

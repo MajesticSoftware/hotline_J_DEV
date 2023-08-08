@@ -191,6 +191,8 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                   gameDetails:
                                       controller.sportEventsList[index],
                                   sportKey: widget.sportKey,
+                                  sportId: widget.sportId,
+                                  date: widget.date,
                                 ));
                               },
                               child: teamWidget(
@@ -371,8 +373,8 @@ class _GameListingScreenState extends State<GameListingScreen> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .001,
                     ),
-                    getWeatherIcon(competitors.venue?.weather ?? 1, context,
-                        MediaQuery.of(context).size.height * .064),
+                    getWeatherIcon(competitors.venue?.weather ?? 'Sunny',
+                        context, MediaQuery.of(context).size.height * .064),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,

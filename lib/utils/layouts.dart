@@ -51,24 +51,18 @@ commonImageWidget(String image, BuildContext context,
   );
 }
 
-getWeatherIcon(int condition, BuildContext context, double height) {
-  int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();
-  log('data---${data}');
-  if (condition == 1) {
+getWeatherIcon(String condition, BuildContext context, double height) {
+  // int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();
+  // log('data---${data}');
+  if (condition == 'Sunny') {
     return svgPicture(context, Assets.imagesSun, height);
-  } else if (data < 300) {
+  } else if (condition == 'Patchy rain possible') {
     return svgPicture(context, Assets.imagesSun2, height);
-  } else if (data < 400) {
+  } else if (condition == 'Rain' || condition == 'Light rain') {
     return svgPicture(context, Assets.imagesSun3, height);
-  } else if (data < 600) {
-    return svgPicture(context, Assets.imagesSun2, height);
-  } else if (data < 700) {
+  } else if (condition == 'Partly cloudy') {
     return svgPicture(context, Assets.imagesSun1, height);
-  } else if (data < 800) {
-    return svgPicture(context, Assets.imagesSun1, height);
-  } else if (data == 800) {
-    return svgPicture(context, Assets.imagesSun, height);
-  } else if (data <= 804) {
+  } else if (condition == 'cloudy' || condition == 'Overcast') {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * .02),

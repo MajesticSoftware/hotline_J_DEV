@@ -1,21 +1,12 @@
 class HotlinesModel {
   String teamName;
-  String valueTDs;
   String value;
 
   HotlinesModel({
     required this.teamName,
-    required this.valueTDs,
     required this.value,
   });
 }
-
-List<HotlinesModel> hotlinesList = [
-  HotlinesModel(
-      teamName: 'Detroit Lions', valueTDs: 'Win by 14+', value: '+1200'),
-  HotlinesModel(teamName: 'Pat Mahomes', valueTDs: '5+ TDs', value: '+1100'),
-  HotlinesModel(teamName: 'Jarred Goff', valueTDs: '2+ Rush TDs', value: '+910')
-];
 
 List awayTeamOffenseValue = [
   '22.3%',

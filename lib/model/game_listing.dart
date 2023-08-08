@@ -103,10 +103,10 @@ class SportEvents {
     this.homeGameLogo = '',
     this.awayGameLogo = '',
     this.homeMoneyLine = '',
-    this.homeSpread = '',
+    this.homeSpread = '0',
     this.homeOU = '',
     this.awayMoneyLine = '',
-    this.awaySpread = '',
+    this.awaySpread = '0',
     this.awayOU = '',
     this.awayScore = '',
     this.homeScore = '',
@@ -389,7 +389,7 @@ class Venue {
   String? countryCode;
   String? uuids;
   int? temp;
-  int? weather;
+  String? weather;
 
   int get tmpInFahrenheit {
     return temp == 0 ? 0 : temp ?? 0;
@@ -404,7 +404,7 @@ class Venue {
       this.mapCoordinates,
       this.countryCode,
       this.temp = 0,
-      this.weather = 0,
+      this.weather = 'Sunny',
       this.uuids});
 
   Venue.fromJson(Map<String, dynamic> json) {
