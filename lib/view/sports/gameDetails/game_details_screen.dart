@@ -1262,8 +1262,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       MediaQuery.of(context).size.width * .016),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  10.W(),
                                   Expanded(
                                     flex: 4,
                                     child: (con.hotlinesData[index].teamName ??
@@ -1272,7 +1273,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                             color: Theme.of(context)
                                                 .highlightColor,
                                             weight: FontWeight.bold,
-                                            align: TextAlign.center,
+                                            align: TextAlign.start,
                                             size: MediaQuery.of(context)
                                                     .size
                                                     .height *

@@ -190,17 +190,16 @@ class GameDetailsController extends GetxController {
               event.playersProps?.forEach((playersProp) {
                 playersProp.markets?.forEach((market) {
                   market.books?.forEach((book) {
-                    if (book.id == 'sr:book:18186') {
+                    if (book.id == 'sr:book:18186' ||
+                        book.id == 'sr:book:18149') {
                       book.outcomes?.forEach((outcome) {
                         if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
-                          log('AMERICAN OUTCOMES---->> ${outcome.oddsAmerican}');
                           hotlinesData.add(HotlinesModel(
                               teamName:
-                                  '${outcome.type.toString().capitalizeFirst} ${outcome.oddsDecimal} ${market.name?.split('(').first.toString().capitalize}',
+                                  '${playersProp.player?.name?.split(',').last ?? ''}, ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.oddsDecimal} ${market.name?.split('(').first.toString().capitalize}',
                               value: '${outcome.oddsAmerican}'));
                           hotlinesData
                               .sort((a, b) => b.value.compareTo(a.value));
-                          log('hotlinesDatahotlinesData--${hotlinesData[0].teamName}');
                         }
                       });
                     }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -90,22 +91,27 @@ class SelectSportScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                wantToDownloadTheAppOnYourDevice.appCommonText(
-                    color: darkGreyColor,
-                    size: Get.height * .022,
-                    weight: FontWeight.w400,
-                    align: TextAlign.center),
-                InkWell(
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    launchInBrowser(
-                        Uri.parse('https://www.hotlinesmd.com/contact'));
-                  },
-                  child: contactUs.appCommonText(
-                      color: Theme.of(context).primaryColor,
-                      size: Get.height * .022,
-                      weight: FontWeight.w700,
-                      align: TextAlign.center),
+                Flexible(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        text: wantToDownloadTheAppOnYourDevice,
+                        style: TextStyle(
+                            fontSize: Get.height * .022,
+                            color: darkGreyColor,
+                            fontWeight: FontWeight.w400),
+                        children: [
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => launchInBrowser(Uri.parse(
+                                    'https://www.hotlinesmd.com/contact')),
+                              text: contactUs,
+                              style: TextStyle(
+                                  fontSize: Get.height * .022,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w700))
+                        ]),
+                  ),
                 ),
               ],
             ),
