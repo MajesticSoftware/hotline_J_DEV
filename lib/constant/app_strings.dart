@@ -19,5 +19,7 @@ const String gambling = 'Gambling 101';
 const String wantToDownloadTheAppOnYourDevice =
     'Want to download the app on your device?';
 const String contactUs = ' Contact Us';
+const String mobileMsg =
+    '**Gambling involves financial risk and can be addictive. \n  Please play responsibly.**';
 const String msg =
     '**Gambling involves financial risk and can be addictive. Please play responsibly.**';

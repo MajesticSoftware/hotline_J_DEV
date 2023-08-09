@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 Map<String, String> requestHeader() {
   return {
     // 'X-RapidAPI-Key': '6dd1587895msh5f0c2263a5686aap120b34jsne9263cbd71ed',
@@ -5,3 +7,5 @@ Map<String, String> requestHeader() {
     'X-RapidAPI-Host': 'sportspage-feeds.p.rapidapi.com'
   };
 }
+
+final modileView = MediaQueryData.fromWindow(WidgetsBinding.instance.window);

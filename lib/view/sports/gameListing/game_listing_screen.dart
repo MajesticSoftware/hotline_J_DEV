@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:hotlines/extras/constants.dart';
 import 'package:hotlines/generated/assets.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/utils.dart';
@@ -68,21 +69,21 @@ class _GameListingScreenState extends State<GameListingScreen> {
     );
   }
 
-  getResponse(bool isLoad) {
+  getResponse(bool isLoad) async {
     if (widget.sportKey == 'MLB') {
-      return gameListingController.getGameListingForMLBRes(isLoad,
+      return await gameListingController.getGameListingForMLBRes(isLoad,
           apiKey: widget.keys,
           sportKey: widget.sportKey,
           date: widget.date,
           sportId: widget.sportId);
     } else if (widget.sportKey == 'NFL') {
-      return gameListingController.getGameListingForNFLGame(isLoad,
+      return await gameListingController.getGameListingForNFLGame(isLoad,
           apiKey: widget.keys,
           sportKey: widget.sportKey,
           date: widget.date,
           sportId: widget.sportId);
     } else {
-      return gameListingController.getGameListingForNCAAGame(isLoad,
+      return await gameListingController.getGameListingForNCAAGame(isLoad,
           apiKey: widget.keys,
           sportKey: widget.sportKey,
           date: widget.date,
@@ -176,8 +177,8 @@ class _GameListingScreenState extends State<GameListingScreen> {
             ? const SizedBox()
             : controller.sportEventsList.isNotEmpty
                 ? RefreshIndicator(
-                    onRefresh: () {
-                      return getResponse(false);
+                    onRefresh: () async {
+                      return await getResponse(false);
                     },
                     color: Theme.of(context).disabledColor,
                     child: ListView.builder(
@@ -235,7 +236,9 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 child: Center(
                   child: backButton.appCommonText(
                       color: whiteColor,
-                      size: MediaQuery.of(context).size.height * .014,
+                      size: modileView.size.shortestSide < 600
+                          ? MediaQuery.of(context).size.height * .010
+                          : MediaQuery.of(context).size.height * .014,
                       weight: FontWeight.w500),
                 ),
               )),

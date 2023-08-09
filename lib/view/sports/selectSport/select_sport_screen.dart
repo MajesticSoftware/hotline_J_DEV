@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
+import '../../../extras/constants.dart';
 import 'selecte_game_con.dart';
 import '../../../generated/assets.dart';
 import '../../../model/DET_KC_model.dart';
@@ -105,7 +106,9 @@ class SelectSportScreen extends StatelessWidget {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => launchInBrowser(Uri.parse(
                                     'https://www.hotlinesmd.com/contact')),
-                              text: contactUs,
+                              text: modileView.size.shortestSide < 600
+                                  ? '\n$contactUs'
+                                  : contactUs,
                               style: TextStyle(
                                   fontSize: Get.height * .022,
                                   color: Theme.of(context).primaryColor,
@@ -118,12 +121,13 @@ class SelectSportScreen extends StatelessWidget {
             SizedBox(
               height: Get.height * .015,
             ),
-            msg.appCommonText(
-                color: Theme.of(context).dividerColor,
-                size: Get.height * .016,
-                weight: FontWeight.w300,
-                fontStyle: FontStyle.italic,
-                align: TextAlign.center),
+            (modileView.size.shortestSide < 600 ? mobileMsg : msg)
+                .appCommonText(
+                    color: Theme.of(context).dividerColor,
+                    size: Get.height * .016,
+                    weight: FontWeight.w300,
+                    fontStyle: FontStyle.italic,
+                    align: TextAlign.center),
             SizedBox(
               height: Get.height * .02,
             )

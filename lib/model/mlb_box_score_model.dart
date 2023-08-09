@@ -23,12 +23,13 @@ class Game {
   String? id;
   String? status;
   String? coverage;
-  dynamic? gameNumber;
+  dynamic gameNumber;
   String? dayNight;
   String? scheduled;
   String? homeTeam;
   String? awayTeam;
-  dynamic? attendance;
+  dynamic attendance;
+  Final? finals;
   String? duration;
   bool? doubleHeader;
   String? entryMode;
@@ -52,6 +53,7 @@ class Game {
       this.homeTeam,
       this.awayTeam,
       this.attendance,
+      this.finals,
       this.duration,
       this.doubleHeader,
       this.entryMode,
@@ -74,6 +76,7 @@ class Game {
     homeTeam = json['home_team'];
     awayTeam = json['away_team'];
     attendance = json['attendance'];
+    finals = json['final'];
     duration = json['duration'];
     doubleHeader = json['double_header'];
     entryMode = json['entry_mode'];
@@ -105,6 +108,7 @@ class Game {
     data['home_team'] = this.homeTeam;
     data['away_team'] = this.awayTeam;
     data['attendance'] = this.attendance;
+    data['final'] = this.finals;
     data['duration'] = this.duration;
     data['double_header'] = this.doubleHeader;
     data['entry_mode'] = this.entryMode;
@@ -159,7 +163,7 @@ class TimeZones {
 class Venue {
   String? name;
   String? market;
-  dynamic? capacity;
+  dynamic capacity;
   String? surface;
   String? address;
   String? city;
@@ -292,11 +296,11 @@ class Weather {
 }
 
 class Forecast {
-  dynamic? tempF;
+  dynamic tempF;
   String? condition;
-  dynamic? humidity;
-  dynamic? dewPodynamicF;
-  dynamic? cloudCover;
+  dynamic humidity;
+  dynamic dewPodynamicF;
+  dynamic cloudCover;
   String? obsTime;
   Wind? wind;
 
@@ -335,7 +339,7 @@ class Forecast {
 }
 
 class Wind {
-  dynamic? speedMph;
+  dynamic speedMph;
   String? direction;
 
   Wind({this.speedMph, this.direction});
@@ -354,7 +358,7 @@ class Wind {
 }
 
 class Final {
-  dynamic? inning;
+  dynamic inning;
   String? inningHalf;
 
   Final({this.inning, this.inningHalf});

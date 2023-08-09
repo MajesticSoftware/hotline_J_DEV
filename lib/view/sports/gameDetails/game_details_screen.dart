@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../constant/constant.dart';
 import '../../../constant/shred_preference.dart';
+import '../../../extras/constants.dart';
 import 'game_details_controller.dart';
 import '../selectSport/selecte_game_con.dart';
 import '../../../model/DET_KC_model.dart';
@@ -46,11 +49,87 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     super.initState();
   }
 
-  Future _refreshLocalGallery() async {
-    // getRanking();
+  Future _refreshLocalGallery(bool isLoad) async {
+    if (widget.sportKey == 'MLB') {
+      gameDetailsController.mlbInjuriesResponse(
+          isLoad: isLoad,
+          sportEvent: widget.gameDetails,
+          awayTeamId: awayTeam?.uuids ?? "",
+          homeTeamId: homeTeam?.uuids ?? "");
+      for (int i = 0; i <= 20; i += 5) {
+        log('i====$i');
+        await gameDetailsController
+            .hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: widget.sportId,
+                date: widget.date,
+                start: i,
+                homeTeamId: homeTeam?.id ?? "",
+                isLoad: isLoad)
+            .then((value) {});
+        if (gameDetailsController.hotlinesData.isNotEmpty) {
+          break;
+        }
+      }
+      gameDetailsController.mlbStaticsAwayTeamResponse(
+          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
+      gameDetailsController.mlbStaticsHomeTeamResponse(
+          isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
+      /*gameDetailsController
+              .hotlinesDataResponse(
+                  awayTeamId: awayTeam?.id ?? "",
+                  sportId: widget.sportId,
+                  date: widget.date,
+                  start: 0,
+                  homeTeamId: homeTeam?.id ?? "",
+                  isLoad: true)
+              .then((value) async {
+            // gameDetailsController.update();
+            if (gameDetailsController.hotlinesData.isEmpty) {
+              await gameDetailsController
+                  .hotlinesDataResponse(
+                      awayTeamId: awayTeam?.id ?? "",
+                      sportId: widget.sportId,
+                      date: widget.date,
+                      start: 5,
+                      homeTeamId: homeTeam?.id ?? "",
+                      isLoad: true)
+                  .then((value) {
+                if (gameDetailsController.hotlinesData.isEmpty) {
+                  gameDetailsController
+                      .hotlinesDataResponse(
+                          awayTeamId: awayTeam?.id ?? "",
+                          sportId: widget.sportId,
+                          date: widget.date,
+                          start: 10,
+                          homeTeamId: homeTeam?.id ?? "",
+                          isLoad: true)
+                      .then((value) {
+                    gameDetailsController.mlbStaticsAwayTeamResponse(
+                        isLoad: true, awayTeamId: awayTeam?.uuids ?? '');
+                    gameDetailsController.mlbStaticsHomeTeamResponse(
+                        isLoad: true, homeTeamId: homeTeam?.uuids ?? '');
+                  });
+                } else {
+                  gameDetailsController.mlbStaticsAwayTeamResponse(
+                      isLoad: true, awayTeamId: awayTeam?.uuids ?? '');
+                  gameDetailsController.mlbStaticsHomeTeamResponse(
+                      isLoad: true, homeTeamId: homeTeam?.uuids ?? '');
+                }
+              });
+            } else {
+              gameDetailsController.mlbStaticsAwayTeamResponse(
+                  isLoad: true, awayTeamId: awayTeam?.uuids ?? '');
+              gameDetailsController.mlbStaticsHomeTeamResponse(
+                  isLoad: true, homeTeamId: homeTeam?.uuids ?? '');
+            }
+          });*/
+    }
   }
+
   Competitors? homeTeam;
   Competitors? awayTeam;
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -76,28 +155,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
-      body: GetBuilder<GameDetailsController>(initState: (state) {
-        if (widget.sportKey == 'MLB') {
-          gameDetailsController.mlbInjuriesResponse(
-              isLoad: true,
-              sportEvent: widget.gameDetails,
-              awayTeamId: awayTeam?.uuids ?? "",
-              homeTeamId: homeTeam?.uuids ?? "");
-          gameDetailsController.hotlinesDataResponse(
-              awayTeamId: awayTeam?.id ?? "",
-              sportId: widget.sportId,
-              date: widget.date,
-              homeTeamId: homeTeam?.id ?? "",
-              isLoad: true);
-          gameDetailsController.mlbStaticsAwayTeamResponse(
-              isLoad: true, awayTeamId: awayTeam?.uuids ?? '');
-          gameDetailsController.mlbStaticsHomeTeamResponse(
-              isLoad: true, homeTeamId: homeTeam?.uuids ?? '');
-        }
+      body: GetBuilder<GameDetailsController>(initState: (state) async {
+        _refreshLocalGallery(true);
       }, builder: (con) {
         return RefreshIndicator(
           onRefresh: () {
-            return _refreshLocalGallery();
+            return _refreshLocalGallery(false);
           },
           color: Theme.of(context).disabledColor,
           child: Stack(
@@ -504,8 +567,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Column commonRankingWidget(BuildContext context,
       {String homeText = '', String awayText = '', String teamReports = ''}) {
-    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-
     return Column(
       children: [
         Padding(
@@ -519,7 +580,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 child: awayText.appCommonText(
                     color: Theme.of(context).highlightColor,
                     weight: FontWeight.w700,
-                    align: data.size.shortestSide < 600
+                    align: modileView.size.shortestSide < 600
                         ? TextAlign.center
                         : TextAlign.end,
                     size: MediaQuery.of(context).size.height * .014),
@@ -537,7 +598,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 child: homeText.appCommonText(
                     color: Theme.of(context).highlightColor,
                     weight: FontWeight.w700,
-                    align: data.size.shortestSide < 600
+                    align: modileView.size.shortestSide < 600
                         ? TextAlign.center
                         : TextAlign.start,
                     size: MediaQuery.of(context).size.height * .014),
@@ -1126,7 +1187,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Container headerTitleWidget(BuildContext context, String title,
       {bool isTeamReport = false}) {
-    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
     return Container(
         height: MediaQuery.of(context).size.height * .032,
         width: Get.width,
@@ -1236,111 +1296,156 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         size: Get.height * .018),
                   ],
                 )),
-            con.hotlinesData.isEmpty
+            con.hotlinesData.isEmpty && !con.isLoading.value
                 ? SizedBox(
                     height: MediaQuery.of(context).size.height * .038,
-                    child: Center(
-                        child: 'No Data'.appCommonText(
-                            weight: FontWeight.w700,
-                            color: Theme.of(context).highlightColor)),
                   )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: con.hotlinesData.length >= 3
-                        ? 3
-                        : con.hotlinesData.length,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          SizedBox(
+                : con.hotlinesData.isEmpty && con.isLoading.value
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * .038,
+                      )
+                    : con.hotlinesData.isEmpty
+                        ? SizedBox(
                             height: MediaQuery.of(context).size.height * .038,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      MediaQuery.of(context).size.width * .016),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                            child: Center(
+                                child: 'No Data'.appCommonText(
+                                    weight: FontWeight.w700,
+                                    size: Get.height * .016,
+                                    color: Theme.of(context).highlightColor)),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: con.hotlinesData.length >= 3
+                                ? 3
+                                : con.hotlinesData.length,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Column(
                                 children: [
-                                  10.W(),
-                                  Expanded(
-                                    flex: 4,
-                                    child: (con.hotlinesData[index].teamName ??
-                                            '')
-                                        .appCommonText(
-                                            color: Theme.of(context)
-                                                .highlightColor,
-                                            weight: FontWeight.bold,
-                                            align: TextAlign.start,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .016),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        .038,
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
+                                          horizontal: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              .002),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .096,
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(0)),
-                                        child: Center(
-                                          child: con.hotlinesData[index].value
-                                              .appCommonText(
-                                                  color: Theme.of(context)
-                                                      .cardColor,
-                                                  size: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      .014,
-                                                  weight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .02,
-                                  ),
-                                  Expanded(
-                                      child: index == 1 || index == 0
-                                          ? Image.asset(
-                                              Assets.imagesFire,
-                                              alignment: Alignment.centerLeft,
+                                              .016),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          10.W(),
+                                          Expanded(
+                                            flex: modileView.size.shortestSide <
+                                                    600
+                                                ? 7
+                                                : 4,
+                                            child: (con.hotlinesData[index]
+                                                        .teamName ??
+                                                    '')
+                                                .appCommonText(
+                                                    color: Theme.of(context)
+                                                        .highlightColor,
+                                                    weight: FontWeight.bold,
+                                                    align: TextAlign.start,
+                                                    size: modileView.size
+                                                                .shortestSide <
+                                                            600
+                                                        ? MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .014
+                                                        : MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .016),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          .002),
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .096,
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0)),
+                                                child: Center(
+                                                  child: con
+                                                      .hotlinesData[index].value
+                                                      .appCommonText(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .cardColor,
+                                                          size: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .014,
+                                                          weight:
+                                                              FontWeight.w600),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .02,
+                                          ),
+                                          Expanded(
+                                              child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Container(
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .028,
+                                                  .04,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  .028,
-                                              fit: BoxFit.contain,
-                                            )
-                                          : const SizedBox()),
+                                                  .04,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                    image: AssetImage(
+                                                      con.hotlinesData[index]
+                                                                  .bookId ==
+                                                              'sr:book:18186'
+                                                          ? Assets.imagesFanduel
+                                                          : Assets
+                                                              .imagesDraftkings,
+                                                    ),
+                                                    fit: BoxFit.contain,
+                                                  )),
+                                            ),
+                                          )),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  index == 2
+                                      ? const SizedBox()
+                                      : commonDivider(context),
                                 ],
-                              ),
-                            ),
+                              );
+                            },
                           ),
-                          index == 2
-                              ? const SizedBox()
-                              : commonDivider(context),
-                        ],
-                      );
-                    },
-                  ),
           ],
         ),
       ),
@@ -1524,12 +1629,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           width: Get.height * .048,
                           height: Get.height * .048,
                           imageUrl: widget.gameDetails.gameLogoAwayLink),
-                      (awayTeam?.name ?? '').toString().appCommonText(
-                          weight: FontWeight.bold,
-                          size: MediaQuery.of(context).size.height * .016,
-                          align: TextAlign.end,
-                          maxLine: 1,
-                          color: whiteColor),
+                      (modileView.size.shortestSide < 600
+                              ? awayTeam?.abbreviation
+                              : awayTeam?.name ?? '')
+                          .toString()
+                          .appCommonText(
+                              weight: FontWeight.bold,
+                              size: MediaQuery.of(context).size.height * .016,
+                              align: TextAlign.end,
+                              maxLine: 1,
+                              color: whiteColor),
                       ('${widget.gameDetails.awayWin}-${widget.gameDetails.awayLoss}')
                           .appCommonText(
                               align: TextAlign.end,
@@ -1550,10 +1659,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               color: whiteColor,
                               size: MediaQuery.of(context).size.height * .014,
                               weight: FontWeight.w600),
-                          dateTime.appCommonText(
-                              color: whiteColor,
-                              size: MediaQuery.of(context).size.height * .014,
-                              weight: FontWeight.w600),
+                          (widget.gameDetails.status == 'live'
+                                  ? '${widget.gameDetails.inningHalf}${widget.gameDetails.inning}'
+                                  : dateTime)
+                              .appCommonText(
+                                  color: whiteColor,
+                                  size:
+                                      MediaQuery.of(context).size.height * .014,
+                                  weight: FontWeight.w600),
                           SizedBox(
                             height: MediaQuery.of(context).size.width * .003,
                           ),
@@ -1564,7 +1677,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       MediaQuery.of(context).size.height * .048,
                                   weight: FontWeight.w700),
                           (widget.gameDetails.venue != null
-                                  ? '${widget.gameDetails.venue?.name}, ${widget.gameDetails.venue?.countryName}'
+                                  ? '${widget.gameDetails.venue?.name}'
                                   : '')
                               .appCommonText(
                                   color: primaryColor,
@@ -1613,12 +1726,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           width: Get.height * .048,
                           height: Get.height * .048,
                           imageUrl: widget.gameDetails.gameHomeLogoLink),
-                      (homeTeam?.name ?? "").appCommonText(
-                          weight: FontWeight.bold,
-                          size: MediaQuery.of(context).size.height * .016,
-                          align: TextAlign.start,
-                          maxLine: 1,
-                          color: whiteColor),
+                      (modileView.size.shortestSide < 600
+                              ? homeTeam?.abbreviation
+                              : homeTeam?.name ?? "")
+                          .toString()
+                          .appCommonText(
+                              weight: FontWeight.bold,
+                              size: MediaQuery.of(context).size.height * .016,
+                              align: TextAlign.start,
+                              maxLine: 1,
+                              color: whiteColor),
                       ('${widget.gameDetails.homeWin}-${widget.gameDetails.homeLoss}')
                           .appCommonText(
                               align: TextAlign.end,

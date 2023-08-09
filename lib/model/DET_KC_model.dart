@@ -1,10 +1,16 @@
 class HotlinesModel {
   String teamName;
   String value;
+  String tittle;
+  String playerName;
+  String bookId;
 
   HotlinesModel({
     required this.teamName,
     required this.value,
+    required this.tittle,
+    required this.playerName,
+    required this.bookId,
   });
 }
 

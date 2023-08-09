@@ -93,6 +93,7 @@ class GameDetailsController extends GetxController {
   Statistics? mlbStaticsHomeList;
   Statistics? mlbStaticsAwayList;
   List<MLBStaticsDataModel> mlbStaticsData = [];
+
   Future mlbStaticsHomeTeamResponse(
       {String homeTeamId = '', bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
@@ -166,17 +167,19 @@ class GameDetailsController extends GetxController {
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
+
   Future hotlinesDataResponse(
       {String awayTeamId = '',
       String sportId = '',
       String date = '',
+      int start = 0,
       bool isLoad = false,
       String homeTeamId = ''}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result =
-        await GameListingRepo().hotlinesDataRepo(sportId: sportId, date: date);
+    result = await GameListingRepo()
+        .hotlinesDataRepo(sportId: sportId, date: date, start: start);
     try {
       hotlinesData.clear();
       if (result.status) {
@@ -194,12 +197,39 @@ class GameDetailsController extends GetxController {
                         book.id == 'sr:book:18149') {
                       book.outcomes?.forEach((outcome) {
                         if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
-                          hotlinesData.add(HotlinesModel(
-                              teamName:
-                                  '${playersProp.player?.name?.split(',').last ?? ''}, ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.oddsDecimal} ${market.name?.split('(').first.toString().capitalize}',
-                              value: '${outcome.oddsAmerican}'));
-                          hotlinesData
-                              .sort((a, b) => b.value.compareTo(a.value));
+                          if (!(hotlinesData.indexWhere((element) =>
+                                  element.tittle ==
+                                  market.name
+                                      ?.split('(')
+                                      .first
+                                      .toString()
+                                      .capitalize) >=
+                              0)) {
+                            if (!(hotlinesData.indexWhere((element) =>
+                                    element.playerName ==
+                                    playersProp.player?.name
+                                        ?.split(',')
+                                        .last) >=
+                                0)) {
+                              hotlinesData.add(HotlinesModel(
+                                  teamName:
+                                      '${playersProp.player?.name?.split(',').last ?? ''}, ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                                  tittle: market.name
+                                          ?.split('(')
+                                          .first
+                                          .toString()
+                                          .capitalize ??
+                                      '',
+                                  playerName: playersProp.player?.name
+                                          ?.split(',')
+                                          .last ??
+                                      '',
+                                  bookId: book.id ?? '',
+                                  value: '${outcome.oddsAmerican}'));
+                              hotlinesData
+                                  .sort((a, b) => b.value.compareTo(a.value));
+                            }
+                          }
                         }
                       });
                     }
@@ -209,6 +239,7 @@ class GameDetailsController extends GetxController {
             }
           }
         }
+
         // isLoading.value = false;
       } else {
         isLoading.value = false;
@@ -219,11 +250,12 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERORE>>>>>>>>----$e');
-      showAppSnackBar(
-        errorText,
-      );
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
     update();
+    return hotlinesData;
   }
 
   Future mlbInjuriesResponse(

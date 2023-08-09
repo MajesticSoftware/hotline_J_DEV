@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../extras/constants.dart';
 import '../view/sports/selectSport/selecte_game_con.dart';
 import '../generated/assets.dart';
 import '../theme/app_color.dart';
@@ -121,7 +122,6 @@ Expanded buildExpandedBoxWidget(BuildContext context,
 }
 
 Container commonBoxWidget(BuildContext context, {String title = ''}) {
-  final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
   return Container(
     height: MediaQuery.of(context).size.height * .032,
     width: MediaQuery.of(context).size.width * .09,
@@ -135,7 +135,7 @@ Container commonBoxWidget(BuildContext context, {String title = ''}) {
             color: blackColor,
             weight: FontWeight.w700,
             maxLine: 1,
-            size: data.size.shortestSide < 600
+            size: modileView.size.shortestSide < 600
                 ? MediaQuery.of(context).size.height * .012
                 : MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),

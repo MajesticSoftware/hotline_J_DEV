@@ -13,12 +13,15 @@ class Assets {
       'assets/games_reponse_new.json';
   static const String hotlinesAssetsNflRes = 'assets/nfl_res.json';
   static const String imagesAUTO = 'assets/images/AUTO.png';
+  static const String imagesAppLogo = 'assets/images/app_logo.svg';
   static const String imagesBAL = 'assets/images/BAL.png';
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
   static const String imagesBackDark = 'assets/images/backDark.png';
   static const String imagesBackLight = 'assets/images/backLight.png';
   static const String imagesCommingSoon = 'assets/images/commingSoon.svg';
   static const String imagesDotes = 'assets/images/dotes.svg';
+  static const String imagesDraftkings = 'assets/images/Draftkings.png';
+  static const String imagesFanduel = 'assets/images/Fanduel.jpeg';
   static const String imagesFire = 'assets/images/fire.png';
   static const String imagesGOLF = 'assets/images/GOLF.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';

@@ -93,8 +93,8 @@ class GameListingController extends GetxController {
           for (var event in sportEvents) {
             if (event.season?.id == 'sr:season:100127' &&
                 sportKey == 'MLB' &&
-                DateTime.parse(event.scheduled ?? '').toUtc().day !=
-                    DateTime.now().add(const Duration(days: 1)).toUtc().day) {
+                DateTime.parse(event.scheduled ?? '').toLocal().day !=
+                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               tomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:102797' &&
                 sportKey == 'NFL') {
@@ -314,6 +314,10 @@ class GameListingController extends GetxController {
         if (game != null) {
           if (game.id == gameId) {
             sportEventsList[index].venue?.temp = game.weather?.forecast?.tempF;
+            sportEventsList[index].inning = game.finals?.inning ?? '';
+            sportEventsList[index].inningHalf =
+                game.finals?.inningHalf?.toUpperCase() ?? '';
+
             sportEventsList[index].venue?.weather =
                 game.weather?.forecast?.condition;
             if (game.home?.id == homeTeamId) {
@@ -348,34 +352,34 @@ class GameListingController extends GetxController {
       {String apiKey = '',
       String sportKey = '',
       String date = '',
-      String sportId = ''}) {
+      String sportId = ''}) async {
     // final DateTime now =
     // DateTime.parse(widget.date).add(const Duration(days: 1));
     // final DateFormat formatter = DateFormat('yyyy-MM-dd');
     // final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
-    gameListingTodayApiRes(
+    await gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
             sportId: sportId)
-        .then((value) {
-      gameListingTomorrowApiRes(
+        .then((value) async {
+      await gameListingTomorrowApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: '2023-08-31',
               sportId: sportId)
-          .then((value) {
-        gameListingTomorrowApiRes(
+          .then((value) async {
+        await gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
                 sportKey: sportKey,
                 date: '2023-09-01',
                 sportId: sportId)
-            .then((value) {
-          gameListingTomorrowApiRes(
+            .then((value) async {
+          await gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
                   sportKey: sportKey,
@@ -394,32 +398,32 @@ class GameListingController extends GetxController {
       {String apiKey = '',
       String sportKey = '',
       String date = '',
-      String sportId = ''}) {
+      String sportId = ''}) async {
     final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
-    gameListingTodayApiRes(
+    await gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
             sportId: sportId)
-        .then((value) {
-      gameListingTomorrowApiRes(
+        .then((value) async {
+      await gameListingTomorrowApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: '2023-09-10',
               sportId: sportId)
-          .then((value) {
-        gameListingTomorrowApiRes(
+          .then((value) async {
+        await gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
                 sportKey: sportKey,
                 date: '2023-09-11',
                 sportId: sportId)
-            .then((value) {
+            .then((value) async {
           getAllEventList(sportKey);
           gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
         });
@@ -442,14 +446,14 @@ class GameListingController extends GetxController {
             sportKey: sportKey,
             date: date,
             sportId: sportId)
-        .then((value) {
-      gameListingTomorrowApiRes(
+        .then((value) async {
+      await gameListingTomorrowApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: formatted,
               sportId: sportId)
-          .then((value) {
+          .then((value) async {
         getAllEventList(sportKey);
         if (sportEventsList.isNotEmpty) {
           for (int i = 0; i < sportEventsList.length; i++) {
