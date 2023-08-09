@@ -56,9 +56,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           sportEvent: widget.gameDetails,
           awayTeamId: awayTeam?.uuids ?? "",
           homeTeamId: homeTeam?.uuids ?? "");
-      for (int i = 0; i <= 20; i += 5) {
+      gameDetailsController.hotlinesData.clear();
+      for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
-        await gameDetailsController
+        gameDetailsController
             .hotlinesDataResponse(
                 awayTeamId: awayTeam?.id ?? "",
                 sportId: widget.sportId,
@@ -134,8 +135,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    var client = http.Client();
     _controller.dispose();
+    var client = http.Client();
     client.close();
   }
 
@@ -1296,63 +1297,57 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         size: Get.height * .018),
                   ],
                 )),
-            con.hotlinesData.isEmpty && !con.isLoading.value
+            con.hotlinesData.isEmpty && con.isLoading.value
                 ? SizedBox(
                     height: MediaQuery.of(context).size.height * .038,
                   )
-                : con.hotlinesData.isEmpty && con.isLoading.value
+                : con.hotlinesData.isEmpty
                     ? SizedBox(
                         height: MediaQuery.of(context).size.height * .038,
+                        child: Center(
+                            child: 'No Data'.appCommonText(
+                                weight: FontWeight.w700,
+                                size: Get.height * .016,
+                                color: Theme.of(context).highlightColor)),
                       )
-                    : con.hotlinesData.isEmpty
-                        ? SizedBox(
-                            height: MediaQuery.of(context).size.height * .038,
-                            child: Center(
-                                child: 'No Data'.appCommonText(
-                                    weight: FontWeight.w700,
-                                    size: Get.height * .016,
-                                    color: Theme.of(context).highlightColor)),
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: con.hotlinesData.length >= 3
-                                ? 3
-                                : con.hotlinesData.length,
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        .038,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: con.hotlinesData.length >= 3
+                            ? 3
+                            : con.hotlinesData.length,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .038,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
                                               .016),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          10.W(),
-                                          Expanded(
-                                            flex: modileView.size.shortestSide <
-                                                    600
-                                                ? 7
-                                                : 4,
-                                            child: (con.hotlinesData[index]
-                                                        .teamName ??
-                                                    '')
-                                                .appCommonText(
-                                                    color: Theme.of(context)
-                                                        .highlightColor,
-                                                    weight: FontWeight.bold,
-                                                    align: TextAlign.start,
-                                                    size: modileView.size
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      10.W(),
+                                      Expanded(
+                                        flex: modileView.size.shortestSide < 600
+                                            ? 7
+                                            : 4,
+                                        child: (con.hotlinesData[index]
+                                                    .teamName ??
+                                                '')
+                                            .appCommonText(
+                                                color: Theme.of(context)
+                                                    .highlightColor,
+                                                weight: FontWeight.bold,
+                                                align: TextAlign.start,
+                                                size:
+                                                    modileView.size
                                                                 .shortestSide <
                                                             600
                                                         ? MediaQuery.of(context)
@@ -1363,89 +1358,83 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                                                 .size
                                                                 .height *
                                                             .016),
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          .002),
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .096,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            0)),
-                                                child: Center(
-                                                  child: con
-                                                      .hotlinesData[index].value
-                                                      .appCommonText(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .cardColor,
-                                                          size: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              .014,
-                                                          weight:
-                                                              FontWeight.w600),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .002),
+                                          child: Container(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                .02,
-                                          ),
-                                          Expanded(
-                                              child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .04,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .04,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                      con.hotlinesData[index]
-                                                                  .bookId ==
-                                                              'sr:book:18186'
-                                                          ? Assets.imagesFanduel
-                                                          : Assets
-                                                              .imagesDraftkings,
-                                                    ),
-                                                    fit: BoxFit.contain,
-                                                  )),
+                                                .096,
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(0)),
+                                            child: Center(
+                                              child: con
+                                                  .hotlinesData[index].value
+                                                  .appCommonText(
+                                                      color: Theme.of(context)
+                                                          .cardColor,
+                                                      size:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              .014,
+                                                      weight: FontWeight.w600),
                                             ),
-                                          )),
-                                        ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .02,
+                                      ),
+                                      Expanded(
+                                          child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .04,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .04,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  con.hotlinesData[index]
+                                                              .bookId ==
+                                                          'sr:book:18186'
+                                                      ? Assets.imagesFanduel
+                                                      : Assets.imagesDraftkings,
+                                                ),
+                                                fit: BoxFit.contain,
+                                              )),
+                                        ),
+                                      )),
+                                    ],
                                   ),
-                                  index == 2
-                                      ? const SizedBox()
-                                      : commonDivider(context),
-                                ],
-                              );
-                            },
-                          ),
+                                ),
+                              ),
+                              index == 2
+                                  ? const SizedBox()
+                                  : commonDivider(context),
+                            ],
+                          );
+                        },
+                      ),
           ],
         ),
       ),

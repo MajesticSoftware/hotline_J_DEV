@@ -180,22 +180,22 @@ class GameDetailsController extends GetxController {
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .hotlinesDataRepo(sportId: sportId, date: date, start: start);
-    try {
-      hotlinesData.clear();
-      if (result.status) {
-        HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
-        final sportScheduleSportEventsPlayersProps =
-            response.sportScheduleSportEventsPlayersProps;
-        if (sportScheduleSportEventsPlayersProps != null) {
-          for (var event in sportScheduleSportEventsPlayersProps) {
-            if (event.sportEvent?.competitors?[0].id == homeTeamId &&
-                event.sportEvent?.competitors?[1].id == awayTeamId) {
-              event.playersProps?.forEach((playersProp) {
-                playersProp.markets?.forEach((market) {
-                  market.books?.forEach((book) {
-                    if (book.id == 'sr:book:18186' ||
-                        book.id == 'sr:book:18149') {
-                      book.outcomes?.forEach((outcome) {
+    // try {
+    if (result.status) {
+      HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
+      final sportScheduleSportEventsPlayersProps =
+          response.sportScheduleSportEventsPlayersProps;
+      if (sportScheduleSportEventsPlayersProps != null) {
+        for (var event in sportScheduleSportEventsPlayersProps) {
+          if (event.sportEvent?.competitors?[0].id == homeTeamId &&
+              event.sportEvent?.competitors?[1].id == awayTeamId) {
+            event.playersProps?.forEach((playersProp) {
+              playersProp.markets?.forEach((market) {
+                market.books?.forEach((book) {
+                  if (book.id == 'sr:book:18186' ||
+                      book.id == 'sr:book:18149') {
+                    book.outcomes?.forEach((outcome) {
+                      if (outcome.oddsAmerican != null) {
                         if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
                           if (!(hotlinesData.indexWhere((element) =>
                                   element.tittle ==
@@ -213,7 +213,7 @@ class GameDetailsController extends GetxController {
                                 0)) {
                               hotlinesData.add(HotlinesModel(
                                   teamName:
-                                      '${playersProp.player?.name?.split(',').last ?? ''}, ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                                      '${playersProp.player?.name?.split(',').last ?? ''} ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
                                   tittle: market.name
                                           ?.split('(')
                                           .first
@@ -231,29 +231,30 @@ class GameDetailsController extends GetxController {
                             }
                           }
                         }
-                      });
-                    }
-                  });
+                      }
+                    });
+                  }
                 });
               });
-            }
+            });
           }
         }
-
-        // isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
       }
-    } catch (e) {
+
+      // isLoading.value = false;
+    } else {
       isLoading.value = false;
-      log('ERORE>>>>>>>>----$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+      showAppSnackBar(
+        result.message,
+      );
     }
+    // } catch (e) {
+    //   isLoading.value = false;
+    //   log('ERORE>>>>>>>>----$e');
+    //   // showAppSnackBar(
+    //   //   errorText,
+    //   // );
+    // }
     update();
     return hotlinesData;
   }

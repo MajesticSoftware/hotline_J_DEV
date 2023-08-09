@@ -76,7 +76,7 @@ class Game {
     homeTeam = json['home_team'];
     awayTeam = json['away_team'];
     attendance = json['attendance'];
-    finals = json['final'];
+    finals = json['final'] != null ? new Final.fromJson(json['final']) : null;
     duration = json['duration'];
     doubleHeader = json['double_header'];
     entryMode = json['entry_mode'];
@@ -108,7 +108,7 @@ class Game {
     data['home_team'] = this.homeTeam;
     data['away_team'] = this.awayTeam;
     data['attendance'] = this.attendance;
-    data['final'] = this.finals;
+
     data['duration'] = this.duration;
     data['double_header'] = this.doubleHeader;
     data['entry_mode'] = this.entryMode;
@@ -118,6 +118,9 @@ class Game {
     }
     if (this.venue != null) {
       data['venue'] = this.venue!.toJson();
+    }
+    if (this.finals != null) {
+      data['final'] = this.finals!.toJson();
     }
     if (this.broadcast != null) {
       data['broadcast'] = this.broadcast!.toJson();

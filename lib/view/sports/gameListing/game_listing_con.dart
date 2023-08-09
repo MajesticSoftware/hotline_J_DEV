@@ -307,44 +307,44 @@ class GameListingController extends GetxController {
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().boxScoreRepo(gameId: gameId);
-    try {
-      if (result.status) {
-        MLBBoxScoreModel response = MLBBoxScoreModel.fromJson(result.data);
-        final game = response.game;
-        if (game != null) {
-          if (game.id == gameId) {
-            sportEventsList[index].venue?.temp = game.weather?.forecast?.tempF;
-            sportEventsList[index].inning = game.finals?.inning ?? '';
-            sportEventsList[index].inningHalf =
-                game.finals?.inningHalf?.toUpperCase() ?? '';
+    // try {
+    if (result.status) {
+      MLBBoxScoreModel response = MLBBoxScoreModel.fromJson(result.data);
+      final game = response.game;
+      if (game != null) {
+        if (game.id == gameId) {
+          sportEventsList[index].venue?.temp = game.weather?.forecast?.tempF;
+          sportEventsList[index].inning = game.finals?.inning.toString() ?? '';
+          sportEventsList[index].inningHalf =
+              game.finals?.inningHalf?.toUpperCase().toString() ?? '';
 
-            sportEventsList[index].venue?.weather =
-                game.weather?.forecast?.condition;
-            if (game.home?.id == homeTeamId) {
-              sportEventsList[index].homeScore = (game.home?.runs).toString();
-              sportEventsList[index].homeWin = (game.home?.win).toString();
-              sportEventsList[index].homeLoss = (game.home?.loss).toString();
-            }
-            if (game.away?.id == awayTeamId) {
-              sportEventsList[index].awayScore = (game.away?.runs).toString();
-              sportEventsList[index].awayWin = (game.away?.win).toString();
-              sportEventsList[index].awayLoss = (game.away?.loss).toString();
-            }
+          sportEventsList[index].venue?.weather =
+              game.weather?.forecast?.condition;
+          if (game.home?.id == homeTeamId) {
+            sportEventsList[index].homeScore = (game.home?.runs).toString();
+            sportEventsList[index].homeWin = (game.home?.win).toString();
+            sportEventsList[index].homeLoss = (game.home?.loss).toString();
+          }
+          if (game.away?.id == awayTeamId) {
+            sportEventsList[index].awayScore = (game.away?.runs).toString();
+            sportEventsList[index].awayWin = (game.away?.win).toString();
+            sportEventsList[index].awayLoss = (game.away?.loss).toString();
           }
         }
-      } else {
-        isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
       }
-    } catch (e) {
+    } else {
       isLoading.value = false;
-      log('ERORE1----$e');
       showAppSnackBar(
-        errorText,
+        result.message,
       );
     }
+    // } catch (e) {
+    //   isLoading.value = false;
+    //   log('ERORE1----$e');
+    //   showAppSnackBar(
+    //     errorText,
+    //   );
+    // }
     update();
   }
 
