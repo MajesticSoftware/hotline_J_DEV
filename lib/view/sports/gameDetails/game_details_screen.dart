@@ -1612,7 +1612,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   Expanded(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: modileView.size.shortestSide < 600
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.end,
                     children: [
                       commonCachedNetworkImage(
                           width: Get.height * .048,
@@ -1709,7 +1711,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   Expanded(
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: modileView.size.shortestSide < 600
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
                     children: [
                       commonCachedNetworkImage(
                           width: Get.height * .048,
