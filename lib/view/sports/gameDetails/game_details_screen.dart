@@ -50,32 +50,32 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   }
 
   Future _refreshLocalGallery(bool isLoad) async {
+    gameDetailsController.hotlinesData.clear();
+    for (int i = 0; i <= 15; i += 5) {
+      log('i====$i');
+      gameDetailsController
+          .hotlinesDataResponse(
+              awayTeamId: awayTeam?.id ?? "",
+              sportId: widget.sportId,
+              date: widget.date,
+              start: i,
+              homeTeamId: homeTeam?.id ?? "",
+              isLoad: isLoad)
+          .then((value) {});
+      if (gameDetailsController.hotlinesData.isNotEmpty) {
+        break;
+      }
+    }
     if (widget.sportKey == 'MLB') {
+      gameDetailsController.mlbStaticsAwayTeamResponse(
+          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
+      gameDetailsController.mlbStaticsHomeTeamResponse(
+          isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
           sportEvent: widget.gameDetails,
           awayTeamId: awayTeam?.uuids ?? "",
           homeTeamId: homeTeam?.uuids ?? "");
-      gameDetailsController.hotlinesData.clear();
-      for (int i = 0; i <= 15; i += 5) {
-        log('i====$i');
-        gameDetailsController
-            .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                homeTeamId: homeTeam?.id ?? "",
-                isLoad: isLoad)
-            .then((value) {});
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
-          break;
-        }
-      }
-      gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
-      gameDetailsController.mlbStaticsHomeTeamResponse(
-          isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
       /*gameDetailsController
               .hotlinesDataResponse(
                   awayTeamId: awayTeam?.id ?? "",
@@ -125,6 +125,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   isLoad: true, homeTeamId: homeTeam?.uuids ?? '');
             }
           });*/
+    }
+    if (widget.sportKey == 'NFL') {
+      gameDetailsController.nflStaticsAwayTeamResponse(
+          isLoad: isLoad, awayTeamId: awayTeam?.uuids?.split(',').first ?? '');
+      gameDetailsController.nflStaticsHomeTeamResponse(
+          isLoad: isLoad, homeTeamId: homeTeam?.uuids?.split(',').first ?? '');
     }
   }
 
@@ -225,7 +231,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       width: MediaQuery.of(context).size.width * .099,
                       child: SvgPicture.asset(
                         Assets.imagesBackArrow,
-                        height: MediaQuery.of(context).size.height * .015,
+                        height: MediaQuery.of(context).size.height * .02,
                         alignment: Alignment.centerLeft,
                         fit: BoxFit.contain,
                       ),
@@ -360,205 +366,132 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               header:
                   headerTitleWidget(context, teamReport, isTeamReport: true),
               content: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  rankingCommonWidget(
-                      context,
-                      widget.sportKey == 'MLB'
-                          ? 'Team Hitting Rankings'
-                          : 'Offensive Rankings'),
-                  ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: widget.sportKey == 'MLB'
-                        ? controller.offensiveMLB.length
-                        : controller.offensive.length,
-                    itemBuilder: (context, index) {
-                      var homeHitting =
-                          controller.mlbStaticsHomeList?.hitting?.overall;
-                      var awayHitting =
-                          controller.mlbStaticsAwayList?.hitting?.overall;
-
-                      return widget.sportKey == 'MLB'
-                          ? commonRankingWidget(context,
-                              teamReports: controller.offensiveMLB[index],
-                              awayText: index == 0
-                                  ? '${awayHitting?.runs?.total ?? "0"}'
-                                  : index == 1
-                                      ? '${awayHitting?.onbase?.h ?? "0"}'
-                                      : index == 2
-                                          ? '${awayHitting?.onbase?.hr ?? "0"}'
-                                          : index == 3
-                                              ? '${awayHitting?.rbi ?? "0"}'
-                                              : index == 4
-                                                  ? '${awayHitting?.onbase?.bb ?? "0"}'
-                                                  : index == 5
-                                                      ? '${awayHitting?.outs?.ktotal ?? "0"}'
-                                                      : index == 6
-                                                          ? '${awayHitting?.steal?.stolen ?? "0"}'
-                                                          : index == 7
-                                                              ? awayHitting
-                                                                      ?.avg ??
-                                                                  "0"
-                                                              : index == 8
-                                                                  ? '${awayHitting?.slg ?? '0'}'
-                                                                  : index == 9
-                                                                      ? '${awayHitting?.ops ?? '0'}'
-                                                                      : index ==
-                                                                              10
-                                                                          ? '${awayHitting?.outs?.gidp ?? '0'}'
-                                                                          : index ==
-                                                                                  11
-                                                                              ? awayHitting?.abhr?.toStringAsFixed(2) ??
-                                                                                  "0"
-                                                                              : '0',
-                              homeText: index == 0
-                                  ? '${homeHitting?.runs?.total ?? "0"}'
-                                  : index == 1
-                                      ? '${homeHitting?.onbase?.h ?? "0"}'
-                                      : index == 2
-                                          ? '${homeHitting?.onbase?.hr ?? "0"}'
-                                          : index == 3
-                                              ? '${homeHitting?.rbi ?? "0"}'
-                                              : index == 4
-                                                  ? '${homeHitting?.onbase?.bb ?? "0"}'
-                                                  : index == 5
-                                                      ? '${homeHitting?.outs?.ktotal ?? "0"}'
-                                                      : index == 6
-                                                          ? '${homeHitting?.steal?.stolen ?? "0"}'
-                                                          : index == 7
-                                                              ? homeHitting
-                                                                      ?.avg ??
-                                                                  "0"
-                                                              : index == 8
-                                                                  ? '${homeHitting?.slg ?? '0'}'
-                                                                  : index == 9
-                                                                      ? '${homeHitting?.ops ?? '0'}'
-                                                                      : index ==
-                                                                              10
-                                                                          ? '${homeHitting?.outs?.gidp ?? '0'}'
-                                                                          : index ==
-                                                                                  11
-                                                                              ? homeHitting?.abhr?.toStringAsFixed(2) ??
-                                                                                  "0"
-                                                                              : '0')
-                          : commonRankingWidget(context,
-                              teamReports: controller.offensive[index],
-                              awayText: awayTeam?.abbreviation == 'DET' &&
-                                      homeTeam?.abbreviation == 'KC'
-                                  ? awayTeamOffenseValue[index]
-                                  : '0',
-                              homeText: awayTeam?.abbreviation == 'DET' &&
-                                      homeTeam?.abbreviation == 'KC'
-                                  ? homeTeamOffenseValue[index]
-                                  : '0');
-                    },
-                  ),
-                  rankingCommonWidget(
-                      context,
-                      widget.sportKey == 'MLB'
-                          ? 'Team Pitching Rankings'
-                          : 'Defensive Rankings'),
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: widget.sportKey == 'MLB'
-                        ? controller.defensiveMLB.length
-                        : controller.defensive.length,
-                    itemBuilder: (context, index) {
-                      var homePitching =
-                          controller.mlbStaticsHomeList?.pitching?.overall;
-                      var awayPitching =
-                          controller.mlbStaticsAwayList?.pitching?.overall;
-                      return widget.sportKey == 'MLB'
-                          ? commonRankingWidget(context,
-                              teamReports: controller.defensiveMLB[index],
-                              homeText: index == 0
-                                  ? '${homePitching?.games?.win ?? '0'}'
-                                  : index == 1
-                                      ? '${homePitching?.games?.loss ?? '0'}'
-                                      : index == 2
-                                          ? '${homePitching?.era ?? '0'}'
-                                          : index == 3
-                                              ? '${homePitching?.games?.shutout ?? '0'}'
-                                              : index == 5
-                                                  ? '${homePitching?.games?.qstart ?? '0'}'
-                                                  : index == 7
-                                                      ? '${homePitching?.onbase?.hr ?? '0'}'
-                                                      : index == 8
-                                                          ? '${homePitching?.onbase?.bb ?? '0'}'
-                                                          : index == 9
-                                                              ? '${homePitching?.outs?.ktotal ?? '0'}'
-                                                              : index == 10
-                                                                  ? '${homePitching?.whip ?? "0"}'
-                                                                  : index == 11
-                                                                      ? '${homePitching?.oba ?? "0"}'
-                                                                      : index ==
-                                                                              12
-                                                                          ? '${homePitching?.outs?.gidp ?? "0"}'
-                                                                          : '0',
-                              awayText: index == 0
-                                  ? '${awayPitching?.games?.win ?? "0"}'
-                                  : index == 1
-                                      ? '${awayPitching?.games?.loss ?? "0"}'
-                                      : index == 2
-                                          ? '${awayPitching?.era ?? "0"}'
-                                          : index == 3
-                                              ? '${awayPitching?.games?.shutout ?? "0"}'
-                                              : index == 5
-                                                  ? '${awayPitching?.games?.qstart ?? "0"}'
-                                                  : index == 7
-                                                      ? '${awayPitching?.onbase?.hr ?? "0"}'
-                                                      : index == 8
-                                                          ? '${awayPitching?.onbase?.bb ?? "0"}'
-                                                          : index == 9
-                                                              ? '${awayPitching?.outs?.ktotal ?? "0"}'
-                                                              : index == 10
-                                                                  ? '${awayPitching?.whip ?? "0"}'
-                                                                  : index == 11
-                                                                      ? '${awayPitching?.oba ?? "0"}'
-                                                                      : index ==
-                                                                              12
-                                                                          ? '${awayPitching?.outs?.gidp ?? "0"}'
-                                                                          : '0')
-                          : commonRankingWidget(context,
-                              teamReports: controller.defensive[index],
-                              awayText: awayTeam?.abbreviation == 'DET' &&
-                                      homeTeam?.abbreviation == 'KC'
-                                  ? awayTeamDefenseValue[index]
-                                  : '0',
-                              homeText: awayTeam?.abbreviation == 'DET' &&
-                                      homeTeam?.abbreviation == 'KC'
-                                  ? homeTeamDefenseValue[index]
-                                  : '0');
-                    },
-                  ),
-                  rankingCommonWidget(context, 'Team Stats'),
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemCount: widget.sportKey == 'MLB'
-                        ? controller.teamStatusMLB.length
-                        : controller.teamStatus.length,
-                    itemBuilder: (context, index) {
-                      return commonRankingWidget(context,
-                          teamReports: widget.sportKey == 'MLB'
-                              ? controller.teamStatusMLB[index]
-                              : controller.teamStatus[index],
-                          awayText: awayTeam?.abbreviation == 'DET' &&
-                                  homeTeam?.abbreviation == 'KC'
-                              ? awayTeamStat[index]
-                              : '0',
-                          homeText: awayTeam?.abbreviation == 'DET' &&
-                                  homeTeam?.abbreviation == 'KC'
-                              ? homeTeamStat[index]
-                              : '0');
-                    },
-                  ),
+                  widget.sportKey == 'MLB'
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            rankingCommonWidget(
+                                context, 'Team Hitting Rankings'),
+                            ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.hittingMLB.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(
+                                  context,
+                                  teamReports: controller.hittingMLB[index],
+                                  awayText: controller
+                                          .mlbAwayHittingList.isEmpty
+                                      ? '0'
+                                      : controller.mlbAwayHittingList[index],
+                                  homeText: controller
+                                          .mlbHomeHittingList.isEmpty
+                                      ? '0'
+                                      : controller.mlbHomeHittingList[index],
+                                );
+                              },
+                            ),
+                            rankingCommonWidget(
+                                context, 'Team Pitching Rankings'),
+                            ListView.builder(
+                              padding: EdgeInsets.zero,
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.pittchingMLB.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports: controller.pittchingMLB[index],
+                                    homeText: controller
+                                            .mlbHomePitchingList.isEmpty
+                                        ? '0'
+                                        : controller.mlbHomePitchingList[index],
+                                    awayText:
+                                        controller.mlbAwayPitchingList.isEmpty
+                                            ? "0"
+                                            : controller
+                                                .mlbAwayPitchingList[index]);
+                              },
+                            ),
+                            rankingCommonWidget(context, 'Team Stats'),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.teamStatusMLB.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports:
+                                        controller.teamStatusMLB[index],
+                                    awayText: '0',
+                                    homeText: '0');
+                              },
+                            ),
+                          ],
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            rankingCommonWidget(context, 'Offensive Rankings'),
+                            ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.offensive.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(
+                                  context,
+                                  teamReports: controller.offensive[index],
+                                  awayText: controller
+                                          .nflAwayOffensiveList.isEmpty
+                                      ? '0'
+                                      : controller.nflAwayOffensiveList[index],
+                                  homeText: controller
+                                          .nflHomeOffensiveList.isEmpty
+                                      ? '0'
+                                      : controller.nflHomeOffensiveList[index],
+                                );
+                              },
+                            ),
+                            rankingCommonWidget(context, 'Defensive Rankings'),
+                            ListView.builder(
+                              padding: EdgeInsets.zero,
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.defensive.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports: controller.defensive[index],
+                                    homeText:
+                                        controller.nflHomeDefensiveList.isEmpty
+                                            ? '0'
+                                            : controller
+                                                .nflHomeDefensiveList[index],
+                                    awayText:
+                                        controller.nflAwayDefensiveList.isEmpty
+                                            ? "0"
+                                            : controller
+                                                .nflAwayDefensiveList[index]);
+                              },
+                            ),
+                            rankingCommonWidget(context, 'Team Stats'),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.teamStatus.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports: controller.teamStatus[index],
+                                    awayText: '0',
+                                    homeText: '0');
+                              },
+                            ),
+                          ],
+                        ),
                 ],
               ));
         }),
@@ -1400,16 +1333,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       ),
                                       Expanded(
                                           child: Align(
-                                        alignment: Alignment.centerLeft,
+                                        alignment: Alignment.center,
                                         child: Container(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              .04,
+                                              .052,
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              .04,
+                                              .052,
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               image: DecorationImage(

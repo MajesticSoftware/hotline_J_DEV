@@ -3,9 +3,11 @@ class AppUrls {
   // ignore: constant_identifier_names
 
   static const String BASE_URL =
-      "https://api.sportradar.us/oddscomparison-ust1/";
+      "https://api.sportradar.us/oddscomparison-usp1/";
   static const String MLB_BASE_URL =
       "https://api.sportradar.com/mlb/production/v7/en/";
+  static const String NFL_BASE_URL =
+      "https://api.sportradar.us/nfl/official/production/v7/en/";
 }
 
 class MethodNames {

@@ -144,10 +144,10 @@ class _GameListingScreenState extends State<GameListingScreen> {
                     Get.back();
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(10),
                     child: SvgPicture.asset(
                       Assets.imagesBackArrow,
-                      height: MediaQuery.of(context).size.height * .015,
+                      height: MediaQuery.of(context).size.height * .02,
                       alignment: Alignment.centerLeft,
                     ),
                   ),
@@ -237,7 +237,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                   child: backButton.appCommonText(
                       color: whiteColor,
                       size: modileView.size.shortestSide < 600
-                          ? MediaQuery.of(context).size.height * .010
+                          ? MediaQuery.of(context).size.height * .012
                           : MediaQuery.of(context).size.height * .014,
                       weight: FontWeight.w500),
                 ),

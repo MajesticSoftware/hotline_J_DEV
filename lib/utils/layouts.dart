@@ -136,7 +136,7 @@ Container commonBoxWidget(BuildContext context, {String title = ''}) {
             weight: FontWeight.w700,
             maxLine: 1,
             size: modileView.size.shortestSide < 600
-                ? MediaQuery.of(context).size.height * .012
+                ? MediaQuery.of(context).size.height * .010
                 : MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),
   );

@@ -267,29 +267,55 @@ class GameListingController extends GetxController {
                 }
               });
             }
+            if (event.markets.isNotEmpty) {
+              for (var marketData in event.markets) {
+                if (marketData.oddsTypeId == 4) {
+                  for (var bookData in marketData.books) {
+                    int fanDuelIndex = marketData.books
+                        .indexWhere((element) => element.name == 'FanDuel');
+                    if (fanDuelIndex >= 0) {
+                      if (bookData.name == 'FanDuel') {
+                        if (bookData.outcomes?[0].type == 'home') {
+                          event.homeSpread =
+                              bookData.outcomes?[0].spread.toString() ?? '00';
+                        }
+                        if (bookData.outcomes?[1].type == 'away') {
+                          event.awaySpread =
+                              bookData.outcomes?[1].spread.toString() ?? '00';
+                        }
+                      }
+                    } else if (bookData.name == 'Bet365NewJersey') {
+                      if (bookData.outcomes?[0].type == 'home') {
+                        event.homeSpread =
+                            bookData.outcomes?[0].spread.toString() ?? '';
+                      }
+                      if (bookData.outcomes?[1].type == 'away') {
+                        event.awaySpread =
+                            bookData.outcomes?[1].spread.toString() ?? '';
+                      }
+                    } else if (bookData.name == 'MGM') {
+                      if (bookData.outcomes?[0].type == 'home') {
+                        event.homeSpread =
+                            bookData.outcomes?[0].spread.toString() ?? '';
+                      }
+                      if (bookData.outcomes?[1].type == 'away') {
+                        event.awaySpread =
+                            bookData.outcomes?[1].spread.toString() ?? '';
+                      }
+                    }
+                  }
+                }
+              }
+            }
             if (consensus.name == 'total_current') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
             }
-            if (consensus.name == 'run_line_current' ||
+            /*if (consensus.name == 'run_line_current' ||
                 consensus.name == 'spread_current') {
               event.homeSpread = '${consensus.spread}'.toString();
               event.awaySpread = '${consensus.spread}'.toString();
-              /*   if (int.parse(event.homeMoneyLine).isNegative) {
-                event.homeSpread = '-${consensus.spread}'.toString();
-              } else {
-                event.homeSpread = '${consensus.spread}'.toString();
-              }
-              if (int.parse(event.awayMoneyLine).isNegative) {
-                if (int.parse(consensus.spread ?? '').isNegative) {
-                  event.awaySpread = '${consensus.spread}'.toString();
-                } else {
-                  event.awaySpread = '-${consensus.spread}'.toString();
-                }
-              } else {
-                event.awaySpread = consensus.spread.toString();
-              }*/
-            }
+            }*/
           });
         }
       }

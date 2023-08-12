@@ -39,6 +39,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///MLB STATICS
   Future<ResponseItem> mlbStaticsRepo(
       {String teamId = '', String seasons = ''}) async {
     ResponseItem result;
@@ -47,6 +48,24 @@ class GameListingRepo {
     String message = "";
     Uri uri = Uri.parse(
         '${AppUrls.MLB_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///NFL STATICS
+  Future<ResponseItem> nflStaticsRepo(
+      {String teamId = '', String seasons = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(
+        '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=h4kantpwh2rhn783gdh6theg');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

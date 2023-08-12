@@ -8,6 +8,7 @@ import '../../../model/DET_KC_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/hotlines_data_model.dart';
 import '../../../model/mlb_statics_model.dart';
+import '../../../model/nfl_statics_model.dart';
 import '../../../model/response_item.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
@@ -18,8 +19,8 @@ class GameDetailsController extends GetxController {
     'Points Per Game',
     'Scoring Efficiency',
     'Redzone Efficiency',
-    'Rushing Yards/game',
-    'Passing Yards/game',
+    'Rushing Yards',
+    'Passing Yards',
     'Rushing TDs/game',
     'Passing TDs/game',
     'TO/game',
@@ -27,7 +28,7 @@ class GameDetailsController extends GetxController {
     '4th Down Efficiency',
     'Field goal Percentage',
   ];
-  List offensiveMLB = [
+  List hittingMLB = [
     'Runs Scored',
     'Hits',
     'HRs (Homeruns)',
@@ -47,8 +48,8 @@ class GameDetailsController extends GetxController {
     'Points Allowed/Game',
     'Opponent Scoring Efficiency',
     'Opponent Redzone Efficiency',
-    'Rushing Yards Allowed/game',
-    'Passing Yards Allowed/game',
+    'Rushing Yards Allowed',
+    'Passing Yards Allowed',
     'Rushing TDs Allowed/game',
     'Passing TDs Allowed/game',
     'TO Generated/game',
@@ -56,7 +57,7 @@ class GameDetailsController extends GetxController {
     'Opponent 4th Down Efficiency',
   ];
 
-  List defensiveMLB = [
+  List pittchingMLB = [
     'Wins',
     'Losses',
     'Earned Run Average (ERA)',
@@ -92,8 +93,12 @@ class GameDetailsController extends GetxController {
   RxBool isLoading = false.obs;
   Statistics? mlbStaticsHomeList;
   Statistics? mlbStaticsAwayList;
-  List<MLBStaticsDataModel> mlbStaticsData = [];
+  List mlbHomeHittingList = [];
+  List mlbHomePitchingList = [];
+  List mlbAwayHittingList = [];
+  List mlbAwayPitchingList = [];
 
+  ///MLB STATICS
   Future mlbStaticsHomeTeamResponse(
       {String homeTeamId = '', bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
@@ -106,9 +111,44 @@ class GameDetailsController extends GetxController {
         MLBStaticsModel response = MLBStaticsModel.fromJson(result.data);
         if (response.statistics != null) {
           mlbStaticsHomeList = response.statistics;
+          var homeHitting = mlbStaticsHomeList?.hitting?.overall;
+          var homePitching = mlbStaticsHomeList?.pitching?.overall;
+          mlbHomeHittingList = [
+            '${homeHitting?.runs?.total ?? "0"}',
+            '${homeHitting?.onbase?.h ?? "0"}',
+            '${homeHitting?.onbase?.hr ?? "0"}',
+            '${homeHitting?.rbi ?? "0"}',
+            '${homeHitting?.onbase?.bb ?? "0"}',
+            '${homeHitting?.outs?.ktotal ?? "0"}',
+            '${homeHitting?.steal?.stolen ?? "0"}',
+            homeHitting?.avg ?? "0",
+            '${homeHitting?.slg ?? '0'}',
+            '${homeHitting?.ops ?? '0'}',
+            '${homeHitting?.outs?.gidp ?? '0'}',
+            homeHitting?.abhr?.toStringAsFixed(2) ?? "0",
+          ];
+          mlbHomePitchingList = [
+            '${homePitching?.games?.win ?? '0'}',
+            '${homePitching?.games?.loss ?? '0'}',
+            '${homePitching?.era ?? '0'}',
+            '${homePitching?.games?.shutout ?? '0'}',
+            '0',
+            '${homePitching?.games?.qstart ?? '0'}',
+            '0',
+            '${homePitching?.onbase?.hr ?? '0'}',
+            '${homePitching?.onbase?.bb ?? '0'}',
+            '${homePitching?.outs?.ktotal ?? '0'}',
+            '${homePitching?.whip ?? "0"}',
+            '${homePitching?.oba ?? "0"}',
+            '${homePitching?.outs?.gidp ?? "0"}',
+            '0',
+            '0',
+            '0',
+          ];
         }
       } else {
         isLoading.value = false;
+
         showAppSnackBar(
           result.message,
         );
@@ -116,7 +156,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      log('ERORE1----$e');
+      log('ERORE STATIC----$e');
       showAppSnackBar(
         errorText,
       );
@@ -136,6 +176,167 @@ class GameDetailsController extends GetxController {
         MLBStaticsModel response = MLBStaticsModel.fromJson(result.data);
         if (response.statistics != null) {
           mlbStaticsAwayList = response.statistics;
+        }
+        var awayHitting = mlbStaticsAwayList?.hitting?.overall;
+        var awayPitching = mlbStaticsAwayList?.pitching?.overall;
+        mlbAwayHittingList = [
+          '${awayHitting?.runs?.total ?? "0"}',
+          '${awayHitting?.onbase?.h ?? "0"}',
+          '${awayHitting?.onbase?.hr ?? "0"}',
+          '${awayHitting?.rbi ?? "0"}',
+          '${awayHitting?.onbase?.bb ?? "0"}',
+          '${awayHitting?.outs?.ktotal ?? "0"}',
+          '${awayHitting?.steal?.stolen ?? "0"}',
+          awayHitting?.avg ?? "0",
+          '${awayHitting?.slg ?? '0'}',
+          '${awayHitting?.ops ?? '0'}',
+          '${awayHitting?.outs?.gidp ?? '0'}',
+          awayHitting?.abhr?.toStringAsFixed(2) ?? "0",
+        ];
+        mlbAwayPitchingList = [
+          '${awayPitching?.games?.win ?? '0'}',
+          '${awayPitching?.games?.loss ?? '0'}',
+          '${awayPitching?.era ?? '0'}',
+          '${awayPitching?.games?.shutout ?? '0'}',
+          '0',
+          '${awayPitching?.games?.qstart ?? '0'}',
+          '0',
+          '${awayPitching?.onbase?.hr ?? '0'}',
+          '${awayPitching?.onbase?.bb ?? '0'}',
+          '${awayPitching?.outs?.ktotal ?? '0'}',
+          '${awayPitching?.whip ?? "0"}',
+          '${awayPitching?.oba ?? "0"}',
+          '${awayPitching?.outs?.gidp ?? "0"}',
+          '0',
+          '0',
+          '0',
+        ];
+        // isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE STATIC ----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  ///NFL STATICS
+  TeamRecords? nflStaticsHomeList;
+  TeamRecords? nflStaticsAwayList;
+  List nflHomeOffensiveList = [];
+  List nflHomeDefensiveList = [];
+  List nflAwayOffensiveList = [];
+  List nflAwayDefensiveList = [];
+  Future nflStaticsHomeTeamResponse(
+      {String homeTeamId = '', bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo()
+        .nflStaticsRepo(teamId: homeTeamId, seasons: '2023');
+    try {
+      if (result.status) {
+        NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+        if (response.season != null) {
+          if (response.season?.team?.teamRecords != null) {
+            nflStaticsHomeList = response.season?.team?.teamRecords;
+            var offenciveData = nflStaticsHomeList?.record;
+            var defenciveData = nflStaticsHomeList?.opponents;
+            nflHomeOffensiveList = [
+              '0',
+              '0',
+              '0',
+              offenciveData?.efficiency?.redzone ?? '0',
+              offenciveData?.rushing ?? '0',
+              offenciveData?.passing ?? '0',
+              '0',
+              '0',
+              '0',
+              offenciveData?.efficiency?.thirddown ?? '0',
+              offenciveData?.efficiency?.fourthdown ?? '0',
+            ];
+            nflHomeDefensiveList = [
+              '0',
+              '0',
+              '0',
+              defenciveData?.efficiency?.redzone ?? "0",
+              defenciveData?.rushing ?? '0',
+              defenciveData?.passing ?? '0',
+              '0',
+              '0',
+              '0',
+              defenciveData?.efficiency?.thirddown ?? '0',
+              defenciveData?.efficiency?.fourthdown ?? '0',
+            ];
+          }
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+      isLoading.value = false;
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE1----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future nflStaticsAwayTeamResponse(
+      {String awayTeamId = '', bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo()
+        .nflStaticsRepo(teamId: awayTeamId, seasons: '2023');
+    try {
+      if (result.status) {
+        NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+        if (response.season != null) {
+          if (response.season?.team?.teamRecords != null) {
+            nflStaticsAwayList = response.season?.team?.teamRecords;
+            var offenciveData = response.season?.team?.teamRecords?.record;
+            var defenciveData = response.season?.team?.teamRecords?.opponents;
+            nflAwayOffensiveList = [
+              '0',
+              '0',
+              '0',
+              offenciveData?.efficiency?.redzone ?? '0',
+              offenciveData?.rushing ?? '0',
+              offenciveData?.passing ?? '0',
+              '0',
+              '0',
+              '0',
+              offenciveData?.efficiency?.thirddown ?? '0',
+              offenciveData?.efficiency?.fourthdown ?? '0',
+            ];
+            nflAwayDefensiveList = [
+              '0',
+              '0',
+              '0',
+              defenciveData?.efficiency?.redzone ?? "0",
+              defenciveData?.rushing ?? '0',
+              defenciveData?.passing ?? '0',
+              '0',
+              '0',
+              '0',
+              defenciveData?.efficiency?.thirddown ?? '0',
+              defenciveData?.efficiency?.fourthdown ?? '0',
+            ];
+          }
         }
         // isLoading.value = false;
       } else {
@@ -296,6 +497,7 @@ class GameDetailsController extends GetxController {
         // isLoading.value = false;
       } else {
         isLoading.value = false;
+        log('ERORE1---EWKFKQWLEHFIKEHQRFGIHRQFG ,KLERJGOERIJG');
         showAppSnackBar(
           result.message,
         );

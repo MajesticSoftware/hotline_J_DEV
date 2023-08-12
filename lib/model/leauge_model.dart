@@ -28,7 +28,7 @@ List<LeagueModel> sportsLeagueList = [
       image: Assets.imagesNFT,
       date: '2023-09-08',
       key: 'NFL',
-      apiKey: '3xtbdf9h3669rn4rf6x87c4a',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       sportId: 'sr:sport:16',
       isAvailable: true),
   LeagueModel(
@@ -37,14 +37,14 @@ List<LeagueModel> sportsLeagueList = [
       date: '2023-08-26',
       key: 'NCAA',
       sportId: 'sr:sport:16',
-      apiKey: '3xtbdf9h3669rn4rf6x87c4a',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
       image: Assets.imagesMLB,
       date: formatted,
       key: 'MLB',
       sportId: 'sr:sport:3',
-      apiKey: '3xtbdf9h3669rn4rf6x87c4a',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
       sportId: '',
