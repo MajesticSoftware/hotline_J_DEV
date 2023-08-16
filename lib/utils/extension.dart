@@ -30,6 +30,7 @@ extension AddText on String {
   Widget appCommonText(
       {Color color = appColor,
       double size = 20,
+      double letterSpacing = 0,
       TextAlign align = TextAlign.center,
       FontWeight weight = FontWeight.w500,
       TextDecoration? decoration,
@@ -40,6 +41,7 @@ extension AddText on String {
       style: GoogleFonts.nunitoSans(
           fontSize: size,
           color: color,
+          letterSpacing: letterSpacing,
           // color: isDarkMode ? Colors.white : color,
           fontWeight: weight,
           fontStyle: fontStyle,

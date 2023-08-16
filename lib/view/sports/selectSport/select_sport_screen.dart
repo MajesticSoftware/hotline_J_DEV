@@ -431,8 +431,8 @@ class SelectSportScreen extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).size.height * .024,
-                left: MediaQuery.of(context).size.width * .02,
-                right: MediaQuery.of(context).size.width * .02),
+                left: MediaQuery.of(context).size.width * .04,
+                right: MediaQuery.of(context).size.width * .04),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

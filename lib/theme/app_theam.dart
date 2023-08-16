@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../extras/constants.dart';
 import 'app_color.dart';
 
 class AppTheme {
@@ -14,6 +15,7 @@ class AppTheme {
       primaryColor: boxColor,
       canvasColor: whiteColor,
       cardColor: whiteColor,
+      splashColor: primaryColor,
       disabledColor: appColor,
       backgroundColor: appColor,
       highlightColor: blackColor,
@@ -127,6 +129,7 @@ class AppTheme {
       secondaryHeaderColor: darkBackGroundColor,
       scaffoldBackgroundColor: darkScaffoldColor,
       primaryColor: whiteColor,
+      splashColor: whiteColor.withOpacity(0.2),
       cardColor: blackColor,
       backgroundColor: blackColor,
       disabledColor: whiteColor,

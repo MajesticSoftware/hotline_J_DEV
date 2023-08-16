@@ -368,14 +368,28 @@ class _GameListingScreenState extends State<GameListingScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    (MediaQuery.of(context).size.height * .005).H(),
                     Text(
                       '$date, $dateTime',
                       style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .001,
-                    ),
+                    competitors.status == 'live'
+                        ? Container(
+                            height: MediaQuery.of(context).size.height * .02,
+                            width: MediaQuery.of(context).size.width * .07,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(105),
+                                color: redColor),
+                            child: Center(
+                              child: 'LIVE'.appCommonText(
+                                  color: whiteColor,
+                                  size:
+                                      MediaQuery.of(context).size.height * .012,
+                                  weight: FontWeight.bold),
+                            ),
+                          )
+                        : const SizedBox(),
                     getWeatherIcon(competitors.venue?.weather ?? 'Sunny',
                         context, MediaQuery.of(context).size.height * .064),
                     Row(
@@ -415,7 +429,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
+                        // width: MediaQuery.of(context).size.width * .09,
                         decoration: BoxDecoration(
                             color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(
@@ -433,13 +447,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 style: Theme.of(context).textTheme.bodySmall),
                           ],
                         )),
+                      ).paddingSymmetric(
+                        horizontal: modileView.size.shortestSide < 600
+                            ? MediaQuery.of(context).size.height * .008
+                            : MediaQuery.of(context).size.height * .015,
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .02,
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * .04,
-                        width: MediaQuery.of(context).size.width * .09,
+                        // width: MediaQuery.of(context).size.width * .09,
                         decoration: BoxDecoration(
                             color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(
@@ -457,6 +475,10 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 style: Theme.of(context).textTheme.bodySmall),
                           ],
                         )),
+                      ).paddingSymmetric(
+                        horizontal: modileView.size.shortestSide < 600
+                            ? MediaQuery.of(context).size.height * .008
+                            : MediaQuery.of(context).size.height * .015,
                       )
                     ],
                   )),

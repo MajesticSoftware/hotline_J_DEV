@@ -93,7 +93,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
         children: [
           Container(
             height: MediaQuery.of(context).size.height * .04,
-            width: MediaQuery.of(context).size.width * .09,
+            // width: MediaQuery.of(context).size.width * .09,
             decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(
@@ -101,13 +101,17 @@ Expanded buildExpandedBoxWidget(BuildContext context,
             child: Center(
               child: Text(upText, style: Theme.of(context).textTheme.bodySmall),
             ),
+          ).paddingSymmetric(
+            horizontal: modileView.size.shortestSide < 600
+                ? MediaQuery.of(context).size.height * .008
+                : MediaQuery.of(context).size.height * .015,
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * .02,
           ),
           Container(
             height: MediaQuery.of(context).size.height * .04,
-            width: MediaQuery.of(context).size.width * .09,
+            // width: MediaQuery.of(context).size.width * .09,
             decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(
@@ -116,15 +120,19 @@ Expanded buildExpandedBoxWidget(BuildContext context,
               child: Text(bottomText,
                   style: Theme.of(context).textTheme.bodySmall),
             ),
+          ).paddingSymmetric(
+            horizontal: modileView.size.shortestSide < 600
+                ? MediaQuery.of(context).size.height * .008
+                : MediaQuery.of(context).size.height * .015,
           )
         ],
       ));
 }
 
-Container commonBoxWidget(BuildContext context, {String title = ''}) {
+Widget commonBoxWidget(BuildContext context, {String title = ''}) {
   return Container(
     height: MediaQuery.of(context).size.height * .032,
-    width: MediaQuery.of(context).size.width * .09,
+    // width: MediaQuery.of(context).size.width * .09,
     decoration: BoxDecoration(
         color: whiteColor,
         border: Border.all(color: greyDarkColor, width: 1),
@@ -139,6 +147,8 @@ Container commonBoxWidget(BuildContext context, {String title = ''}) {
                 ? MediaQuery.of(context).size.height * .010
                 : MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),
+  ).paddingSymmetric(
+    horizontal: MediaQuery.of(context).size.height * .012,
   );
 }
 

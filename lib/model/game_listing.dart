@@ -84,6 +84,12 @@ class SportEvents {
   String homeLoss = '0';
   String inning = '0';
   String inningHalf = 'T';
+  String wlHome = '';
+  String wlAway = '';
+  String eraHome = '';
+  String eraAway = '';
+  String homePlayerName = '';
+  String awayPlayerName = '';
   List awayTeamInjuredPlayer = [];
   List homeTeamInjuredPlayer = [];
   SportEvents({

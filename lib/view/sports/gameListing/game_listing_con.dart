@@ -351,11 +351,27 @@ class GameListingController extends GetxController {
               sportEventsList[index].homeScore = (game.home?.runs).toString();
               sportEventsList[index].homeWin = (game.home?.win).toString();
               sportEventsList[index].homeLoss = (game.home?.loss).toString();
+              sportEventsList[index].wlHome =
+                  ('${game.home?.probablePitcher?.win}-${game.home?.probablePitcher?.loss}')
+                      .toString();
+              sportEventsList[index].eraHome =
+                  (game.home?.probablePitcher?.era).toString();
+              sportEventsList[index].homePlayerName =
+                  ('${game.home?.probablePitcher?.preferredName?[0]}. ${game.home?.probablePitcher?.lastName}')
+                      .toString();
             }
             if (game.away?.id == awayTeamId) {
               sportEventsList[index].awayScore = (game.away?.runs).toString();
               sportEventsList[index].awayWin = (game.away?.win).toString();
               sportEventsList[index].awayLoss = (game.away?.loss).toString();
+              sportEventsList[index].wlAway =
+                  ('${game.away?.probablePitcher?.win}-${game.away?.probablePitcher?.loss}')
+                      .toString();
+              sportEventsList[index].eraAway =
+                  (game.away?.probablePitcher?.era).toString();
+              sportEventsList[index].awayPlayerName =
+                  ('${game.away?.probablePitcher?.preferredName?[0]}. ${game.away?.probablePitcher?.lastName}')
+                      .toString();
             }
           }
         }
