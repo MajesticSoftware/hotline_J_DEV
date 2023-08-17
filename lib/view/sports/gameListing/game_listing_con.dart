@@ -2,13 +2,10 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
-import 'package:hotlines/model/mlb_statics_model.dart';
 import 'package:intl/intl.dart';
-
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/response_item.dart';
-import '../../../model/weather_model.dart';
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
@@ -20,6 +17,7 @@ class GameListingController extends GetxController {
   List<SportEvents> todayEventsList = [];
   List<SportEvents> tomorrowEventsList = [];
 
+  ///GAME LISTING API
   Future gameListingTodayApiRes(
       {String sportId = '',
       String date = "",
@@ -121,6 +119,7 @@ class GameListingController extends GetxController {
     update();
   }
 
+  ///GET ALL EVENT BY HOME AWAY FILTER
   getAllEventList(String sportKey) {
     sportEventsList.clear();
     sportEventsList = todayEventsList + tomorrowEventsList;
@@ -322,6 +321,7 @@ class GameListingController extends GetxController {
     }
   }
 
+  ///BOX SCORE API
   Future boxScoreResponse(
       {String gameId = '',
       String homeTeamId = '',
@@ -391,6 +391,7 @@ class GameListingController extends GetxController {
     update();
   }
 
+  ///GAME LISTING FOR ALL GAME
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
@@ -442,9 +443,9 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now);
+    // final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
+    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
     await gameListingTodayApiRes(
             key: apiKey,
@@ -526,38 +527,6 @@ class GameListingController extends GetxController {
   }
 
   ///other apis
-  weatherDetailsResponse({String cityName = '', required int index}) async {
-    Map<String, dynamic> weatherData = {"temp": 0, "weather": 0};
-    weatherData.clear();
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().weatherDetails(cityName);
-    try {
-      if (result.status) {
-        WeatherDataModel response = WeatherDataModel.fromJson(result.data);
-        final weather = response.weather;
-        if (weather != null) {
-          for (var element in weather) {
-            // sportEventsList[index].venue?.weather = (element.id ?? 0.0).toInt();
-          }
-        }
-        final tempData = response.main;
-        if (tempData != null) {
-          sportEventsList[index].venue?.temp = (tempData.temp ?? 0.0).toInt();
-        }
-      } else {
-        showAppSnackBar(
-          result.message,
-        );
-      }
-    } catch (e) {
-      showAppSnackBar(
-        errorText,
-      );
-    }
-    update();
-  }
-
   void gameListingsWithLogoResponse(String year, String sportKey,
       {bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;

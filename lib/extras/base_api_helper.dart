@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter/services.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -34,7 +33,7 @@ class BaseApiHelper {
         .onError((error, stackTrace) => onError(error, requestUrl));
   }
 
-  static Future<ResponseItem> jasonRequest() async {
+  /*static Future<ResponseItem> jasonRequest() async {
     final String response =
         await rootBundle.loadString('assets/games_reponse.json');
     final data = await json.decode(response);
@@ -47,7 +46,7 @@ class BaseApiHelper {
         : await rootBundle.loadString('assets/nfl_res.json');
     final data = await json.decode(response);
     return ResponseItem(status: true, message: "Success.", data: data);
-  }
+  }*/
 
   static Future<ResponseItem> uploadFile(
       String requestUrl, Map<String, String> requestData,

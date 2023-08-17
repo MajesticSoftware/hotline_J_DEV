@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../extras/constants.dart';
 import '../view/sports/selectSport/selecte_game_con.dart';
@@ -102,7 +99,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
               child: Text(upText, style: Theme.of(context).textTheme.bodySmall),
             ),
           ).paddingSymmetric(
-            horizontal: modileView.size.shortestSide < 600
+            horizontal: mobileView.size.shortestSide < 600
                 ? MediaQuery.of(context).size.height * .008
                 : MediaQuery.of(context).size.height * .015,
           ),
@@ -121,7 +118,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
                   style: Theme.of(context).textTheme.bodySmall),
             ),
           ).paddingSymmetric(
-            horizontal: modileView.size.shortestSide < 600
+            horizontal: mobileView.size.shortestSide < 600
                 ? MediaQuery.of(context).size.height * .008
                 : MediaQuery.of(context).size.height * .015,
           )
@@ -143,7 +140,7 @@ Widget commonBoxWidget(BuildContext context, {String title = ''}) {
             color: blackColor,
             weight: FontWeight.w700,
             maxLine: 1,
-            size: modileView.size.shortestSide < 600
+            size: mobileView.size.shortestSide < 600
                 ? MediaQuery.of(context).size.height * .010
                 : MediaQuery.of(context).size.height * .014,
             align: TextAlign.center)),

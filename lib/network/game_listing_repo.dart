@@ -1,9 +1,8 @@
 import 'package:hotlines/extras/extras.dart';
-
-import '../extras/base_api_helper.dart';
 import '../model/response_item.dart';
 
 class GameListingRepo {
+  ///GAME LISTING
   Future<ResponseItem> gameListingRepo(
       {String date = '', String spotId = '', String key = ''}) async {
     ResponseItem result;
@@ -22,6 +21,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///BOX SCORE API
   Future<ResponseItem> boxScoreRepo({String gameId = ''}) async {
     ResponseItem result;
     bool status = true;
@@ -75,7 +75,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  ///PLAYER PROPS API
+  ///PLAYER PROPS API(HOTLINES)
   Future<ResponseItem> hotlinesDataRepo(
       {String sportId = '', String date = '', int start = 0}) async {
     ResponseItem result;
@@ -93,6 +93,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///MLB INJURIES API
   Future<ResponseItem> mlbInjuriesRepo() async {
     ResponseItem result;
     bool status = true;
@@ -110,23 +111,6 @@ class GameListingRepo {
   }
 
   ///OTHER APIS
-  Future<ResponseItem> weatherDetails(String cityName) async {
-    ResponseItem result;
-    bool status = true;
-    dynamic data;
-    String message = "";
-
-    Uri uri = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?appid=2e9714911e1deb0a2ee62104c0b5928b&q=$cityName');
-
-    result = await BaseApiHelper.getRequest(uri, {});
-    status = result.status;
-    data = result.data;
-    message = result.message;
-
-    return ResponseItem(data: data, message: message, status: status);
-  }
-
   Future<ResponseItem> gameListingsWithLogo(
       String year, String sportKey) async {
     ResponseItem result;

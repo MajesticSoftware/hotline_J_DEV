@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -153,15 +151,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                   ),
                 )),
                 Expanded(
+                  child: SvgPicture.asset(Assets.imagesLogo,
+                      height: MediaQuery.of(context).size.height * .025,
+                      fit: BoxFit.contain),
+                ),
+                Expanded(
                   child: widget.sportKey.appCommonText(
                       color: whiteColor,
+                      align: TextAlign.end,
                       weight: FontWeight.w700,
                       size: Get.height * .024),
                 ),
-                Expanded(
-                  child: '  '.appCommonText(
-                      color: whiteColor, weight: FontWeight.w700, size: 24),
-                )
               ],
             ),
           ),
@@ -236,7 +236,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 child: Center(
                   child: backButton.appCommonText(
                       color: whiteColor,
-                      size: modileView.size.shortestSide < 600
+                      size: mobileView.size.shortestSide < 600
                           ? MediaQuery.of(context).size.height * .012
                           : MediaQuery.of(context).size.height * .014,
                       weight: FontWeight.w500),
@@ -448,7 +448,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           ],
                         )),
                       ).paddingSymmetric(
-                        horizontal: modileView.size.shortestSide < 600
+                        horizontal: mobileView.size.shortestSide < 600
                             ? MediaQuery.of(context).size.height * .008
                             : MediaQuery.of(context).size.height * .015,
                       ),
@@ -476,7 +476,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           ],
                         )),
                       ).paddingSymmetric(
-                        horizontal: modileView.size.shortestSide < 600
+                        horizontal: mobileView.size.shortestSide < 600
                             ? MediaQuery.of(context).size.height * .008
                             : MediaQuery.of(context).size.height * .015,
                       )

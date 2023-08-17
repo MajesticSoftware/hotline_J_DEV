@@ -8,4 +8,5 @@ Map<String, String> requestHeader() {
   };
 }
 
-final modileView = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+// ignore: deprecated_member_use
+final mobileView = MediaQueryData.fromView(WidgetsBinding.instance.window);

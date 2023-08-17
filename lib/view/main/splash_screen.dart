@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backGroundColor,
-      body: modileView.size.shortestSide < 600
+      body: mobileView.size.shortestSide < 600
           ? Container(
               height: Get.height,
               width: Get.width,

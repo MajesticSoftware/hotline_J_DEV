@@ -6,26 +6,25 @@ class MLBInjuriesModel {
   MLBInjuriesModel({this.league, this.teams, this.sComment});
 
   MLBInjuriesModel.fromJson(Map<String, dynamic> json) {
-    league =
-        json['league'] != null ? new League.fromJson(json['league']) : null;
+    league = json['league'] != null ? League.fromJson(json['league']) : null;
     if (json['teams'] != null) {
       teams = <Teams>[];
       json['teams'].forEach((v) {
-        teams!.add(new Teams.fromJson(v));
+        teams!.add(Teams.fromJson(v));
       });
     }
     sComment = json['_comment'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.league != null) {
-      data['league'] = this.league!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (league != null) {
+      data['league'] = league!.toJson();
     }
-    if (this.teams != null) {
-      data['teams'] = this.teams!.map((v) => v.toJson()).toList();
+    if (teams != null) {
+      data['teams'] = teams!.map((v) => v.toJson()).toList();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -44,10 +43,10 @@ class League {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['alias'] = this.alias;
-    data['name'] = this.name;
-    data['id'] = this.id;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['alias'] = alias;
+    data['name'] = name;
+    data['id'] = id;
     return data;
   }
 }
@@ -69,19 +68,19 @@ class Teams {
     if (json['players'] != null) {
       players = <Players>[];
       json['players'].forEach((v) {
-        players!.add(new Players.fromJson(v));
+        players!.add(Players.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['abbr'] = this.abbr;
-    data['id'] = this.id;
-    if (this.players != null) {
-      data['players'] = this.players!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['market'] = market;
+    data['abbr'] = abbr;
+    data['id'] = id;
+    if (players != null) {
+      data['players'] = players!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -121,23 +120,23 @@ class Players {
     if (json['injuries'] != null) {
       injuries = <Injuries>[];
       json['injuries'].forEach((v) {
-        injuries!.add(new Injuries.fromJson(v));
+        injuries!.add(Injuries.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['status'] = this.status;
-    data['position'] = this.position;
-    data['primary_position'] = this.primaryPosition;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['preferred_name'] = this.preferredName;
-    data['jersey_number'] = this.jerseyNumber;
-    if (this.injuries != null) {
-      data['injuries'] = this.injuries!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['status'] = status;
+    data['position'] = position;
+    data['primary_position'] = primaryPosition;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['preferred_name'] = preferredName;
+    data['jersey_number'] = jerseyNumber;
+    if (injuries != null) {
+      data['injuries'] = injuries!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -169,13 +168,13 @@ class Injuries {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['comment'] = this.comment;
-    data['desc'] = this.desc;
-    data['status'] = this.status;
-    data['start_date'] = this.startDate;
-    data['update_date'] = this.updateDate;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['comment'] = comment;
+    data['desc'] = desc;
+    data['status'] = status;
+    data['start_date'] = startDate;
+    data['update_date'] = updateDate;
     return data;
   }
 }

@@ -42,7 +42,6 @@ class GameDetailsController extends GetxController {
     'Ground Into Double Play',
     'At Bats per home run',
   ];
-
   List defensive = [
     'Defensive DVOA',
     'Points Allowed/Game',
@@ -56,7 +55,6 @@ class GameDetailsController extends GetxController {
     'Opponent 3rd Down Efficiency',
     'Opponent 4th Down Efficiency',
   ];
-
   List pittchingMLB = [
     'Wins',
     'Losses',
@@ -75,13 +73,6 @@ class GameDetailsController extends GetxController {
     'Walks Per 9 Innings Pitched',
     'Strike out to walk ratio',
   ];
-
-  List teamStatus = [
-    'W/L record (last 5 games)',
-    'Home/Away record',
-    'Against the spread',
-    'Point Differential',
-  ];
   List teamPitcherMLB = [
     'W-L',
     'ERA',
@@ -97,7 +88,6 @@ class GameDetailsController extends GetxController {
     'Avg',
     'RBI',
   ];
-
   RxBool isLoading = false.obs;
   stat.Statistics? mlbStaticsHomeList;
   stat.Statistics? mlbStaticsAwayList;
@@ -234,6 +224,17 @@ class GameDetailsController extends GetxController {
         var awayPitching = mlbStaticsAwayList?.pitching?.overall;
         for (var player in mlbPlayerPitchingData) {
           if (player.statistics?.pitching != null) {
+            if (player.statistics?.hitting != null) {
+              mlbAwayPlayerBattingList.add(MLBStaticsDataModel(
+                  hrsValue:
+                      (player.statistics?.hitting?.overall?.onbase?.hr ?? "0")
+                          .toString(),
+                  avgValue: (player.statistics?.hitting?.overall?.avg ?? "0")
+                      .toString(),
+                  rbiValue: (player.statistics?.hitting?.overall?.rbi ?? "0")
+                      .toString(),
+                  playerName: (player.firstName ?? "")));
+            }
             mlbAwayPlayerPitchingList.add(MLBPitchingStaticsModel(
               playerName: (player.firstName ?? ""),
               wl: ('${player.statistics?.pitching?.overall?.games?.win}-${player.statistics?.pitching?.overall?.games?.loss}')
@@ -430,11 +431,10 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  ///HOTLINES DATA
   List<HotlinesModel> hotlinesNewData = [];
   List<HotlinesModel> _hotlinesData = [];
-
   List<HotlinesModel> get hotlinesData => _hotlinesData;
-
   set hotlinesData(List<HotlinesModel> value) {
     _hotlinesData = value;
     update();
@@ -444,7 +444,6 @@ class GameDetailsController extends GetxController {
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
-
   Future hotlinesDataResponse(
       {String awayTeamId = '',
       String sportId = '',
@@ -457,86 +456,86 @@ class GameDetailsController extends GetxController {
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .hotlinesDataRepo(sportId: sportId, date: date, start: start);
-    // try {
-    if (result.status) {
-      HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
-      final sportScheduleSportEventsPlayersProps =
-          response.sportScheduleSportEventsPlayersProps;
-      if (sportScheduleSportEventsPlayersProps != null) {
-        for (var event in sportScheduleSportEventsPlayersProps) {
-          if (event.sportEvent?.competitors?[0].id == homeTeamId &&
-              event.sportEvent?.competitors?[1].id == awayTeamId) {
-            event.playersProps?.forEach((playersProp) {
-              playersProp.markets?.forEach((market) {
-                market.books?.forEach((book) {
-                  if (book.id == 'sr:book:18186' ||
-                      book.id == 'sr:book:18149') {
-                    book.outcomes?.forEach((outcome) {
-                      if (outcome.oddsAmerican != null) {
-                        if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
-                          if (!(hotlinesData.indexWhere((element) =>
-                                  (element.tittle ==
-                                      market.name
-                                          ?.split('(')
-                                          .first
-                                          .toString()
-                                          .capitalize)) >=
-                              0)) {
+    try {
+      if (result.status) {
+        HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
+        final sportScheduleSportEventsPlayersProps =
+            response.sportScheduleSportEventsPlayersProps;
+        if (sportScheduleSportEventsPlayersProps != null) {
+          for (var event in sportScheduleSportEventsPlayersProps) {
+            if (event.sportEvent?.competitors?[0].id == homeTeamId &&
+                event.sportEvent?.competitors?[1].id == awayTeamId) {
+              event.playersProps?.forEach((playersProp) {
+                playersProp.markets?.forEach((market) {
+                  market.books?.forEach((book) {
+                    if (book.id == 'sr:book:18186' ||
+                        book.id == 'sr:book:18149') {
+                      book.outcomes?.forEach((outcome) {
+                        if (outcome.oddsAmerican != null) {
+                          if (!int.parse(outcome.oddsAmerican ?? '')
+                              .isNegative) {
                             if (!(hotlinesData.indexWhere((element) =>
-                                    (element.playerName ==
-                                        playersProp.player?.name
-                                            ?.split(',')
-                                            .last)) >=
+                                    (element.tittle ==
+                                        market.name
+                                            ?.split('(')
+                                            .first
+                                            .toString()
+                                            .capitalize)) >=
                                 0)) {
-                              hotlinesData.add(HotlinesModel(
-                                  teamName:
-                                      '${playersProp.player?.name?.split(',').last ?? ''} ${playersProp.player?.name?.split(',').first ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
-                                  tittle: market.name
-                                          ?.split('(')
-                                          .first
-                                          .toString()
-                                          .capitalize ??
-                                      '',
-                                  playerName: playersProp.player?.name
-                                          ?.split(',')
-                                          .last ??
-                                      '',
-                                  bookId: book.id ?? '',
-                                  value: '${outcome.oddsAmerican}'));
+                              if (!(hotlinesData.indexWhere((element) =>
+                                      (element.playerName ==
+                                          playersProp.player?.name
+                                              ?.split(',')
+                                              .last)) >=
+                                  0)) {
+                                hotlinesData.add(HotlinesModel(
+                                    teamName:
+                                        '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                                    tittle: market.name
+                                            ?.split('(')
+                                            .first
+                                            .toString()
+                                            .capitalize ??
+                                        '',
+                                    playerName: playersProp.player?.name
+                                            ?.split(',')
+                                            .last ??
+                                        '',
+                                    bookId: book.id ?? '',
+                                    value: '${outcome.oddsAmerican}'));
 
-                              hotlinesData
-                                  .sort((a, b) => b.value.compareTo(a.value));
+                                hotlinesData
+                                    .sort((a, b) => b.value.compareTo(a.value));
+                              }
                             }
                           }
                         }
-                      }
-                    });
-                  }
+                      });
+                    }
+                  });
                 });
               });
-            });
+            }
           }
         }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
       }
-
-      // isLoading.value = false;
-    } else {
+    } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(
-        result.message,
-      );
+      log('ERORE>>>>>>>>----$e');
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
-    // } catch (e) {
-    //   isLoading.value = false;
-    //   log('ERORE>>>>>>>>----$e');
-    //   // showAppSnackBar(
-    //   //   errorText,
-    //   // );
-    // }
     update();
     return hotlinesData;
   }
 
+  ///MLB INJURY REPORT
   Future mlbInjuriesResponse(
       {String awayTeamId = '',
       String homeTeamId = '',
@@ -590,6 +589,7 @@ class GameDetailsController extends GetxController {
   }
 }
 
+///MLB STATICS MODEL
 class MLBStaticsDataModel {
   String hrsValue;
   String avgValue;

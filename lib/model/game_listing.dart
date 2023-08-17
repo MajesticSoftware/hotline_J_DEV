@@ -20,14 +20,14 @@ class GameListingDataModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['generated_at'] = this.generatedAt;
-    data['schema'] = this.schema;
-    if (this.sport != null) {
-      data['sport'] = this.sport!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['generated_at'] = generatedAt;
+    data['schema'] = schema;
+    if (sport != null) {
+      data['sport'] = sport!.toJson();
     }
-    if (this.sportEvents != null) {
-      data['sport_events'] = this.sportEvents!.map((v) => v.toJson()).toList();
+    if (sportEvents != null) {
+      data['sport_events'] = sportEvents!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -45,9 +45,9 @@ class Sport {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
     return data;
   }
 }
@@ -173,14 +173,14 @@ class SportEvents {
     if (json['competitors'] != null) {
       competitors = <Competitors>[];
       json['competitors'].forEach((v) {
-        competitors!.add(Competitors.fromJson(v));
+        competitors.add(Competitors.fromJson(v));
       });
     }
     venue = json['venue'] != null ? Venue.fromJson(json['venue']) : null;
     if (json['markets'] != null) {
       markets = <Markets>[];
       json['markets'].forEach((v) {
-        markets!.add(Markets.fromJson(v));
+        markets.add(Markets.fromJson(v));
       });
     }
     marketsLastUpdated = json['markets_last_updated'];
@@ -191,34 +191,30 @@ class SportEvents {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['scheduled'] = this.scheduled;
-    data['start_time_tbd'] = this.startTimeTbd;
-    data['status'] = this.status;
-    if (this.tournamentRound != null) {
-      data['tournament_round'] = this.tournamentRound!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['scheduled'] = scheduled;
+    data['start_time_tbd'] = startTimeTbd;
+    data['status'] = status;
+    if (tournamentRound != null) {
+      data['tournament_round'] = tournamentRound!.toJson();
     }
-    if (this.season != null) {
-      data['season'] = this.season!.toJson();
+    if (season != null) {
+      data['season'] = season!.toJson();
     }
-    if (this.tournament != null) {
-      data['tournament'] = this.tournament!.toJson();
+    if (tournament != null) {
+      data['tournament'] = tournament!.toJson();
     }
-    if (this.competitors != null) {
-      data['competitors'] = this.competitors!.map((v) => v.toJson()).toList();
+    data['competitors'] = competitors.map((v) => v.toJson()).toList();
+    if (venue != null) {
+      data['venue'] = venue!.toJson();
     }
-    if (this.venue != null) {
-      data['venue'] = this.venue!.toJson();
+    data['markets'] = markets.map((v) => v.toJson()).toList();
+    data['markets_last_updated'] = marketsLastUpdated;
+    if (consensus != null) {
+      data['consensus'] = consensus!.toJson();
     }
-    if (this.markets != null) {
-      data['markets'] = this.markets!.map((v) => v.toJson()).toList();
-    }
-    data['markets_last_updated'] = this.marketsLastUpdated;
-    if (this.consensus != null) {
-      data['consensus'] = this.consensus!.toJson();
-    }
-    data['uuids'] = this.uuids;
+    data['uuids'] = uuids;
     return data;
   }
 }
@@ -237,10 +233,10 @@ class TournamentRound {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['type'] = this.type;
-    data['number'] = this.number;
-    data['group'] = this.group;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['type'] = type;
+    data['number'] = number;
+    data['group'] = group;
     return data;
   }
 }
@@ -274,14 +270,14 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['start_date'] = this.startDate;
-    data['end_date'] = this.endDate;
-    data['year'] = this.year;
-    data['tournament_id'] = this.tournamentId;
-    data['uuids'] = this.uuids;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['start_date'] = startDate;
+    data['end_date'] = endDate;
+    data['year'] = year;
+    data['tournament_id'] = tournamentId;
+    data['uuids'] = uuids;
     return data;
   }
 }
@@ -305,16 +301,16 @@ class Tournament {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    if (this.sport != null) {
-      data['sport'] = this.sport!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    if (sport != null) {
+      data['sport'] = sport!.toJson();
     }
-    if (this.category != null) {
-      data['category'] = this.category!.toJson();
+    if (category != null) {
+      data['category'] = category!.toJson();
     }
-    data['uuids'] = this.uuids;
+    data['uuids'] = uuids;
     return data;
   }
 }
@@ -333,10 +329,10 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['country_code'] = this.countryCode;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['country_code'] = countryCode;
     return data;
   }
 }
@@ -374,15 +370,15 @@ class Competitors {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['country'] = this.country;
-    data['country_code'] = this.countryCode;
-    data['abbreviation'] = this.abbreviation;
-    data['qualifier'] = this.qualifier;
-    data['rotation_number'] = this.rotationNumber;
-    data['uuids'] = this.uuids;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['country'] = country;
+    data['country_code'] = countryCode;
+    data['abbreviation'] = abbreviation;
+    data['qualifier'] = qualifier;
+    data['rotation_number'] = rotationNumber;
+    data['uuids'] = uuids;
     return data;
   }
 }
@@ -427,15 +423,15 @@ class Venue {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['capacity'] = this.capacity;
-    data['city_name'] = this.cityName;
-    data['country_name'] = this.countryName;
-    data['map_coordinates'] = this.mapCoordinates;
-    data['country_code'] = this.countryCode;
-    data['uuids'] = this.uuids;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['capacity'] = capacity;
+    data['city_name'] = cityName;
+    data['country_name'] = countryName;
+    data['map_coordinates'] = mapCoordinates;
+    data['country_code'] = countryCode;
+    data['uuids'] = uuids;
     return data;
   }
 }
@@ -461,13 +457,11 @@ class Markets {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['odds_type_id'] = this.oddsTypeId;
-    data['name'] = this.name;
-    data['group_name'] = this.groupName;
-    if (this.books != null) {
-      data['books'] = this.books!.map((v) => v.toJson()).toList();
-    }
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['odds_type_id'] = oddsTypeId;
+    data['name'] = name;
+    data['group_name'] = groupName;
+    data['books'] = books.map((v) => v.toJson()).toList();
     return data;
   }
 }
@@ -493,13 +487,13 @@ class Books {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    if (this.outcomes != null) {
-      data['outcomes'] = this.outcomes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    if (outcomes != null) {
+      data['outcomes'] = outcomes!.map((v) => v.toJson()).toList();
     }
-    data['removed'] = this.removed;
+    data['removed'] = removed;
     return data;
   }
 }
@@ -539,16 +533,16 @@ class Outcomes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['odds_field_id'] = this.oddsFieldId;
-    data['type'] = this.type;
-    data['odds'] = this.odds;
-    data['opening_odds'] = this.openingOdds;
-    data['odds_trend'] = this.oddsTrend;
-    data['opening_total'] = this.openingTotal;
-    data['total'] = this.total;
-    data['spread'] = this.spread;
-    data['opening_spread'] = this.openingSpread;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['odds_field_id'] = oddsFieldId;
+    data['type'] = type;
+    data['odds'] = odds;
+    data['opening_odds'] = openingOdds;
+    data['odds_trend'] = oddsTrend;
+    data['opening_total'] = openingTotal;
+    data['total'] = total;
+    data['spread'] = spread;
+    data['opening_spread'] = openingSpread;
     return data;
   }
 }
@@ -575,13 +569,13 @@ class Consensus {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    if (this.lines != null) {
-      data['lines'] = this.lines!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (lines != null) {
+      data['lines'] = lines!.map((v) => v.toJson()).toList();
     }
-    if (this.betPercentageOutcomes != null) {
+    if (betPercentageOutcomes != null) {
       data['bet_percentage_outcomes'] =
-          this.betPercentageOutcomes!.map((v) => v.toJson()).toList();
+          betPercentageOutcomes!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -610,14 +604,14 @@ class Lines {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['name'] = this.name;
-    if (this.outcomes != null) {
-      data['outcomes'] = this.outcomes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    if (outcomes != null) {
+      data['outcomes'] = outcomes!.map((v) => v.toJson()).toList();
     }
-    data['spread'] = this.spread;
-    data['total'] = this.total;
-    data['last_updated'] = this.lastUpdated;
+    data['spread'] = spread;
+    data['total'] = total;
+    data['last_updated'] = lastUpdated;
     return data;
   }
 }
@@ -639,10 +633,10 @@ class BetPercentageOutcomes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['name'] = this.name;
-    if (this.outcomes != null) {
-      data['outcomes'] = this.outcomes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    if (outcomes != null) {
+      data['outcomes'] = outcomes!.map((v) => v.toJson()).toList();
     }
     return data;
   }

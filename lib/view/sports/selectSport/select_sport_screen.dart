@@ -19,7 +19,7 @@ import '../gameListing/game_listing_screen.dart';
 // ignore: must_be_immutable
 class SelectSportScreen extends StatelessWidget {
   SelectSportScreen({Key? key}) : super(key: key);
-  SelectGameController selectGameController = Get.find();
+  final SelectGameController selectGameController = Get.find();
   bool isDark = false;
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class SelectSportScreen extends StatelessWidget {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => launchInBrowser(Uri.parse(
                                     'https://www.hotlinesmd.com/contact')),
-                              text: modileView.size.shortestSide < 600
+                              text: mobileView.size.shortestSide < 600
                                   ? '\n$contactUs'
                                   : contactUs,
                               style: TextStyle(
@@ -121,7 +121,7 @@ class SelectSportScreen extends StatelessWidget {
             SizedBox(
               height: Get.height * .015,
             ),
-            (modileView.size.shortestSide < 600 ? mobileMsg : msg)
+            (mobileView.size.shortestSide < 600 ? mobileMsg : msg)
                 .appCommonText(
                     color: Theme.of(context).dividerColor,
                     size: Get.height * .016,
@@ -436,23 +436,12 @@ class SelectSportScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * .04,
-                  width: MediaQuery.of(context).size.width * .086,
-                  child: SvgPicture.asset(Assets.imagesThemeDark,
-                      // ignore: deprecated_member_use
-                      color: Colors.transparent),
-                ),
+                transperWidget(context),
                 SvgPicture.asset(Assets.imagesLogo,
                     height: MediaQuery.of(context).size.height * .025,
                     fit: BoxFit.fill),
-                // selectGame.appCommonText(
-                //     color: whiteColor,
-                //     size: MediaQuery.of(context).size.height * .03,
-                //     weight: FontWeight.w700),
                 Container(
                   height: MediaQuery.of(context).size.height * .033,
-                  // width: MediaQuery.of(context).size.width * .099,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                           MediaQuery.of(context).size.width * .005),
@@ -553,5 +542,74 @@ class SelectSportScreen extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  Container transperWidget(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * .033,
+      decoration: BoxDecoration(
+          borderRadius:
+              BorderRadius.circular(MediaQuery.of(context).size.width * .005),
+          border: Border.all(color: Colors.transparent, width: 2),
+          color: Colors.transparent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () {},
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * .002),
+              child: Container(
+                width: MediaQuery.of(context).size.width * .039,
+                height: MediaQuery.of(context).size.height * .04,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(
+                            MediaQuery.of(context).size.width * .005)),
+                    color: Colors.transparent),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.imagesSunLight,
+                      // ignore: deprecated_member_use
+                      color: Colors.transparent,
+                      width: MediaQuery.of(context).size.width * .02,
+                      height: MediaQuery.of(context).size.height * .02,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              width: MediaQuery.of(context).size.width * .039,
+              height: MediaQuery.of(context).size.height * .04,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.horizontal(
+                      right: Radius.circular(
+                          MediaQuery.of(context).size.width * .005)),
+                  color: Colors.transparent),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    Assets.imagesMoon,
+                    // ignore: deprecated_member_use
+                    color: Colors.transparent,
+                    width: MediaQuery.of(context).size.width * .02,
+                    height: MediaQuery.of(context).size.height * .02,
+                    fit: BoxFit.contain,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

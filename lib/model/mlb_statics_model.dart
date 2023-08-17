@@ -23,36 +23,35 @@ class MLBStaticsModel {
     market = json['market'];
     abbr = json['abbr'];
     id = json['id'];
-    season =
-        json['season'] != null ? new Season.fromJson(json['season']) : null;
+    season = json['season'] != null ? Season.fromJson(json['season']) : null;
     statistics = json['statistics'] != null
-        ? new Statistics.fromJson(json['statistics'])
+        ? Statistics.fromJson(json['statistics'])
         : null;
     if (json['players'] != null) {
       players = <Players>[];
       json['players'].forEach((v) {
-        players!.add(new Players.fromJson(v));
+        players!.add(Players.fromJson(v));
       });
     }
     sComment = json['_comment'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['abbr'] = this.abbr;
-    data['id'] = this.id;
-    if (this.season != null) {
-      data['season'] = this.season!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['market'] = market;
+    data['abbr'] = abbr;
+    data['id'] = id;
+    if (season != null) {
+      data['season'] = season!.toJson();
     }
-    if (this.statistics != null) {
-      data['statistics'] = this.statistics!.toJson();
+    if (statistics != null) {
+      data['statistics'] = statistics!.toJson();
     }
-    if (this.players != null) {
-      data['players'] = this.players!.map((v) => v.toJson()).toList();
+    if (players != null) {
+      data['players'] = players!.map((v) => v.toJson()).toList();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -71,10 +70,10 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['year'] = this.year;
-    data['type'] = this.type;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['year'] = year;
+    data['type'] = type;
     return data;
   }
 }
@@ -88,25 +87,23 @@ class Statistics {
 
   Statistics.fromJson(Map<String, dynamic> json) {
     hitting =
-        json['hitting'] != null ? new Hitting.fromJson(json['hitting']) : null;
-    pitching = json['pitching'] != null
-        ? new Pitching.fromJson(json['pitching'])
-        : null;
-    fielding = json['fielding'] != null
-        ? new Fielding.fromJson(json['fielding'])
-        : null;
+        json['hitting'] != null ? Hitting.fromJson(json['hitting']) : null;
+    pitching =
+        json['pitching'] != null ? Pitching.fromJson(json['pitching']) : null;
+    fielding =
+        json['fielding'] != null ? Fielding.fromJson(json['fielding']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.hitting != null) {
-      data['hitting'] = this.hitting!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (hitting != null) {
+      data['hitting'] = hitting!.toJson();
     }
-    if (this.pitching != null) {
-      data['pitching'] = this.pitching!.toJson();
+    if (pitching != null) {
+      data['pitching'] = pitching!.toJson();
     }
-    if (this.fielding != null) {
-      data['fielding'] = this.fielding!.toJson();
+    if (fielding != null) {
+      data['fielding'] = fielding!.toJson();
     }
     return data;
   }
@@ -120,14 +117,14 @@ class Hitting {
 
   Hitting.fromJson(Map<String, dynamic> json) {
     overall = json['overall'] != null
-        ? new OverallHitting.fromJson(json['overall'])
+        ? OverallHitting.fromJson(json['overall'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.overall != null) {
-      data['overall'] = this.overall!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (overall != null) {
+      data['overall'] = overall!.toJson();
     }
     return data;
   }
@@ -234,64 +231,63 @@ class OverallHitting {
     ap = json['ap'];
     avg = json['avg'];
     gofo = json['gofo'];
-    onbase =
-        json['onbase'] != null ? new Onbase.fromJson(json['onbase']) : null;
-    runs = json['runs'] != null ? new Runs.fromJson(json['runs']) : null;
+    onbase = json['onbase'] != null ? Onbase.fromJson(json['onbase']) : null;
+    runs = json['runs'] != null ? Runs.fromJson(json['runs']) : null;
     outcome =
-        json['outcome'] != null ? new Outcome.fromJson(json['outcome']) : null;
-    outs = json['outs'] != null ? new Outs.fromJson(json['outs']) : null;
-    steal = json['steal'] != null ? new Steal.fromJson(json['steal']) : null;
+        json['outcome'] != null ? Outcome.fromJson(json['outcome']) : null;
+    outs = json['outs'] != null ? Outs.fromJson(json['outs']) : null;
+    steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
-        json['pitches'] != null ? new Pitches.fromJson(json['pitches']) : null;
+        json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ab'] = this.ab;
-    data['lob'] = this.lob;
-    data['rbi'] = this.rbi;
-    data['abhr'] = this.abhr;
-    data['abk'] = this.abk;
-    data['bip'] = this.bip;
-    data['babip'] = this.babip;
-    data['bbk'] = this.bbk;
-    data['bbpa'] = this.bbpa;
-    data['iso'] = this.iso;
-    data['obp'] = this.obp;
-    data['ops'] = this.ops;
-    data['seca'] = this.seca;
-    data['slg'] = this.slg;
-    data['xbh'] = this.xbh;
-    data['pitch_count'] = this.pitchCount;
-    data['lob_risp_2out'] = this.lobRisp2out;
-    data['team_lob'] = this.teamLob;
-    data['ab_risp'] = this.abRisp;
-    data['hit_risp'] = this.hitRisp;
-    data['rbi_2out'] = this.rbi2out;
-    data['linedrive'] = this.linedrive;
-    data['groundball'] = this.groundball;
-    data['popup'] = this.popup;
-    data['flyball'] = this.flyball;
-    data['ap'] = this.ap;
-    data['avg'] = this.avg;
-    data['gofo'] = this.gofo;
-    if (this.onbase != null) {
-      data['onbase'] = this.onbase!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ab'] = ab;
+    data['lob'] = lob;
+    data['rbi'] = rbi;
+    data['abhr'] = abhr;
+    data['abk'] = abk;
+    data['bip'] = bip;
+    data['babip'] = babip;
+    data['bbk'] = bbk;
+    data['bbpa'] = bbpa;
+    data['iso'] = iso;
+    data['obp'] = obp;
+    data['ops'] = ops;
+    data['seca'] = seca;
+    data['slg'] = slg;
+    data['xbh'] = xbh;
+    data['pitch_count'] = pitchCount;
+    data['lob_risp_2out'] = lobRisp2out;
+    data['team_lob'] = teamLob;
+    data['ab_risp'] = abRisp;
+    data['hit_risp'] = hitRisp;
+    data['rbi_2out'] = rbi2out;
+    data['linedrive'] = linedrive;
+    data['groundball'] = groundball;
+    data['popup'] = popup;
+    data['flyball'] = flyball;
+    data['ap'] = ap;
+    data['avg'] = avg;
+    data['gofo'] = gofo;
+    if (onbase != null) {
+      data['onbase'] = onbase!.toJson();
     }
-    if (this.runs != null) {
-      data['runs'] = this.runs!.toJson();
+    if (runs != null) {
+      data['runs'] = runs!.toJson();
     }
-    if (this.outcome != null) {
-      data['outcome'] = this.outcome!.toJson();
+    if (outcome != null) {
+      data['outcome'] = outcome!.toJson();
     }
-    if (this.outs != null) {
-      data['outs'] = this.outs!.toJson();
+    if (outs != null) {
+      data['outs'] = outs!.toJson();
     }
-    if (this.steal != null) {
-      data['steal'] = this.steal!.toJson();
+    if (steal != null) {
+      data['steal'] = steal!.toJson();
     }
-    if (this.pitches != null) {
-      data['pitches'] = this.pitches!.toJson();
+    if (pitches != null) {
+      data['pitches'] = pitches!.toJson();
     }
     return data;
   }
@@ -341,19 +337,19 @@ class OnbaseHitting {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['s'] = this.s;
-    data['d'] = this.d;
-    data['t'] = this.t;
-    data['hr'] = this.hr;
-    data['tb'] = this.tb;
-    data['bb'] = this.bb;
-    data['ibb'] = this.ibb;
-    data['hbp'] = this.hbp;
-    data['fc'] = this.fc;
-    data['roe'] = this.roe;
-    data['h'] = this.h;
-    data['cycle'] = this.cycle;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['s'] = s;
+    data['d'] = d;
+    data['t'] = t;
+    data['hr'] = hr;
+    data['tb'] = tb;
+    data['bb'] = bb;
+    data['ibb'] = ibb;
+    data['hbp'] = hbp;
+    data['fc'] = fc;
+    data['roe'] = roe;
+    data['h'] = h;
+    data['cycle'] = cycle;
     return data;
   }
 }
@@ -368,8 +364,8 @@ class RunsHitting {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['total'] = this.total;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['total'] = total;
     return data;
   }
 }
@@ -403,14 +399,14 @@ class Outcome {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['klook'] = this.klook;
-    data['kswing'] = this.kswing;
-    data['ktotal'] = this.ktotal;
-    data['ball'] = this.ball;
-    data['iball'] = this.iball;
-    data['dirtball'] = this.dirtball;
-    data['foul'] = this.foul;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['klook'] = klook;
+    data['kswing'] = kswing;
+    data['ktotal'] = ktotal;
+    data['ball'] = ball;
+    data['iball'] = iball;
+    data['dirtball'] = dirtball;
+    data['foul'] = foul;
     return data;
   }
 }
@@ -459,19 +455,19 @@ class Outs {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['po'] = this.po;
-    data['fo'] = this.fo;
-    data['fidp'] = this.fidp;
-    data['lo'] = this.lo;
-    data['lidp'] = this.lidp;
-    data['go'] = this.go;
-    data['gidp'] = this.gidp;
-    data['klook'] = this.klook;
-    data['kswing'] = this.kswing;
-    data['ktotal'] = this.ktotal;
-    data['sacfly'] = this.sacfly;
-    data['sachit'] = this.sachit;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['po'] = po;
+    data['fo'] = fo;
+    data['fidp'] = fidp;
+    data['lo'] = lo;
+    data['lidp'] = lidp;
+    data['go'] = go;
+    data['gidp'] = gidp;
+    data['klook'] = klook;
+    data['kswing'] = kswing;
+    data['ktotal'] = ktotal;
+    data['sacfly'] = sacfly;
+    data['sachit'] = sachit;
     return data;
   }
 }
@@ -492,11 +488,11 @@ class StealHitting {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['caught'] = this.caught;
-    data['stolen'] = this.stolen;
-    data['pct'] = this.pct;
-    data['pickoff'] = this.pickoff;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['caught'] = caught;
+    data['stolen'] = stolen;
+    data['pct'] = pct;
+    data['pickoff'] = pickoff;
     return data;
   }
 }
@@ -515,10 +511,10 @@ class PitchesHitting {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['count'] = this.count;
-    data['btotal'] = this.btotal;
-    data['ktotal'] = this.ktotal;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['count'] = count;
+    data['btotal'] = btotal;
+    data['ktotal'] = ktotal;
     return data;
   }
 }
@@ -533,24 +529,23 @@ class Pitching {
 
   Pitching.fromJson(Map<String, dynamic> json) {
     overall =
-        json['overall'] != null ? new Overall.fromJson(json['overall']) : null;
-    starters = json['starters'] != null
-        ? new Starters.fromJson(json['starters'])
-        : null;
+        json['overall'] != null ? Overall.fromJson(json['overall']) : null;
+    starters =
+        json['starters'] != null ? Starters.fromJson(json['starters']) : null;
     bullpen =
-        json['bullpen'] != null ? new Bullpen.fromJson(json['bullpen']) : null;
+        json['bullpen'] != null ? Bullpen.fromJson(json['bullpen']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.overall != null) {
-      data['overall'] = this.overall!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (overall != null) {
+      data['overall'] = overall!.toJson();
     }
-    if (this.starters != null) {
-      data['starters'] = this.starters!.toJson();
+    if (starters != null) {
+      data['starters'] = starters!.toJson();
     }
-    if (this.bullpen != null) {
-      data['bullpen'] = this.bullpen!.toJson();
+    if (bullpen != null) {
+      data['bullpen'] = bullpen!.toJson();
     }
     return data;
   }
@@ -637,65 +632,63 @@ class Overall {
     oab = json['oab'];
     slg = json['slg'];
     obp = json['obp'];
-    onbase =
-        json['onbase'] != null ? new Onbase.fromJson(json['onbase']) : null;
-    runs = json['runs'] != null ? new Runs.fromJson(json['runs']) : null;
+    onbase = json['onbase'] != null ? Onbase.fromJson(json['onbase']) : null;
+    runs = json['runs'] != null ? Runs.fromJson(json['runs']) : null;
     outcome =
-        json['outcome'] != null ? new Outcome.fromJson(json['outcome']) : null;
-    outs = json['outs'] != null ? new Outs.fromJson(json['outs']) : null;
-    steal = json['steal'] != null ? new Steal.fromJson(json['steal']) : null;
+        json['outcome'] != null ? Outcome.fromJson(json['outcome']) : null;
+    outs = json['outs'] != null ? Outs.fromJson(json['outs']) : null;
+    steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
-        json['pitches'] != null ? new Pitches.fromJson(json['pitches']) : null;
-    inPlay =
-        json['in_play'] != null ? new InPlay.fromJson(json['in_play']) : null;
-    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
+        json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
+    inPlay = json['in_play'] != null ? InPlay.fromJson(json['in_play']) : null;
+    games = json['games'] != null ? Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['oba'] = this.oba;
-    data['lob'] = this.lob;
-    data['era'] = this.era;
-    data['k9'] = this.k9;
-    data['whip'] = this.whip;
-    data['kbb'] = this.kbb;
-    data['pitch_count'] = this.pitchCount;
-    data['wp'] = this.wp;
-    data['bk'] = this.bk;
-    data['ip_1'] = this.ip1;
-    data['ip_2'] = this.ip2;
-    data['bf'] = this.bf;
-    data['gofo'] = this.gofo;
-    data['babip'] = this.babip;
-    data['bf_ip'] = this.bfIp;
-    data['bf_start'] = this.bfStart;
-    data['gbfb'] = this.gbfb;
-    data['oab'] = this.oab;
-    data['slg'] = this.slg;
-    data['obp'] = this.obp;
-    if (this.onbase != null) {
-      data['onbase'] = this.onbase!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['oba'] = oba;
+    data['lob'] = lob;
+    data['era'] = era;
+    data['k9'] = k9;
+    data['whip'] = whip;
+    data['kbb'] = kbb;
+    data['pitch_count'] = pitchCount;
+    data['wp'] = wp;
+    data['bk'] = bk;
+    data['ip_1'] = ip1;
+    data['ip_2'] = ip2;
+    data['bf'] = bf;
+    data['gofo'] = gofo;
+    data['babip'] = babip;
+    data['bf_ip'] = bfIp;
+    data['bf_start'] = bfStart;
+    data['gbfb'] = gbfb;
+    data['oab'] = oab;
+    data['slg'] = slg;
+    data['obp'] = obp;
+    if (onbase != null) {
+      data['onbase'] = onbase!.toJson();
     }
-    if (this.runs != null) {
-      data['runs'] = this.runs!.toJson();
+    if (runs != null) {
+      data['runs'] = runs!.toJson();
     }
-    if (this.outcome != null) {
-      data['outcome'] = this.outcome!.toJson();
+    if (outcome != null) {
+      data['outcome'] = outcome!.toJson();
     }
-    if (this.outs != null) {
-      data['outs'] = this.outs!.toJson();
+    if (outs != null) {
+      data['outs'] = outs!.toJson();
     }
-    if (this.steal != null) {
-      data['steal'] = this.steal!.toJson();
+    if (steal != null) {
+      data['steal'] = steal!.toJson();
     }
-    if (this.pitches != null) {
-      data['pitches'] = this.pitches!.toJson();
+    if (pitches != null) {
+      data['pitches'] = pitches!.toJson();
     }
-    if (this.inPlay != null) {
-      data['in_play'] = this.inPlay!.toJson();
+    if (inPlay != null) {
+      data['in_play'] = inPlay!.toJson();
     }
-    if (this.games != null) {
-      data['games'] = this.games!.toJson();
+    if (games != null) {
+      data['games'] = games!.toJson();
     }
     return data;
   }
@@ -748,20 +741,20 @@ class Onbase {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['s'] = this.s;
-    data['d'] = this.d;
-    data['t'] = this.t;
-    data['hr'] = this.hr;
-    data['tb'] = this.tb;
-    data['bb'] = this.bb;
-    data['ibb'] = this.ibb;
-    data['hbp'] = this.hbp;
-    data['fc'] = this.fc;
-    data['roe'] = this.roe;
-    data['h'] = this.h;
-    data['h9'] = this.h9;
-    data['hr9'] = this.hr9;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['s'] = s;
+    data['d'] = d;
+    data['t'] = t;
+    data['hr'] = hr;
+    data['tb'] = tb;
+    data['bb'] = bb;
+    data['ibb'] = ibb;
+    data['hbp'] = hbp;
+    data['fc'] = fc;
+    data['roe'] = roe;
+    data['h'] = h;
+    data['h9'] = h9;
+    data['hr9'] = hr9;
     return data;
   }
 }
@@ -795,14 +788,14 @@ class Runs {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['total'] = this.total;
-    data['unearned'] = this.unearned;
-    data['earned'] = this.earned;
-    data['ir'] = this.ir;
-    data['ira'] = this.ira;
-    data['bqr'] = this.bqr;
-    data['bqra'] = this.bqra;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['total'] = total;
+    data['unearned'] = unearned;
+    data['earned'] = earned;
+    data['ir'] = ir;
+    data['ira'] = ira;
+    data['bqr'] = bqr;
+    data['bqra'] = bqra;
     return data;
   }
 }
@@ -821,10 +814,10 @@ class Steal {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['caught'] = this.caught;
-    data['stolen'] = this.stolen;
-    data['pickoff'] = this.pickoff;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['caught'] = caught;
+    data['stolen'] = stolen;
+    data['pickoff'] = pickoff;
     return data;
   }
 }
@@ -855,13 +848,13 @@ class Pitches {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['count'] = this.count;
-    data['btotal'] = this.btotal;
-    data['ktotal'] = this.ktotal;
-    data['per_ip'] = this.perIp;
-    data['per_bf'] = this.perBf;
-    data['per_start'] = this.perStart;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['count'] = count;
+    data['btotal'] = btotal;
+    data['ktotal'] = ktotal;
+    data['per_ip'] = perIp;
+    data['per_bf'] = perBf;
+    data['per_start'] = perStart;
     return data;
   }
 }
@@ -882,11 +875,11 @@ class InPlay {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['linedrive'] = this.linedrive;
-    data['groundball'] = this.groundball;
-    data['popup'] = this.popup;
-    data['flyball'] = this.flyball;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['linedrive'] = linedrive;
+    data['groundball'] = groundball;
+    data['popup'] = popup;
+    data['flyball'] = flyball;
     return data;
   }
 }
@@ -972,65 +965,63 @@ class Starters {
     oab = json['oab'];
     slg = json['slg'];
     obp = json['obp'];
-    onbase =
-        json['onbase'] != null ? new Onbase.fromJson(json['onbase']) : null;
-    runs = json['runs'] != null ? new Runs.fromJson(json['runs']) : null;
+    onbase = json['onbase'] != null ? Onbase.fromJson(json['onbase']) : null;
+    runs = json['runs'] != null ? Runs.fromJson(json['runs']) : null;
     outcome =
-        json['outcome'] != null ? new Outcome.fromJson(json['outcome']) : null;
-    outs = json['outs'] != null ? new Outs.fromJson(json['outs']) : null;
-    steal = json['steal'] != null ? new Steal.fromJson(json['steal']) : null;
+        json['outcome'] != null ? Outcome.fromJson(json['outcome']) : null;
+    outs = json['outs'] != null ? Outs.fromJson(json['outs']) : null;
+    steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
-        json['pitches'] != null ? new Pitches.fromJson(json['pitches']) : null;
-    inPlay =
-        json['in_play'] != null ? new InPlay.fromJson(json['in_play']) : null;
-    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
+        json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
+    inPlay = json['in_play'] != null ? InPlay.fromJson(json['in_play']) : null;
+    games = json['games'] != null ? Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['oba'] = this.oba;
-    data['lob'] = this.lob;
-    data['era'] = this.era;
-    data['k9'] = this.k9;
-    data['whip'] = this.whip;
-    data['kbb'] = this.kbb;
-    data['pitch_count'] = this.pitchCount;
-    data['wp'] = this.wp;
-    data['bk'] = this.bk;
-    data['ip_1'] = this.ip1;
-    data['ip_2'] = this.ip2;
-    data['bf'] = this.bf;
-    data['gofo'] = this.gofo;
-    data['babip'] = this.babip;
-    data['bf_ip'] = this.bfIp;
-    data['bf_start'] = this.bfStart;
-    data['gbfb'] = this.gbfb;
-    data['oab'] = this.oab;
-    data['slg'] = this.slg;
-    data['obp'] = this.obp;
-    if (this.onbase != null) {
-      data['onbase'] = this.onbase!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['oba'] = oba;
+    data['lob'] = lob;
+    data['era'] = era;
+    data['k9'] = k9;
+    data['whip'] = whip;
+    data['kbb'] = kbb;
+    data['pitch_count'] = pitchCount;
+    data['wp'] = wp;
+    data['bk'] = bk;
+    data['ip_1'] = ip1;
+    data['ip_2'] = ip2;
+    data['bf'] = bf;
+    data['gofo'] = gofo;
+    data['babip'] = babip;
+    data['bf_ip'] = bfIp;
+    data['bf_start'] = bfStart;
+    data['gbfb'] = gbfb;
+    data['oab'] = oab;
+    data['slg'] = slg;
+    data['obp'] = obp;
+    if (onbase != null) {
+      data['onbase'] = onbase!.toJson();
     }
-    if (this.runs != null) {
-      data['runs'] = this.runs!.toJson();
+    if (runs != null) {
+      data['runs'] = runs!.toJson();
     }
-    if (this.outcome != null) {
-      data['outcome'] = this.outcome!.toJson();
+    if (outcome != null) {
+      data['outcome'] = outcome!.toJson();
     }
-    if (this.outs != null) {
-      data['outs'] = this.outs!.toJson();
+    if (outs != null) {
+      data['outs'] = outs!.toJson();
     }
-    if (this.steal != null) {
-      data['steal'] = this.steal!.toJson();
+    if (steal != null) {
+      data['steal'] = steal!.toJson();
     }
-    if (this.pitches != null) {
-      data['pitches'] = this.pitches!.toJson();
+    if (pitches != null) {
+      data['pitches'] = pitches!.toJson();
     }
-    if (this.inPlay != null) {
-      data['in_play'] = this.inPlay!.toJson();
+    if (inPlay != null) {
+      data['in_play'] = inPlay!.toJson();
     }
-    if (this.games != null) {
-      data['games'] = this.games!.toJson();
+    if (games != null) {
+      data['games'] = games!.toJson();
     }
     return data;
   }
@@ -1114,64 +1105,62 @@ class Bullpen {
     oab = json['oab'];
     slg = json['slg'];
     obp = json['obp'];
-    onbase =
-        json['onbase'] != null ? new Onbase.fromJson(json['onbase']) : null;
-    runs = json['runs'] != null ? new Runs.fromJson(json['runs']) : null;
+    onbase = json['onbase'] != null ? Onbase.fromJson(json['onbase']) : null;
+    runs = json['runs'] != null ? Runs.fromJson(json['runs']) : null;
     outcome =
-        json['outcome'] != null ? new Outcome.fromJson(json['outcome']) : null;
-    outs = json['outs'] != null ? new Outs.fromJson(json['outs']) : null;
-    steal = json['steal'] != null ? new Steal.fromJson(json['steal']) : null;
+        json['outcome'] != null ? Outcome.fromJson(json['outcome']) : null;
+    outs = json['outs'] != null ? Outs.fromJson(json['outs']) : null;
+    steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
-        json['pitches'] != null ? new Pitches.fromJson(json['pitches']) : null;
-    inPlay =
-        json['in_play'] != null ? new InPlay.fromJson(json['in_play']) : null;
-    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
+        json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
+    inPlay = json['in_play'] != null ? InPlay.fromJson(json['in_play']) : null;
+    games = json['games'] != null ? Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['oba'] = this.oba;
-    data['lob'] = this.lob;
-    data['era'] = this.era;
-    data['k9'] = this.k9;
-    data['whip'] = this.whip;
-    data['kbb'] = this.kbb;
-    data['pitch_count'] = this.pitchCount;
-    data['wp'] = this.wp;
-    data['bk'] = this.bk;
-    data['ip_1'] = this.ip1;
-    data['ip_2'] = this.ip2;
-    data['bf'] = this.bf;
-    data['gofo'] = this.gofo;
-    data['babip'] = this.babip;
-    data['bf_ip'] = this.bfIp;
-    data['gbfb'] = this.gbfb;
-    data['oab'] = this.oab;
-    data['slg'] = this.slg;
-    data['obp'] = this.obp;
-    if (this.onbase != null) {
-      data['onbase'] = this.onbase!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['oba'] = oba;
+    data['lob'] = lob;
+    data['era'] = era;
+    data['k9'] = k9;
+    data['whip'] = whip;
+    data['kbb'] = kbb;
+    data['pitch_count'] = pitchCount;
+    data['wp'] = wp;
+    data['bk'] = bk;
+    data['ip_1'] = ip1;
+    data['ip_2'] = ip2;
+    data['bf'] = bf;
+    data['gofo'] = gofo;
+    data['babip'] = babip;
+    data['bf_ip'] = bfIp;
+    data['gbfb'] = gbfb;
+    data['oab'] = oab;
+    data['slg'] = slg;
+    data['obp'] = obp;
+    if (onbase != null) {
+      data['onbase'] = onbase!.toJson();
     }
-    if (this.runs != null) {
-      data['runs'] = this.runs!.toJson();
+    if (runs != null) {
+      data['runs'] = runs!.toJson();
     }
-    if (this.outcome != null) {
-      data['outcome'] = this.outcome!.toJson();
+    if (outcome != null) {
+      data['outcome'] = outcome!.toJson();
     }
-    if (this.outs != null) {
-      data['outs'] = this.outs!.toJson();
+    if (outs != null) {
+      data['outs'] = outs!.toJson();
     }
-    if (this.steal != null) {
-      data['steal'] = this.steal!.toJson();
+    if (steal != null) {
+      data['steal'] = steal!.toJson();
     }
-    if (this.pitches != null) {
-      data['pitches'] = this.pitches!.toJson();
+    if (pitches != null) {
+      data['pitches'] = pitches!.toJson();
     }
-    if (this.inPlay != null) {
-      data['in_play'] = this.inPlay!.toJson();
+    if (inPlay != null) {
+      data['in_play'] = inPlay!.toJson();
     }
-    if (this.games != null) {
-      data['games'] = this.games!.toJson();
+    if (games != null) {
+      data['games'] = games!.toJson();
     }
     return data;
   }
@@ -1193,11 +1182,11 @@ class Errors {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['throwing'] = this.throwing;
-    data['fielding'] = this.fielding;
-    data['numerference'] = this.numerference;
-    data['total'] = this.total;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['throwing'] = throwing;
+    data['fielding'] = fielding;
+    data['numerference'] = numerference;
+    data['total'] = total;
     return data;
   }
 }
@@ -1214,9 +1203,9 @@ class Assists {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['outfield'] = this.outfield;
-    data['total'] = this.total;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['outfield'] = outfield;
+    data['total'] = total;
     return data;
   }
 }
@@ -1250,21 +1239,21 @@ class Players {
     position = json['position'];
     primaryPosition = json['primary_position'];
     statistics = json['statistics'] != null
-        ? new Statistics.fromJson(json['statistics'])
+        ? Statistics.fromJson(json['statistics'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['preferred_name'] = this.preferredName;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['jersey_number'] = this.jerseyNumber;
-    data['id'] = this.id;
-    data['position'] = this.position;
-    data['primary_position'] = this.primaryPosition;
-    if (this.statistics != null) {
-      data['statistics'] = this.statistics!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['preferred_name'] = preferredName;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['jersey_number'] = jerseyNumber;
+    data['id'] = id;
+    data['position'] = position;
+    data['primary_position'] = primaryPosition;
+    if (statistics != null) {
+      data['statistics'] = statistics!.toJson();
     }
     return data;
   }
@@ -1279,22 +1268,22 @@ class Fielding {
 
   Fielding.fromJson(Map<String, dynamic> json) {
     overall =
-        json['overall'] != null ? new Overall.fromJson(json['overall']) : null;
+        json['overall'] != null ? Overall.fromJson(json['overall']) : null;
     if (json['positions'] != null) {
       positions = <Positions>[];
       json['positions'].forEach((v) {
-        positions!.add(new Positions.fromJson(v));
+        positions!.add(Positions.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.overall != null) {
-      data['overall'] = this.overall!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (overall != null) {
+      data['overall'] = overall!.toJson();
     }
-    if (this.positions != null) {
-      data['positions'] = this.positions!.map((v) => v.toJson()).toList();
+    if (positions != null) {
+      data['positions'] = positions!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -1352,40 +1341,39 @@ class Positions {
     inn1 = json['inn_1'];
     inn2 = json['inn_2'];
     position = json['position'];
-    steal = json['steal'] != null ? new Steal.fromJson(json['steal']) : null;
-    errors =
-        json['errors'] != null ? new Errors.fromJson(json['errors']) : null;
+    steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
+    errors = json['errors'] != null ? Errors.fromJson(json['errors']) : null;
     assists =
-        json['assists'] != null ? new Assists.fromJson(json['assists']) : null;
-    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
+        json['assists'] != null ? Assists.fromJson(json['assists']) : null;
+    games = json['games'] != null ? Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['po'] = this.po;
-    data['a'] = this.a;
-    data['dp'] = this.dp;
-    data['tp'] = this.tp;
-    data['error'] = this.error;
-    data['tc'] = this.tc;
-    data['fpct'] = this.fpct;
-    data['c_wp'] = this.cWp;
-    data['pb'] = this.pb;
-    data['rf'] = this.rf;
-    data['inn_1'] = this.inn1;
-    data['inn_2'] = this.inn2;
-    data['position'] = this.position;
-    if (this.steal != null) {
-      data['steal'] = this.steal!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['po'] = po;
+    data['a'] = a;
+    data['dp'] = dp;
+    data['tp'] = tp;
+    data['error'] = error;
+    data['tc'] = tc;
+    data['fpct'] = fpct;
+    data['c_wp'] = cWp;
+    data['pb'] = pb;
+    data['rf'] = rf;
+    data['inn_1'] = inn1;
+    data['inn_2'] = inn2;
+    data['position'] = position;
+    if (steal != null) {
+      data['steal'] = steal!.toJson();
     }
-    if (this.errors != null) {
-      data['errors'] = this.errors!.toJson();
+    if (errors != null) {
+      data['errors'] = errors!.toJson();
     }
-    if (this.assists != null) {
-      data['assists'] = this.assists!.toJson();
+    if (assists != null) {
+      data['assists'] = assists!.toJson();
     }
-    if (this.games != null) {
-      data['games'] = this.games!.toJson();
+    if (games != null) {
+      data['games'] = games!.toJson();
     }
     return data;
   }
@@ -1441,21 +1429,21 @@ class Games {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['start'] = this.start;
-    data['play'] = this.play;
-    data['finish'] = this.finish;
-    data['svo'] = this.svo;
-    data['qstart'] = this.qstart;
-    data['shutout'] = this.shutout;
-    data['complete'] = this.complete;
-    data['win'] = this.win;
-    data['loss'] = this.loss;
-    data['save'] = this.save;
-    data['hold'] = this.hold;
-    data['blown_save'] = this.blownSave;
-    data['team_win'] = this.teamWin;
-    data['team_loss'] = this.teamLoss;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['start'] = start;
+    data['play'] = play;
+    data['finish'] = finish;
+    data['svo'] = svo;
+    data['qstart'] = qstart;
+    data['shutout'] = shutout;
+    data['complete'] = complete;
+    data['win'] = win;
+    data['loss'] = loss;
+    data['save'] = save;
+    data['hold'] = hold;
+    data['blown_save'] = blownSave;
+    data['team_win'] = teamWin;
+    data['team_loss'] = teamLoss;
     return data;
   }
 }
