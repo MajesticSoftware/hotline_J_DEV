@@ -159,7 +159,7 @@ class OverallHitting {
   num? ap;
   String? avg;
   num? gofo;
-  Onbase? onbase;
+  OnbaseHitting? onbase;
   Runs? runs;
   Outcome? outcome;
   Outs? outs;
@@ -231,7 +231,8 @@ class OverallHitting {
     ap = json['ap'];
     avg = json['avg'];
     gofo = json['gofo'];
-    onbase = json['onbase'] != null ? Onbase.fromJson(json['onbase']) : null;
+    onbase =
+        json['onbase'] != null ? OnbaseHitting.fromJson(json['onbase']) : null;
     runs = json['runs'] != null ? Runs.fromJson(json['runs']) : null;
     outcome =
         json['outcome'] != null ? Outcome.fromJson(json['outcome']) : null;

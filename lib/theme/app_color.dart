@@ -16,6 +16,9 @@ const Color successColor = Color(0XFF32C997);
 const Color lightGreyColor = Color(0XFFE9ECE9);
 const Color darkGreyColor = Color(0XFFA6A6A6);
 const Color lightGrayColor = Color(0XFFA8B4A5);
+const Color yellowColor = Color(0XFFFFC730);
+const Color blueColor = Color(0XFF336AF8);
+const Color grayColor = Color(0XFF7A7A7A);
 
 ///dark theme
 

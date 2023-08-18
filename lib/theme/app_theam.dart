@@ -13,6 +13,7 @@ class AppTheme {
       scaffoldBackgroundColor: backGroundColor,
       primaryColor: boxColor,
       canvasColor: whiteColor,
+      unselectedWidgetColor: backGroundColor,
       cardColor: whiteColor,
       splashColor: primaryColor,
       disabledColor: appColor,
@@ -20,7 +21,6 @@ class AppTheme {
       highlightColor: blackColor,
       hoverColor: successColor,
       dividerColor: greyColor,
-      dialogBackgroundColor: filterColor,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.nunitoSans(
             color: appColor, fontWeight: FontWeight.w500, fontSize: 16),
@@ -128,6 +128,7 @@ class AppTheme {
       secondaryHeaderColor: darkBackGroundColor,
       scaffoldBackgroundColor: darkScaffoldColor,
       primaryColor: whiteColor,
+      unselectedWidgetColor: whiteColor.withOpacity(0.1),
       splashColor: whiteColor.withOpacity(0.2),
       cardColor: blackColor,
       backgroundColor: blackColor,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -70,7 +71,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
       body: GetBuilder<GameDetailsController>(initState: (state) async {
-        _refreshLocalGallery(true);
+        await _refreshLocalGallery(true);
       }, builder: (con) {
         return RefreshIndicator(
           onRefresh: () {
@@ -92,6 +93,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         hotlinesWidget(context, con),
                         teamReportWidget(context),
                         playerStatWidget(context, con),
+                        hitterPlayerStatWidget(context, con),
                         widget.sportKey == 'MLB'
                             ? mlbInjuryReportWidget(context)
                             : awayTeam?.abbreviation == 'DET' &&
@@ -126,8 +128,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 date: widget.date,
                 start: i,
                 homeTeamId: homeTeam?.id ?? "",
-                isLoad: isLoad)
+                isLoad: true)
             .then((value) {});
+
         if (gameDetailsController.hotlinesData.isNotEmpty) {
           break;
         }
@@ -346,13 +349,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 context: context,
                                 title: 'Team Hitting Rankings',
                                 isPlayStat: false),
-                            ListView.builder(
+                            ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
                               itemCount: controller.hittingMLB.length,
                               itemBuilder: (context, index) {
                                 return commonRankingWidget(
+                                  isReport: true,
                                   context,
                                   teamReports: controller.hittingMLB[index],
                                   awayText: controller
@@ -365,18 +369,23 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       : controller.mlbHomeHittingList[index],
                                 );
                               },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
+                              },
                             ),
                             rankingCommonWidget(
                                 context: context,
                                 title: 'Team Pitching Rankings',
                                 isPlayStat: false),
-                            ListView.builder(
+                            ListView.separated(
                               padding: EdgeInsets.zero,
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: controller.pittchingMLB.length,
                               itemBuilder: (context, index) {
                                 return commonRankingWidget(context,
+                                    isReport: true,
                                     teamReports: controller.pittchingMLB[index],
                                     homeText: controller
                                             .mlbHomePitchingList.isEmpty
@@ -387,6 +396,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                             ? "0"
                                             : controller
                                                 .mlbAwayPitchingList[index]);
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
                               },
                             ),
                           ],
@@ -467,7 +480,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         child: GetBuilder<GameDetailsController>(builder: (controller) {
           return StickyHeader(
               header: headerTitleWidget(context, 'Player Stats',
-                  isTeamReport: true),
+                  isTeamReport: false),
               content: Column(
                 children: [
                   widget.sportKey == 'MLB'
@@ -482,48 +495,36 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 teamReports: controller.teamPitcherMLB[0],
                                 awayText: widget.gameDetails.wlHome,
                                 homeText: widget.gameDetails.wlAway),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[1],
                                 awayText: widget.gameDetails.eraAway,
                                 homeText: widget.gameDetails.eraHome),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[2],
                                 awayText: '0',
                                 homeText: '0'),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[3],
                                 awayText: '0',
                                 homeText: '0'),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[4],
                                 awayText: '0',
                                 homeText: '0'),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[5],
                                 awayText: '0',
                                 homeText: '0'),
+                            commonDivider(context),
                             commonRankingWidget(context,
                                 teamReports: controller.teamPitcherMLB[6],
                                 awayText: '0',
                                 homeText: '0'),
-                            rankingCommonWidget(
-                                context: context,
-                                title: 'Batting',
-                                awayText: 'j. Dobbins',
-                                homeText: 'H. Harrines'),
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: controller.teamBattingMLB.length,
-                              itemBuilder: (context, index) {
-                                return commonRankingWidget(context,
-                                    teamReports:
-                                        controller.teamBattingMLB[index],
-                                    awayText: '0',
-                                    homeText: '0');
-                              },
-                            ),
                           ],
                         )
                       : Column(
@@ -575,8 +576,620 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     );
   }
 
+  Padding hitterPlayerStatWidget(
+      BuildContext context, GameDetailsController con) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: MediaQuery.of(context).size.height * .02,
+          right: MediaQuery.of(context).size.height * .02,
+          bottom: MediaQuery.of(context).size.height * .02),
+      child: Container(
+        // height: MediaQuery.of(context).size.height * .227,
+        decoration: BoxDecoration(
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .01),
+            color: Theme.of(context).canvasColor),
+        child: GetBuilder<GameDetailsController>(builder: (controller) {
+          return StickyHeader(
+              header: customTabBar(context, con),
+              content: Column(
+                children: [
+                  widget.sportKey == 'MLB'
+                      ? Column(
+                          children: [
+                            headerOfHitterPlyerStat(context),
+                            commonDivider(context),
+                            HitterPlayerDetailCard(con),
+                          ],
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            rankingCommonWidget(
+                                context: context,
+                                title: 'Pitcher',
+                                awayText: 'dsc',
+                                homeText: 'sds'),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.teamPitcherMLB.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports:
+                                        controller.teamPitcherMLB[index],
+                                    awayText: '0',
+                                    homeText: '0');
+                              },
+                            ),
+                            rankingCommonWidget(
+                                context: context,
+                                title: 'Batting',
+                                awayText: 'dsc',
+                                homeText: 'sds'),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.teamBattingMLB.length,
+                              itemBuilder: (context, index) {
+                                return commonRankingWidget(context,
+                                    teamReports:
+                                        controller.teamBattingMLB[index],
+                                    awayText: '0',
+                                    homeText: '0');
+                              },
+                            ),
+                          ],
+                        ),
+                ],
+              ));
+        }),
+      ),
+    );
+  }
+
+  ListView HitterPlayerDetailCard(GameDetailsController con) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      itemBuilder: (context, i) {
+        return ExpandableNotifier(
+          child: ScrollOnExpand(
+            child: Column(
+              children: [
+                con.isTab
+                    ? ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: expandedAwayHeader(context, i, con),
+                        collapsed: const SizedBox(),
+                        expanded: Column(
+                          children: List.generate(
+                              con.hitterAwayPlayerList.length,
+                              (index) => Container(
+                                    color:
+                                        Theme.of(context).unselectedWidgetColor,
+                                    height: MediaQuery.sizeOf(context).height *
+                                        .031,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: con
+                                                    .hitterAwayPlayerList[index]
+                                                    .title
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        align: TextAlign.start,
+                                                        weight: FontWeight.w600,
+                                                        size: MediaQuery.sizeOf(
+                                                                    context)
+                                                                .height *
+                                                            .014),
+                                              ),
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: con
+                                                      .hitterAwayPlayerList[
+                                                          index]
+                                                      .value
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          align: TextAlign.end,
+                                                          weight:
+                                                              FontWeight.w400,
+                                                          size: MediaQuery.sizeOf(
+                                                                      context)
+                                                                  .height *
+                                                              .014)),
+                                              SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        .05,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        .05,
+                                              ),
+                                              Expanded(
+                                                child: con
+                                                    .hitterAwayPlayerWalkList[
+                                                        index]
+                                                    .title
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        align: TextAlign.start,
+                                                        weight: FontWeight.w600,
+                                                        size: MediaQuery.sizeOf(
+                                                                    context)
+                                                                .height *
+                                                            .014),
+                                              ),
+                                              Expanded(
+                                                  child:
+                                                      con
+                                                          .hitterAwayPlayerWalkList[
+                                                              index]
+                                                          .value
+                                                          .appCommonText(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .highlightColor,
+                                                              align:
+                                                                  TextAlign.end,
+                                                              weight: FontWeight
+                                                                  .w400,
+                                                              size: MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  .014)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ).paddingSymmetric(
+                                        horizontal:
+                                            MediaQuery.sizeOf(context).width *
+                                                .015),
+                                  )),
+                        ),
+                      )
+                    : ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: expandedHomeHeader(context, i, con),
+                        collapsed: const SizedBox(),
+                        expanded: Column(
+                          children: List.generate(
+                              con.hitterHomePlayerList.length,
+                              (index) => Container(
+                                    color:
+                                        Theme.of(context).unselectedWidgetColor,
+                                    height: MediaQuery.sizeOf(context).height *
+                                        .031,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: con
+                                                    .hitterHomePlayerList[index]
+                                                    .title
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        align: TextAlign.start,
+                                                        weight: FontWeight.w600,
+                                                        size: MediaQuery.sizeOf(
+                                                                    context)
+                                                                .height *
+                                                            .014),
+                                              ),
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: con
+                                                      .hitterHomePlayerList[
+                                                          index]
+                                                      .value
+                                                      .appCommonText(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .highlightColor,
+                                                          align: TextAlign.end,
+                                                          weight:
+                                                              FontWeight.w400,
+                                                          size: MediaQuery.sizeOf(
+                                                                      context)
+                                                                  .height *
+                                                              .014)),
+                                              SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        .05,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        .05,
+                                              ),
+                                              Expanded(
+                                                child: con
+                                                    .hitterHomePlayerWalkList[
+                                                        index]
+                                                    .title
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        align: TextAlign.start,
+                                                        weight: FontWeight.w600,
+                                                        size: MediaQuery.sizeOf(
+                                                                    context)
+                                                                .height *
+                                                            .014),
+                                              ),
+                                              Expanded(
+                                                  child:
+                                                      con
+                                                          .hitterHomePlayerWalkList[
+                                                              index]
+                                                          .value
+                                                          .appCommonText(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .highlightColor,
+                                                              align:
+                                                                  TextAlign.end,
+                                                              weight: FontWeight
+                                                                  .w400,
+                                                              size: MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  .014)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ).paddingSymmetric(
+                                        horizontal:
+                                            MediaQuery.sizeOf(context).width *
+                                                .015),
+                                  )),
+                        ),
+                      ),
+              ],
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return commonDivider(context);
+      },
+      itemCount: con.isTab
+          ? con.hitterAwayPlayerMainList.length
+          : con.hitterHomePlayerMainList.length,
+    );
+  }
+
+  SizedBox expandedAwayHeader(
+      BuildContext context, int index, GameDetailsController con) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * .031,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: Row(
+                children: [
+                  con.hitterAwayPlayerMainList[index].playerName.appCommonText(
+                      color: blueColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w600,
+                      size: MediaQuery.sizeOf(context).height * .014),
+                  ' ${con.hitterAwayPlayerMainList[index].position}'
+                      .appCommonText(
+                          color: grayColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014),
+                ],
+              )),
+          Expanded(
+              child: con.hitterAwayPlayerMainList[index].hAb.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterAwayPlayerMainList[index].hr.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterAwayPlayerMainList[index].rbi.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterAwayPlayerMainList[index].sb.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterAwayPlayerMainList[index].avg.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+        ],
+      ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    );
+  }
+
+  SizedBox expandedHomeHeader(
+      BuildContext context, int index, GameDetailsController con) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * .031,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: Row(
+                children: [
+                  con.hitterHomePlayerMainList[index].playerName.appCommonText(
+                      color: blueColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w600,
+                      size: MediaQuery.sizeOf(context).height * .014),
+                  ' ${con.hitterHomePlayerMainList[index].position}'
+                      .appCommonText(
+                          color: grayColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014),
+                ],
+              )),
+          Expanded(
+              child: con.hitterHomePlayerMainList[index].hAb.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterHomePlayerMainList[index].hr.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterHomePlayerMainList[index].rbi.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterHomePlayerMainList[index].sb.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              child: con.hitterHomePlayerMainList[index].avg.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w400,
+                  size: MediaQuery.sizeOf(context).height * .014)),
+        ],
+      ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    );
+  }
+
+  SizedBox headerOfHitterPlyerStat(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * .034,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: 'Hitters'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.start,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+          Expanded(
+              child: 'H-AB'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+          Expanded(
+              child: 'HR'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+          Expanded(
+              child: 'RBI'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+          Expanded(
+              child: 'SB'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+          Expanded(
+              child: 'AVG'.appCommonText(
+                  color: Theme.of(context).highlightColor,
+                  align: TextAlign.end,
+                  weight: FontWeight.w700,
+                  size: MediaQuery.sizeOf(context).height * .016)),
+        ],
+      ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    );
+  }
+
+  Container customTabBar(BuildContext context, GameDetailsController con) {
+    return Container(
+        height: MediaQuery.of(context).size.height * .044,
+        width: Get.width,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(MediaQuery.of(context).size.width * .01)),
+            color: Theme.of(context).disabledColor),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .004,
+              width: Get.width,
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: InkWell(
+                    onTap: () {
+                      con.isTab = true;
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: (mobileView.size.shortestSide < 600
+                                  ? (awayTeam?.abbreviation ?? '')
+                                  : (awayTeam?.name ?? ''))
+                              .appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            align: TextAlign.end,
+                            size: MediaQuery.of(context).size.height * .016,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .01,
+                        ),
+                        commonCachedNetworkImage(
+                            width: Get.height * .025,
+                            height: Get.height * .025,
+                            imageUrl: widget.gameDetails.gameLogoAwayLink),
+                      ],
+                    ),
+                  ),
+                ),
+                const Expanded(
+                  flex: 2,
+                  child: SizedBox(),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: InkWell(
+                    onTap: () {
+                      con.isTab = false;
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        commonCachedNetworkImage(
+                            width: Get.height * .025,
+                            height: Get.height * .025,
+                            imageUrl: widget.gameDetails.gameHomeLogoLink),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .01,
+                        ),
+                        Expanded(
+                          child: (mobileView.size.shortestSide < 600
+                                  ? (homeTeam?.abbreviation ?? '')
+                                  : (homeTeam?.name ?? ''))
+                              .appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            align: TextAlign.start,
+                            size: MediaQuery.of(context).size.height * .016,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ).paddingSymmetric(
+                horizontal: MediaQuery.sizeOf(context).width * .015),
+            const Spacer(),
+            con.isTab
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * .004,
+                          width: Get.width,
+                          color: yellowColor,
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      const Expanded(child: SizedBox()),
+                      Expanded(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * .004,
+                          width: Get.width,
+                          color: yellowColor,
+                        ),
+                      ),
+                    ],
+                  ),
+          ],
+        ));
+  }
+
   Column commonRankingWidget(BuildContext context,
-      {String homeText = '', String awayText = '', String teamReports = ''}) {
+      {String homeText = '',
+      String awayText = '',
+      String teamReports = '',
+      bool isReport = false}) {
     return Column(
       children: [
         Padding(
@@ -596,7 +1209,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     size: MediaQuery.of(context).size.height * .014),
               ),
               Expanded(
-                flex: 3,
+                flex: isReport ? 3 : 2,
                 child: teamReports.toString().appCommonText(
                     color: darkGreyColor,
                     align: TextAlign.center,
@@ -616,7 +1229,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             ],
           ),
         ),
-        commonDivider(context),
       ],
     );
   }
@@ -646,7 +1258,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   size: MediaQuery.of(context).size.height * .014),
             ),
             Expanded(
-              flex: 3,
+              flex: 2,
               child: title.appCommonText(
                   color: Theme.of(context).highlightColor,
                   weight: FontWeight.bold,
@@ -977,7 +1589,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Expanded commonEmptyInjuryReportWidget(GameDetailsController controller) {
     return Expanded(
-      flex: 3,
+      flex: 2,
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -1065,7 +1677,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: isTeamReport ? 3 : 2,
               child: title.appCommonText(
                   color: Theme.of(context).cardColor,
                   align: TextAlign.center,
@@ -1137,10 +1749,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         size: Get.height * .018),
                   ],
                 )),
-            con.hotlinesData.isEmpty && con.isLoading.value
+            con.hotlinesData.isEmpty && con.isHotlines.value
                 ? circularWidget(context)
                     .paddingAll(MediaQuery.of(context).size.height * .038)
-                : con.hotlinesData.isEmpty && !con.isLoading.value
+                : con.hotlinesData.isEmpty && !con.isHotlines.value
                     ? emptyListWidget(context)
                     : hotlinesCard(con),
           ],
@@ -1152,10 +1764,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   ListView hotlinesCard(GameDetailsController con) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: con.hotlinesData.length >= 3 ? 3 : con.hotlinesData.length,
+      itemCount: con.hotlinesData.length >= 4 ? 3 : con.hotlinesData.length,
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
+        // con.hotlinesData.sort((a, b) => b.value.compareTo(a.value));
         return Column(
           children: [
             SizedBox(
@@ -1252,7 +1865,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           width: MediaQuery.of(context).size.height * .02,
           child: CircularProgressIndicator(
             strokeWidth: mobileView.size.shortestSide < 600 ? 2 : 3,
-            color: appColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ),

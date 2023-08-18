@@ -88,6 +88,15 @@ class GameDetailsController extends GetxController {
     'Avg',
     'RBI',
   ];
+  bool _isTab = true;
+
+  bool get isTab => _isTab;
+
+  set isTab(bool value) {
+    _isTab = value;
+    update();
+  }
+
   RxBool isLoading = false.obs;
   stat.Statistics? mlbStaticsHomeList;
   stat.Statistics? mlbStaticsAwayList;
@@ -100,6 +109,9 @@ class GameDetailsController extends GetxController {
   List<MLBStaticsDataModel> mlbHomePlayerBattingList = [];
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
+  List<HitterPlayerStatModel> hitterHomePlayerList = [];
+  List<HitterPlayerStatModel> hitterHomePlayerWalkList = [];
+  List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
 
   ///MLB STATICS
   Future mlbStaticsHomeTeamResponse(
@@ -111,6 +123,9 @@ class GameDetailsController extends GetxController {
         .mlbStaticsRepo(teamId: homeTeamId, seasons: '2023');
     try {
       mlbHomePlayerBattingList.clear();
+      hitterHomePlayerList.clear();
+      hitterHomePlayerWalkList.clear();
+      hitterHomePlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
             stat.MLBStaticsModel.fromJson(result.data);
@@ -119,38 +134,41 @@ class GameDetailsController extends GetxController {
           mlbPlayerPitchingData = response.players ?? [];
           var homeHitting = mlbStaticsHomeList?.hitting?.overall;
           var homePitching = mlbStaticsHomeList?.pitching?.overall;
-
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
-              mlbHomePlayerBattingList.add(MLBStaticsDataModel(
-                  hrsValue:
-                      (player.statistics?.hitting?.overall?.onbase?.hr ?? "0")
-                          .toString(),
-                  avgValue: (player.statistics?.hitting?.overall?.avg ?? "0")
-                      .toString(),
-                  rbiValue: (player.statistics?.hitting?.overall?.rbi ?? "0")
-                      .toString(),
-                  playerName: (player.firstName ?? "")));
-            }
-            if (player.statistics?.pitching != null) {
-              mlbHomePlayerPitchingList.add(MLBPitchingStaticsModel(
-                playerName: (player.firstName ?? ""),
-                wl: ('${player.statistics?.pitching?.overall?.games?.win}-${player.statistics?.pitching?.overall?.games?.loss}')
-                    .toString(),
-                era: (player.statistics?.pitching?.overall?.era ?? '0')
-                    .toString(),
-                whip: (player.statistics?.pitching?.overall?.whip ?? '0')
-                    .toString(),
-                ip: (player.statistics?.pitching?.overall?.ip1 ?? '0')
-                    .toString(),
-                h: (player.statistics?.pitching?.overall?.onbase?.h ?? '0')
-                    .toString(),
-                k: (player.statistics?.pitching?.overall?.k9 ?? '0').toString(),
-                bb: (player.statistics?.pitching?.overall?.onbase?.bb ?? '0')
-                    .toString(),
-                hr: (player.statistics?.pitching?.overall?.onbase?.hr ?? '0')
-                    .toString(),
-              ));
+              if (player.position == 'P') {
+                hitterHomePlayerList = [
+                  HitterPlayerStatModel(
+                      title: 'Runs',
+                      value:
+                          '${player.statistics?.hitting?.overall?.runs?.total}'),
+                  HitterPlayerStatModel(title: 'Total Bases', value: '0'),
+                  HitterPlayerStatModel(title: 'Stolen Bases', value: '0'),
+                ];
+                hitterHomePlayerWalkList = [
+                  HitterPlayerStatModel(
+                      title: 'OBP',
+                      value: '${player.statistics?.hitting?.overall?.obp}'),
+                  HitterPlayerStatModel(
+                      title: 'SLG',
+                      value: '${player.statistics?.hitting?.overall?.slg}'),
+                  HitterPlayerStatModel(
+                      title: 'Cycle',
+                      value:
+                          '${player.statistics?.hitting?.overall?.onbase?.cycle}'),
+                ];
+                hitterHomePlayerMainList.add(
+                  HitterPlayerStatMainModel(
+                      playerName: '${player.firstName?[0]}. ${player.lastName}',
+                      avg: '${player.statistics?.hitting?.overall?.avg}',
+                      hAb:
+                          '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                      position: '${player.position}',
+                      rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                      sb: '0'),
+                );
+              }
             }
           }
           mlbHomeHittingList = [
@@ -194,6 +212,7 @@ class GameDetailsController extends GetxController {
         );
       }
       isLoading.value = false;
+      isHotlines.value = false;
     } catch (e) {
       isLoading.value = false;
       log('ERORE STATIC----$e');
@@ -204,6 +223,9 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  List<HitterPlayerStatModel> hitterAwayPlayerList = [];
+  List<HitterPlayerStatModel> hitterAwayPlayerWalkList = [];
+  List<HitterPlayerStatMainModel> hitterAwayPlayerMainList = [];
   Future mlbStaticsAwayTeamResponse(
       {String awayTeamId = '', bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
@@ -213,6 +235,9 @@ class GameDetailsController extends GetxController {
         .mlbStaticsRepo(teamId: awayTeamId, seasons: '2023');
     try {
       mlbAwayPlayerBattingList.clear();
+      hitterAwayPlayerList.clear();
+      hitterAwayPlayerWalkList.clear();
+      hitterAwayPlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
             stat.MLBStaticsModel.fromJson(result.data);
@@ -222,36 +247,42 @@ class GameDetailsController extends GetxController {
         }
         var awayHitting = mlbStaticsAwayList?.hitting?.overall;
         var awayPitching = mlbStaticsAwayList?.pitching?.overall;
+
         for (var player in mlbPlayerPitchingData) {
-          if (player.statistics?.pitching != null) {
-            if (player.statistics?.hitting != null) {
-              mlbAwayPlayerBattingList.add(MLBStaticsDataModel(
-                  hrsValue:
-                      (player.statistics?.hitting?.overall?.onbase?.hr ?? "0")
-                          .toString(),
-                  avgValue: (player.statistics?.hitting?.overall?.avg ?? "0")
-                      .toString(),
-                  rbiValue: (player.statistics?.hitting?.overall?.rbi ?? "0")
-                      .toString(),
-                  playerName: (player.firstName ?? "")));
+          if (player.statistics?.hitting != null) {
+            if (player.position == 'P') {
+              hitterAwayPlayerList = [
+                HitterPlayerStatModel(
+                    title: 'Runs',
+                    value:
+                        '${player.statistics?.hitting?.overall?.runs?.total}'),
+                HitterPlayerStatModel(title: 'Total Bases', value: '0'),
+                HitterPlayerStatModel(title: 'Stolen Bases', value: '0'),
+              ];
+              hitterAwayPlayerWalkList = [
+                HitterPlayerStatModel(
+                    title: 'OBP',
+                    value: '${player.statistics?.hitting?.overall?.obp}'),
+                HitterPlayerStatModel(
+                    title: 'SLG',
+                    value: '${player.statistics?.hitting?.overall?.slg}'),
+                HitterPlayerStatModel(
+                    title: 'Cycle',
+                    value:
+                        '${player.statistics?.hitting?.overall?.onbase?.cycle}'),
+              ];
+              hitterAwayPlayerMainList.add(
+                HitterPlayerStatMainModel(
+                    playerName: '${player.firstName?[0]}. ${player.lastName}',
+                    avg: '${player.statistics?.hitting?.overall?.avg}',
+                    hAb:
+                        '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                    position: '${player.position}',
+                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                    sb: '0'),
+              );
             }
-            mlbAwayPlayerPitchingList.add(MLBPitchingStaticsModel(
-              playerName: (player.firstName ?? ""),
-              wl: ('${player.statistics?.pitching?.overall?.games?.win}-${player.statistics?.pitching?.overall?.games?.loss}')
-                  .toString(),
-              era:
-                  (player.statistics?.pitching?.overall?.era ?? '0').toString(),
-              whip: (player.statistics?.pitching?.overall?.whip ?? '0')
-                  .toString(),
-              ip: (player.statistics?.pitching?.overall?.ip1 ?? '0').toString(),
-              h: (player.statistics?.pitching?.overall?.onbase?.h ?? '0')
-                  .toString(),
-              k: (player.statistics?.pitching?.overall?.k9 ?? '0').toString(),
-              bb: (player.statistics?.pitching?.overall?.onbase?.bb ?? '0')
-                  .toString(),
-              hr: (player.statistics?.pitching?.overall?.onbase?.hr ?? '0')
-                  .toString(),
-            ));
           }
         }
         mlbAwayHittingList = [
@@ -432,7 +463,11 @@ class GameDetailsController extends GetxController {
   }
 
   ///HOTLINES DATA
-  List<HotlinesModel> hotlinesNewData = [];
+  List<HotlinesModel> hotlinesFData = [];
+  List<HotlinesModel> hotlinesMainData = [];
+  List<HotlinesModel> hotlinesDData = [];
+
+  List<HotlinesModel> hotlinesRemoveData = [];
   List<HotlinesModel> _hotlinesData = [];
   List<HotlinesModel> get hotlinesData => _hotlinesData;
   set hotlinesData(List<HotlinesModel> value) {
@@ -444,6 +479,7 @@ class GameDetailsController extends GetxController {
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
+  RxBool isHotlines = false.obs;
   Future hotlinesDataResponse(
       {String awayTeamId = '',
       String sportId = '',
@@ -451,7 +487,7 @@ class GameDetailsController extends GetxController {
       int start = 0,
       bool isLoad = false,
       String homeTeamId = ''}) async {
-    isLoading.value = !isLoad ? false : true;
+    isHotlines.value = true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -519,13 +555,15 @@ class GameDetailsController extends GetxController {
           }
         }
       } else {
-        isLoading.value = false;
+        isHotlines.value = false;
         showAppSnackBar(
           result.message,
         );
       }
+
+      // isHotlines.value = false;
     } catch (e) {
-      isLoading.value = false;
+      isHotlines.value = false;
       log('ERORE>>>>>>>>----$e');
       // showAppSnackBar(
       //   errorText,
@@ -624,5 +662,30 @@ class MLBPitchingStaticsModel {
     required this.k,
     required this.bb,
     required this.hr,
+  });
+}
+
+class HitterPlayerStatModel {
+  String title;
+  String value;
+  HitterPlayerStatModel({required this.title, required this.value});
+}
+
+class HitterPlayerStatMainModel {
+  String playerName;
+  String position;
+  String hAb;
+  String hr;
+  String rbi;
+  String sb;
+  String avg;
+  HitterPlayerStatMainModel({
+    required this.playerName,
+    required this.position,
+    required this.hAb,
+    required this.hr,
+    required this.rbi,
+    required this.sb,
+    required this.avg,
   });
 }
