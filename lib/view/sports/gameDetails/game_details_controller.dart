@@ -212,7 +212,6 @@ class GameDetailsController extends GetxController {
         );
       }
       isLoading.value = false;
-      isHotlines.value = false;
     } catch (e) {
       isLoading.value = false;
       log('ERORE STATIC----$e');
@@ -369,6 +368,7 @@ class GameDetailsController extends GetxController {
               '0',
               offenciveData?.efficiency?.thirddown ?? '0',
               offenciveData?.efficiency?.fourthdown ?? '0',
+              '0'
             ];
             nflHomeDefensiveList = [
               '0',
@@ -429,6 +429,7 @@ class GameDetailsController extends GetxController {
               '0',
               offenciveData?.efficiency?.thirddown ?? '0',
               offenciveData?.efficiency?.fourthdown ?? '0',
+              '0',
             ];
             nflAwayDefensiveList = [
               '0',
@@ -467,7 +468,7 @@ class GameDetailsController extends GetxController {
   List<HotlinesModel> hotlinesMainData = [];
   List<HotlinesModel> hotlinesDData = [];
 
-  List<HotlinesModel> hotlinesRemoveData = [];
+  List<HotlinesModel> hotlinesFinalData = [];
   List<HotlinesModel> _hotlinesData = [];
   List<HotlinesModel> get hotlinesData => _hotlinesData;
   set hotlinesData(List<HotlinesModel> value) {
@@ -479,20 +480,29 @@ class GameDetailsController extends GetxController {
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
-  RxBool isHotlines = false.obs;
+  bool _isHotlines = false;
+
+  bool get isHotlines => _isHotlines;
+
+  set isHotlines(bool value) {
+    _isHotlines = value;
+    update();
+  }
+
   Future hotlinesDataResponse(
       {String awayTeamId = '',
       String sportId = '',
       String date = '',
       int start = 0,
-      bool isLoad = false,
       String homeTeamId = ''}) async {
-    isHotlines.value = true;
+    hotlinesData.clear();
+    isHotlines = true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .hotlinesDataRepo(sportId: sportId, date: date, start: start);
     try {
+      isHotlines = true;
       if (result.status) {
         HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
         final sportScheduleSportEventsPlayersProps =
@@ -510,7 +520,30 @@ class GameDetailsController extends GetxController {
                         if (outcome.oddsAmerican != null) {
                           if (!int.parse(outcome.oddsAmerican ?? '')
                               .isNegative) {
-                            if (!(hotlinesData.indexWhere((element) =>
+                            hotlinesMainData.add(HotlinesModel(
+                                teamName:
+                                    '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                                tittle: market.name
+                                        ?.split('(')
+                                        .first
+                                        .toString()
+                                        .capitalize ??
+                                    '',
+                                playerName:
+                                    playersProp.player?.name?.split(',').last ??
+                                        '',
+                                bookId: book.id ?? '',
+                                value: '${outcome.oddsAmerican}'));
+                            hotlinesFData.clear();
+                            hotlinesDData.clear();
+                            hotlinesMainData.forEach((element) {
+                              if (element.bookId == 'sr:book:18186') {
+                                hotlinesFData.add(element);
+                              } else {
+                                hotlinesDData.add(element);
+                              }
+                            });
+                            /* if (!(hotlinesData.indexWhere((element) =>
                                     (element.tittle ==
                                         market.name
                                             ?.split('(')
@@ -543,7 +576,7 @@ class GameDetailsController extends GetxController {
                                 hotlinesData
                                     .sort((a, b) => b.value.compareTo(a.value));
                               }
-                            }
+                            }*/
                           }
                         }
                       });
@@ -553,9 +586,53 @@ class GameDetailsController extends GetxController {
               });
             }
           }
+          await setHotlinesData().then((value) async {
+            if (hotlinesFinalData.isNotEmpty) {
+              // final value = hotlinesFinalData.map((e) => e.value).toSet();
+              // hotlinesFinalData.retainWhere((x) => value.remove(x.value));
+              int index = hotlinesFinalData
+                  .indexWhere((element) => element.bookId == 'sr:book:18186');
+              if (index <= 0) {
+                final playName =
+                    hotlinesFinalData.map((e) => e.playerName).toSet();
+                hotlinesFinalData
+                    .retainWhere((x) => playName.remove(x.playerName));
+                final title = hotlinesFinalData.map((e) => e.tittle).toSet();
+                hotlinesFinalData.retainWhere((x) => title.remove(x.tittle));
+              }
+
+              // hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));
+              if (hotlinesFinalData.isNotEmpty) {
+                hotlinesData.clear();
+                hotlinesData.insert(0, hotlinesFinalData[0]);
+              }
+              if (hotlinesFinalData.length >= 2 && hotlinesData.length == 1) {
+                hotlinesData.clear();
+                hotlinesData.insert(0, hotlinesFinalData[0]);
+                hotlinesData.insert(1, hotlinesFinalData[1]);
+              }
+              if (hotlinesFinalData.length >= 3 && hotlinesData.length == 2) {
+                int index = hotlinesFinalData
+                    .indexWhere((element) => element.bookId == 'sr:book:18186');
+                if (index >= 0) {
+                  hotlinesData.clear();
+                  hotlinesData.insert(0, hotlinesFinalData[0]);
+                  hotlinesData.insert(1, hotlinesFinalData[1]);
+                  hotlinesData.insert(2, hotlinesFinalData[index]);
+                } else {
+                  hotlinesData.clear();
+                  hotlinesData.insert(0, hotlinesFinalData[0]);
+                  hotlinesData.insert(1, hotlinesFinalData[1]);
+                  hotlinesData.insert(2, hotlinesFinalData[2]);
+                }
+              }
+            }
+          });
+
+          update();
         }
       } else {
-        isHotlines.value = false;
+        isHotlines = false;
         showAppSnackBar(
           result.message,
         );
@@ -563,14 +640,20 @@ class GameDetailsController extends GetxController {
 
       // isHotlines.value = false;
     } catch (e) {
-      isHotlines.value = false;
+      isHotlines = false;
       log('ERORE>>>>>>>>----$e');
       // showAppSnackBar(
       //   errorText,
       // );
     }
     update();
-    return hotlinesData;
+    return hotlinesFinalData;
+  }
+
+  Future setHotlinesData() async {
+    hotlinesFinalData.clear();
+    hotlinesFinalData = (hotlinesFData + hotlinesDData).toSet().toList();
+    hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));
   }
 
   ///MLB INJURY REPORT

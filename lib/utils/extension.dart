@@ -47,6 +47,7 @@ extension AddText on String {
           fontStyle: fontStyle,
           decoration: decoration),
       textAlign: align,
+      // overflow: TextOverflow.ellipsis,
       maxLines: maxLine,
     );
   }

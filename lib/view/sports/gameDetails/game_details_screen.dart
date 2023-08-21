@@ -74,8 +74,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         await _refreshLocalGallery(true);
       }, builder: (con) {
         return RefreshIndicator(
-          onRefresh: () {
-            return _refreshLocalGallery(false);
+          onRefresh: () async {
+            return await _refreshLocalGallery(false);
           },
           color: Theme.of(context).disabledColor,
           child: Stack(
@@ -93,7 +93,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         hotlinesWidget(context, con),
                         teamReportWidget(context),
                         playerStatWidget(context, con),
-                        hitterPlayerStatWidget(context, con),
+                        widget.sportKey == 'MLB'
+                            ? hitterPlayerStatWidget(context, con)
+                            : const SizedBox(),
                         widget.sportKey == 'MLB'
                             ? mlbInjuryReportWidget(context)
                             : awayTeam?.abbreviation == 'DET' &&
@@ -118,20 +120,23 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Future _refreshLocalGallery(bool isLoad) async {
     if (widget.sportKey == 'MLB') {
-      gameDetailsController.hotlinesData.clear();
+      gameDetailsController.hotlinesFinalData.clear();
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
-        gameDetailsController
+        await gameDetailsController
             .hotlinesDataResponse(
                 awayTeamId: awayTeam?.id ?? "",
                 sportId: widget.sportId,
                 date: widget.date,
                 start: i,
-                homeTeamId: homeTeam?.id ?? "",
-                isLoad: true)
-            .then((value) {});
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          gameDetailsController.isHotlines = false;
+        });
 
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
+        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.update();
           break;
         }
       }
@@ -146,19 +151,23 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           homeTeamId: homeTeam?.uuids ?? "");
     }
     if (widget.sportKey == 'NFL') {
-      gameDetailsController.hotlinesData.clear();
+      gameDetailsController.hotlinesFinalData.clear();
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         gameDetailsController
             .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                homeTeamId: homeTeam?.id ?? "",
-                isLoad: isLoad)
-            .then((value) {});
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: widget.sportId,
+          date: widget.date,
+          start: i,
+          homeTeamId: homeTeam?.id ?? "",
+        )
+            .then((value) {
+          gameDetailsController.isHotlines = false;
+        });
+        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.update();
           break;
         }
       }
@@ -167,6 +176,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       gameDetailsController.nflStaticsHomeTeamResponse(
           isLoad: isLoad, homeTeamId: homeTeam?.uuids?.split(',').first ?? '');
     }
+    gameDetailsController.update();
   }
 
   PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
@@ -412,7 +422,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 context: context,
                                 isPlayStat: false,
                                 title: 'Offensive Rankings'),
-                            ListView.builder(
+                            ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
@@ -420,6 +430,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               itemBuilder: (context, index) {
                                 return commonRankingWidget(
                                   context,
+                                  isReport: true,
                                   teamReports: controller.offensive[index],
                                   awayText: controller
                                           .nflAwayOffensiveList.isEmpty
@@ -431,12 +442,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                       : controller.nflHomeOffensiveList[index],
                                 );
                               },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
+                              },
                             ),
                             rankingCommonWidget(
                                 context: context,
                                 isPlayStat: false,
                                 title: 'Defensive Rankings'),
-                            ListView.builder(
+                            ListView.separated(
                               padding: EdgeInsets.zero,
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
@@ -444,6 +459,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                               itemBuilder: (context, index) {
                                 return commonRankingWidget(context,
                                     teamReports: controller.defensive[index],
+                                    isReport: true,
                                     homeText:
                                         controller.nflHomeDefensiveList.isEmpty
                                             ? '0'
@@ -454,6 +470,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                             ? "0"
                                             : controller
                                                 .nflAwayDefensiveList[index]);
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
                               },
                             ),
                           ],
@@ -534,9 +554,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             rankingCommonWidget(
                                 context: context,
                                 title: 'Pitcher',
-                                awayText: 'dsc',
-                                homeText: 'sds'),
-                            ListView.builder(
+                                awayText: 'Williams',
+                                homeText: 'Patrick'),
+                            ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
@@ -548,13 +568,17 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                     awayText: '0',
                                     homeText: '0');
                               },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
+                              },
                             ),
                             rankingCommonWidget(
                                 context: context,
                                 title: 'Batting',
-                                awayText: 'dsc',
-                                homeText: 'sds'),
-                            ListView.builder(
+                                awayText: 'Williams',
+                                homeText: 'Patrick'),
+                            ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
@@ -565,6 +589,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                         controller.teamBattingMLB[index],
                                     awayText: '0',
                                     homeText: '0');
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return commonDivider(context);
                               },
                             ),
                           ],
@@ -594,56 +622,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               header: customTabBar(context, con),
               content: Column(
                 children: [
-                  widget.sportKey == 'MLB'
-                      ? Column(
-                          children: [
-                            headerOfHitterPlyerStat(context),
-                            commonDivider(context),
-                            HitterPlayerDetailCard(con),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            rankingCommonWidget(
-                                context: context,
-                                title: 'Pitcher',
-                                awayText: 'dsc',
-                                homeText: 'sds'),
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: controller.teamPitcherMLB.length,
-                              itemBuilder: (context, index) {
-                                return commonRankingWidget(context,
-                                    teamReports:
-                                        controller.teamPitcherMLB[index],
-                                    awayText: '0',
-                                    homeText: '0');
-                              },
-                            ),
-                            rankingCommonWidget(
-                                context: context,
-                                title: 'Batting',
-                                awayText: 'dsc',
-                                homeText: 'sds'),
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: controller.teamBattingMLB.length,
-                              itemBuilder: (context, index) {
-                                return commonRankingWidget(context,
-                                    teamReports:
-                                        controller.teamBattingMLB[index],
-                                    awayText: '0',
-                                    homeText: '0');
-                              },
-                            ),
-                          ],
-                        ),
+                  headerOfHitterPlyerStat(context),
+                  commonDivider(context),
+                  HitterPlayerDetailCard(con),
                 ],
               ));
         }),
@@ -1258,7 +1239,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   size: MediaQuery.of(context).size.height * .014),
             ),
             Expanded(
-              flex: 2,
+              flex: mobileView.size.shortestSide < 600 ? 3 : 2,
               child: title.appCommonText(
                   color: Theme.of(context).highlightColor,
                   weight: FontWeight.bold,
@@ -1295,7 +1276,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            headerTitleWidget(context, injuryReport),
+            headerTitleWidget(context, injuryReport, isInjury: true),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -1398,7 +1379,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              headerTitleWidget(context, injuryReport),
+              headerTitleWidget(context, injuryReport, isInjury: true),
               GetBuilder<GameDetailsController>(builder: (controller) {
                 return controller.isLoading.value
                     ? SizedBox(
@@ -1639,7 +1620,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   }
 
   Container headerTitleWidget(BuildContext context, String title,
-      {bool isTeamReport = false}) {
+      {bool isTeamReport = false, bool isInjury = false}) {
     return Container(
         height: MediaQuery.of(context).size.height * .032,
         width: Get.width,
@@ -1653,19 +1634,29 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             Expanded(
               flex: 2,
               child: Row(
+                mainAxisAlignment: isInjury
+                    ? MainAxisAlignment.end
+                    : mobileView.size.shortestSide < 600
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: (mobileView.size.shortestSide < 600
-                            ? (awayTeam?.abbreviation ?? '')
-                            : (awayTeam?.name ?? ''))
-                        .appCommonText(
-                      weight: FontWeight.w600,
-                      maxLine: 1,
-                      size: MediaQuery.of(context).size.height * .016,
-                      align: TextAlign.end,
-                      color: Theme.of(context).cardColor,
-                    ),
-                  ),
+                  mobileView.size.shortestSide < 600
+                      ? (awayTeam?.abbreviation ?? '').appCommonText(
+                          weight: FontWeight.w600,
+                          maxLine: 1,
+                          size: MediaQuery.of(context).size.height * .016,
+                          align: TextAlign.end,
+                          color: Theme.of(context).cardColor,
+                        )
+                      : Expanded(
+                          child: (awayTeam?.name ?? '').appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            size: MediaQuery.of(context).size.height * .016,
+                            align: TextAlign.end,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .01,
                   ),
@@ -1688,7 +1679,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             Expanded(
               flex: 2,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: isInjury
+                    ? MainAxisAlignment.start
+                    : mobileView.size.shortestSide < 600
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.start,
                 children: [
                   commonCachedNetworkImage(
                       width: Get.height * .025,
@@ -1697,18 +1692,23 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .01,
                   ),
-                  Expanded(
-                    child: (mobileView.size.shortestSide < 600
-                            ? (homeTeam?.abbreviation ?? "")
-                            : (homeTeam?.name ?? ""))
-                        .appCommonText(
-                      weight: FontWeight.w600,
-                      maxLine: 1,
-                      size: MediaQuery.of(context).size.height * .016,
-                      align: TextAlign.start,
-                      color: Theme.of(context).cardColor,
-                    ),
-                  ),
+                  mobileView.size.shortestSide < 600
+                      ? (homeTeam?.abbreviation ?? "").appCommonText(
+                          weight: FontWeight.w600,
+                          maxLine: 1,
+                          size: MediaQuery.of(context).size.height * .016,
+                          align: TextAlign.start,
+                          color: Theme.of(context).cardColor,
+                        )
+                      : Expanded(
+                          child: (homeTeam?.name ?? "").appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            size: MediaQuery.of(context).size.height * .016,
+                            align: TextAlign.start,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -1749,10 +1749,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         size: Get.height * .018),
                   ],
                 )),
-            con.hotlinesData.isEmpty && con.isHotlines.value
+            con.hotlinesData.isEmpty && con.isHotlines
                 ? circularWidget(context)
                     .paddingAll(MediaQuery.of(context).size.height * .038)
-                : con.hotlinesData.isEmpty && !con.isHotlines.value
+                : con.hotlinesData.isEmpty && !con.isHotlines
                     ? emptyListWidget(context)
                     : hotlinesCard(con),
           ],
@@ -1768,7 +1768,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        // con.hotlinesData.sort((a, b) => b.value.compareTo(a.value));
+        con.hotlinesData.sort((a, b) => b.value.compareTo(a.value));
         return Column(
           children: [
             SizedBox(
@@ -2103,39 +2103,59 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              (widget.gameDetails.venue != null
-                                      ? '${widget.gameDetails.venue?.name}, '
-                                      : '')
-                                  .appCommonText(
-                                      color: lightGrayColor,
-                                      size: MediaQuery.of(context).size.height *
-                                          .014,
-                                      weight: FontWeight.w600),
-                              (widget.gameDetails.venue != null
-                                      ? widget
-                                          .gameDetails.venue?.tmpInFahrenheit
-                                      : 00)
-                                  .toString()
-                                  .appCommonText(
-                                      size: MediaQuery.of(context).size.height *
-                                          .014,
-                                      color: lightGrayColor,
-                                      weight: FontWeight.w400),
-                              ' °F'.appCommonText(
-                                size: MediaQuery.of(context).size.height * .01,
-                                weight: FontWeight.w300,
-                                color: lightGrayColor,
+                              Expanded(
+                                flex: 4,
+                                child: (widget.gameDetails.venue != null
+                                        ? '${widget.gameDetails.venue?.name}, '
+                                        : '')
+                                    .appCommonText(
+                                        color: lightGrayColor,
+                                        align: TextAlign.end,
+                                        size:
+                                            MediaQuery.of(context).size.height *
+                                                .014,
+                                        weight: FontWeight.w600),
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .005,
-                              ),
-                              getWeatherIcon(
-                                  (widget.gameDetails.venue != null
-                                      ? widget.gameDetails.venue?.weather ??
-                                          'Sunny'
-                                      : 'Sunny'),
-                                  context,
-                                  MediaQuery.of(context).size.height * .02),
+                              Expanded(
+                                flex: 2,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    (widget.gameDetails.venue != null
+                                            ? widget.gameDetails.venue
+                                                ?.tmpInFahrenheit
+                                            : 00)
+                                        .toString()
+                                        .appCommonText(
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .014,
+                                            color: lightGrayColor,
+                                            weight: FontWeight.w400),
+                                    ' °F'.appCommonText(
+                                      size: MediaQuery.of(context).size.height *
+                                          .01,
+                                      weight: FontWeight.w300,
+                                      color: lightGrayColor,
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .005,
+                                    ),
+                                    getWeatherIcon(
+                                        (widget.gameDetails.venue != null
+                                            ? widget.gameDetails.venue
+                                                    ?.weather ??
+                                                'Sunny'
+                                            : 'Sunny'),
+                                        context,
+                                        MediaQuery.of(context).size.height *
+                                            .02),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ],
