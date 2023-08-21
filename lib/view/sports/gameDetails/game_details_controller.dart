@@ -497,6 +497,7 @@ class GameDetailsController extends GetxController {
       String homeTeamId = ''}) async {
     hotlinesData.clear();
     isHotlines = true;
+    isLoading.value = true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -588,15 +589,17 @@ class GameDetailsController extends GetxController {
           }
           await setHotlinesData().then((value) async {
             if (hotlinesFinalData.isNotEmpty) {
-              // final value = hotlinesFinalData.map((e) => e.value).toSet();
-              // hotlinesFinalData.retainWhere((x) => value.remove(x.value));
               int index = hotlinesFinalData
                   .indexWhere((element) => element.bookId == 'sr:book:18186');
               if (index <= 0) {
-                final playName =
-                    hotlinesFinalData.map((e) => e.playerName).toSet();
-                hotlinesFinalData
-                    .retainWhere((x) => playName.remove(x.playerName));
+                final playName = hotlinesFinalData
+                    .map((e) => e.playerName.toLowerCase())
+                    .toSet();
+                hotlinesFinalData.retainWhere(
+                    (x) => playName.remove(x.playerName.toLowerCase()));
+                final value = hotlinesFinalData.map((e) => e.value).toSet();
+                hotlinesFinalData.retainWhere((x) => value.remove(x.value));
+
                 final title = hotlinesFinalData.map((e) => e.tittle).toSet();
                 hotlinesFinalData.retainWhere((x) => title.remove(x.tittle));
               }
@@ -609,7 +612,7 @@ class GameDetailsController extends GetxController {
               if (hotlinesFinalData.length >= 2 && hotlinesData.length == 1) {
                 hotlinesData.clear();
                 hotlinesData.insert(0, hotlinesFinalData[0]);
-                hotlinesData.insert(1, hotlinesFinalData[1]);
+                hotlinesData.insert(1, hotlinesFinalData[2]);
               }
               if (hotlinesFinalData.length >= 3 && hotlinesData.length == 2) {
                 int index = hotlinesFinalData
@@ -617,7 +620,7 @@ class GameDetailsController extends GetxController {
                 if (index >= 0) {
                   hotlinesData.clear();
                   hotlinesData.insert(0, hotlinesFinalData[0]);
-                  hotlinesData.insert(1, hotlinesFinalData[1]);
+                  hotlinesData.insert(1, hotlinesFinalData[2]);
                   hotlinesData.insert(2, hotlinesFinalData[index]);
                 } else {
                   hotlinesData.clear();
