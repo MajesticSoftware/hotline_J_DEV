@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/generated/assets.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/theme/app_color.dart';
@@ -2099,65 +2100,43 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                           SizedBox(
                             height: MediaQuery.of(context).size.width * .003,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.center,
                             children: [
-                              Expanded(
-                                flex: 4,
-                                child: (widget.gameDetails.venue != null
-                                        ? '${widget.gameDetails.venue?.name}, '
-                                        : '')
-                                    .appCommonText(
-                                        color: lightGrayColor,
-                                        align: TextAlign.end,
-                                        size:
-                                            MediaQuery.of(context).size.height *
-                                                .014,
-                                        weight: FontWeight.w600),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    (widget.gameDetails.venue != null
-                                            ? widget.gameDetails.venue
-                                                ?.tmpInFahrenheit
-                                            : 00)
-                                        .toString()
-                                        .appCommonText(
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .014,
-                                            color: lightGrayColor,
-                                            weight: FontWeight.w400),
-                                    ' °F'.appCommonText(
+                              (widget.gameDetails.venue != null
+                                      ? '${widget.gameDetails.venue?.name}, '
+                                      : '')
+                                  .toString()
+                                  .appCommonText(
                                       size: MediaQuery.of(context).size.height *
-                                          .01,
-                                      weight: FontWeight.w300,
+                                          .014,
                                       color: lightGrayColor,
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          .005,
-                                    ),
-                                    getWeatherIcon(
-                                        (widget.gameDetails.venue != null
-                                            ? widget.gameDetails.venue
-                                                    ?.weather ??
-                                                'Sunny'
-                                            : 'Sunny'),
-                                        context,
-                                        MediaQuery.of(context).size.height *
-                                            .02),
-                                  ],
-                                ),
-                              )
+                                      weight: FontWeight.w600),
+                              (widget.gameDetails.venue != null
+                                      ? widget
+                                          .gameDetails.venue?.tmpInFahrenheit
+                                      : 00)
+                                  .toString()
+                                  .appCommonText(
+                                      size: MediaQuery.of(context).size.height *
+                                          .014,
+                                      color: lightGrayColor,
+                                      weight: FontWeight.w400),
+                              ' °F  '.appCommonText(
+                                size: MediaQuery.of(context).size.height * .01,
+                                weight: FontWeight.w300,
+                                color: lightGrayColor,
+                              ),
+                              getWeatherIcon(
+                                  (widget.gameDetails.venue != null
+                                      ? widget.gameDetails.venue?.weather ??
+                                          'Sunny'
+                                      : 'Sunny'),
+                                  context,
+                                  MediaQuery.of(context).size.height * .02),
                             ],
-                          ),
+                          )
                         ],
                       )),
                   Expanded(

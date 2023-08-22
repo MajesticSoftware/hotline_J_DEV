@@ -69,9 +69,9 @@ class GameDetailsController extends GetxController {
     'Walks & Hits Per Innings Pitched (WHIP)',
     'Opponents Batting Average',
     'Ground into Double Play',
-    'Strike Out Per 9 innings Pitched',
+    /*  'Strike Out Per 9 innings Pitched',
     'Walks Per 9 Innings Pitched',
-    'Strike out to walk ratio',
+    'Strike out to walk ratio',*/
   ];
   List teamPitcherMLB = [
     'W-L',
@@ -142,8 +142,14 @@ class GameDetailsController extends GetxController {
                       title: 'Runs',
                       value:
                           '${player.statistics?.hitting?.overall?.runs?.total}'),
-                  HitterPlayerStatModel(title: 'Total Bases', value: '0'),
-                  HitterPlayerStatModel(title: 'Stolen Bases', value: '0'),
+                  HitterPlayerStatModel(
+                      title: 'Total Bases',
+                      value:
+                          '${player.statistics?.hitting?.overall?.onbase?.tb}'),
+                  HitterPlayerStatModel(
+                      title: 'Stolen Bases',
+                      value:
+                          '${player.statistics?.hitting?.overall?.steal?.stolen}'),
                 ];
                 hitterHomePlayerWalkList = [
                   HitterPlayerStatModel(
@@ -166,7 +172,7 @@ class GameDetailsController extends GetxController {
                       hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
                       position: '${player.position}',
                       rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                      sb: '0'),
+                      sb: '${player.statistics?.hitting?.overall?.steal?.stolen}'),
                 );
               }
             }
@@ -199,9 +205,6 @@ class GameDetailsController extends GetxController {
             '${homePitching?.whip ?? "0"}',
             '${homePitching?.oba ?? "0"}',
             '${homePitching?.outs?.gidp ?? "0"}',
-            '0',
-            '0',
-            '0',
           ];
         }
       } else {
@@ -255,8 +258,14 @@ class GameDetailsController extends GetxController {
                     title: 'Runs',
                     value:
                         '${player.statistics?.hitting?.overall?.runs?.total}'),
-                HitterPlayerStatModel(title: 'Total Bases', value: '0'),
-                HitterPlayerStatModel(title: 'Stolen Bases', value: '0'),
+                HitterPlayerStatModel(
+                    title: 'Total Bases',
+                    value:
+                        '${player.statistics?.hitting?.overall?.onbase?.tb}'),
+                HitterPlayerStatModel(
+                    title: 'Stolen Bases',
+                    value:
+                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
               ];
               hitterAwayPlayerWalkList = [
                 HitterPlayerStatModel(
@@ -279,7 +288,7 @@ class GameDetailsController extends GetxController {
                     hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
                     position: '${player.position}',
                     rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                    sb: '0'),
+                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}'),
               );
             }
           }
@@ -312,9 +321,6 @@ class GameDetailsController extends GetxController {
           '${awayPitching?.whip ?? "0"}',
           '${awayPitching?.oba ?? "0"}',
           '${awayPitching?.outs?.gidp ?? "0"}',
-          '0',
-          '0',
-          '0',
         ];
 
         // isLoading.value = false;
@@ -589,44 +595,24 @@ class GameDetailsController extends GetxController {
           }
           await setHotlinesData().then((value) async {
             if (hotlinesFinalData.isNotEmpty) {
-              int index = hotlinesFinalData
-                  .indexWhere((element) => element.bookId == 'sr:book:18186');
-              if (index <= 0) {
-                final playName = hotlinesFinalData
-                    .map((e) => e.playerName.toLowerCase())
-                    .toSet();
-                hotlinesFinalData.retainWhere(
-                    (x) => playName.remove(x.playerName.toLowerCase()));
-                final value = hotlinesFinalData.map((e) => e.value).toSet();
-                hotlinesFinalData.retainWhere((x) => value.remove(x.value));
-
-                final title = hotlinesFinalData.map((e) => e.tittle).toSet();
-                hotlinesFinalData.retainWhere((x) => title.remove(x.tittle));
-              }
-
-              // hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));
+              hotlinesFinalData.forEach((element) {
+                log('HOTLINES FINAL DATA--->${element.bookId}');
+              });
+              hotlinesData.clear();
               if (hotlinesFinalData.isNotEmpty) {
-                hotlinesData.clear();
-                hotlinesData.insert(0, hotlinesFinalData[0]);
-              }
-              if (hotlinesFinalData.length >= 2 && hotlinesData.length == 1) {
-                hotlinesData.clear();
-                hotlinesData.insert(0, hotlinesFinalData[0]);
-                hotlinesData.insert(1, hotlinesFinalData[2]);
+                hotlinesData.add(hotlinesFinalData[0]);
+                hotlinesData.add(hotlinesFinalData[1]);
               }
               if (hotlinesFinalData.length >= 3 && hotlinesData.length == 2) {
                 int index = hotlinesFinalData
                     .indexWhere((element) => element.bookId == 'sr:book:18186');
                 if (index >= 0) {
-                  hotlinesData.clear();
-                  hotlinesData.insert(0, hotlinesFinalData[0]);
-                  hotlinesData.insert(1, hotlinesFinalData[2]);
-                  hotlinesData.insert(2, hotlinesFinalData[index]);
+                  if (hotlinesData.contains(hotlinesFinalData[index])) {
+                  } else {
+                    hotlinesData.add(hotlinesFinalData[index]);
+                  }
                 } else {
-                  hotlinesData.clear();
-                  hotlinesData.insert(0, hotlinesFinalData[0]);
-                  hotlinesData.insert(1, hotlinesFinalData[1]);
-                  hotlinesData.insert(2, hotlinesFinalData[2]);
+                  hotlinesData.add(hotlinesFinalData[2]);
                 }
               }
             }
@@ -654,9 +640,18 @@ class GameDetailsController extends GetxController {
   }
 
   Future setHotlinesData() async {
+    hotlinesDData.sort((a, b) => b.value.compareTo(a.value));
+    final playName =
+        hotlinesDData.map((e) => e.playerName.toLowerCase()).toSet();
+    hotlinesDData
+        .retainWhere((x) => playName.remove(x.playerName.toLowerCase()));
+    final value = hotlinesDData.map((e) => e.value).toSet();
+    hotlinesDData.retainWhere((x) => value.remove(x.value));
+    final title = hotlinesDData.map((e) => e.tittle).toSet();
+    hotlinesDData.retainWhere((x) => title.remove(x.tittle));
     hotlinesFinalData.clear();
-    hotlinesFinalData = (hotlinesFData + hotlinesDData).toSet().toList();
-    hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));
+    hotlinesFinalData = (hotlinesDData + hotlinesFData).toSet().toList();
+    // hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));
   }
 
   ///MLB INJURY REPORT
