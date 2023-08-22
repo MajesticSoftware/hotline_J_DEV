@@ -177,6 +177,7 @@ class GameDetailsController extends GetxController {
               }
             }
           }
+
           mlbHomeHittingList = [
             '${homeHitting?.runs?.total ?? "0"}',
             '${homeHitting?.onbase?.h ?? "0"}',
@@ -186,7 +187,7 @@ class GameDetailsController extends GetxController {
             '${homeHitting?.outs?.ktotal ?? "0"}',
             '${homeHitting?.steal?.stolen ?? "0"}',
             homeHitting?.avg ?? "0",
-            '${homeHitting?.slg ?? '0'}',
+            '.${(homeHitting?.slg ?? 0).toString().split('.').last}',
             '${homeHitting?.ops ?? '0'}',
             '${homeHitting?.outs?.gidp ?? '0'}',
             homeHitting?.abhr?.toStringAsFixed(2) ?? "0",
@@ -196,14 +197,14 @@ class GameDetailsController extends GetxController {
             '${homePitching?.games?.loss ?? '0'}',
             '${homePitching?.era ?? '0'}',
             '${homePitching?.games?.shutout ?? '0'}',
-            '0',
+            '.${(((homePitching?.games?.save ?? 0) / (homePitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
             '${homePitching?.games?.qstart ?? '0'}',
-            '0',
+            '${homePitching?.runs?.total ?? '0'}',
             '${homePitching?.onbase?.hr ?? '0'}',
             '${homePitching?.onbase?.bb ?? '0'}',
             '${homePitching?.outs?.ktotal ?? '0'}',
             '${homePitching?.whip ?? "0"}',
-            '${homePitching?.oba ?? "0"}',
+            '.${(homePitching?.oba ?? 0).toString().split('.').last}',
             '${homePitching?.outs?.gidp ?? "0"}',
           ];
         }
@@ -302,7 +303,7 @@ class GameDetailsController extends GetxController {
           '${awayHitting?.outs?.ktotal ?? "0"}',
           '${awayHitting?.steal?.stolen ?? "0"}',
           awayHitting?.avg ?? "0",
-          '${awayHitting?.slg ?? '0'}',
+          '.${(awayHitting?.slg.toString().split('.').last)}',
           '${awayHitting?.ops ?? '0'}',
           '${awayHitting?.outs?.gidp ?? '0'}',
           awayHitting?.abhr?.toStringAsFixed(2) ?? "0",
@@ -312,14 +313,14 @@ class GameDetailsController extends GetxController {
           '${awayPitching?.games?.loss ?? '0'}',
           '${awayPitching?.era ?? '0'}',
           '${awayPitching?.games?.shutout ?? '0'}',
-          '0',
+          '.${(((awayPitching?.games?.save ?? 0) / (awayPitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
           '${awayPitching?.games?.qstart ?? '0'}',
-          '0',
+          '${awayPitching?.runs?.total ?? '0'}',
           '${awayPitching?.onbase?.hr ?? '0'}',
           '${awayPitching?.onbase?.bb ?? '0'}',
           '${awayPitching?.outs?.ktotal ?? '0'}',
           '${awayPitching?.whip ?? "0"}',
-          '${awayPitching?.oba ?? "0"}',
+          '.${(awayPitching?.oba ?? 0).toString().split('.').last}',
           '${awayPitching?.outs?.gidp ?? "0"}',
         ];
 

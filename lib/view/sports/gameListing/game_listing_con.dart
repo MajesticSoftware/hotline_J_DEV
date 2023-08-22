@@ -352,10 +352,10 @@ class GameListingController extends GetxController {
               sportEventsList[index].homeWin = (game.home?.win).toString();
               sportEventsList[index].homeLoss = (game.home?.loss).toString();
               sportEventsList[index].wlHome =
-                  ('${game.home?.probablePitcher?.win}-${game.home?.probablePitcher?.loss}')
+                  ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? "0"}')
                       .toString();
               sportEventsList[index].eraHome =
-                  (game.home?.probablePitcher?.era).toString();
+                  (game.home?.probablePitcher?.era ?? '0').toString();
               sportEventsList[index].homePlayerName =
                   ('${game.home?.probablePitcher?.preferredName?[0]}. ${game.home?.probablePitcher?.lastName}')
                       .toString();
@@ -365,10 +365,10 @@ class GameListingController extends GetxController {
               sportEventsList[index].awayWin = (game.away?.win).toString();
               sportEventsList[index].awayLoss = (game.away?.loss).toString();
               sportEventsList[index].wlAway =
-                  ('${game.away?.probablePitcher?.win}-${game.away?.probablePitcher?.loss}')
+                  ('${game.away?.probablePitcher?.win ?? '0'}-${game.away?.probablePitcher?.loss ?? "0"}')
                       .toString();
               sportEventsList[index].eraAway =
-                  (game.away?.probablePitcher?.era).toString();
+                  (game.away?.probablePitcher?.era ?? '0').toString();
               sportEventsList[index].awayPlayerName =
                   ('${game.away?.probablePitcher?.preferredName?[0]}. ${game.away?.probablePitcher?.lastName}')
                       .toString();
