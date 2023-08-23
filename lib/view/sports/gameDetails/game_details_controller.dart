@@ -109,8 +109,7 @@ class GameDetailsController extends GetxController {
   List<MLBStaticsDataModel> mlbHomePlayerBattingList = [];
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
-  List<HitterPlayerStatModel> hitterHomePlayerList = [];
-  List<HitterPlayerStatModel> hitterHomePlayerWalkList = [];
+
   List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
 
   ///MLB STATICS
@@ -123,8 +122,7 @@ class GameDetailsController extends GetxController {
         .mlbStaticsRepo(teamId: homeTeamId, seasons: '2023');
     try {
       mlbHomePlayerBattingList.clear();
-      hitterHomePlayerList.clear();
-      hitterHomePlayerWalkList.clear();
+
       hitterHomePlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
@@ -136,45 +134,33 @@ class GameDetailsController extends GetxController {
           var homePitching = mlbStaticsHomeList?.pitching?.overall;
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
-              if (player.position == 'P') {
-                hitterHomePlayerList = [
-                  HitterPlayerStatModel(
-                      title: 'Runs',
-                      value:
-                          '${player.statistics?.hitting?.overall?.runs?.total}'),
-                  HitterPlayerStatModel(
-                      title: 'Total Bases',
-                      value:
-                          '${player.statistics?.hitting?.overall?.onbase?.tb}'),
-                  HitterPlayerStatModel(
-                      title: 'Stolen Bases',
-                      value:
-                          '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-                ];
-                hitterHomePlayerWalkList = [
-                  HitterPlayerStatModel(
-                      title: 'OBP',
-                      value: '${player.statistics?.hitting?.overall?.obp}'),
-                  HitterPlayerStatModel(
-                      title: 'SLG',
-                      value: '${player.statistics?.hitting?.overall?.slg}'),
-                  HitterPlayerStatModel(
-                      title: 'Cycle',
-                      value:
-                          '${player.statistics?.hitting?.overall?.onbase?.cycle}'),
-                ];
-                hitterHomePlayerMainList.add(
-                  HitterPlayerStatMainModel(
-                      playerName: '${player.firstName?[0]}. ${player.lastName}',
-                      avg: '${player.statistics?.hitting?.overall?.avg}',
-                      hAb:
-                          '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
-                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                      position: '${player.position}',
-                      rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                      sb: '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-                );
-              }
+              hitterHomePlayerMainList.add(
+                HitterPlayerStatMainModel(
+                    playerName: '${player.firstName?[0]}. ${player.lastName}',
+                    avg: '${player.statistics?.hitting?.overall?.avg}',
+                    hAb:
+                        '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                    position: '${player.position}',
+                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                    obp: 'OBP',
+                    obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                    cycle: 'Cycle',
+                    cycleValue:
+                        '${player.statistics?.hitting?.overall?.onbase?.cycle}',
+                    slg: 'SLG',
+                    slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                    run: 'Runs',
+                    runValue:
+                        '${player.statistics?.hitting?.overall?.runs?.total}',
+                    totalBase: 'Total Bases',
+                    totalBaseValue:
+                        '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                    stolenBase: 'Stolen Bases',
+                    stolenBaseValue:
+                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+              );
             }
           }
 
@@ -226,8 +212,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<HitterPlayerStatModel> hitterAwayPlayerList = [];
-  List<HitterPlayerStatModel> hitterAwayPlayerWalkList = [];
   List<HitterPlayerStatMainModel> hitterAwayPlayerMainList = [];
   Future mlbStaticsAwayTeamResponse(
       {String awayTeamId = '', bool isLoad = false}) async {
@@ -238,8 +222,7 @@ class GameDetailsController extends GetxController {
         .mlbStaticsRepo(teamId: awayTeamId, seasons: '2023');
     try {
       mlbAwayPlayerBattingList.clear();
-      hitterAwayPlayerList.clear();
-      hitterAwayPlayerWalkList.clear();
+
       hitterAwayPlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
@@ -250,48 +233,35 @@ class GameDetailsController extends GetxController {
         }
         var awayHitting = mlbStaticsAwayList?.hitting?.overall;
         var awayPitching = mlbStaticsAwayList?.pitching?.overall;
-
         for (var player in mlbPlayerPitchingData) {
           if (player.statistics?.hitting != null) {
-            if (player.position == 'P') {
-              hitterAwayPlayerList = [
-                HitterPlayerStatModel(
-                    title: 'Runs',
-                    value:
-                        '${player.statistics?.hitting?.overall?.runs?.total}'),
-                HitterPlayerStatModel(
-                    title: 'Total Bases',
-                    value:
-                        '${player.statistics?.hitting?.overall?.onbase?.tb}'),
-                HitterPlayerStatModel(
-                    title: 'Stolen Bases',
-                    value:
-                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-              ];
-              hitterAwayPlayerWalkList = [
-                HitterPlayerStatModel(
-                    title: 'OBP',
-                    value: '${player.statistics?.hitting?.overall?.obp}'),
-                HitterPlayerStatModel(
-                    title: 'SLG',
-                    value: '${player.statistics?.hitting?.overall?.slg}'),
-                HitterPlayerStatModel(
-                    title: 'Cycle',
-                    value:
-                        '${player.statistics?.hitting?.overall?.onbase?.cycle}'),
-              ];
-              hitterAwayPlayerMainList.add(
-                HitterPlayerStatMainModel(
-                    playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: '${player.statistics?.hitting?.overall?.avg}',
-                    hAb:
-                        '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
-                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                    position: '${player.position}',
-                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-              );
-            }
+            hitterAwayPlayerMainList.add(
+              HitterPlayerStatMainModel(
+                  playerName: '${player.firstName?[0]}. ${player.lastName}',
+                  avg: '${player.statistics?.hitting?.overall?.avg}',
+                  hAb:
+                      '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                  hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                  position: '${player.position}',
+                  rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                  sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                  obp: 'OBP',
+                  obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                  cycle: 'Cycle',
+                  cycleValue:
+                      '${player.statistics?.hitting?.overall?.onbase?.cycle}',
+                  slg: 'SLG',
+                  slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                  run: 'Runs',
+                  runValue:
+                      '${player.statistics?.hitting?.overall?.runs?.total}',
+                  totalBase: 'Total Bases',
+                  totalBaseValue:
+                      '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                  stolenBase: 'Stolen Bases',
+                  stolenBaseValue:
+                      '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+            );
           }
         }
         mlbAwayHittingList = [
@@ -357,40 +327,47 @@ class GameDetailsController extends GetxController {
         .nflStaticsRepo(teamId: homeTeamId, seasons: '2023');
     try {
       if (result.status) {
-        NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
-        if (response.season != null) {
-          if (response.season?.team?.teamRecords != null) {
-            nflStaticsHomeList = response.season?.team?.teamRecords;
-            var offenciveData = nflStaticsHomeList?.record;
-            var defenciveData = nflStaticsHomeList?.opponents;
-            nflHomeOffensiveList = [
-              '0',
-              '0',
-              '0',
-              offenciveData?.efficiency?.redzone ?? '0',
-              offenciveData?.rushing ?? '0',
-              offenciveData?.passing ?? '0',
-              '0',
-              '0',
-              '0',
-              offenciveData?.efficiency?.thirddown ?? '0',
-              offenciveData?.efficiency?.fourthdown ?? '0',
-              '0'
-            ];
-            nflHomeDefensiveList = [
-              '0',
-              '0',
-              '0',
-              defenciveData?.efficiency?.redzone ?? "0",
-              defenciveData?.rushing ?? '0',
-              defenciveData?.passing ?? '0',
-              '0',
-              '0',
-              '0',
-              defenciveData?.efficiency?.thirddown ?? '0',
-              defenciveData?.efficiency?.fourthdown ?? '0',
-            ];
+        if (result.data != null) {
+          NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+          if (response.season != null) {
+            if (response.season?.team?.teamRecords != null) {
+              nflStaticsHomeList = response.season?.team?.teamRecords;
+              var offenciveData = nflStaticsHomeList?.record;
+              var defenciveData = nflStaticsHomeList?.opponents;
+              nflHomeOffensiveList = [
+                '0',
+                '0',
+                '0',
+                offenciveData?.efficiency?.redzone ?? '0',
+                offenciveData?.rushing ?? '0',
+                offenciveData?.passing ?? '0',
+                '0',
+                '0',
+                '0',
+                offenciveData?.efficiency?.thirddown ?? '0',
+                offenciveData?.efficiency?.fourthdown ?? '0',
+                '0'
+              ];
+              nflHomeDefensiveList = [
+                '0',
+                '0',
+                '0',
+                defenciveData?.efficiency?.redzone ?? "0",
+                defenciveData?.rushing ?? '0',
+                defenciveData?.passing ?? '0',
+                '0',
+                '0',
+                '0',
+                defenciveData?.efficiency?.thirddown ?? '0',
+                defenciveData?.efficiency?.fourthdown ?? '0',
+              ];
+            }
           }
+        } else {
+          isLoading.value = false;
+          // showAppSnackBar(
+          //   result.message,
+          // );
         }
       } else {
         isLoading.value = false;
@@ -398,6 +375,7 @@ class GameDetailsController extends GetxController {
           result.message,
         );
       }
+
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
@@ -418,42 +396,45 @@ class GameDetailsController extends GetxController {
         .nflStaticsRepo(teamId: awayTeamId, seasons: '2023');
     try {
       if (result.status) {
-        NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
-        if (response.season != null) {
-          if (response.season?.team?.teamRecords != null) {
-            nflStaticsAwayList = response.season?.team?.teamRecords;
-            var offenciveData = response.season?.team?.teamRecords?.record;
-            var defenciveData = response.season?.team?.teamRecords?.opponents;
-            nflAwayOffensiveList = [
-              '0',
-              '0',
-              '0',
-              offenciveData?.efficiency?.redzone ?? '0',
-              offenciveData?.rushing ?? '0',
-              offenciveData?.passing ?? '0',
-              '0',
-              '0',
-              '0',
-              offenciveData?.efficiency?.thirddown ?? '0',
-              offenciveData?.efficiency?.fourthdown ?? '0',
-              '0',
-            ];
-            nflAwayDefensiveList = [
-              '0',
-              '0',
-              '0',
-              defenciveData?.efficiency?.redzone ?? "0",
-              defenciveData?.rushing ?? '0',
-              defenciveData?.passing ?? '0',
-              '0',
-              '0',
-              '0',
-              defenciveData?.efficiency?.thirddown ?? '0',
-              defenciveData?.efficiency?.fourthdown ?? '0',
-            ];
+        if (result.data != null) {
+          NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+          if (response.season != null) {
+            if (response.season?.team?.teamRecords != null) {
+              nflStaticsAwayList = response.season?.team?.teamRecords;
+              var offenciveData = response.season?.team?.teamRecords?.record;
+              var defenciveData = response.season?.team?.teamRecords?.opponents;
+              nflAwayOffensiveList = [
+                '0',
+                '0',
+                '0',
+                offenciveData?.efficiency?.redzone ?? '0',
+                offenciveData?.rushing ?? '0',
+                offenciveData?.passing ?? '0',
+                '0',
+                '0',
+                '0',
+                offenciveData?.efficiency?.thirddown ?? '0',
+                offenciveData?.efficiency?.fourthdown ?? '0',
+                '0',
+              ];
+              nflAwayDefensiveList = [
+                '0',
+                '0',
+                '0',
+                defenciveData?.efficiency?.redzone ?? "0",
+                defenciveData?.rushing ?? '0',
+                defenciveData?.passing ?? '0',
+                '0',
+                '0',
+                '0',
+                defenciveData?.efficiency?.thirddown ?? '0',
+                defenciveData?.efficiency?.fourthdown ?? '0',
+              ];
+            }
           }
+        } else {
+          isLoading.value = false;
         }
-        // isLoading.value = false;
       } else {
         isLoading.value = false;
         showAppSnackBar(
@@ -747,12 +728,6 @@ class MLBPitchingStaticsModel {
   });
 }
 
-class HitterPlayerStatModel {
-  String title;
-  String value;
-  HitterPlayerStatModel({required this.title, required this.value});
-}
-
 class HitterPlayerStatMainModel {
   String playerName;
   String position;
@@ -761,6 +736,18 @@ class HitterPlayerStatMainModel {
   String rbi;
   String sb;
   String avg;
+  String run;
+  String runValue;
+  String totalBase;
+  String totalBaseValue;
+  String stolenBase;
+  String stolenBaseValue;
+  String obp;
+  String obpValue;
+  String slg;
+  String slgValue;
+  String cycle;
+  String cycleValue;
   HitterPlayerStatMainModel({
     required this.playerName,
     required this.position,
@@ -769,5 +756,17 @@ class HitterPlayerStatMainModel {
     required this.rbi,
     required this.sb,
     required this.avg,
+    required this.run,
+    required this.runValue,
+    required this.totalBase,
+    required this.totalBaseValue,
+    required this.stolenBase,
+    required this.stolenBaseValue,
+    required this.obp,
+    required this.obpValue,
+    required this.slg,
+    required this.slgValue,
+    required this.cycle,
+    required this.cycleValue,
   });
 }

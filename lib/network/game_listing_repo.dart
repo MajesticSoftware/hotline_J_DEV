@@ -57,6 +57,22 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> mlbHitterStatsRepo({String playerId = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(
+        '${AppUrls.MLB_BASE_URL}players/$playerId/profile.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///NFL STATICS
   Future<ResponseItem> nflStaticsRepo(
       {String teamId = '', String seasons = ''}) async {
