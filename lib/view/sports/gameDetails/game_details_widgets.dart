@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:intl/intl.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -330,6 +331,7 @@ Padding playerStatWidget(
     SportEvents gameDetails,
     Competitors? awayTeam,
     Competitors? homeTeam) {
+  GameListingController gameListingController = Get.find();
   return Padding(
     padding: EdgeInsets.only(
         left: MediaQuery.of(context).size.height * .02,
@@ -360,8 +362,8 @@ Padding playerStatWidget(
                               homeText: gameDetails.homePlayerName),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[0],
-                              awayText: gameDetails.wlHome,
-                              homeText: gameDetails.wlAway),
+                              awayText: gameDetails.wlAway,
+                              homeText: gameDetails.wlHome),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[1],
@@ -370,28 +372,28 @@ Padding playerStatWidget(
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[2],
-                              awayText: '0',
-                              homeText: '0'),
+                              awayText: controller.whipAway,
+                              homeText: controller.whipHome),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[3],
-                              awayText: '0',
-                              homeText: '0'),
+                              awayText: controller.awayIp,
+                              homeText: controller.homeIp),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[4],
-                              awayText: '0',
-                              homeText: '0'),
+                              awayText: controller.awayH,
+                              homeText: controller.homeH),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[5],
-                              awayText: '0',
-                              homeText: '0'),
+                              awayText: controller.awayKk,
+                              homeText: controller.homeKk),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamPitcherMLB[6],
-                              awayText: '0',
-                              homeText: '0'),
+                              awayText: controller.awayBb,
+                              homeText: controller.homeBb),
                         ],
                       )
                     : Column(

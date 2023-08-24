@@ -88,6 +88,8 @@ class SportEvents {
   String wlAway = '0';
   String eraHome = '0';
   String eraAway = '0';
+  String awayPlayerId = '';
+  String homePlayerId = '';
   String homePlayerName = '';
   String awayPlayerName = '';
   List awayTeamInjuredPlayer = [];

@@ -9,6 +9,7 @@ import '../../../model/game_listing.dart';
 import '../../../model/hotlines_data_model.dart';
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nfl_statics_model.dart';
+import '../../../model/player_profile_model.dart';
 import '../../../model/response_item.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
@@ -111,6 +112,122 @@ class GameDetailsController extends GetxController {
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
 
   List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
+  String _whipHome = '0';
+
+  String get whipHome => _whipHome;
+
+  set whipHome(String value) {
+    _whipHome = value;
+    update();
+  }
+
+  String _whipAway = '0';
+
+  String get whipAway => _whipAway;
+
+  set whipAway(String value) {
+    _whipAway = value;
+    update();
+  }
+
+  String homeKk = '0';
+  String awayKk = '0';
+  String homeBb = '0';
+  String awayBb = '0';
+  String homeIp = '0';
+  String awayIp = '0';
+  String awayH = '0';
+  String homeH = '0';
+
+  Future profileHomeResponse(
+      {String homeTeamId = '', bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: homeTeamId);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          PlayerProfileModel response =
+              PlayerProfileModel.fromJson(result.data);
+          final playerData = response.player;
+          if (playerData.id == homeTeamId) {
+            for (var player in playerData.seasons) {
+              whipHome =
+                  player.totals.statistics.pitching.overall.whip.toString();
+              homeBb = player.totals.statistics.pitching.overall.onbase.bb
+                  .toString();
+              homeKk = player.totals.statistics.pitching.overall.outcome.ktotal
+                  .toString();
+              homeH =
+                  player.totals.statistics.pitching.overall.onbase.h.toString();
+              homeIp = player.totals.statistics.pitching.overall.ip1.toString();
+            }
+          }
+        } else {
+          isLoading.value = false;
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE1----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future profileAwayResponse(
+      {String awayTeamId = '', bool isLoad = false}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: awayTeamId);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          PlayerProfileModel response =
+              PlayerProfileModel.fromJson(result.data);
+          final playerData = response.player;
+          if (playerData.id == awayTeamId) {
+            for (var player in playerData.seasons) {
+              whipAway =
+                  player.totals.statistics.pitching.overall.whip.toString();
+              awayBb = player.totals.statistics.pitching.overall.onbase.bb
+                  .toString();
+              awayKk = player.totals.statistics.pitching.overall.outcome.ktotal
+                  .toString();
+              awayH =
+                  player.totals.statistics.pitching.overall.onbase.h.toString();
+              awayIp = player.totals.statistics.pitching.overall.ip1.toString();
+            }
+          }
+        } else {
+          isLoading.value = false;
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE1----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
 
   ///MLB STATICS
   Future mlbStaticsHomeTeamResponse(

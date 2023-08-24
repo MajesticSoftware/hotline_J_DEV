@@ -146,8 +146,17 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
+
       gameDetailsController.mlbStaticsAwayTeamResponse(
           isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
+      gameDetailsController.profileAwayResponse(
+        isLoad: isLoad,
+        awayTeamId: widget.gameDetails.awayPlayerId,
+      );
+      gameDetailsController.profileHomeResponse(
+        isLoad: isLoad,
+        homeTeamId: widget.gameDetails.homePlayerId,
+      );
       gameDetailsController.mlbStaticsHomeTeamResponse(
           isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
       gameDetailsController.mlbInjuriesResponse(

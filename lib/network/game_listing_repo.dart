@@ -57,7 +57,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  Future<ResponseItem> mlbHitterStatsRepo({String playerId = ''}) async {
+  Future<ResponseItem> mlbPlayerPitcherStatsRepo({String playerId = ''}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;

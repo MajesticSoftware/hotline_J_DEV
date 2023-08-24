@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
+import 'package:hotlines/model/player_profile_model.dart';
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
@@ -351,6 +352,8 @@ class GameListingController extends GetxController {
               sportEventsList[index].homeScore = (game.home?.runs).toString();
               sportEventsList[index].homeWin = (game.home?.win).toString();
               sportEventsList[index].homeLoss = (game.home?.loss).toString();
+              sportEventsList[index].homePlayerId =
+                  (game.home?.probablePitcher?.id).toString();
               sportEventsList[index].wlHome =
                   ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? "0"}')
                       .toString();
@@ -364,6 +367,8 @@ class GameListingController extends GetxController {
               sportEventsList[index].awayScore = (game.away?.runs).toString();
               sportEventsList[index].awayWin = (game.away?.win).toString();
               sportEventsList[index].awayLoss = (game.away?.loss).toString();
+              sportEventsList[index].awayPlayerId =
+                  (game.away?.probablePitcher?.id).toString();
               sportEventsList[index].wlAway =
                   ('${game.away?.probablePitcher?.win ?? '0'}-${game.away?.probablePitcher?.loss ?? "0"}')
                       .toString();
