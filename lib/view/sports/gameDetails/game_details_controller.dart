@@ -134,33 +134,36 @@ class GameDetailsController extends GetxController {
           var homePitching = mlbStaticsHomeList?.pitching?.overall;
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
-              hitterHomePlayerMainList.add(
-                HitterPlayerStatMainModel(
-                    playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: '${player.statistics?.hitting?.overall?.avg}',
-                    hAb:
-                        '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
-                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                    position: '${player.position}',
-                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
-                    obp: 'OBP',
-                    obpValue: '${player.statistics?.hitting?.overall?.obp}',
-                    cycle: 'Cycle',
-                    cycleValue:
-                        '${player.statistics?.hitting?.overall?.onbase?.cycle}',
-                    slg: 'SLG',
-                    slgValue: '${player.statistics?.hitting?.overall?.slg}',
-                    run: 'Runs',
-                    runValue:
-                        '${player.statistics?.hitting?.overall?.runs?.total}',
-                    totalBase: 'Total Bases',
-                    totalBaseValue:
-                        '${player.statistics?.hitting?.overall?.onbase?.tb}',
-                    stolenBase: 'Stolen Bases',
-                    stolenBaseValue:
-                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-              );
+              if (player.position != "P") {
+                hitterHomePlayerMainList.add(
+                  HitterPlayerStatMainModel(
+                      playerName: '${player.firstName?[0]}. ${player.lastName}',
+                      avg: '${player.statistics?.hitting?.overall?.avg}',
+                      hAb:
+                          '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                      position: '${player.position}',
+                      rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                      sb:
+                          '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                      obp: 'OBP',
+                      obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                      cycle: 'Cycle',
+                      cycleValue:
+                          '${player.statistics?.hitting?.overall?.onbase?.cycle}',
+                      slg: 'SLG',
+                      slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                      run: 'Runs',
+                      runValue:
+                          '${player.statistics?.hitting?.overall?.runs?.total}',
+                      totalBase: 'Total Bases',
+                      totalBaseValue:
+                          '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                      stolenBase: 'Stolen Bases',
+                      stolenBaseValue:
+                          '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+                );
+              }
             }
           }
 
@@ -235,33 +238,35 @@ class GameDetailsController extends GetxController {
         var awayPitching = mlbStaticsAwayList?.pitching?.overall;
         for (var player in mlbPlayerPitchingData) {
           if (player.statistics?.hitting != null) {
-            hitterAwayPlayerMainList.add(
-              HitterPlayerStatMainModel(
-                  playerName: '${player.firstName?[0]}. ${player.lastName}',
-                  avg: '${player.statistics?.hitting?.overall?.avg}',
-                  hAb:
-                      '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
-                  hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                  position: '${player.position}',
-                  rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                  sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
-                  obp: 'OBP',
-                  obpValue: '${player.statistics?.hitting?.overall?.obp}',
-                  cycle: 'Cycle',
-                  cycleValue:
-                      '${player.statistics?.hitting?.overall?.onbase?.cycle}',
-                  slg: 'SLG',
-                  slgValue: '${player.statistics?.hitting?.overall?.slg}',
-                  run: 'Runs',
-                  runValue:
-                      '${player.statistics?.hitting?.overall?.runs?.total}',
-                  totalBase: 'Total Bases',
-                  totalBaseValue:
-                      '${player.statistics?.hitting?.overall?.onbase?.tb}',
-                  stolenBase: 'Stolen Bases',
-                  stolenBaseValue:
-                      '${player.statistics?.hitting?.overall?.steal?.stolen}'),
-            );
+            if (player.position != 'P') {
+              hitterAwayPlayerMainList.add(
+                HitterPlayerStatMainModel(
+                    playerName: '${player.firstName?[0]}. ${player.lastName}',
+                    avg: '${player.statistics?.hitting?.overall?.avg}',
+                    hAb:
+                        '${player.statistics?.hitting?.overall?.onbase?.h}-${player.statistics?.hitting?.overall?.ab}',
+                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
+                    position: '${player.position}',
+                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                    obp: 'OBP',
+                    obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                    cycle: 'Cycle',
+                    cycleValue:
+                        '${player.statistics?.hitting?.overall?.onbase?.cycle}',
+                    slg: 'SLG',
+                    slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                    run: 'Runs',
+                    runValue:
+                        '${player.statistics?.hitting?.overall?.runs?.total}',
+                    totalBase: 'Total Bases',
+                    totalBaseValue:
+                        '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                    stolenBase: 'Stolen Bases',
+                    stolenBaseValue:
+                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+              );
+            }
           }
         }
         mlbAwayHittingList = [

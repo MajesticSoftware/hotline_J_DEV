@@ -564,13 +564,15 @@ Container expandableTileCard(BuildContext context, GameDetailsController con,
     String value2 = ''}) {
   return Container(
     color: Theme.of(context).unselectedWidgetColor,
-    height: MediaQuery.sizeOf(context).height * .031,
+    // height: MediaQuery.sizeOf(context).height * .031,
     child: Row(
       children: [
         hitterDataCard(title1, context, value1, false),
         hitterDataCard(title2, context, value2, true),
       ],
-    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    ).paddingSymmetric(
+        horizontal: MediaQuery.sizeOf(context).width * .015,
+        vertical: MediaQuery.sizeOf(context).width * .01),
   );
 }
 
@@ -581,7 +583,11 @@ Expanded hitterDataCard(
     child: Row(
       children: [
         SizedBox(
-          width: isFirst ? MediaQuery.sizeOf(context).width * .05 : 0,
+          width: isFirst
+              ? mobileView.size.shortestSide < 600
+                  ? MediaQuery.sizeOf(context).width * .0
+                  : MediaQuery.sizeOf(context).width * .05
+              : 0,
         ),
         Expanded(
           flex: 2,
@@ -598,6 +604,13 @@ Expanded hitterDataCard(
                 align: TextAlign.end,
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),
+        SizedBox(
+          width: isFirst
+              ? 0
+              : mobileView.size.shortestSide < 600
+                  ? MediaQuery.sizeOf(context).width * .06
+                  : 0,
+        )
       ],
     ),
   );
@@ -606,11 +619,11 @@ Expanded hitterDataCard(
 SizedBox expandedAwayHeader(
     BuildContext context, int index, GameDetailsController con) {
   return SizedBox(
-    height: MediaQuery.sizeOf(context).height * .031,
+    // height: MediaQuery.sizeOf(context).height * .031,
     child: Row(
       children: [
         Expanded(
-            flex: 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
             child: Row(
               children: [
                 con.hitterAwayPlayerMainList[index].playerName.appCommonText(
@@ -657,18 +670,20 @@ SizedBox expandedAwayHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),
       ],
-    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    ).paddingSymmetric(
+        horizontal: MediaQuery.sizeOf(context).width * .015,
+        vertical: MediaQuery.sizeOf(context).width * .01),
   );
 }
 
 SizedBox expandedHomeHeader(
     BuildContext context, int index, GameDetailsController con) {
   return SizedBox(
-    height: MediaQuery.sizeOf(context).height * .031,
+    // height: MediaQuery.sizeOf(context).height * .031,
     child: Row(
       children: [
         Expanded(
-            flex: 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
             child: Row(
               children: [
                 con.hitterHomePlayerMainList[index].playerName.appCommonText(
@@ -715,7 +730,9 @@ SizedBox expandedHomeHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),
       ],
-    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+    ).paddingSymmetric(
+        horizontal: MediaQuery.sizeOf(context).width * .015,
+        vertical: MediaQuery.sizeOf(context).width * .01),
   );
 }
 
@@ -725,7 +742,7 @@ SizedBox headerOfHitterPlyerStat(BuildContext context) {
     child: Row(
       children: [
         Expanded(
-            flex: 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
             child: 'Hitters'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.start,
