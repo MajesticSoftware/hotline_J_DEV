@@ -487,9 +487,9 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
     itemBuilder: (context, i) {
       con.hitterAwayPlayerMainList.sort(
           (HitterPlayerStatMainModel a, HitterPlayerStatMainModel b) =>
-              int.parse(a.ab).compareTo(int.parse(b.ab)));
+              int.parse(b.ab).compareTo(int.parse(a.ab)));
       con.hitterHomePlayerMainList
-          .sort((b, a) => int.parse(b.ab).compareTo(int.parse(a.ab)));
+          .sort((b, a) => int.parse(a.ab).compareTo(int.parse(b.ab)));
       return con.isTab
           ? ExpandableNotifier(
               initialExpanded: i == con.isExpand,
