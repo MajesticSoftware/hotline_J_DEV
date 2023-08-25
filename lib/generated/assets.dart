@@ -27,6 +27,7 @@ class Assets {
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
   static const String imagesLogo = 'assets/images/logo.svg';
   static const String imagesMLB = 'assets/images/MLB.png';
+  static const String imagesMgm = 'assets/images/mgm.png';
   static const String imagesMoon = 'assets/images/moon.svg';
   static const String imagesNBA = 'assets/images/NBA.png';
   static const String imagesNCAA = 'assets/images/NCAA.png';

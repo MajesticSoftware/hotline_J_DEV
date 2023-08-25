@@ -34,6 +34,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final GameDetailsController gameDetailsController = Get.find();
   Competitors? homeTeam;
   Competitors? awayTeam;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -126,7 +131,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
   Future _refreshLocalGallery(bool isLoad) async {
     if (widget.sportKey == 'MLB') {
-      gameDetailsController.hotlinesFinalData.clear();
+      gameDetailsController.hotlinesDData.clear();
+      gameDetailsController.hotlinesFData.clear();
+      gameDetailsController.hotlinesMData.clear();
+      gameDetailsController.hotlinesData.clear();
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         await gameDetailsController
@@ -135,6 +143,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                 sportId: widget.sportId,
                 date: widget.date,
                 start: i,
+                isLoad: isLoad,
                 homeTeamId: homeTeam?.id ?? "")
             .then((value) {
           gameDetailsController.isHotlines = false;
@@ -146,9 +155,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-
-      gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
       gameDetailsController.profileAwayResponse(
         isLoad: isLoad,
         awayTeamId: widget.gameDetails.awayPlayerId,
@@ -157,6 +163,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         isLoad: isLoad,
         homeTeamId: widget.gameDetails.homePlayerId,
       );
+      gameDetailsController.mlbStaticsAwayTeamResponse(
+          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
       gameDetailsController.mlbStaticsHomeTeamResponse(
           isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
       gameDetailsController.mlbInjuriesResponse(
@@ -175,6 +183,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           sportId: widget.sportId,
           date: widget.date,
           start: i,
+          isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "",
         )
             .then((value) {

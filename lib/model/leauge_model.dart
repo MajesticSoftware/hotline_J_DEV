@@ -25,11 +25,11 @@ final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
   LeagueModel(
-      image: Assets.imagesNFT,
-      date: '2023-09-08',
-      key: 'NFL',
+      image: Assets.imagesMLB,
+      date: formatted,
+      key: 'MLB',
+      sportId: 'sr:sport:3',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      sportId: 'sr:sport:16',
       isAvailable: true),
   LeagueModel(
       image: Assets.imagesNCAA,
@@ -40,12 +40,13 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
-      image: Assets.imagesMLB,
-      date: formatted,
-      key: 'MLB',
-      sportId: 'sr:sport:3',
+      image: Assets.imagesNFT,
+      date: '2023-09-08',
+      key: 'NFL',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      sportId: 'sr:sport:16',
       isAvailable: true),
+
   LeagueModel(
       sportId: '',
       image: Assets.imagesNHL,

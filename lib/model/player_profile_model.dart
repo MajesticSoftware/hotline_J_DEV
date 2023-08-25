@@ -38,111 +38,19 @@ class PlayerProfileModel {
 
 class Player {
   String id;
-  String status;
-  String position;
-  String primaryPosition;
-  String firstName;
-  String lastName;
-  String preferredName;
-  String jerseyNumber;
-  String fullName;
-  String height;
-  String weight;
-  String throwHand;
-  String batHand;
-  String college;
-  String highSchool;
-  DateTime birthdate;
-  String birthstate;
-  String birthcountry;
-  String birthcity;
-  DateTime proDebut;
-  DateTime updated;
-  String reference;
-  Draft draft;
-  Team team;
   List<Season> seasons;
 
   Player({
     required this.id,
-    required this.status,
-    required this.position,
-    required this.primaryPosition,
-    required this.firstName,
-    required this.lastName,
-    required this.preferredName,
-    required this.jerseyNumber,
-    required this.fullName,
-    required this.height,
-    required this.weight,
-    required this.throwHand,
-    required this.batHand,
-    required this.college,
-    required this.highSchool,
-    required this.birthdate,
-    required this.birthstate,
-    required this.birthcountry,
-    required this.birthcity,
-    required this.proDebut,
-    required this.updated,
-    required this.reference,
-    required this.draft,
-    required this.team,
     required this.seasons,
   });
 
   Player copyWith({
     String? id,
-    String? status,
-    String? position,
-    String? primaryPosition,
-    String? firstName,
-    String? lastName,
-    String? preferredName,
-    String? jerseyNumber,
-    String? fullName,
-    String? height,
-    String? weight,
-    String? throwHand,
-    String? batHand,
-    String? college,
-    String? highSchool,
-    DateTime? birthdate,
-    String? birthstate,
-    String? birthcountry,
-    String? birthcity,
-    DateTime? proDebut,
-    DateTime? updated,
-    String? reference,
-    Draft? draft,
-    Team? team,
     List<Season>? seasons,
   }) =>
       Player(
         id: id ?? this.id,
-        status: status ?? this.status,
-        position: position ?? this.position,
-        primaryPosition: primaryPosition ?? this.primaryPosition,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        preferredName: preferredName ?? this.preferredName,
-        jerseyNumber: jerseyNumber ?? this.jerseyNumber,
-        fullName: fullName ?? this.fullName,
-        height: height ?? this.height,
-        weight: weight ?? this.weight,
-        throwHand: throwHand ?? this.throwHand,
-        batHand: batHand ?? this.batHand,
-        college: college ?? this.college,
-        highSchool: highSchool ?? this.highSchool,
-        birthdate: birthdate ?? this.birthdate,
-        birthstate: birthstate ?? this.birthstate,
-        birthcountry: birthcountry ?? this.birthcountry,
-        birthcity: birthcity ?? this.birthcity,
-        proDebut: proDebut ?? this.proDebut,
-        updated: updated ?? this.updated,
-        reference: reference ?? this.reference,
-        draft: draft ?? this.draft,
-        team: team ?? this.team,
         seasons: seasons ?? this.seasons,
       );
 
@@ -152,60 +60,12 @@ class Player {
 
   factory Player.fromJson(Map<String, dynamic> json) => Player(
         id: json["id"],
-        status: json["status"],
-        position: json["position"],
-        primaryPosition: json["primary_position"],
-        firstName: json["first_name"],
-        lastName: json["last_name"],
-        preferredName: json["preferred_name"],
-        jerseyNumber: json["jersey_number"],
-        fullName: json["full_name"],
-        height: json["height"],
-        weight: json["weight"],
-        throwHand: json["throw_hand"],
-        batHand: json["bat_hand"],
-        college: json["college"],
-        highSchool: json["high_school"],
-        birthdate: DateTime.parse(json["birthdate"]),
-        birthstate: json["birthstate"],
-        birthcountry: json["birthcountry"],
-        birthcity: json["birthcity"],
-        proDebut: DateTime.parse(json["pro_debut"]),
-        updated: DateTime.parse(json["updated"]),
-        reference: json["reference"],
-        draft: Draft.fromJson(json["draft"]),
-        team: Team.fromJson(json["team"]),
         seasons:
             List<Season>.from(json["seasons"].map((x) => Season.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "status": status,
-        "position": position,
-        "primary_position": primaryPosition,
-        "first_name": firstName,
-        "last_name": lastName,
-        "preferred_name": preferredName,
-        "jersey_number": jerseyNumber,
-        "full_name": fullName,
-        "height": height,
-        "weight": weight,
-        "throw_hand": throwHand,
-        "bat_hand": batHand,
-        "college": college,
-        "high_school": highSchool,
-        "birthdate":
-            "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
-        "birthstate": birthstate,
-        "birthcountry": birthcountry,
-        "birthcity": birthcity,
-        "pro_debut":
-            "${proDebut.year.toString().padLeft(4, '0')}-${proDebut.month.toString().padLeft(2, '0')}-${proDebut.day.toString().padLeft(2, '0')}",
-        "updated": updated.toIso8601String(),
-        "reference": reference,
-        "draft": draft.toJson(),
-        "team": team.toJson(),
         "seasons": List<dynamic>.from(seasons.map((x) => x.toJson())),
       };
 }
@@ -384,10 +244,10 @@ class Pitching {
 }
 
 class Bullpen {
-  num whip;
-  num ip1;
-  Onbase onbase;
-  Outcome outcome;
+  num? whip;
+  num? ip1;
+  Onbase? onbase;
+  Outcome? outcome;
 
   Bullpen({
     required this.whip,
@@ -423,8 +283,8 @@ class Bullpen {
   Map<String, dynamic> toJson() => {
         "whip": whip,
         "ip_1": ip1,
-        "outcome": outcome.toJson(),
-        "onbase": onbase.toJson(),
+        "outcome": outcome?.toJson(),
+        "onbase": onbase?.toJson(),
       };
 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -234,11 +236,11 @@ Padding teamReportWidget(BuildContext context, String sportKey,
                             padding: EdgeInsets.zero,
                             physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: controller.pittchingMLB.length,
+                            itemCount: controller.pitchingMLB.length,
                             itemBuilder: (context, index) {
                               return commonRankingWidget(context,
                                   isReport: true,
-                                  teamReports: controller.pittchingMLB[index],
+                                  teamReports: controller.pitchingMLB[index],
                                   homeText: controller
                                           .mlbHomePitchingList.isEmpty
                                       ? '0'
@@ -331,7 +333,6 @@ Padding playerStatWidget(
     SportEvents gameDetails,
     Competitors? awayTeam,
     Competitors? homeTeam) {
-  GameListingController gameListingController = Get.find();
   return Padding(
     padding: EdgeInsets.only(
         left: MediaQuery.of(context).size.height * .02,
@@ -345,7 +346,7 @@ Padding playerStatWidget(
           color: Theme.of(context).canvasColor),
       child: GetBuilder<GameDetailsController>(builder: (controller) {
         return StickyHeader(
-            header: headerTitleWidget(context, 'Player Stats',
+            header: headerTitleWidget(context, 'Pitching',
                 isTeamReport: false,
                 gameDetails: gameDetails,
                 homeTeam: homeTeam,
@@ -357,7 +358,7 @@ Padding playerStatWidget(
                         children: [
                           rankingCommonWidget(
                               context: context,
-                              title: 'Pitcher',
+                              title: '',
                               awayText: gameDetails.awayPlayerName,
                               homeText: gameDetails.homePlayerName),
                           commonRankingWidget(context,
@@ -484,12 +485,18 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
     shrinkWrap: true,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      return ExpandableNotifier(
-        child: ScrollOnExpand(
-          child: Column(
-            children: [
-              con.isTab
-                  ? ExpandablePanel(
+      con.hitterAwayPlayerMainList.sort(
+          (HitterPlayerStatMainModel a, HitterPlayerStatMainModel b) =>
+              int.parse(a.ab).compareTo(int.parse(b.ab)));
+      con.hitterHomePlayerMainList
+          .sort((b, a) => int.parse(b.ab).compareTo(int.parse(a.ab)));
+      return con.isTab
+          ? ExpandableNotifier(
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
                       theme: const ExpandableThemeData(hasIcon: false),
                       header: expandedAwayHeader(context, i, con),
                       collapsed: const SizedBox(),
@@ -511,13 +518,22 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
                                   .hitterAwayPlayerMainList[i].stolenBaseValue,
                               title1:
                                   con.hitterAwayPlayerMainList[i].stolenBase,
-                              title2: con.hitterAwayPlayerMainList[i].cycle,
-                              value2:
-                                  con.hitterAwayPlayerMainList[i].cycleValue),
+                              title2: con.hitterAwayPlayerMainList[i].hAb,
+                              value2: con.hitterAwayPlayerMainList[i].hAbValue),
                         ],
                       ),
                     )
-                  : ExpandablePanel(
+                  ],
+                ),
+              ),
+            )
+          : ExpandableNotifier(
+              key: Key(i.toString()),
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
                       theme: const ExpandableThemeData(hasIcon: false),
                       header: expandedHomeHeader(context, i, con),
                       collapsed: const SizedBox(),
@@ -539,16 +555,15 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
                                   .hitterHomePlayerMainList[i].stolenBaseValue,
                               title1:
                                   con.hitterHomePlayerMainList[i].stolenBase,
-                              title2: con.hitterHomePlayerMainList[i].cycle,
-                              value2:
-                                  con.hitterHomePlayerMainList[i].cycleValue),
+                              title2: con.hitterHomePlayerMainList[i].hAb,
+                              value2: con.hitterHomePlayerMainList[i].hAbValue),
                         ],
                       ),
                     ),
-            ],
-          ),
-        ),
-      );
+                  ],
+                ),
+              ),
+            );
     },
     separatorBuilder: (BuildContext context, int index) {
       return commonDivider(context);
@@ -588,7 +603,7 @@ Expanded hitterDataCard(
           width: isFirst
               ? mobileView.size.shortestSide < 600
                   ? MediaQuery.sizeOf(context).width * .0
-                  : MediaQuery.sizeOf(context).width * .05
+                  : MediaQuery.sizeOf(context).width * .08
               : 0,
         ),
         Expanded(
@@ -625,7 +640,7 @@ SizedBox expandedAwayHeader(
     child: Row(
       children: [
         Expanded(
-            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 2,
             child: Row(
               children: [
                 con.hitterAwayPlayerMainList[index].playerName.appCommonText(
@@ -641,12 +656,12 @@ SizedBox expandedAwayHeader(
                         size: MediaQuery.sizeOf(context).height * .014),
               ],
             )),
-        Expanded(
+        /*Expanded(
             child: con.hitterAwayPlayerMainList[index].hAb.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+                size: MediaQuery.sizeOf(context).height * .014)),*/
         Expanded(
             child: con.hitterAwayPlayerMainList[index].hr.appCommonText(
                 color: Theme.of(context).highlightColor,
@@ -660,7 +675,7 @@ SizedBox expandedAwayHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterAwayPlayerMainList[index].sb.appCommonText(
+            child: con.hitterAwayPlayerMainList[index].bb.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w400,
@@ -685,7 +700,7 @@ SizedBox expandedHomeHeader(
     child: Row(
       children: [
         Expanded(
-            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 2,
             child: Row(
               children: [
                 con.hitterHomePlayerMainList[index].playerName.appCommonText(
@@ -701,12 +716,12 @@ SizedBox expandedHomeHeader(
                         size: MediaQuery.sizeOf(context).height * .014),
               ],
             )),
-        Expanded(
+        /* Expanded(
             child: con.hitterHomePlayerMainList[index].hAb.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+                size: MediaQuery.sizeOf(context).height * .014)),*/
         Expanded(
             child: con.hitterHomePlayerMainList[index].hr.appCommonText(
                 color: Theme.of(context).highlightColor,
@@ -720,7 +735,7 @@ SizedBox expandedHomeHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterHomePlayerMainList[index].sb.appCommonText(
+            child: con.hitterHomePlayerMainList[index].bb.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w400,
@@ -744,18 +759,18 @@ SizedBox headerOfHitterPlyerStat(BuildContext context) {
     child: Row(
       children: [
         Expanded(
-            flex: mobileView.size.shortestSide < 600 ? 2 : 3,
+            flex: mobileView.size.shortestSide < 600 ? 2 : 2,
             child: 'Hitters'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.start,
                 weight: FontWeight.w700,
                 size: MediaQuery.sizeOf(context).height * .016)),
-        Expanded(
+        /*Expanded(
             child: 'H-AB'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
-                size: MediaQuery.sizeOf(context).height * .016)),
+                size: MediaQuery.sizeOf(context).height * .016)),*/
         Expanded(
             child: 'HR'.appCommonText(
                 color: Theme.of(context).highlightColor,
@@ -769,7 +784,7 @@ SizedBox headerOfHitterPlyerStat(BuildContext context) {
                 weight: FontWeight.w700,
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
-            child: 'SB'.appCommonText(
+            child: 'BB'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
@@ -811,6 +826,7 @@ Container customTabBar(BuildContext context, GameDetailsController con,
                 child: InkWell(
                   onTap: () {
                     con.isTab = true;
+                    con.isExpand = -1;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -847,6 +863,7 @@ Container customTabBar(BuildContext context, GameDetailsController con,
                 child: InkWell(
                   onTap: () {
                     con.isTab = false;
+                    con.isExpand = -1;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1519,81 +1536,80 @@ Padding hotlinesWidget(BuildContext context, GameDetailsController con) {
 }
 
 ListView hotlinesCard(GameDetailsController con) {
-  return ListView.builder(
+  return ListView.separated(
     shrinkWrap: true,
-    itemCount: con.hotlinesData.length >= 4 ? 3 : con.hotlinesData.length,
+    itemCount: con.hotlinesData.length >= 6 ? 6 : con.hotlinesData.length,
     padding: EdgeInsets.zero,
     physics: const NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
-      con.hotlinesData.sort((a, b) => b.value.compareTo(a.value));
-      return Column(
-        children: [
-          SizedBox(
-            // height:
-            //     MediaQuery.of(context).size.height * .038,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .016),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: mobileView.size.shortestSide < 600 ? 7 : 4,
-                    child: (con.hotlinesData[index].teamName).appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        weight: FontWeight.bold,
-                        align: TextAlign.start,
-                        size: mobileView.size.shortestSide < 600
-                            ? MediaQuery.of(context).size.height * .014
-                            : MediaQuery.of(context).size.height * .016),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(0)),
-                      child: Center(
-                        child: con.hotlinesData[index].value
-                            .appCommonText(
-                                color: Theme.of(context).cardColor,
-                                size: MediaQuery.of(context).size.height * .014,
-                                weight: FontWeight.w600)
-                            .paddingSymmetric(
-                                vertical:
-                                    MediaQuery.sizeOf(context).height * .008),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .02,
-                  ),
-                  Expanded(
-                      child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * .04,
-                      width: MediaQuery.of(context).size.width * .052,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage(
-                              con.hotlinesData[index].bookId == 'sr:book:18186'
-                                  ? Assets.imagesFanduel
-                                  : Assets.imagesDraftkings,
-                            ),
-                            fit: BoxFit.contain,
-                          )),
-                    ),
-                  )),
-                ],
+      return SizedBox(
+        // height:
+        //     MediaQuery.of(context).size.height * .038,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .016),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: mobileView.size.shortestSide < 600 ? 7 : 4,
+                child: (con.hotlinesData[index].teamName).appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    weight: FontWeight.bold,
+                    align: TextAlign.start,
+                    size: mobileView.size.shortestSide < 600
+                        ? MediaQuery.of(context).size.height * .014
+                        : MediaQuery.of(context).size.height * .016),
               ),
-            ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(0)),
+                  child: Center(
+                    child: con.hotlinesData[index].value
+                        .appCommonText(
+                            color: Theme.of(context).cardColor,
+                            size: MediaQuery.of(context).size.height * .014,
+                            weight: FontWeight.w600)
+                        .paddingSymmetric(
+                            vertical: MediaQuery.sizeOf(context).height * .008),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .02,
+              ),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .04,
+                  width: MediaQuery.of(context).size.width * .052,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage(
+                          con.hotlinesData[index].bookId == 'sr:book:18186'
+                              ? Assets.imagesFanduel
+                              : con.hotlinesData[index].bookId ==
+                                      'sr:book:17324'
+                                  ? Assets.imagesMgm
+                                  : Assets.imagesDraftkings,
+                        ),
+                        fit: BoxFit.contain,
+                      )),
+                ),
+              )),
+            ],
           ),
-          index == 2 ? const SizedBox() : commonDivider(context),
-        ],
+        ),
       );
+    },
+    separatorBuilder: (BuildContext context, int index) {
+      return commonDivider(context);
     },
   );
 }
