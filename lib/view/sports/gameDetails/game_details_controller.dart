@@ -844,43 +844,6 @@ class GameDetailsController extends GetxController {
     return hotlinesFinalData;
   }
 
-  Future setHotlinesData() async {
-    hotlinesDData.sort((a, b) => b.value.compareTo(a.value));
-    final playName =
-        hotlinesDData.map((e) => e.playerName.toLowerCase()).toSet();
-    hotlinesDData
-        .retainWhere((x) => playName.remove(x.playerName.toLowerCase()));
-    // final value = hotlinesDData.map((e) => e.value).toSet();
-    // hotlinesDData.retainWhere((x) => value.remove(x.value));
-    final title = hotlinesDData.map((e) => e.tittle).toSet();
-    hotlinesDData.retainWhere((x) => title.remove(x.tittle));
-    /* hotlinesFinalData.clear();
-    hotlinesFinalData = (hotlinesDData + hotlinesFData).toSet().toList();
-    // hotlinesFinalData.sort((a, b) => b.value.compareTo(a.value));*/
-
-    ///MGM
-    hotlinesMData.sort((a, b) => b.value.compareTo(a.value));
-    final playName1 =
-        hotlinesMData.map((e) => e.playerName.toLowerCase()).toSet();
-    hotlinesMData
-        .retainWhere((x) => playName1.remove(x.playerName.toLowerCase()));
-    // final value1 = hotlinesMData.map((e) => e.value).toSet();
-    // hotlinesMData.retainWhere((x) => value1.remove(x.value));
-    final title1 = hotlinesMData.map((e) => e.tittle).toSet();
-    hotlinesMData.retainWhere((x) => title1.remove(x.tittle));
-
-    ///FANDUL
-    hotlinesFData.sort((a, b) => b.value.compareTo(a.value));
-    /* final playName2 =
-        hotlinesFData.map((e) => e.playerName.toLowerCase()).toSet();
-    hotlinesFData
-        .retainWhere((x) => playName2.remove(x.playerName.toLowerCase()));
-    // final value2 = hotlinesFData.map((e) => e.value).toSet();
-    // hotlinesFData.retainWhere((x) => value2.remove(x.value));
-    final title2 = hotlinesFData.map((e) => e.tittle).toSet();
-    hotlinesFData.retainWhere((x) => title2.remove(x.tittle));*/
-  }
-
   ///MLB INJURY REPORT
   Future mlbInjuriesResponse(
       {String awayTeamId = '',
@@ -901,16 +864,16 @@ class GameDetailsController extends GetxController {
             if (team.id == awayTeamId) {
               team.players?.forEach((player) {
                 if (player.status != 'A') {
-                  sportEvent?.awayTeamInjuredPlayer
-                      .add('${player.firstName}(${player.status})');
+                  sportEvent?.awayTeamInjuredPlayer.add(
+                      '${player.firstName?[0]}. ${player.lastName}(${player.status})');
                 }
               });
             }
             if (team.id == homeTeamId) {
               team.players?.forEach((player) {
                 if (player.status != 'A') {
-                  sportEvent?.homeTeamInjuredPlayer
-                      .add('${player.firstName}(${player.status})');
+                  sportEvent?.homeTeamInjuredPlayer.add(
+                      '${player.firstName?[0]}. ${player.lastName}(${player.status})');
                 }
               });
             }
