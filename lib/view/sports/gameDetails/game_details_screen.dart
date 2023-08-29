@@ -175,7 +175,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     }
     if (widget.sportKey == 'NFL') {
       gameDetailsController.hotlinesFinalData.clear();
-      for (int i = 0; i <= 15; i += 5) {
+      /*  for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         gameDetailsController
             .hotlinesDataResponse(
@@ -194,7 +194,19 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           gameDetailsController.update();
           break;
         }
-      }
+      }*/
+      gameDetailsController
+          .hotlinesDataResponse(
+        awayTeamId: awayTeam?.id ?? "",
+        sportId: widget.sportId,
+        date: '2023-09-10',
+        start: 0,
+        isLoad: isLoad,
+        homeTeamId: homeTeam?.id ?? "",
+      )
+          .then((value) {
+        gameDetailsController.isHotlines = false;
+      });
 
       gameDetailsController.nflStaticsAwayTeamResponse(
           isLoad: isLoad,
@@ -215,13 +227,13 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     }
     if (widget.sportKey == 'NCAA') {
       gameDetailsController.hotlinesFinalData.clear();
-      for (int i = 0; i <= 15; i += 5) {
+      /*   for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         gameDetailsController
             .hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: widget.sportId,
-          date: widget.date,
+          date: '2023-08-31',
           start: i,
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "",
@@ -236,6 +248,20 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
+    }*/
+      gameDetailsController
+          .hotlinesDataResponse(
+        awayTeamId: awayTeam?.id ?? "",
+        sportId: widget.sportId,
+        date: '2023-08-31',
+        start: 0,
+        isLoad: isLoad,
+        homeTeamId: homeTeam?.id ?? "",
+      )
+          .then((value) {
+        gameDetailsController.isHotlines = false;
+        gameDetailsController.isLoading.value = false;
+      });
     }
     gameDetailsController.update();
   }
