@@ -213,6 +213,30 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       .replaceAll(',', '')
                   : homeTeam?.uuids ?? "");
     }
+    if (widget.sportKey == 'NCAA') {
+      gameDetailsController.hotlinesFinalData.clear();
+      for (int i = 0; i <= 15; i += 5) {
+        log('i====$i');
+        gameDetailsController
+            .hotlinesDataResponse(
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: widget.sportId,
+          date: widget.date,
+          start: i,
+          isLoad: isLoad,
+          homeTeamId: homeTeam?.id ?? "",
+        )
+            .then((value) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.isLoading.value = false;
+        });
+        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.update();
+          break;
+        }
+      }
+    }
     gameDetailsController.update();
   }
 }

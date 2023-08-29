@@ -74,11 +74,11 @@ List homeTeamStat = ['3-2', '5-1', '6-2', '+7.2'];
 
 List awayTeamInjury = [
   'J.Williams (O)',
-  'Jared Goff (Q)',
+  'J.Goff (Q)',
 ];
 List homeTeamInjury = [
-  'Patrick Mahomes (O)',
-  'Travis Kelce (Q)',
+  'P.Mahomes (O)',
+  'T.Kelce (Q)',
 ];
 List gamblingList = [
   'Action: Having a wager on a game or event.',

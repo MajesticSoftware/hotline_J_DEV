@@ -226,7 +226,7 @@ class GameDetailsController extends GetxController {
           final playerData = response.player;
 
           for (var player in playerData.seasons) {
-            if (player.type == 'REG') {
+            if (player.type == 'REG' && player.year == DateTime.now().year) {
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
               homeBb =
@@ -275,7 +275,7 @@ class GameDetailsController extends GetxController {
               PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
           for (var player in playerData.seasons) {
-            if (player.type == 'REG') {
+            if (player.type == 'REG' && player.year == DateTime.now().year) {
               whipAway =
                   player.totals.statistics.pitching.overall.whip.toString();
               awayBb =
