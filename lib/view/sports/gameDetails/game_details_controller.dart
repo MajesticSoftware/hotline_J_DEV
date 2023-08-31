@@ -88,12 +88,30 @@ class GameDetailsController extends GetxController {
     'Avg',
     'RBI',
   ];
+  List teamQuarterBacks = [
+    'Passing Yards',
+    'Passing TDs',
+    'Rushing Yards',
+    'Rushing TDs',
+    'Interceptions',
+  ];
+
   bool _isTab = true;
 
   bool get isTab => _isTab;
 
   set isTab(bool value) {
     _isTab = value;
+
+    update();
+  }
+
+  bool _isTab1 = true;
+
+  bool get isTab1 => _isTab1;
+
+  set isTab1(bool value) {
+    _isTab1 = value;
 
     update();
   }
@@ -124,8 +142,7 @@ class GameDetailsController extends GetxController {
   List mlbHomePitchingList = [];
   List mlbAwayHittingList = [];
   List mlbAwayPitchingList = [];
-  List<MLBStaticsDataModel> mlbAwayPlayerBattingList = [];
-  List<MLBStaticsDataModel> mlbHomePlayerBattingList = [];
+
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
   List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
@@ -233,13 +250,13 @@ class GameDetailsController extends GetxController {
                   (player.totals.statistics.pitching.overall.onbase?.bb ?? "0")
                       .toString();
               homeKk =
-                  (player.totals.statistics.pitching.overall.outcome?.ktotal ??
+                  (player.totals.statistics.pitching.overall.outs?.ktotal ??
                           "0")
                       .toString();
               homeH =
                   (player.totals.statistics.pitching.overall.onbase?.h ?? "0")
                       .toString();
-              homeIp = player.totals.statistics.pitching.overall.ip1.toString();
+              homeIp = player.totals.statistics.pitching.overall.ip2.toString();
             }
           }
         } else {
@@ -282,13 +299,13 @@ class GameDetailsController extends GetxController {
                   (player.totals.statistics.pitching.overall.onbase?.bb ?? "0")
                       .toString();
               awayKk =
-                  (player.totals.statistics.pitching.overall.outcome?.ktotal ??
+                  (player.totals.statistics.pitching.overall.outs?.ktotal ??
                           "0")
                       .toString();
               awayH =
                   (player.totals.statistics.pitching.overall.onbase?.h ?? "0")
                       .toString();
-              awayIp = player.totals.statistics.pitching.overall.ip1.toString();
+              awayIp = player.totals.statistics.pitching.overall.ip2.toString();
             }
           }
         } else {
@@ -319,8 +336,6 @@ class GameDetailsController extends GetxController {
     result = await GameListingRepo()
         .mlbStaticsRepo(teamId: homeTeamId, seasons: '2023');
     try {
-      mlbHomePlayerBattingList.clear();
-
       hitterHomePlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
@@ -421,8 +436,6 @@ class GameDetailsController extends GetxController {
     result = await GameListingRepo()
         .mlbStaticsRepo(teamId: awayTeamId, seasons: '2023');
     try {
-      mlbAwayPlayerBattingList.clear();
-
       hitterAwayPlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
@@ -763,13 +776,13 @@ class GameDetailsController extends GetxController {
                                 }
                               }
                               if (element.bookId == 'sr:book:18186') {
-                                if (hotlinesFData.indexWhere((fData) =>
-                                        fData.playerName !=
+                                if (!(hotlinesFData.indexWhere((fData) =>
+                                        fData.playerName ==
                                         element.playerName) >=
-                                    0) {
-                                  if (hotlinesFData.indexWhere((fData) =>
-                                          fData.tittle != element.tittle) >=
-                                      0) {
+                                    0)) {
+                                  if (!(hotlinesFData.indexWhere((fData) =>
+                                          fData.tittle == element.tittle) >=
+                                      0)) {
                                     hotlinesFData.add(element);
                                   }
                                 }
@@ -912,18 +925,6 @@ class GameDetailsController extends GetxController {
 }
 
 ///MLB STATICS MODEL
-class MLBStaticsDataModel {
-  String hrsValue;
-  String avgValue;
-  String rbiValue;
-  String playerName;
-
-  MLBStaticsDataModel(
-      {required this.hrsValue,
-      required this.avgValue,
-      required this.rbiValue,
-      required this.playerName});
-}
 
 class MLBPitchingStaticsModel {
   String playerName;
@@ -993,3 +994,12 @@ class HitterPlayerStatMainModel {
     required this.hAbValue,
   });
 }
+
+// class RunningBacksModel{
+//   String runningBack;
+//   String runningBack;
+//   String runningBack;
+//   String runningBack;
+//   String runningBack;
+//   String runningBack;
+// }

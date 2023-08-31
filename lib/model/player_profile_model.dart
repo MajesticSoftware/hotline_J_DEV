@@ -245,15 +245,17 @@ class Pitching {
 
 class Bullpen {
   num? whip;
-  num? ip1;
+  num? ip2;
   Onbase? onbase;
   Outcome? outcome;
+  Outs? outs;
 
   Bullpen({
     required this.whip,
     required this.onbase,
-    required this.ip1,
+    required this.ip2,
     required this.outcome,
+    required this.outs,
   });
 
   Bullpen copyWith({
@@ -261,12 +263,14 @@ class Bullpen {
     num? ip1,
     Outcome? outcome,
     Onbase? onbase,
+    Outs? outs,
   }) =>
       Bullpen(
         whip: whip ?? this.whip,
-        ip1: ip1 ?? this.ip1,
+        ip2: ip2 ?? this.ip2,
         outcome: outcome ?? this.outcome,
         onbase: onbase ?? this.onbase,
+        outs: outs ?? this.outs,
       );
 
   factory Bullpen.fromRawJson(String str) => Bullpen.fromJson(json.decode(str));
@@ -276,16 +280,38 @@ class Bullpen {
   factory Bullpen.fromJson(Map<String, dynamic> json) => Bullpen(
         whip: json["whip"] ?? 0,
         outcome: Outcome.fromJson(json["outcome"]),
-        ip1: json["ip_1"] ?? 0,
+        ip2: json["ip_2"] ?? 0,
         onbase: Onbase.fromJson(json["onbase"]),
+        outs: Outs.fromJson(json["outs"]),
       );
 
   Map<String, dynamic> toJson() => {
         "whip": whip,
-        "ip_1": ip1,
+        "ip_1": ip2,
         "outcome": outcome?.toJson(),
         "onbase": onbase?.toJson(),
+        "outs": outs?.toJson(),
       };
+}
+
+class Outs {
+  num? ktotal;
+
+  Outs({
+    this.ktotal,
+  });
+
+  Outs.fromJson(Map<String, dynamic> json) {
+    ktotal = json['ktotal'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+
+    data['ktotal'] = ktotal;
+
+    return data;
+  }
 }
 
 class Onbase {

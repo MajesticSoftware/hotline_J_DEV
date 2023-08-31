@@ -284,7 +284,11 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           commonCachedNetworkImage(
                             width: Get.height * .044,
                             height: Get.height * .044,
-                            imageUrl: competitors.gameLogoAwayLink,
+                            imageUrl: gameListingController
+                                        .sportEventsList[index].awayTeam ==
+                                    'North Carolina State Wolfpack'
+                                ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                : competitors.gameLogoAwayLink,
                           ),
                           // 10.W(),
                           SizedBox(

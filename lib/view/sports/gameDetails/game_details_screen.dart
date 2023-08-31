@@ -90,10 +90,12 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             widget.gameDetails, awayTeam, homeTeam),
                         playerStatWidget(context, con, widget.sportKey,
                             widget.gameDetails, awayTeam, homeTeam),
+                        hitterPlayerStatWidget(context, con, widget.gameDetails,
+                            awayTeam, homeTeam, widget.sportKey),
                         widget.sportKey == 'MLB'
-                            ? hitterPlayerStatWidget(context, con,
-                                widget.gameDetails, awayTeam, homeTeam)
-                            : const SizedBox(),
+                            ? const SizedBox()
+                            : wrPlayersWidget(context, con, widget.gameDetails,
+                                awayTeam, homeTeam, widget.sportKey),
                         widget.sportKey == 'MLB'
                             ? mlbInjuryReportWidget(context, widget.gameDetails,
                                 widget.sportKey, awayTeam, homeTeam)
