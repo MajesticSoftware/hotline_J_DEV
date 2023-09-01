@@ -6,6 +6,7 @@ import 'package:hotlines/model/player_profile_model.dart';
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
+import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/response_item.dart';
 import '../../../network/game_listing_repo.dart';
 
@@ -48,10 +49,12 @@ class GameListingController extends GetxController {
                 (difference.inHours >= (-6))) {
               todayEventsList.add(event);
             } else if (event.season?.id == 'sr:season:102797' &&
-                sportKey == 'NFL') {
+                sportKey == 'NFL' &&
+                (difference.inHours >= (-6))) {
               todayEventsList.add(event);
             } else if (event.season?.id == 'sr:season:101983' &&
-                sportKey == 'NCAA') {
+                sportKey == 'NCAA' &&
+                (difference.inHours >= (-6))) {
               todayEventsList.add(event);
             }
           }
@@ -396,6 +399,83 @@ class GameListingController extends GetxController {
     update();
   }
 
+  Future boxScoreResponseNCAA(
+      {String gameId = '',
+      String homeTeamId = '',
+      String awayTeamId = '',
+      bool isLoad = false,
+      String key = '',
+      int index = 0}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().boxScoreRepoNCAA(gameId: gameId, sportKey: key);
+    try {
+      if (result.status) {
+        NCAABoxScoreModel response = NCAABoxScoreModel.fromJson(result.data);
+        final game = response;
+        if (game.id == gameId) {
+          sportEventsList[index].venue?.temp =
+              int.parse((game.weather?.temp ?? '0').toString());
+          /*   sportEventsList[index].inning =
+              game.outcome?.currentInning.toString() ?? '';
+          sportEventsList[index].inningHalf =
+              game.outcome?.currentInningHalf.toString() ?? '';*/
+          sportEventsList[index].venue?.weather = game.weather?.condition;
+          if (game.summary?.home?.id == homeTeamId) {
+            sportEventsList[index].homeScore =
+                (game.summary?.home?.points ?? "0").toString();
+            sportEventsList[index].homeWin =
+                (game.summary?.home?.record?.wins ?? "0").toString();
+            sportEventsList[index].homeLoss =
+                (game.summary?.home?.record?.losses ?? "0").toString();
+            // sportEventsList[index].homePlayerId =
+            //     (game.summary?.home?.probablePitcher?.id).toString();
+            // sportEventsList[index].wlHome =
+            //     ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? "0"}')
+            //         .toString();
+            // sportEventsList[index].eraHome =
+            //     (game.home?.probablePitcher?.era ?? '0').toString();
+            // sportEventsList[index].homePlayerName =
+            //     ('${game.home?.probablePitcher?.preferredName?[0]}. ${game.home?.probablePitcher?.lastName}')
+            //         .toString();
+          }
+          if (game.summary?.away?.id == awayTeamId) {
+            sportEventsList[index].awayScore =
+                (game.summary?.away?.points ?? "0").toString();
+            sportEventsList[index].awayWin =
+                (game.summary?.away?.record?.wins ?? "0").toString();
+            sportEventsList[index].awayLoss =
+                (game.summary?.away?.record?.losses ?? "0").toString();
+            // sportEventsList[index].awayPlayerId =
+            //     (game.away?.probablePitcher?.id).toString();
+            // sportEventsList[index].wlAway =
+            //     ('${game.away?.probablePitcher?.win ?? '0'}-${game.away?.probablePitcher?.loss ?? "0"}')
+            //         .toString();
+            // sportEventsList[index].eraAway =
+            //     (game.away?.probablePitcher?.era ?? '0').toString();
+            // sportEventsList[index].awayPlayerName =
+            //     ('${game.away?.probablePitcher?.preferredName?[0]}. ${game.away?.probablePitcher?.lastName}')
+            //         .toString();
+          }
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE1----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
   ///GAME LISTING FOR ALL GAME
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
@@ -407,38 +487,57 @@ class GameListingController extends GetxController {
     // final DateFormat formatter = DateFormat('yyyy-MM-dd');
     // final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
-    await gameListingTodayApiRes(
+    await gameListingTomorrowApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
-            date: date,
+            date: '2023-09-01',
             sportId: sportId)
         .then((value) async {
       await gameListingTomorrowApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
-              date: '2023-08-31',
+              date: '2023-09-02',
               sportId: sportId)
-          .then((value) async {
-        await gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: '2023-09-01',
-                sportId: sportId)
-            .then((value) async {
-          await gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: '2023-09-02',
-                  sportId: sportId)
-              .then((value) {
-            getAllEventList(sportKey);
-            gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
-          });
-        });
+          .then((value) {
+        getAllEventList(sportKey);
+        if (sportEventsList.isNotEmpty) {
+          for (int i = 0; i < sportEventsList.length; i++) {
+            int index =
+                sportEventsList.indexWhere((element) => element.uuids != null);
+            if (index >= 0) {
+              String homeIdString = (sportEventsList[i].competitors[0].uuids ??
+                          '')
+                      .contains(
+                          sportEventsList[i].competitors[0].abbreviation ?? "")
+                  ? (sportEventsList[i].competitors[0].uuids ?? '')
+                      .replaceAll(
+                          sportEventsList[i].competitors[0].abbreviation ?? "",
+                          '')
+                      .replaceAll(',', '')
+                  : sportEventsList[i].competitors[0].uuids ?? "";
+              String awayIdString = (sportEventsList[i].competitors[1].uuids ??
+                          '')
+                      .contains(
+                          sportEventsList[i].competitors[1].abbreviation ?? "")
+                  ? (sportEventsList[i].competitors[1].uuids ?? '')
+                      .replaceAll(
+                          sportEventsList[i].competitors[1].abbreviation ?? "",
+                          '')
+                      .replaceAll(',', '')
+                  : sportEventsList[i].competitors[1].uuids ?? "";
+              boxScoreResponseNCAA(
+                  homeTeamId: homeIdString,
+                  awayTeamId: awayIdString,
+                  key: sportKey,
+                  gameId: sportEventsList[i].uuids ?? '',
+                  index: i);
+            }
+          }
+        }
+
+        gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
       });
     });
   }
@@ -481,6 +580,46 @@ class GameListingController extends GetxController {
                   sportId: sportId)
               .then((value) {
             getAllEventList(sportKey);
+            if (sportEventsList.isNotEmpty) {
+              for (int i = 0; i < sportEventsList.length; i++) {
+                int index = sportEventsList
+                    .indexWhere((element) => element.uuids != null);
+                if (index >= 0) {
+                  String homeIdString =
+                      (sportEventsList[i].competitors[0].uuids ?? '').contains(
+                              sportEventsList[i].competitors[0].abbreviation ??
+                                  "")
+                          ? (sportEventsList[i].competitors[0].uuids ?? '')
+                              .replaceAll(
+                                  sportEventsList[i]
+                                          .competitors[0]
+                                          .abbreviation ??
+                                      "",
+                                  '')
+                              .replaceAll(',', '')
+                          : sportEventsList[i].competitors[0].uuids ?? "";
+                  String awayIdString =
+                      (sportEventsList[i].competitors[1].uuids ?? '').contains(
+                              sportEventsList[i].competitors[1].abbreviation ??
+                                  "")
+                          ? (sportEventsList[i].competitors[1].uuids ?? '')
+                              .replaceAll(
+                                  sportEventsList[i]
+                                          .competitors[1]
+                                          .abbreviation ??
+                                      "",
+                                  '')
+                              .replaceAll(',', '')
+                          : sportEventsList[i].competitors[1].uuids ?? "";
+                  boxScoreResponseNCAA(
+                      homeTeamId: homeIdString,
+                      awayTeamId: awayIdString,
+                      key: sportKey,
+                      gameId: sportEventsList[i].uuids ?? '',
+                      index: i);
+                }
+              }
+            }
             gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
           });
         });

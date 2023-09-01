@@ -1561,18 +1561,22 @@ mlbInjuryReportWidget(BuildContext context, SportEvents gameDetails,
                                                         .size
                                                         .width *
                                                     .038,
-                                                child:
-                                                    '${gameDetails.awayTeamInjuredPlayer[index]}'
-                                                        .toString()
-                                                        .appCommonText(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .highlightColor,
-                                                            weight:
-                                                                FontWeight.w700,
-                                                            align:
-                                                                TextAlign.start,
-                                                            size: MediaQuery.of(
+                                                child: '${gameDetails.awayTeamInjuredPlayer[index]}'
+                                                    .toString()
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        weight: FontWeight.w700,
+                                                        align: TextAlign.start,
+                                                        size: mobileView.size
+                                                                    .shortestSide <
+                                                                600
+                                                            ? MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                .014
+                                                            : MediaQuery.of(
                                                                         context)
                                                                     .size
                                                                     .height *
@@ -1640,18 +1644,22 @@ mlbInjuryReportWidget(BuildContext context, SportEvents gameDetails,
                                                         .size
                                                         .width *
                                                     .038,
-                                                child:
-                                                    '${gameDetails.homeTeamInjuredPlayer[index]}'
-                                                        .toString()
-                                                        .appCommonText(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .highlightColor,
-                                                            weight:
-                                                                FontWeight.w700,
-                                                            align:
-                                                                TextAlign.start,
-                                                            size: MediaQuery.of(
+                                                child: '${gameDetails.homeTeamInjuredPlayer[index]}'
+                                                    .toString()
+                                                    .appCommonText(
+                                                        color: Theme.of(context)
+                                                            .highlightColor,
+                                                        weight: FontWeight.w700,
+                                                        align: TextAlign.start,
+                                                        size: mobileView.size
+                                                                    .shortestSide <
+                                                                600
+                                                            ? MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                .014
+                                                            : MediaQuery.of(
                                                                         context)
                                                                     .size
                                                                     .height *
@@ -2194,6 +2202,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                           width: Get.height * .048,
                           height: Get.height * .048,
                           fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox(),
                         ),
                         (mobileView.size.shortestSide < 600
                                 ? awayTeam?.abbreviation
@@ -2281,6 +2291,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.network(
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox(),
                           gameDetails.gameHomeLogoLink,
                           width: Get.height * .048,
                           height: Get.height * .048,
