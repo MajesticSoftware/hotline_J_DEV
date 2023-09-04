@@ -848,7 +848,8 @@ class GameDetailsController extends GetxController {
       // isHotlines.value = false;
     } catch (e) {
       isHotlines = false;
-      log('ERROR>>>>>>>>----$e');
+      isLoading.value = false;
+      // log('ERROR>>>>>>>>----$e');
       // showAppSnackBar(
       //   errorText,
       // );

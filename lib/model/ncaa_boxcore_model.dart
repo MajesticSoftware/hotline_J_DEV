@@ -2,10 +2,10 @@ class NCAABoxScoreModel {
   String? id;
   String? status;
   String? scheduled;
-  int? attendance;
+  num? attendance;
   String? entryMode;
   String? clock;
-  int? quarter;
+  num? quarter;
   String? coverage;
   String? srId;
   String? gameType;
@@ -13,9 +13,7 @@ class NCAABoxScoreModel {
   String? duration;
   Weather? weather;
   Summary? summary;
-  List<Scoring>? scoring;
-/*  List<Null>? scoringDrives;
-  List<Null>? scoringPlays;*/
+  Statistics? statistics;
   String? sComment;
 
   NCAABoxScoreModel(
@@ -33,9 +31,7 @@ class NCAABoxScoreModel {
       this.duration,
       this.weather,
       this.summary,
-      this.scoring,
-      /*   this.scoringDrives,
-        this.scoringPlays,*/
+      this.statistics,
       this.sComment});
 
   NCAABoxScoreModel.fromJson(Map<String, dynamic> json) {
@@ -55,24 +51,9 @@ class NCAABoxScoreModel {
         json['weather'] != null ? new Weather.fromJson(json['weather']) : null;
     summary =
         json['summary'] != null ? new Summary.fromJson(json['summary']) : null;
-    if (json['scoring'] != null) {
-      scoring = <Scoring>[];
-      json['scoring'].forEach((v) {
-        scoring!.add(new Scoring.fromJson(v));
-      });
-    }
-    /*if (json['scoring_drives'] != null) {
-      scoringDrives = <Null>[];
-      json['scoring_drives'].forEach((v) {
-        scoringDrives!.add(new Null.fromJson(v));
-      });
-    }
-    if (json['scoring_plays'] != null) {
-      scoringPlays = <Null>[];
-      json['scoring_plays'].forEach((v) {
-        scoringPlays!.add(new Null.fromJson(v));
-      });
-    }*/
+    statistics = json['statistics'] != null
+        ? new Statistics.fromJson(json['statistics'])
+        : null;
     sComment = json['_comment'];
   }
 
@@ -96,17 +77,9 @@ class NCAABoxScoreModel {
     if (this.summary != null) {
       data['summary'] = this.summary!.toJson();
     }
-    if (this.scoring != null) {
-      data['scoring'] = this.scoring!.map((v) => v.toJson()).toList();
+    if (this.statistics != null) {
+      data['statistics'] = this.statistics!.toJson();
     }
-    /*if (this.scoringDrives != null) {
-      data['scoring_drives'] =
-          this.scoringDrives!.map((v) => v.toJson()).toList();
-    }
-    if (this.scoringPlays != null) {
-      data['scoring_plays'] =
-          this.scoringPlays!.map((v) => v.toJson()).toList();
-    }*/
     data['_comment'] = this.sComment;
     return data;
   }
@@ -114,8 +87,8 @@ class NCAABoxScoreModel {
 
 class Weather {
   String? condition;
-  int? humidity;
-  int? temp;
+  num? humidity;
+  num? temp;
   Wind? wind;
 
   Weather({this.condition, this.humidity, this.temp, this.wind});
@@ -140,7 +113,7 @@ class Weather {
 }
 
 class Wind {
-  int? speed;
+  num? speed;
   String? direction;
 
   Wind({this.speed, this.direction});
@@ -160,17 +133,15 @@ class Wind {
 
 class Summary {
   Season? season;
-  Week? week;
   Venue? venue;
   Home? home;
   Home? away;
 
-  Summary({this.season, this.week, this.venue, this.home, this.away});
+  Summary({this.season, this.venue, this.home, this.away});
 
   Summary.fromJson(Map<String, dynamic> json) {
     season =
         json['season'] != null ? new Season.fromJson(json['season']) : null;
-    week = json['week'] != null ? new Week.fromJson(json['week']) : null;
     venue = json['venue'] != null ? new Venue.fromJson(json['venue']) : null;
     home = json['home'] != null ? new Home.fromJson(json['home']) : null;
     away = json['away'] != null ? new Home.fromJson(json['away']) : null;
@@ -180,9 +151,6 @@ class Summary {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.season != null) {
       data['season'] = this.season!.toJson();
-    }
-    if (this.week != null) {
-      data['week'] = this.week!.toJson();
     }
     if (this.venue != null) {
       data['venue'] = this.venue!.toJson();
@@ -199,7 +167,7 @@ class Summary {
 
 class Season {
   String? id;
-  int? year;
+  num? year;
   String? type;
   String? name;
 
@@ -222,28 +190,6 @@ class Season {
   }
 }
 
-class Week {
-  String? id;
-  int? sequence;
-  String? title;
-
-  Week({this.id, this.sequence, this.title});
-
-  Week.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    sequence = json['sequence'];
-    title = json['title'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['sequence'] = this.sequence;
-    data['title'] = this.title;
-    return data;
-  }
-}
-
 class Venue {
   String? id;
   String? name;
@@ -252,10 +198,9 @@ class Venue {
   String? country;
   String? zip;
   String? address;
-  int? capacity;
+  num? capacity;
   String? surface;
   String? roofType;
-  String? srId;
 
   Venue(
       {this.id,
@@ -267,8 +212,7 @@ class Venue {
       this.address,
       this.capacity,
       this.surface,
-      this.roofType,
-      this.srId});
+      this.roofType});
 
   Venue.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -281,7 +225,6 @@ class Venue {
     capacity = json['capacity'];
     surface = json['surface'];
     roofType = json['roof_type'];
-    srId = json['sr_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -296,7 +239,6 @@ class Venue {
     data['capacity'] = this.capacity;
     data['surface'] = this.surface;
     data['roof_type'] = this.roofType;
-    data['sr_id'] = this.srId;
     return data;
   }
 }
@@ -306,11 +248,11 @@ class Home {
   String? name;
   String? market;
   String? alias;
-  int? usedTimeouts;
-  int? remainingTimeouts;
-  int? points;
-  int? usedChallenges;
-  int? remainingChallenges;
+  num? usedTimeouts;
+  num? remainingTimeouts;
+  num? points;
+  num? usedChallenges;
+  num? remainingChallenges;
   Record? record;
 
   Home(
@@ -358,9 +300,9 @@ class Home {
 }
 
 class Record {
-  int? wins;
-  int? losses;
-  int? ties;
+  num? wins;
+  num? losses;
+  num? ties;
 
   Record({this.wins, this.losses, this.ties});
 
@@ -379,39 +321,415 @@ class Record {
   }
 }
 
-class Scoring {
-  String? periodType;
-  String? id;
-  int? number;
-  int? sequence;
-  int? homePoints;
-  int? awayPoints;
+class Statistics {
+  HomeStatic? home;
+  HomeStatic? away;
 
-  Scoring(
-      {this.periodType,
-      this.id,
-      this.number,
-      this.sequence,
-      this.homePoints,
-      this.awayPoints});
+  Statistics({this.home, this.away});
 
-  Scoring.fromJson(Map<String, dynamic> json) {
-    periodType = json['period_type'];
-    id = json['id'];
-    number = json['number'];
-    sequence = json['sequence'];
-    homePoints = json['home_points'];
-    awayPoints = json['away_points'];
+  Statistics.fromJson(Map<String, dynamic> json) {
+    home = json['home'] != null ? new HomeStatic.fromJson(json['home']) : null;
+    away = json['away'] != null ? new HomeStatic.fromJson(json['away']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['period_type'] = this.periodType;
+    if (this.home != null) {
+      data['home'] = this.home!.toJson();
+    }
+    if (this.away != null) {
+      data['away'] = this.away!.toJson();
+    }
+    return data;
+  }
+}
+
+class Rushing {
+  Totals? totals;
+  List<Players>? players;
+
+  Rushing({this.totals, this.players});
+
+  Rushing.fromJson(Map<String, dynamic> json) {
+    totals =
+        json['totals'] != null ? new Totals.fromJson(json['totals']) : null;
+    if (json['players'] != null) {
+      players = <Players>[];
+      json['players'].forEach((v) {
+        players!.add(new Players.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.totals != null) {
+      data['totals'] = this.totals!.toJson();
+    }
+    if (this.players != null) {
+      data['players'] = this.players!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Totals {
+  double? avgYards;
+  num? attempts;
+  num? touchdowns;
+  num? tlost;
+  num? tlostYards;
+  num? yards;
+  num? longest;
+  num? longestTouchdown;
+  num? redzoneAttempts;
+  num? firstDowns;
+
+  Totals(
+      {this.avgYards,
+      this.attempts,
+      this.touchdowns,
+      this.tlost,
+      this.tlostYards,
+      this.yards,
+      this.longest,
+      this.longestTouchdown,
+      this.redzoneAttempts,
+      this.firstDowns});
+
+  Totals.fromJson(Map<String, dynamic> json) {
+    avgYards = json['avg_yards'];
+    attempts = json['attempts'];
+    touchdowns = json['touchdowns'];
+    tlost = json['tlost'];
+    tlostYards = json['tlost_yards'];
+    yards = json['yards'];
+    longest = json['longest'];
+    longestTouchdown = json['longest_touchdown'];
+    redzoneAttempts = json['redzone_attempts'];
+    firstDowns = json['first_downs'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['avg_yards'] = this.avgYards;
+    data['attempts'] = this.attempts;
+    data['touchdowns'] = this.touchdowns;
+    data['tlost'] = this.tlost;
+    data['tlost_yards'] = this.tlostYards;
+    data['yards'] = this.yards;
+    data['longest'] = this.longest;
+    data['longest_touchdown'] = this.longestTouchdown;
+    data['redzone_attempts'] = this.redzoneAttempts;
+    data['first_downs'] = this.firstDowns;
+    return data;
+  }
+}
+
+class HomeStatic {
+  String? id;
+  String? name;
+  String? market;
+  String? alias;
+  Rushing? rushing;
+  Rushing? receiving;
+  Rushing? passing;
+  Rushing? defense;
+  FirstDowns? firstDowns;
+  Interceptions? interceptions;
+  Touchdowns? touchdowns;
+  Efficiency? efficiency;
+
+  HomeStatic(
+      {this.id,
+      this.name,
+      this.market,
+      this.alias,
+      this.rushing,
+      this.receiving,
+      this.passing,
+      this.defense,
+      this.firstDowns,
+      this.interceptions,
+      this.touchdowns,
+      this.efficiency});
+
+  HomeStatic.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    market = json['market'];
+    alias = json['alias'];
+    rushing =
+        json['rushing'] != null ? new Rushing.fromJson(json['rushing']) : null;
+    receiving = json['receiving'] != null
+        ? new Rushing.fromJson(json['receiving'])
+        : null;
+    passing =
+        json['passing'] != null ? new Rushing.fromJson(json['passing']) : null;
+    defense =
+        json['defense'] != null ? new Rushing.fromJson(json['defense']) : null;
+    firstDowns = json['first_downs'] != null
+        ? new FirstDowns.fromJson(json['first_downs'])
+        : null;
+    interceptions = json['interceptions'] != null
+        ? new Interceptions.fromJson(json['interceptions'])
+        : null;
+    touchdowns = json['touchdowns'] != null
+        ? new Touchdowns.fromJson(json['touchdowns'])
+        : null;
+    efficiency = json['efficiency'] != null
+        ? new Efficiency.fromJson(json['efficiency'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['name'] = this.name;
+    data['market'] = this.market;
+    data['alias'] = this.alias;
+    if (this.rushing != null) {
+      data['rushing'] = this.rushing!.toJson();
+    }
+    if (this.receiving != null) {
+      data['receiving'] = this.receiving!.toJson();
+    }
+    if (this.passing != null) {
+      data['passing'] = this.passing!.toJson();
+    }
+    if (this.defense != null) {
+      data['defense'] = this.defense!.toJson();
+    }
+    if (this.firstDowns != null) {
+      data['first_downs'] = this.firstDowns!.toJson();
+    }
+    if (this.interceptions != null) {
+      data['interceptions'] = this.interceptions!.toJson();
+    }
+    if (this.touchdowns != null) {
+      data['touchdowns'] = this.touchdowns!.toJson();
+    }
+    if (this.efficiency != null) {
+      data['efficiency'] = this.efficiency!.toJson();
+    }
+    return data;
+  }
+}
+
+class Players {
+  String? id;
+  String? name;
+  String? jersey;
+  String? position;
+  num? avgYards;
+  num? attempts;
+  num? touchdowns;
+  num? yards;
+
+  Players(
+      {this.id,
+      this.name,
+      this.jersey,
+      this.position,
+      this.avgYards,
+      this.attempts,
+      this.touchdowns,
+      this.yards});
+
+  Players.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    jersey = json['jersey'];
+    position = json['position'];
+    avgYards = json['avg_yards'];
+    attempts = json['attempts'];
+    touchdowns = json['touchdowns'];
+    yards = json['yards'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['jersey'] = this.jersey;
+    data['position'] = this.position;
+    data['avg_yards'] = this.avgYards;
+    data['attempts'] = this.attempts;
+    data['touchdowns'] = this.touchdowns;
+    data['yards'] = this.yards;
+    return data;
+  }
+}
+
+class Defense {
+  Totals? totals;
+
+  Defense({this.totals});
+
+  Defense.fromJson(Map<String, dynamic> json) {
+    totals =
+        json['totals'] != null ? new Totals.fromJson(json['totals']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.totals != null) {
+      data['totals'] = this.totals!.toJson();
+    }
+    return data;
+  }
+}
+
+class FirstDowns {
+  num? pass;
+  num? penalty;
+  num? rush;
+  num? total;
+
+  FirstDowns({this.pass, this.penalty, this.rush, this.total});
+
+  FirstDowns.fromJson(Map<String, dynamic> json) {
+    pass = json['pass'];
+    penalty = json['penalty'];
+    rush = json['rush'];
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['pass'] = this.pass;
+    data['penalty'] = this.penalty;
+    data['rush'] = this.rush;
+    data['total'] = this.total;
+    return data;
+  }
+}
+
+class Interceptions {
+  num? returnYards;
+  num? returned;
+  num? number;
+
+  Interceptions({this.returnYards, this.returned, this.number});
+
+  Interceptions.fromJson(Map<String, dynamic> json) {
+    returnYards = json['return_yards'];
+    returned = json['returned'];
+    number = json['number'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['return_yards'] = this.returnYards;
+    data['returned'] = this.returned;
     data['number'] = this.number;
-    data['sequence'] = this.sequence;
-    data['home_points'] = this.homePoints;
-    data['away_points'] = this.awayPoints;
+    return data;
+  }
+}
+
+class Touchdowns {
+  num? pass;
+  num? rush;
+  num? total;
+
+  Touchdowns({this.pass, this.rush, this.total});
+
+  Touchdowns.fromJson(Map<String, dynamic> json) {
+    pass = json['pass'];
+    rush = json['rush'];
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['pass'] = this.pass;
+    data['rush'] = this.rush;
+    data['total'] = this.total;
+    return data;
+  }
+}
+
+class Efficiency {
+  Goaltogo? goaltogo;
+  Thirddown? redzone;
+  Thirddown? thirddown;
+  Goaltogo? fourthdown;
+
+  Efficiency({this.goaltogo, this.redzone, this.thirddown, this.fourthdown});
+
+  Efficiency.fromJson(Map<String, dynamic> json) {
+    goaltogo = json['goaltogo'] != null
+        ? new Goaltogo.fromJson(json['goaltogo'])
+        : null;
+    redzone = json['redzone'] != null
+        ? new Thirddown.fromJson(json['redzone'])
+        : null;
+    thirddown = json['thirddown'] != null
+        ? new Thirddown.fromJson(json['thirddown'])
+        : null;
+    fourthdown = json['fourthdown'] != null
+        ? new Goaltogo.fromJson(json['fourthdown'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.goaltogo != null) {
+      data['goaltogo'] = this.goaltogo!.toJson();
+    }
+    if (this.redzone != null) {
+      data['redzone'] = this.redzone!.toJson();
+    }
+    if (this.thirddown != null) {
+      data['thirddown'] = this.thirddown!.toJson();
+    }
+    if (this.fourthdown != null) {
+      data['fourthdown'] = this.fourthdown!.toJson();
+    }
+    return data;
+  }
+}
+
+class Goaltogo {
+  num? attempts;
+  num? successes;
+  num? pct;
+
+  Goaltogo({this.attempts, this.successes, this.pct});
+
+  Goaltogo.fromJson(Map<String, dynamic> json) {
+    attempts = json['attempts'];
+    successes = json['successes'];
+    pct = json['pct'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['attempts'] = this.attempts;
+    data['successes'] = this.successes;
+    data['pct'] = this.pct;
+    return data;
+  }
+}
+
+class Thirddown {
+  num? attempts;
+  num? successes;
+  num? pct;
+
+  Thirddown({this.attempts, this.successes, this.pct});
+
+  Thirddown.fromJson(Map<String, dynamic> json) {
+    attempts = json['attempts'];
+    successes = json['successes'];
+    pct = json['pct'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['attempts'] = this.attempts;
+    data['successes'] = this.successes;
+    data['pct'] = this.pct;
     return data;
   }
 }

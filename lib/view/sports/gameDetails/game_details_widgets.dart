@@ -413,32 +413,30 @@ Padding playerStatWidget(
                               homeText: 'Patrick'),
                           commonRankingWidget(context,
                               teamReports: controller.teamQuarterBacks[0],
-                              awayText: gameDetails.wlAway,
-                              homeText: gameDetails.wlHome),
+                              awayText: gameDetails.awayPassingYard,
+                              homeText: gameDetails.homePassingYard),
                           commonDivider(context),
-                          commonRankingWidget(context,
-                              teamReports: controller.teamQuarterBacks[1],
-                              awayText: double.parse(gameDetails.eraAway)
-                                  .toStringAsFixed(2),
-                              homeText: double.parse(gameDetails.eraHome)
-                                  .toStringAsFixed(2)),
+                          commonRankingWidget(
+                            context,
+                            teamReports: controller.teamQuarterBacks[1],
+                            awayText: gameDetails.awayPassingTds,
+                            homeText: gameDetails.homePassingTds,
+                          ),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamQuarterBacks[2],
-                              awayText: double.parse(controller.whipAway)
-                                  .toStringAsFixed(2),
-                              homeText: double.parse(controller.whipHome)
-                                  .toStringAsFixed(2)),
+                              awayText: gameDetails.awayRushingYard,
+                              homeText: gameDetails.homeRushingYard),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamQuarterBacks[3],
-                              awayText: controller.awayIp,
-                              homeText: controller.homeIp),
+                              awayText: gameDetails.awayRushingTds,
+                              homeText: gameDetails.homeRushingTds),
                           commonDivider(context),
                           commonRankingWidget(context,
                               teamReports: controller.teamQuarterBacks[4],
-                              awayText: controller.awayH,
-                              homeText: controller.homeH),
+                              awayText: gameDetails.awayInterCaption,
+                              homeText: gameDetails.homeInterCaption),
                         ],
                       ),
               ],
@@ -515,10 +513,103 @@ Padding wrPlayersWidget(
               children: [
                 headerOfWRPlayers(context),
                 commonDivider(context),
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return con.isTab1
+                        ? receivingAwayPlayerCard(context, gameDetails, index)
+                        : receivingHomePlayerCard(context, gameDetails, index);
+                  },
+                  separatorBuilder: (context, index) {
+                    return commonDivider(context);
+                  },
+                  itemCount: con.isTab1
+                      ? gameDetails.awayReceiversPlayer.length
+                      : gameDetails.homeReceiversPlayer.length,
+                )
               ],
             ));
       }),
     ),
+  );
+}
+
+SizedBox receivingAwayPlayerCard(
+    BuildContext context, SportEvents gameDetails, int index) {
+  return SizedBox(
+    height: MediaQuery.sizeOf(context).height * .034,
+    child: Row(
+      children: [
+        Expanded(
+            flex: 3,
+            child:
+                ('${gameDetails.awayReceiversPlayer[index].name} (${gameDetails.awayReceiversPlayer[index].position})')
+                    .toString()
+                    .appCommonText(
+                        color: Theme.of(context).highlightColor,
+                        align: TextAlign.start,
+                        weight: FontWeight.w700,
+                        size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: ('${gameDetails.awayReceiversPlayer[index].touchdowns}')
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w700,
+                    size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: ('${gameDetails.awayReceiversPlayer[index].yards}')
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w700,
+                    size: MediaQuery.sizeOf(context).height * .016)),
+      ],
+    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+  );
+}
+
+SizedBox receivingHomePlayerCard(
+    BuildContext context, SportEvents gameDetails, int index) {
+  return SizedBox(
+    height: MediaQuery.sizeOf(context).height * .034,
+    child: Row(
+      children: [
+        Expanded(
+            flex: 3,
+            child:
+                ('${gameDetails.homeReceiversPlayer[index].name} (${gameDetails.homeReceiversPlayer[index].position})')
+                    .toString()
+                    .appCommonText(
+                        color: Theme.of(context).highlightColor,
+                        align: TextAlign.start,
+                        weight: FontWeight.w700,
+                        size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: ('${gameDetails.homeReceiversPlayer[index].touchdowns}')
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w700,
+                    size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: ('${gameDetails.homeReceiversPlayer[index].yards}')
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w700,
+                    size: MediaQuery.sizeOf(context).height * .016)),
+      ],
+    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
   );
 }
 

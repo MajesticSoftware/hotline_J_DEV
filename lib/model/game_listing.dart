@@ -1,3 +1,7 @@
+import 'package:hotlines/model/ncaa_boxcore_model.dart';
+
+import 'package:hotlines/model/ncaa_boxcore_model.dart';
+
 class GameListingDataModel {
   String? generatedAt;
   String? schema;
@@ -92,7 +96,19 @@ class SportEvents {
   String homePlayerId = '';
   String homePlayerName = '';
   String awayPlayerName = '';
+  String awayRushingYard = '0';
+  String awayPassingYard = '0';
+  String awayRushingTds = '0';
+  String awayPassingTds = '0';
+  String awayInterCaption = '0';
+  String homeRushingYard = '0';
+  String homePassingYard = '0';
+  String homeRushingTds = '0';
+  String homePassingTds = '0';
+  String homeInterCaption = '0';
   List awayTeamInjuredPlayer = [];
+  List<Players> awayReceiversPlayer = [];
+  List<Players> homeReceiversPlayer = [];
   List homeTeamInjuredPlayer = [];
   SportEvents({
     this.id,
@@ -112,20 +128,32 @@ class SportEvents {
     this.homeTeam = '',
     this.homeGameLogo = '',
     this.awayGameLogo = '',
-    this.homeMoneyLine = '',
+    this.homeMoneyLine = '0',
     this.homeSpread = '0',
-    this.homeOU = '',
+    this.homeOU = '0',
     this.awayMoneyLine = '',
     this.awaySpread = '0',
-    this.awayOU = '',
-    this.awayScore = '',
-    this.homeScore = '',
-    this.awayWin = '',
-    this.homeWin = '',
-    this.awayLoss = '',
-    this.homeLoss = '',
+    this.awayOU = '0',
+    this.awayScore = '0',
+    this.homeScore = '0',
+    this.awayWin = '0',
+    this.homeWin = '0',
+    this.awayLoss = '0',
+    this.homeLoss = '0',
+    this.awayRushingYard = '0',
+    this.awayPassingYard = '0',
+    this.awayRushingTds = '0',
+    this.awayPassingTds = '0',
+    this.awayInterCaption = '0',
+    this.homeRushingYard = '0',
+    this.homePassingYard = '0',
+    this.homeRushingTds = '0',
+    this.homePassingTds = '0',
+    this.homeInterCaption = '0',
     this.homeTeamInjuredPlayer = const [],
     this.awayTeamInjuredPlayer = const [],
+    this.awayReceiversPlayer = const [],
+    this.homeReceiversPlayer = const [],
   });
 
   String get gameHomeLogoLink {

@@ -132,11 +132,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   }
 
   Future _refreshLocalGallery(bool isLoad) async {
+    gameDetailsController.hotlinesDData.clear();
+    gameDetailsController.hotlinesFData.clear();
+    gameDetailsController.hotlinesMData.clear();
+    gameDetailsController.hotlinesData.clear();
     if (widget.sportKey == 'MLB') {
-      gameDetailsController.hotlinesDData.clear();
-      gameDetailsController.hotlinesFData.clear();
-      gameDetailsController.hotlinesMData.clear();
-      gameDetailsController.hotlinesData.clear();
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         await gameDetailsController
@@ -228,21 +228,18 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   : homeTeam?.uuids ?? "");
     }
     if (widget.sportKey == 'NCAA') {
-      gameDetailsController.hotlinesFinalData.clear();
-      /*   for (int i = 0; i <= 15; i += 5) {
+      for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
-        gameDetailsController
+        await gameDetailsController
             .hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: widget.sportId,
-          date: '2023-08-31',
-          start: i,
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "",
-        )
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: widget.sportId,
+                date: widget.date,
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
             .then((value) {
           gameDetailsController.isHotlines = false;
-          gameDetailsController.isLoading.value = false;
         });
         if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
           gameDetailsController.isHotlines = false;
@@ -250,20 +247,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-    }*/
-      gameDetailsController
-          .hotlinesDataResponse(
-        awayTeamId: awayTeam?.id ?? "",
-        sportId: widget.sportId,
-        date: '2023-08-31',
-        start: 0,
-        isLoad: isLoad,
-        homeTeamId: homeTeam?.id ?? "",
-      )
-          .then((value) {
-        gameDetailsController.isHotlines = false;
-        gameDetailsController.isLoading.value = false;
-      });
     }
     gameDetailsController.update();
   }
