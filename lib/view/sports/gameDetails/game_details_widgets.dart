@@ -547,7 +547,7 @@ SizedBox receivingAwayPlayerCard(
                 ('${gameDetails.awayReceiversPlayer[index].name} (${gameDetails.awayReceiversPlayer[index].position})')
                     .toString()
                     .appCommonText(
-                        color: Theme.of(context).highlightColor,
+                        color: blueColor,
                         align: TextAlign.start,
                         weight: FontWeight.w700,
                         size: MediaQuery.sizeOf(context).height * .016)),
@@ -586,7 +586,7 @@ SizedBox receivingHomePlayerCard(
                 ('${gameDetails.homeReceiversPlayer[index].name} (${gameDetails.homeReceiversPlayer[index].position})')
                     .toString()
                     .appCommonText(
-                        color: Theme.of(context).highlightColor,
+                        color: blueColor,
                         align: TextAlign.start,
                         weight: FontWeight.w700,
                         size: MediaQuery.sizeOf(context).height * .016)),
