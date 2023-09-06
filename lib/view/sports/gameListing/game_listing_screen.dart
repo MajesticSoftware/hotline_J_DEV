@@ -288,7 +288,16 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                         .sportEventsList[index].awayTeam ==
                                     'North Carolina State Wolfpack'
                                 ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                : competitors.gameLogoAwayLink,
+                                : gameListingController
+                                            .sportEventsList[index].awayTeam ==
+                                        'Louisiana-Lafayette Ragin Cajuns'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                    : gameListingController
+                                                .sportEventsList[index]
+                                                .awayTeam ==
+                                            'Sam Houston State Bearkats'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                        : competitors.gameLogoAwayLink,
                           ),
                           // 10.W(),
                           SizedBox(
@@ -336,7 +345,20 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           commonCachedNetworkImage(
                               width: Get.height * .044,
                               height: Get.height * .044,
-                              imageUrl: competitors.gameHomeLogoLink),
+                              imageUrl: gameListingController
+                                          .sportEventsList[index].homeTeam ==
+                                      'North Carolina State Wolfpack'
+                                  ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                  : gameListingController.sportEventsList[index]
+                                              .homeTeam ==
+                                          'Louisiana-Lafayette Ragin Cajuns'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                      : gameListingController
+                                                  .sportEventsList[index]
+                                                  .homeTeam ==
+                                              'Sam Houston State Bearkats'
+                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                          : competitors.gameHomeLogoLink),
                           // 10.W(),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * .01,

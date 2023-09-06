@@ -100,10 +100,14 @@ class GameListingController extends GetxController {
                     DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               tomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:102797' &&
-                sportKey == 'NFL') {
+                sportKey == 'NFL' &&
+                DateTime.parse(event.scheduled ?? '').toLocal().day !=
+                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               tomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:101983' &&
-                sportKey == 'NCAA') {
+                sportKey == 'NCAA' &&
+                DateTime.parse(event.scheduled ?? '').toLocal().day !=
+                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               tomorrowEventsList.add(event);
             }
           }
@@ -494,38 +498,38 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now);
-    tomorrowEventsList.clear();
-    await gameListingTomorrowApiRes(
+    gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
             sportId: sportId)
         .then((value) async {
-      await gameListingTomorrowApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: formatted,
-              sportId: sportId)
-          .then((value) {
-        getAllEventList(sportKey);
-        if (sportEventsList.isNotEmpty) {
-          for (int i = 0; i < sportEventsList.length; i++) {
-            if (sportEventsList[i].uuids != null) {
-              boxScoreResponseNCAA(
-                  key: sportKey,
-                  gameId: sportEventsList[i].uuids ?? '',
-                  index: i);
+      tomorrowEventsList.clear();
+      for (int i = 1; i <= 7; i++) {
+        await gameListingTomorrowApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: DateFormat('yyyy-MM-dd')
+                .format(DateTime.parse(date).add(Duration(days: i))),
+            sportId: sportId);
+        if (i == 7) {
+          getAllEventList(sportKey);
+          if (sportEventsList.isNotEmpty) {
+            for (int i = 0; i < sportEventsList.length; i++) {
+              if (sportEventsList[i].uuids != null) {
+                boxScoreResponseNCAA(
+                    key: sportKey,
+                    gameId: sportEventsList[i].uuids ?? '',
+                    index: i);
+              }
             }
           }
+          gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+          break;
         }
-
-        gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
-      });
+      }
     });
   }
 
@@ -534,83 +538,38 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    // final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
-    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    // final String formatted = formatter.format(now);
-    tomorrowEventsList.clear();
-    await gameListingTodayApiRes(
+    gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
             sportId: sportId)
         .then((value) async {
-      await gameListingTomorrowApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: '2023-09-10',
-              sportId: sportId)
-          .then((value) async {
+      tomorrowEventsList.clear();
+      for (int i = 1; i <= 7; i++) {
         await gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: '2023-09-11',
-                sportId: sportId)
-            .then((value) async {
-          await gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: '2023-09-12',
-                  sportId: sportId)
-              .then((value) {
-            getAllEventList(sportKey);
-            if (sportEventsList.isNotEmpty) {
-              for (int i = 0; i < sportEventsList.length; i++) {
-                int index = sportEventsList
-                    .indexWhere((element) => element.uuids != null);
-                if (index >= 0) {
-                  String homeIdString =
-                      (sportEventsList[i].competitors[0].uuids ?? '').contains(
-                              sportEventsList[i].competitors[0].abbreviation ??
-                                  "")
-                          ? (sportEventsList[i].competitors[0].uuids ?? '')
-                              .replaceAll(
-                                  sportEventsList[i]
-                                          .competitors[0]
-                                          .abbreviation ??
-                                      "",
-                                  '')
-                              .replaceAll(',', '')
-                          : sportEventsList[i].competitors[0].uuids ?? "";
-                  String awayIdString =
-                      (sportEventsList[i].competitors[1].uuids ?? '').contains(
-                              sportEventsList[i].competitors[1].abbreviation ??
-                                  "")
-                          ? (sportEventsList[i].competitors[1].uuids ?? '')
-                              .replaceAll(
-                                  sportEventsList[i]
-                                          .competitors[1]
-                                          .abbreviation ??
-                                      "",
-                                  '')
-                              .replaceAll(',', '')
-                          : sportEventsList[i].competitors[1].uuids ?? "";
-                  /*   boxScoreResponseNCAA(
-                      homeTeamId: homeIdString,
-                      awayTeamId: awayIdString,
-                      key: sportKey,
-                      gameId: sportEventsList[i].uuids ?? '',
-                      index: i);*/
-                }
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: DateFormat('yyyy-MM-dd')
+                .format(DateTime.parse(date).add(Duration(days: i))),
+            sportId: sportId);
+        if (i == 7) {
+          getAllEventList(sportKey);
+          if (sportEventsList.isNotEmpty) {
+            for (int i = 0; i < sportEventsList.length; i++) {
+              if (sportEventsList[i].uuids != null) {
+                boxScoreResponseNCAA(
+                    key: sportKey,
+                    gameId: sportEventsList[i].uuids ?? '',
+                    index: i);
               }
             }
-            gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
-          });
-        });
-      });
+          }
+          gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+          break;
+        }
+      }
     });
   }
 

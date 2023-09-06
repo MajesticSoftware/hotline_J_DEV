@@ -1181,7 +1181,11 @@ Container customTabBar(BuildContext context, GameDetailsController con,
                           height: Get.height * .025,
                           imageUrl: awayTeam?.abbreviation == 'NCST'
                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : gameDetails.gameLogoAwayLink),
+                              : awayTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : awayTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameLogoAwayLink),
                     ],
                   ),
                 ),
@@ -1203,7 +1207,13 @@ Container customTabBar(BuildContext context, GameDetailsController con,
                       commonCachedNetworkImage(
                           width: Get.height * .025,
                           height: Get.height * .025,
-                          imageUrl: gameDetails.gameHomeLogoLink),
+                          imageUrl: homeTeam?.abbreviation == 'NCST'
+                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                              : homeTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : homeTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameHomeLogoLink),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -1307,7 +1317,11 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                           height: Get.height * .025,
                           imageUrl: awayTeam?.abbreviation == 'NCST'
                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : gameDetails.gameLogoAwayLink),
+                              : awayTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : awayTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameLogoAwayLink),
                     ],
                   ),
                 ),
@@ -1329,7 +1343,13 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                       commonCachedNetworkImage(
                           width: Get.height * .025,
                           height: Get.height * .025,
-                          imageUrl: gameDetails.gameHomeLogoLink),
+                          imageUrl: homeTeam?.abbreviation == 'NCST'
+                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                              : homeTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : homeTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameHomeLogoLink),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -1905,7 +1925,13 @@ Container headerTitleWidget(BuildContext context, String title,
                     height: Get.height * .025,
                     imageUrl: awayTeam?.abbreviation == 'NCST'
                         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : gameDetails.gameLogoAwayLink),
+                        : awayTeam?.abbreviation == 'ULL'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                            : awayTeam?.abbreviation == 'ULL'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                : awayTeam?.abbreviation == 'SHS'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                    : gameDetails.gameLogoAwayLink),
               ],
             ),
           ),
@@ -1930,7 +1956,13 @@ Container headerTitleWidget(BuildContext context, String title,
                 commonCachedNetworkImage(
                     width: Get.height * .025,
                     height: Get.height * .025,
-                    imageUrl: gameDetails.gameHomeLogoLink),
+                    imageUrl: homeTeam?.abbreviation == 'NCST'
+                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                        : homeTeam?.abbreviation == 'ULL'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                            : homeTeam?.abbreviation == 'SHS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                : gameDetails.gameHomeLogoLink),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .01,
                 ),
@@ -2289,7 +2321,11 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                         Image.network(
                           awayTeam?.abbreviation == 'NCST'
                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : gameDetails.gameLogoAwayLink,
+                              : awayTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : awayTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameLogoAwayLink,
                           width: Get.height * .048,
                           height: Get.height * .048,
                           fit: BoxFit.contain,
@@ -2384,7 +2420,13 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                         Image.network(
                           errorBuilder: (context, error, stackTrace) =>
                               const SizedBox(),
-                          gameDetails.gameHomeLogoLink,
+                          homeTeam?.abbreviation == 'NCST'
+                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                              : homeTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : homeTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameHomeLogoLink,
                           width: Get.height * .048,
                           height: Get.height * .048,
                           fit: BoxFit.contain,
