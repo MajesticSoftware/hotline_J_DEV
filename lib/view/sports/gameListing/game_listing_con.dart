@@ -100,14 +100,10 @@ class GameListingController extends GetxController {
                     DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               tomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:102797' &&
-                sportKey == 'NFL' &&
-                DateTime.parse(event.scheduled ?? '').toLocal().day !=
-                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
+                sportKey == 'NFL') {
               tomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:101983' &&
-                sportKey == 'NCAA' &&
-                DateTime.parse(event.scheduled ?? '').toLocal().day !=
-                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
+                sportKey == 'NCAA') {
               tomorrowEventsList.add(event);
             }
           }
