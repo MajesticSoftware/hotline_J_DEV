@@ -94,13 +94,14 @@ class GameListingRepo {
 
   ///NFL STATICS
   Future<ResponseItem> nflStaticsRepo(
-      {String teamId = '', String seasons = ''}) async {
+      {String teamId = '', String seasons = '', String sportKey = ''}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(
-        '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=h4kantpwh2rhn783gdh6theg');
+    Uri uri = Uri.parse(sportKey == "NFL"
+        ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=h4kantpwh2rhn783gdh6theg'
+        : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=qucqbyh68myd733tsxtfnbau');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -129,13 +130,14 @@ class GameListingRepo {
   }
 
   ///MLB INJURIES API
-  Future<ResponseItem> mlbInjuriesRepo() async {
+  Future<ResponseItem> mlbInjuriesRepo(String sportKey) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(
-        '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+    Uri uri = Uri.parse(sportKey == "MLB"
+        ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=5hnm7xhtgc8q22q2x4w6urvb'
+        : '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year.toString()}/REG/01/injuries.json?api_key=h4kantpwh2rhn783gdh6theg');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

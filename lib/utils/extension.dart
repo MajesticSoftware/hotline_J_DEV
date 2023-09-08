@@ -35,7 +35,8 @@ extension AddText on String {
       FontWeight weight = FontWeight.w500,
       TextDecoration? decoration,
       FontStyle fontStyle = FontStyle.normal,
-      int? maxLine}) {
+      int? maxLine,
+      TextOverflow? overflow}) {
     return Text(
       this,
       style: GoogleFonts.nunitoSans(
@@ -47,7 +48,7 @@ extension AddText on String {
           fontStyle: fontStyle,
           decoration: decoration),
       textAlign: align,
-      // overflow: TextOverflow.ellipsis,
+      overflow: overflow,
       maxLines: maxLine,
     );
   }

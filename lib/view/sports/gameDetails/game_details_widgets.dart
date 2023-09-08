@@ -275,14 +275,16 @@ Padding teamReportWidget(BuildContext context, String sportKey,
                                 context,
                                 isReport: true,
                                 teamReports: controller.offensive[index],
-                                awayText: controller
-                                        .nflAwayOffensiveList.isEmpty
-                                    ? '0'
-                                    : controller.nflAwayOffensiveList[index],
-                                homeText: controller
-                                        .nflHomeOffensiveList.isEmpty
-                                    ? '0'
-                                    : controller.nflHomeOffensiveList[index],
+                                awayText:
+                                    controller.nflAwayOffensiveList.isEmpty
+                                        ? '0'
+                                        : controller.nflAwayOffensiveList[index]
+                                            .toString(),
+                                homeText:
+                                    controller.nflHomeOffensiveList.isEmpty
+                                        ? '0'
+                                        : controller.nflHomeOffensiveList[index]
+                                            .toString(),
                               );
                             },
                             separatorBuilder:
@@ -306,11 +308,13 @@ Padding teamReportWidget(BuildContext context, String sportKey,
                                   homeText: controller
                                           .nflHomeDefensiveList.isEmpty
                                       ? '0'
-                                      : controller.nflHomeDefensiveList[index],
+                                      : controller.nflHomeDefensiveList[index]
+                                          .toString(),
                                   awayText: controller
                                           .nflAwayDefensiveList.isEmpty
                                       ? "0"
-                                      : controller.nflAwayDefensiveList[index]);
+                                      : controller.nflAwayDefensiveList[index]
+                                          .toString());
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {
@@ -1679,6 +1683,9 @@ mlbInjuryReportWidget(BuildContext context, SportEvents gameDetails,
                                                             .highlightColor,
                                                         weight: FontWeight.w700,
                                                         align: TextAlign.start,
+                                                        maxLine: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         size: mobileView.size
                                                                     .shortestSide <
                                                                 600
@@ -1762,6 +1769,9 @@ mlbInjuryReportWidget(BuildContext context, SportEvents gameDetails,
                                                             .highlightColor,
                                                         weight: FontWeight.w700,
                                                         align: TextAlign.start,
+                                                        maxLine: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         size: mobileView.size
                                                                     .shortestSide <
                                                                 600
@@ -1825,15 +1835,10 @@ Expanded commonEmptyInjuryReportWidget(GameDetailsController controller,
     child: ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: sportKey == 'MLB'
-          ? gameDetails.awayTeamInjuredPlayer.length >=
-                  gameDetails.homeTeamInjuredPlayer.length
-              ? gameDetails.awayTeamInjuredPlayer.length
-              : gameDetails.homeTeamInjuredPlayer.length
-          : gameDetails.awayTeamInjuredPlayer.length >=
-                  gameDetails.homeTeamInjuredPlayer.length
-              ? gameDetails.awayTeamInjuredPlayer.length
-              : gameDetails.homeTeamInjuredPlayer.length,
+      itemCount: gameDetails.awayTeamInjuredPlayer.length >=
+              gameDetails.homeTeamInjuredPlayer.length
+          ? gameDetails.awayTeamInjuredPlayer.length
+          : gameDetails.homeTeamInjuredPlayer.length,
       padding: EdgeInsets.zero,
       itemBuilder: (context, index) {
         return commonCatchWidget(
@@ -1854,21 +1859,12 @@ Column commonCatchWidget(
       SizedBox(
         height: MediaQuery.of(context).size.width * .038,
       ),
-      (sportKey == 'MLB'
-              ? (index ==
-                  (gameDetails.awayTeamInjuredPlayer.length >=
-                              gameDetails.homeTeamInjuredPlayer.length
-                          ? gameDetails.awayTeamInjuredPlayer.length
-                          : gameDetails.homeTeamInjuredPlayer.length) -
-                      1)
-              : 0 ==
-                  0 /*(index ==
-                    (controller.injuredAwayPlayerList.length >=
-                                controller.injuredHomePlayerList.length
-                            ? controller.injuredAwayPlayerList.length
-                            : controller.injuredHomePlayerList.length) -
-                        1)*/
-          )
+      ((index ==
+              (gameDetails.awayTeamInjuredPlayer.length >=
+                          gameDetails.homeTeamInjuredPlayer.length
+                      ? gameDetails.awayTeamInjuredPlayer.length
+                      : gameDetails.homeTeamInjuredPlayer.length) -
+                  1))
           ? const SizedBox()
           : commonDivider(context),
     ],

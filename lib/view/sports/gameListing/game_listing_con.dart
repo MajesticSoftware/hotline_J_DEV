@@ -263,6 +263,46 @@ class GameListingController extends GetxController {
       }*/
       if (event.consensus != null) {
         ///MONEY LINES
+        if (event.markets.isNotEmpty) {
+          for (var marketData in event.markets) {
+            if (marketData.oddsTypeId == 4) {
+              int fanDuelIndex = marketData.books
+                  .indexWhere((element) => element.id == 'sr:book:18186');
+              for (var bookData in marketData.books) {
+                if (fanDuelIndex >= 0) {
+                  if (bookData.id == 'sr:book:18186') {
+                    if (bookData.outcomes?[0].type == 'home') {
+                      event.homeSpread =
+                          bookData.outcomes?[0].spread.toString() ?? '00';
+                    }
+                    if (bookData.outcomes?[1].type == 'away') {
+                      event.awaySpread =
+                          bookData.outcomes?[1].spread.toString() ?? '00';
+                    }
+                  }
+                } else if (bookData.id == 'sr:book:28901') {
+                  if (bookData.outcomes?[0].type == 'home') {
+                    event.homeSpread =
+                        bookData.outcomes?[0].spread.toString() ?? '';
+                  }
+                  if (bookData.outcomes?[1].type == 'away') {
+                    event.awaySpread =
+                        bookData.outcomes?[1].spread.toString() ?? '';
+                  }
+                } else if (bookData.id == 'sr:book:17324') {
+                  if (bookData.outcomes?[0].type == 'home') {
+                    event.homeSpread =
+                        bookData.outcomes?[0].spread.toString() ?? '';
+                  }
+                  if (bookData.outcomes?[1].type == 'away') {
+                    event.awaySpread =
+                        bookData.outcomes?[1].spread.toString() ?? '';
+                  }
+                }
+              }
+            }
+          }
+        }
         if (event.consensus?.lines != null) {
           event.consensus?.lines?.forEach((consensus) {
             if (consensus.name == 'moneyline_current') {
@@ -275,46 +315,7 @@ class GameListingController extends GetxController {
                 }
               });
             }
-            if (event.markets.isNotEmpty) {
-              for (var marketData in event.markets) {
-                if (marketData.oddsTypeId == 4) {
-                  for (var bookData in marketData.books) {
-                    int fanDuelIndex = marketData.books
-                        .indexWhere((element) => element.name == 'FanDuel');
-                    if (fanDuelIndex >= 0) {
-                      if (bookData.name == 'FanDuel') {
-                        if (bookData.outcomes?[0].type == 'home') {
-                          event.homeSpread =
-                              bookData.outcomes?[0].spread.toString() ?? '00';
-                        }
-                        if (bookData.outcomes?[1].type == 'away') {
-                          event.awaySpread =
-                              bookData.outcomes?[1].spread.toString() ?? '00';
-                        }
-                      }
-                    } else if (bookData.name == 'Bet365NewJersey') {
-                      if (bookData.outcomes?[0].type == 'home') {
-                        event.homeSpread =
-                            bookData.outcomes?[0].spread.toString() ?? '';
-                      }
-                      if (bookData.outcomes?[1].type == 'away') {
-                        event.awaySpread =
-                            bookData.outcomes?[1].spread.toString() ?? '';
-                      }
-                    } else if (bookData.name == 'MGM') {
-                      if (bookData.outcomes?[0].type == 'home') {
-                        event.homeSpread =
-                            bookData.outcomes?[0].spread.toString() ?? '';
-                      }
-                      if (bookData.outcomes?[1].type == 'away') {
-                        event.awaySpread =
-                            bookData.outcomes?[1].spread.toString() ?? '';
-                      }
-                    }
-                  }
-                }
-              }
-            }
+
             if (consensus.name == 'total_current') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
@@ -526,7 +527,8 @@ class GameListingController extends GetxController {
               }
             }
           }
-          gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+              isLoad: true);
           break;
         }
       }
@@ -566,7 +568,8 @@ class GameListingController extends GetxController {
               }
             }
           }
-          gameListingsWithLogoResponse('2023', sportKey, isLoad: true);
+          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+              isLoad: true);
           break;
         }
       }
@@ -609,7 +612,8 @@ class GameListingController extends GetxController {
             }
           }
         }
-        gameListingsWithLogoResponse('2023', sportKey, isLoad: isLoad);
+        gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+            isLoad: isLoad);
       });
     });
   }

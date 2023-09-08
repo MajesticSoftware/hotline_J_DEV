@@ -96,25 +96,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             ? const SizedBox()
                             : wrPlayersWidget(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'MLB'
-                            ? mlbInjuryReportWidget(context, widget.gameDetails,
-                                widget.sportKey, awayTeam, homeTeam)
-                            : awayTeam?.abbreviation == 'DET' &&
-                                    homeTeam?.abbreviation == 'KC'
-                                ? nflStaticInjuryReportWidget(
-                                    context,
-                                    con,
-                                    widget.sportKey,
-                                    widget.gameDetails,
-                                    awayTeam,
-                                    homeTeam)
-                                : nflStaticInjuryReportWidget(
-                                    context,
-                                    con,
-                                    widget.sportKey,
-                                    widget.gameDetails,
-                                    awayTeam,
-                                    homeTeam),
+                        mlbInjuryReportWidget(context, widget.gameDetails,
+                            widget.sportKey, awayTeam, homeTeam),
                         40.H(),
                       ],
                     ),
@@ -200,6 +183,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
       gameDetailsController.nflStaticsAwayTeamResponse(
           isLoad: isLoad,
+          sportKey: widget.sportKey,
           awayTeamId:
               (awayTeam?.uuids ?? '').contains(awayTeam?.abbreviation ?? "")
                   ? (awayTeam?.uuids ?? '')
@@ -208,6 +192,22 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                   : awayTeam?.uuids ?? "");
       gameDetailsController.nflStaticsHomeTeamResponse(
           isLoad: isLoad,
+          sportKey: widget.sportKey,
+          homeTeamId:
+              (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
+                  ? (homeTeam?.uuids ?? '')
+                      .replaceAll(homeTeam?.abbreviation ?? "", '')
+                      .replaceAll(',', '')
+                  : homeTeam?.uuids ?? "");
+      gameDetailsController.mlbInjuriesResponse(
+          isLoad: isLoad,
+          sportEvent: widget.gameDetails,
+          awayTeamId: (awayTeam?.uuids ?? '')
+                  .contains(awayTeam?.abbreviation ?? "")
+              ? (awayTeam?.uuids ?? '')
+                  .replaceAll(awayTeam?.abbreviation ?? "", '')
+                  .replaceAll(',', '')
+              : awayTeam?.uuids ?? "",
           homeTeamId:
               (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
                   ? (homeTeam?.uuids ?? '')
@@ -237,6 +237,24 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
+      gameDetailsController.nflStaticsAwayTeamResponse(
+          isLoad: isLoad,
+          sportKey: widget.sportKey,
+          awayTeamId:
+              (awayTeam?.uuids ?? '').contains(awayTeam?.abbreviation ?? "")
+                  ? (awayTeam?.uuids ?? '')
+                      .replaceAll(awayTeam?.abbreviation ?? "", '')
+                      .replaceAll(',', '')
+                  : (awayTeam?.uuids ?? "").split(',').first);
+      gameDetailsController.nflStaticsHomeTeamResponse(
+          isLoad: isLoad,
+          sportKey: widget.sportKey,
+          homeTeamId:
+              (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
+                  ? (homeTeam?.uuids ?? '')
+                      .replaceAll(homeTeam?.abbreviation ?? "", '')
+                      .replaceAll(',', '')
+                  : (homeTeam?.uuids ?? '').split(',').first);
     }
     gameDetailsController.update();
   }

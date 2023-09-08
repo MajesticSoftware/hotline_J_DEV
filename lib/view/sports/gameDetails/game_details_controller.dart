@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
+import 'package:hotlines/model/nfl_injury_model.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/DET_KC_model.dart';
@@ -333,8 +334,8 @@ class GameDetailsController extends GetxController {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .mlbStaticsRepo(teamId: homeTeamId, seasons: '2023');
+    result = await GameListingRepo().mlbStaticsRepo(
+        teamId: homeTeamId, seasons: DateTime.now().year.toString());
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
@@ -433,8 +434,8 @@ class GameDetailsController extends GetxController {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .mlbStaticsRepo(teamId: awayTeamId, seasons: '2023');
+    result = await GameListingRepo().mlbStaticsRepo(
+        teamId: awayTeamId, seasons: DateTime.now().year.toString());
     try {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
@@ -527,54 +528,60 @@ class GameDetailsController extends GetxController {
   }
 
   ///NFL STATICS
-  TeamRecords? nflStaticsHomeList;
-  TeamRecords? nflStaticsAwayList;
-  List nflHomeOffensiveList = [];
-  List nflHomeDefensiveList = [];
-  List nflAwayOffensiveList = [];
-  List nflAwayDefensiveList = [];
+
+  List<String> nflHomeOffensiveList = [];
+  List<String> nflHomeDefensiveList = [];
+  List<String> nflAwayOffensiveList = [];
+  List<String> nflAwayDefensiveList = [];
   Future nflStaticsHomeTeamResponse(
-      {String homeTeamId = '', bool isLoad = false}) async {
+      {String homeTeamId = '',
+      bool isLoad = false,
+      String sportKey = ''}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .nflStaticsRepo(teamId: homeTeamId, seasons: '2023');
+    result = await GameListingRepo().nflStaticsRepo(
+        teamId: homeTeamId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
     try {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
           if (response.season != null) {
-            if (response.season?.team?.teamRecords != null) {
-              nflStaticsHomeList = response.season?.team?.teamRecords;
-              var offenciveData = nflStaticsHomeList?.record;
-              var defenciveData = nflStaticsHomeList?.opponents;
+            if (response.record != null) {
+              var offenciveData = response.record;
+              var defenciveData = response.opponents;
               nflHomeOffensiveList = [
                 '0',
                 '0',
                 '0',
-                offenciveData?.efficiency?.redzone ?? '0',
-                offenciveData?.rushing ?? '0',
-                offenciveData?.passing ?? '0',
+                ('${offenciveData?.efficiency?.redzone?.successes ?? "0"}-${offenciveData?.efficiency?.redzone?.attempts ?? "0"}')
+                    .toString(),
+                offenciveData?.rushing?.yards.toString() ?? '0',
+                offenciveData?.passing?.yards.toString() ?? '0',
+                offenciveData?.rushing?.touchdowns.toString() ?? '0',
+                offenciveData?.passing?.touchdowns.toString() ?? '0',
                 '0',
-                '0',
-                '0',
-                offenciveData?.efficiency?.thirddown ?? '0',
-                offenciveData?.efficiency?.fourthdown ?? '0',
+                ('${offenciveData?.efficiency?.thirddown?.successes ?? "0"}-${offenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
+                    .toString(),
+                '${offenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${offenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
                 '0'
               ];
               nflHomeDefensiveList = [
                 '0',
                 '0',
                 '0',
-                defenciveData?.efficiency?.redzone ?? "0",
-                defenciveData?.rushing ?? '0',
-                defenciveData?.passing ?? '0',
+                ('${defenciveData?.efficiency?.redzone?.successes ?? "0"}-${defenciveData?.efficiency?.redzone?.attempts ?? "0"}')
+                    .toString(),
+                defenciveData?.rushing?.yards.toString() ?? '0',
+                defenciveData?.passing?.yards.toString() ?? '0',
+                defenciveData?.rushing?.touchdowns.toString() ?? '0',
+                defenciveData?.passing?.touchdowns.toString() ?? '0',
                 '0',
-                '0',
-                '0',
-                defenciveData?.efficiency?.thirddown ?? '0',
-                defenciveData?.efficiency?.fourthdown ?? '0',
+                ('${defenciveData?.efficiency?.thirddown?.successes ?? "0"}-${defenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
+                    .toString(),
+                '${defenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${defenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
               ];
             }
           }
@@ -603,47 +610,54 @@ class GameDetailsController extends GetxController {
   }
 
   Future nflStaticsAwayTeamResponse(
-      {String awayTeamId = '', bool isLoad = false}) async {
+      {String awayTeamId = '',
+      bool isLoad = false,
+      String sportKey = ''}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .nflStaticsRepo(teamId: awayTeamId, seasons: '2023');
+    result = await GameListingRepo().nflStaticsRepo(
+        teamId: awayTeamId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
     try {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
           if (response.season != null) {
-            if (response.season?.team?.teamRecords != null) {
-              nflStaticsAwayList = response.season?.team?.teamRecords;
-              var offenciveData = response.season?.team?.teamRecords?.record;
-              var defenciveData = response.season?.team?.teamRecords?.opponents;
+            if (response.record != null) {
+              var offenciveData = response.record;
+              var defenciveData = response.opponents;
               nflAwayOffensiveList = [
                 '0',
                 '0',
                 '0',
-                offenciveData?.efficiency?.redzone ?? '0',
-                offenciveData?.rushing ?? '0',
-                offenciveData?.passing ?? '0',
+                ('${offenciveData?.efficiency?.redzone?.successes ?? "0"}-${offenciveData?.efficiency?.redzone?.attempts ?? "0"}')
+                    .toString(),
+                offenciveData?.rushing?.yards.toString() ?? '0',
+                offenciveData?.passing?.yards.toString() ?? '0',
+                offenciveData?.rushing?.touchdowns.toString() ?? '0',
+                offenciveData?.passing?.touchdowns.toString() ?? '0',
                 '0',
-                '0',
-                '0',
-                offenciveData?.efficiency?.thirddown ?? '0',
-                offenciveData?.efficiency?.fourthdown ?? '0',
+                ('${offenciveData?.efficiency?.thirddown?.successes ?? "0"}-${offenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
+                    .toString(),
+                '${offenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${offenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
                 '0',
               ];
               nflAwayDefensiveList = [
                 '0',
                 '0',
                 '0',
-                defenciveData?.efficiency?.redzone ?? "0",
-                defenciveData?.rushing ?? '0',
-                defenciveData?.passing ?? '0',
+                ('${defenciveData?.efficiency?.redzone?.successes ?? "0"}-${defenciveData?.efficiency?.redzone?.attempts ?? "0"}')
+                    .toString(),
+                defenciveData?.rushing?.yards.toString() ?? '0',
+                defenciveData?.passing?.yards.toString() ?? '0',
+                defenciveData?.rushing?.touchdowns.toString() ?? '0',
+                defenciveData?.passing?.touchdowns.toString() ?? '0',
                 '0',
-                '0',
-                '0',
-                defenciveData?.efficiency?.thirddown ?? '0',
-                defenciveData?.efficiency?.fourthdown ?? '0',
+                ('${defenciveData?.efficiency?.thirddown?.successes ?? "0"}-${defenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
+                    .toString(),
+                '${defenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${defenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
               ];
             }
           }
@@ -862,37 +876,63 @@ class GameDetailsController extends GetxController {
   Future mlbInjuriesResponse(
       {String awayTeamId = '',
       String homeTeamId = '',
+      String sportKey = '',
       SportEvents? sportEvent,
       bool isLoad = false}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().mlbInjuriesRepo();
+    result = await GameListingRepo().mlbInjuriesRepo(sportKey);
     try {
       sportEvent?.homeTeamInjuredPlayer.clear();
       sportEvent?.awayTeamInjuredPlayer.clear();
       if (result.status) {
-        MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
-        if (response.teams != null) {
-          response.teams?.forEach((team) {
-            if (team.id == awayTeamId) {
-              team.players?.forEach((player) {
-                if (player.status != 'A') {
-                  sportEvent?.awayTeamInjuredPlayer.add(
-                      '${player.firstName?[0]}. ${player.lastName}(${player.status})');
-                }
-              });
-            }
-            if (team.id == homeTeamId) {
-              team.players?.forEach((player) {
-                if (player.status != 'A') {
-                  sportEvent?.homeTeamInjuredPlayer.add(
-                      '${player.firstName?[0]}. ${player.lastName}(${player.status})');
-                }
-              });
-            }
-          });
+        if (sportKey == "MLB") {
+          MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
+          if (response.teams != null) {
+            response.teams?.forEach((team) {
+              if (team.id == awayTeamId) {
+                team.players?.forEach((player) {
+                  if (player.status != 'A') {
+                    sportEvent?.awayTeamInjuredPlayer.add(
+                        '${player.firstName?[0]}. ${player.lastName}(${player.status})');
+                  }
+                });
+              }
+              if (team.id == homeTeamId) {
+                team.players?.forEach((player) {
+                  if (player.status != 'A') {
+                    sportEvent?.homeTeamInjuredPlayer.add(
+                        '${player.firstName?[0]}. ${player.lastName}(${player.status})');
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
+          if (response.teams != null) {
+            response.teams?.forEach((team) {
+              if (team.id == awayTeamId) {
+                team.players?.forEach((player) {
+                  if (player.position != 'A') {
+                    sportEvent?.awayTeamInjuredPlayer.add(
+                        '${player.name?[0]}. ${player.name?.split(' ').last}(${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""})');
+                  }
+                });
+              }
+              if (team.id == homeTeamId) {
+                team.players?.forEach((player) {
+                  if (player.position != 'A') {
+                    sportEvent?.homeTeamInjuredPlayer.add(
+                        '${player.name?[0]}. ${player.name?.split(' ').last}(${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""})');
+                  }
+                });
+              }
+            });
+          }
         }
+
         // isLoading.value = false;
       } else {
         isLoading.value = false;
