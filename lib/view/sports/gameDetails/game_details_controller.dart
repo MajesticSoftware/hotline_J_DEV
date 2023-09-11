@@ -17,7 +17,6 @@ import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
   List offensive = [
-    'Offensive DVOA',
     'Points Per Game',
     'Scoring Efficiency',
     'Redzone Efficiency',
@@ -25,7 +24,6 @@ class GameDetailsController extends GetxController {
     'Passing Yards',
     'Rushing TDs/game',
     'Passing TDs/game',
-    'TO/game',
     '3rd Down Efficiency',
     '4th Down Efficiency',
     'Field goal Percentage',
@@ -45,7 +43,6 @@ class GameDetailsController extends GetxController {
     'At Bats per home run',
   ];
   List defensive = [
-    'Defensive DVOA',
     'Points Allowed/Game',
     'Opponent Scoring Efficiency',
     'Opponent Redzone Efficiency',
@@ -53,7 +50,6 @@ class GameDetailsController extends GetxController {
     'Passing Yards Allowed',
     'Rushing TDs Allowed/game',
     'Passing TDs Allowed/game',
-    'TO Generated/game',
     'Opponent 3rd Down Efficiency',
     'Opponent 4th Down Efficiency',
   ];
@@ -535,6 +531,7 @@ class GameDetailsController extends GetxController {
   List<String> nflAwayDefensiveList = [];
   Future nflStaticsHomeTeamResponse(
       {String homeTeamId = '',
+      required SportEvents gameDetails,
       bool isLoad = false,
       String sportKey = ''}) async {
     isLoading.value = !isLoad ? false : true;
@@ -555,34 +552,74 @@ class GameDetailsController extends GetxController {
               nflHomeOffensiveList = [
                 '0',
                 '0',
-                '0',
-                ('${offenciveData?.efficiency?.redzone?.successes ?? "0"}-${offenciveData?.efficiency?.redzone?.attempts ?? "0"}')
-                    .toString(),
+                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
                 offenciveData?.rushing?.yards.toString() ?? '0',
                 offenciveData?.passing?.yards.toString() ?? '0',
                 offenciveData?.rushing?.touchdowns.toString() ?? '0',
                 offenciveData?.passing?.touchdowns.toString() ?? '0',
-                '0',
-                ('${offenciveData?.efficiency?.thirddown?.successes ?? "0"}-${offenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
-                    .toString(),
-                '${offenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${offenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
-                '0'
+                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(
+                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
+                            .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
+                            (offenciveData?.fieldGoals?.attempts ?? 0) *
+                            100)
+                        .toString())
+                    .toStringAsFixed(1)),
               ];
               nflHomeDefensiveList = [
                 '0',
                 '0',
-                '0',
-                ('${defenciveData?.efficiency?.redzone?.successes ?? "0"}-${defenciveData?.efficiency?.redzone?.attempts ?? "0"}')
-                    .toString(),
+                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
                 defenciveData?.rushing?.yards.toString() ?? '0',
                 defenciveData?.passing?.yards.toString() ?? '0',
                 defenciveData?.rushing?.touchdowns.toString() ?? '0',
                 defenciveData?.passing?.touchdowns.toString() ?? '0',
-                '0',
-                ('${defenciveData?.efficiency?.thirddown?.successes ?? "0"}-${defenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
-                    .toString(),
-                '${defenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${defenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
+                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(
+                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
+                            .toString())
+                    .toStringAsFixed(1)),
               ];
+              gameDetails.homeRunningBackPlayer.clear();
+              gameDetails.homeReceiversPlayer.clear();
+              if (response.players != null) {
+                response.players?.forEach((player) {
+                  if (player.position == 'RB' && player.gamesPlayed != 0) {
+                    gameDetails.homeRunningBackPlayer.add(player);
+                  }
+                  if (player.position == 'WR' && player.gamesPlayed != 0) {
+                    gameDetails.homeReceiversPlayer.add(player);
+                  }
+                  if (player.position == 'QB' && player.gamesStarted != 0) {
+                    gameDetails.homePassingYard =
+                        player.passing?.yards.toString() ?? "0";
+                    gameDetails.homePassingTds =
+                        (player.passing?.touchdowns ?? "0").toString();
+                    gameDetails.homeRushingYard =
+                        (player.rushing?.yards ?? "0").toString();
+                    gameDetails.homeRushingTds =
+                        (player.rushing?.touchdowns ?? "0").toString();
+                    gameDetails.homeInterCaption =
+                        (player.passing?.interceptions ?? "0").toString();
+                    gameDetails.homePlayerName =
+                        (player.name ?? "0").toString();
+                  }
+                });
+              }
+              gameDetails.homeRunningBackPlayer.sort((a, b) =>
+                  (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
+              gameDetails.homeReceiversPlayer.sort((a, b) =>
+                  (b.receiving?.yards ?? 0).compareTo(a.receiving?.yards ?? 0));
             }
           }
         } else {
@@ -611,6 +648,7 @@ class GameDetailsController extends GetxController {
 
   Future nflStaticsAwayTeamResponse(
       {String awayTeamId = '',
+      required SportEvents gameDetails,
       bool isLoad = false,
       String sportKey = ''}) async {
     isLoading.value = !isLoad ? false : true;
@@ -631,34 +669,74 @@ class GameDetailsController extends GetxController {
               nflAwayOffensiveList = [
                 '0',
                 '0',
-                '0',
-                ('${offenciveData?.efficiency?.redzone?.successes ?? "0"}-${offenciveData?.efficiency?.redzone?.attempts ?? "0"}')
-                    .toString(),
+                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
                 offenciveData?.rushing?.yards.toString() ?? '0',
                 offenciveData?.passing?.yards.toString() ?? '0',
                 offenciveData?.rushing?.touchdowns.toString() ?? '0',
                 offenciveData?.passing?.touchdowns.toString() ?? '0',
-                '0',
-                ('${offenciveData?.efficiency?.thirddown?.successes ?? "0"}-${offenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
-                    .toString(),
-                '${offenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${offenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
-                '0',
+                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(
+                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
+                            .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
+                            (offenciveData?.fieldGoals?.attempts ?? 0) *
+                            100)
+                        .toString())
+                    .toStringAsFixed(1)),
               ];
               nflAwayDefensiveList = [
                 '0',
                 '0',
-                '0',
-                ('${defenciveData?.efficiency?.redzone?.successes ?? "0"}-${defenciveData?.efficiency?.redzone?.attempts ?? "0"}')
-                    .toString(),
+                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
                 defenciveData?.rushing?.yards.toString() ?? '0',
                 defenciveData?.passing?.yards.toString() ?? '0',
                 defenciveData?.rushing?.touchdowns.toString() ?? '0',
                 defenciveData?.passing?.touchdowns.toString() ?? '0',
-                '0',
-                ('${defenciveData?.efficiency?.thirddown?.successes ?? "0"}-${defenciveData?.efficiency?.thirddown?.attempts ?? "0"}')
-                    .toString(),
-                '${defenciveData?.efficiency?.fourthdown?.successes ?? "0"}-${defenciveData?.efficiency?.fourthdown?.attempts ?? "0"}',
+                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
+                        .toString())
+                    .toStringAsFixed(1)),
+                (double.parse(
+                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
+                            .toString())
+                    .toStringAsFixed(1)),
               ];
+              gameDetails.awayReceiversPlayer.clear();
+              gameDetails.awayRunningBackPlayer.clear();
+              if (response.players != null) {
+                response.players?.forEach((player) {
+                  if (player.position == 'RB' && player.gamesPlayed != 0) {
+                    gameDetails.awayRunningBackPlayer.add(player);
+                  }
+                  if (player.position == 'WR' && player.gamesPlayed != 0) {
+                    gameDetails.awayReceiversPlayer.add(player);
+                  }
+                  if (player.position == 'QB' && player.gamesStarted != 0) {
+                    gameDetails.awayPassingYard =
+                        player.passing?.yards.toString() ?? "0";
+                    gameDetails.awayPassingTds =
+                        (player.passing?.touchdowns ?? "0").toString();
+                    gameDetails.awayRushingYard =
+                        (player.rushing?.yards ?? "0").toString();
+                    gameDetails.awayRushingTds =
+                        (player.rushing?.touchdowns ?? "0").toString();
+                    gameDetails.awayInterCaption =
+                        (player.passing?.interceptions ?? "0").toString();
+                    gameDetails.awayPlayerName =
+                        (player.name ?? "0").toString();
+                  }
+                });
+              }
+              gameDetails.awayRunningBackPlayer.sort((a, b) =>
+                  (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
+              gameDetails.awayReceiversPlayer.sort((a, b) =>
+                  (b.receiving?.yards ?? 0).compareTo(a.receiving?.yards ?? 0));
             }
           }
         } else {

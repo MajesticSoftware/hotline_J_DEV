@@ -12,6 +12,7 @@ import '../../../model/response_item.dart';
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
+import '../../../utils/extension.dart';
 
 class GameListingController extends GetxController {
   RxBool isLoading = false.obs;
@@ -421,57 +422,20 @@ class GameListingController extends GetxController {
           sportEventsList[index].venue?.temp =
               int.parse((game.weather?.temp ?? '0').toString());
           sportEventsList[index].venue?.weather = game.weather?.condition;
-          /*   sportEventsList[index].inning =
-              game.outcome?.currentInning.toString() ?? '';
-          sportEventsList[index].inningHalf =
-              game.outcome?.currentInningHalf.toString() ?? '';*/
+          sportEventsList[index].inning = (game.quarter ?? "0").toString();
+          sportEventsList[index].inningHalf = "Q";
           sportEventsList[index].homeScore =
               (game.summary?.home?.points ?? "0").toString();
           sportEventsList[index].homeWin =
               (game.summary?.home?.record?.wins ?? "0").toString();
           sportEventsList[index].homeLoss =
               (game.summary?.home?.record?.losses ?? "0").toString();
-          // sportEventsList[index].homePlayerId =
-          //     (game.summary?.home?.probablePitcher?.id).toString();
-          sportEventsList[index].homePassingYard =
-              (game.statistics?.home?.passing?.totals?.yards ?? "0").toString();
-          sportEventsList[index].homePassingTds =
-              (game.statistics?.home?.passing?.totals?.touchdowns ?? "0")
-                  .toString();
-          sportEventsList[index].homeRushingYard =
-              (game.statistics?.home?.rushing?.totals?.yards ?? "0").toString();
-          sportEventsList[index].homeRushingTds =
-              (game.statistics?.home?.rushing?.totals?.touchdowns ?? "0")
-                  .toString();
-          sportEventsList[index].homeInterCaption =
-              (game.statistics?.home?.interceptions?.number ?? "0").toString();
-
-          sportEventsList[index].homeReceiversPlayer =
-              game.statistics?.home?.receiving?.players ?? [];
-
           sportEventsList[index].awayScore =
               (game.summary?.away?.points ?? "0").toString();
           sportEventsList[index].awayWin =
               (game.summary?.away?.record?.wins ?? "0").toString();
           sportEventsList[index].awayLoss =
               (game.summary?.away?.record?.losses ?? "0").toString();
-          // sportEventsList[index].awayPlayerId =
-          //     (game.away?.probablePitcher?.id).toString();
-          sportEventsList[index].awayPassingYard =
-              (game.statistics?.away?.passing?.totals?.yards ?? "0").toString();
-          sportEventsList[index].awayPassingTds =
-              (game.statistics?.away?.passing?.totals?.touchdowns ?? "0")
-                  .toString();
-          sportEventsList[index].awayRushingYard =
-              (game.statistics?.away?.rushing?.totals?.yards ?? "0").toString();
-          sportEventsList[index].awayRushingTds =
-              (game.statistics?.away?.rushing?.totals?.touchdowns ?? "0")
-                  .toString();
-          sportEventsList[index].awayInterCaption =
-              (game.statistics?.away?.interceptions?.number ?? "0").toString();
-
-          sportEventsList[index].awayReceiversPlayer =
-              game.statistics?.away?.receiving?.players ?? [];
         }
       } else {
         isLoading.value = false;
@@ -518,7 +482,7 @@ class GameListingController extends GetxController {
               if (sportEventsList[i].uuids != null) {
                 boxScoreResponseNCAA(
                     key: sportKey,
-                    gameId: sportEventsList[i].uuids ?? '',
+                    gameId: replaceId(sportEventsList[i].uuids ?? ''),
                     index: i);
               }
             }
@@ -559,7 +523,7 @@ class GameListingController extends GetxController {
               if (sportEventsList[i].uuids != null) {
                 boxScoreResponseNCAA(
                     key: sportKey,
-                    gameId: sportEventsList[i].uuids ?? '',
+                    gameId: replaceId(sportEventsList[i].uuids ?? ''),
                     index: i);
               }
             }
@@ -600,10 +564,13 @@ class GameListingController extends GetxController {
           for (int i = 0; i < sportEventsList.length; i++) {
             if (sportEventsList[i].uuids != null) {
               boxScoreResponse(
-                  homeTeamId: sportEventsList[i].competitors[0].uuids ?? "",
-                  awayTeamId: sportEventsList[i].competitors[1].uuids ?? "",
-                  gameId: sportEventsList[i].uuids ??
-                      '1ec03c45-ce1b-4908-a507-9678e2d14628',
+                  homeTeamId: replaceId(
+                          sportEventsList[i].competitors[0].uuids ?? '') ??
+                      "",
+                  awayTeamId: replaceId(
+                          sportEventsList[i].competitors[1].uuids ?? '') ??
+                      "",
+                  gameId: replaceId(sportEventsList[i].uuids ?? ''),
                   index: i);
             }
           }

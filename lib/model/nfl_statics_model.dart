@@ -107,6 +107,7 @@ class Record {
   IntReturns? intReturns;
   Fumbles? fumbles;
   FirstDowns? firstDowns;
+  FieldGoals? fieldGoals;
   Defense? defense;
   ExtraPoints? extraPoints;
   Efficiency? efficiency;
@@ -125,6 +126,7 @@ class Record {
       this.intReturns,
       this.fumbles,
       this.firstDowns,
+      this.fieldGoals,
       this.defense,
       this.extraPoints,
       this.efficiency});
@@ -161,6 +163,9 @@ class Record {
         json['fumbles'] != null ? new Fumbles.fromJson(json['fumbles']) : null;
     firstDowns = json['first_downs'] != null
         ? new FirstDowns.fromJson(json['first_downs'])
+        : null;
+    fieldGoals = json['field_goals'] != null
+        ? new FieldGoals.fromJson(json['field_goals'])
         : null;
     defense =
         json['defense'] != null ? new Defense.fromJson(json['defense']) : null;
@@ -210,6 +215,9 @@ class Record {
     }
     if (this.firstDowns != null) {
       data['first_downs'] = this.firstDowns!.toJson();
+    }
+    if (this.fieldGoals != null) {
+      data['field_goals'] = this.fieldGoals!.toJson();
     }
     if (this.defense != null) {
       data['defense'] = this.defense!.toJson();

@@ -1,6 +1,4 @@
-import 'package:hotlines/model/ncaa_boxcore_model.dart';
-
-import 'package:hotlines/model/ncaa_boxcore_model.dart';
+import 'nfl_statics_model.dart';
 
 class GameListingDataModel {
   String? generatedAt;
@@ -92,8 +90,8 @@ class SportEvents {
   String wlAway = '0';
   String eraHome = '0';
   String eraAway = '0';
-  String awayPlayerId = '';
-  String homePlayerId = '';
+  String? awayPlayerId;
+  String? homePlayerId;
   String homePlayerName = '';
   String awayPlayerName = '';
   String awayRushingYard = '0';
@@ -109,6 +107,8 @@ class SportEvents {
   List awayTeamInjuredPlayer = [];
   List<Players> awayReceiversPlayer = [];
   List<Players> homeReceiversPlayer = [];
+  List<Players> awayRunningBackPlayer = [];
+  List<Players> homeRunningBackPlayer = [];
   List homeTeamInjuredPlayer = [];
   SportEvents({
     this.id,
@@ -154,6 +154,8 @@ class SportEvents {
     this.awayTeamInjuredPlayer = const [],
     this.awayReceiversPlayer = const [],
     this.homeReceiversPlayer = const [],
+    this.awayRunningBackPlayer = const [],
+    this.homeRunningBackPlayer = const [],
   });
 
   String get gameHomeLogoLink {

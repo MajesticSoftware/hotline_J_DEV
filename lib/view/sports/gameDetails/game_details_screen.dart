@@ -65,11 +65,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
       body: GetBuilder<GameDetailsController>(initState: (state) async {
-        await _refreshLocalGallery(true);
+        await _getResponse(true);
       }, builder: (con) {
         return RefreshIndicator(
           onRefresh: () async {
-            return await _refreshLocalGallery(false);
+            return await _getResponse(false);
           },
           color: Theme.of(context).disabledColor,
           child: Stack(
@@ -96,8 +96,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             ? const SizedBox()
                             : wrPlayersWidget(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, widget.sportKey),
-                        mlbInjuryReportWidget(context, widget.gameDetails,
-                            widget.sportKey, awayTeam, homeTeam),
+                        widget.sportKey == 'NCAA'
+                            ? const SizedBox()
+                            : injuryReportWidget(context, widget.gameDetails,
+                                widget.sportKey, awayTeam, homeTeam),
                         40.H(),
                       ],
                     ),
@@ -114,7 +116,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     );
   }
 
-  Future _refreshLocalGallery(bool isLoad) async {
+  Future _getResponse(bool isLoad) async {
     gameDetailsController.hotlinesDData.clear();
     gameDetailsController.hotlinesFData.clear();
     gameDetailsController.hotlinesMData.clear();
@@ -140,23 +142,28 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      gameDetailsController.profileAwayResponse(
-        isLoad: isLoad,
-        awayTeamId: widget.gameDetails.awayPlayerId,
-      );
-      gameDetailsController.profileHomeResponse(
-        isLoad: isLoad,
-        homeTeamId: widget.gameDetails.homePlayerId,
-      );
+      if (widget.gameDetails.awayPlayerId != "null") {
+        gameDetailsController.profileAwayResponse(
+          isLoad: isLoad,
+          awayTeamId: widget.gameDetails.awayPlayerId!,
+        );
+      }
+      if (widget.gameDetails.homePlayerId != "null") {
+        gameDetailsController.profileHomeResponse(
+          isLoad: isLoad,
+          homeTeamId: widget.gameDetails.homePlayerId!,
+        );
+      }
+
       gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: isLoad, awayTeamId: awayTeam?.uuids ?? '');
+          isLoad: isLoad, awayTeamId: replaceId(awayTeam?.uuids ?? ''));
       gameDetailsController.mlbStaticsHomeTeamResponse(
-          isLoad: isLoad, homeTeamId: homeTeam?.uuids ?? '');
+          isLoad: isLoad, homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
           sportEvent: widget.gameDetails,
-          awayTeamId: awayTeam?.uuids ?? "",
-          homeTeamId: homeTeam?.uuids ?? "");
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
     }
     if (widget.sportKey == 'NFL') {
       gameDetailsController.hotlinesFinalData.clear();
@@ -183,37 +190,19 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
       gameDetailsController.nflStaticsAwayTeamResponse(
           isLoad: isLoad,
+          gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
-          awayTeamId:
-              (awayTeam?.uuids ?? '').contains(awayTeam?.abbreviation ?? "")
-                  ? (awayTeam?.uuids ?? '')
-                      .replaceAll(awayTeam?.abbreviation ?? "", '')
-                      .replaceAll(',', '')
-                  : awayTeam?.uuids ?? "");
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
       gameDetailsController.nflStaticsHomeTeamResponse(
           isLoad: isLoad,
+          gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
-          homeTeamId:
-              (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
-                  ? (homeTeam?.uuids ?? '')
-                      .replaceAll(homeTeam?.abbreviation ?? "", '')
-                      .replaceAll(',', '')
-                  : homeTeam?.uuids ?? "");
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
           sportEvent: widget.gameDetails,
-          awayTeamId: (awayTeam?.uuids ?? '')
-                  .contains(awayTeam?.abbreviation ?? "")
-              ? (awayTeam?.uuids ?? '')
-                  .replaceAll(awayTeam?.abbreviation ?? "", '')
-                  .replaceAll(',', '')
-              : awayTeam?.uuids ?? "",
-          homeTeamId:
-              (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
-                  ? (homeTeam?.uuids ?? '')
-                      .replaceAll(homeTeam?.abbreviation ?? "", '')
-                      .replaceAll(',', '')
-                  : homeTeam?.uuids ?? "");
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
     }
     if (widget.sportKey == 'NCAA') {
       for (int i = 0; i <= 15; i += 5) {
@@ -239,22 +228,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       }
       gameDetailsController.nflStaticsAwayTeamResponse(
           isLoad: isLoad,
+          gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
-          awayTeamId:
-              (awayTeam?.uuids ?? '').contains(awayTeam?.abbreviation ?? "")
-                  ? (awayTeam?.uuids ?? '')
-                      .replaceAll(awayTeam?.abbreviation ?? "", '')
-                      .replaceAll(',', '')
-                  : (awayTeam?.uuids ?? "").split(',').first);
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
       gameDetailsController.nflStaticsHomeTeamResponse(
           isLoad: isLoad,
+          gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
-          homeTeamId:
-              (homeTeam?.uuids ?? '').contains(homeTeam?.abbreviation ?? "")
-                  ? (homeTeam?.uuids ?? '')
-                      .replaceAll(homeTeam?.abbreviation ?? "", '')
-                      .replaceAll(',', '')
-                  : (homeTeam?.uuids ?? '').split(',').first);
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
     }
     gameDetailsController.update();
   }
