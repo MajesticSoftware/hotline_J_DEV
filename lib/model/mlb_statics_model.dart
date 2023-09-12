@@ -165,7 +165,7 @@ class OverallHitting {
   Outs? outs;
   Steal? steal;
   Pitches? pitches;
-
+  Games? games;
   OverallHitting(
       {this.ab,
       this.lob,
@@ -200,6 +200,7 @@ class OverallHitting {
       this.outcome,
       this.outs,
       this.steal,
+      this.games,
       this.pitches});
 
   OverallHitting.fromJson(Map<String, dynamic> json) {
@@ -240,6 +241,7 @@ class OverallHitting {
     steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
         json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
+    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -289,6 +291,9 @@ class OverallHitting {
     }
     if (pitches != null) {
       data['pitches'] = pitches!.toJson();
+    }
+    if (this.games != null) {
+      data['games'] = this.games!.toJson();
     }
     return data;
   }

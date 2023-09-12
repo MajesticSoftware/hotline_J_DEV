@@ -34,11 +34,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final GameDetailsController gameDetailsController = Get.find();
   Competitors? homeTeam;
   Competitors? awayTeam;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -156,9 +151,13 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       }
 
       gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: isLoad, awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+          isLoad: isLoad,
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+          gameDetails: widget.gameDetails);
       gameDetailsController.mlbStaticsHomeTeamResponse(
-          isLoad: isLoad, homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+          isLoad: isLoad,
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+          gameDetails: widget.gameDetails);
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
           sportEvent: widget.gameDetails,

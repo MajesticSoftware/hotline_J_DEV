@@ -91,6 +91,8 @@ class GameDetailsController extends GetxController {
     'Rushing Yards',
     'Rushing TDs',
     'Interceptions',
+    "Fumble",
+    "QBR",
   ];
 
   bool _isTab = true;
@@ -143,6 +145,7 @@ class GameDetailsController extends GetxController {
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
   List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
+
   String _whipHome = '0';
   String get whipHome => _whipHome;
   set whipHome(String value) {
@@ -326,7 +329,9 @@ class GameDetailsController extends GetxController {
 
   ///MLB STATICS
   Future mlbStaticsHomeTeamResponse(
-      {String homeTeamId = '', bool isLoad = false}) async {
+      {String homeTeamId = '',
+      bool isLoad = false,
+      required SportEvents gameDetails}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
@@ -345,6 +350,12 @@ class GameDetailsController extends GetxController {
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
               if (player.position != "P") {
+                num totalGameVale =
+                    (player.statistics?.hitting?.overall?.games?.play == 0
+                            ? 1
+                            : player
+                                .statistics?.hitting?.overall?.games?.play) ??
+                        1;
                 hitterHomePlayerMainList.add(
                   HitterPlayerStatMainModel(
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
@@ -363,32 +374,57 @@ class GameDetailsController extends GetxController {
                       slg: 'SLG',
                       slgValue: '${player.statistics?.hitting?.overall?.slg}',
                       run: 'Runs',
-                      runValue:
-                          '${player.statistics?.hitting?.overall?.runs?.total}',
+                      runValue: ((int.parse(player
+                                      .statistics?.hitting?.overall?.runs?.total
+                                      .toString() ??
+                                  "0") /
+                              totalGameVale)
+                          .toStringAsFixed(2)),
                       totalBase: 'Total Bases',
-                      totalBaseValue:
-                          '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                      totalBaseValue: ((int.parse(player
+                                      .statistics?.hitting?.overall?.onbase?.tb
+                                      .toString() ??
+                                  "0") /
+                              totalGameVale)
+                          .toStringAsFixed(2)),
                       stolenBase: 'Stolen Bases',
                       ab: '${player.statistics?.hitting?.overall?.ab}',
-                      stolenBaseValue:
-                          '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+                      stolenBaseValue: ((int.parse(
+                                  player.statistics?.hitting?.overall?.steal?.stolen.toString() ?? "0") /
+                              totalGameVale)
+                          .toStringAsFixed(2))),
                 );
               }
             }
           }
-
+          int totalGame = int.parse(gameDetails.awayLoss) +
+                      int.parse(gameDetails.awayWin) ==
+                  0
+              ? 1
+              : int.parse(gameDetails.awayLoss) +
+                  int.parse(gameDetails.awayWin);
           mlbHomeHittingList = [
-            '${homeHitting?.runs?.total ?? "0"}',
-            '${homeHitting?.onbase?.h ?? "0"}',
-            '${homeHitting?.onbase?.hr ?? "0"}',
-            '${homeHitting?.rbi ?? "0"}',
-            '${homeHitting?.onbase?.bb ?? "0"}',
-            '${homeHitting?.outs?.ktotal ?? "0"}',
-            '${homeHitting?.steal?.stolen ?? "0"}',
+            ((int.parse(homeHitting?.runs?.total.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.onbase?.h.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.onbase?.hr.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.rbi.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.onbase?.bb.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.outs?.ktotal.toString() ?? "0") /
+                    totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homeHitting?.steal?.stolen.toString() ?? "0") /
+                    totalGame)
+                .toStringAsFixed(2)),
             homeHitting?.avg ?? "0",
             '.${(homeHitting?.slg ?? 0).toString().split('.').last}',
             '${homeHitting?.ops ?? '0'}',
-            '${homeHitting?.outs?.gidp ?? '0'}',
+            ((int.parse(homeHitting?.outs?.gidp.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
             homeHitting?.abhr?.toStringAsFixed(2) ?? "0",
           ];
           mlbHomePitchingList = [
@@ -397,13 +433,20 @@ class GameDetailsController extends GetxController {
             '.${(((homePitching?.games?.save ?? 0) / (homePitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
             '${homePitching?.games?.blownSave ?? '0'}',
             '${homePitching?.games?.qstart ?? '0'}',
-            '${homePitching?.runs?.total ?? '0'}',
-            '${homePitching?.onbase?.hr ?? '0'}',
-            '${homePitching?.onbase?.bb ?? '0'}',
-            '${homePitching?.outs?.ktotal ?? '0'}',
+            ((int.parse(homePitching?.runs?.total.toString() ?? "0") /
+                    totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homePitching?.onbase?.hr.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homePitching?.onbase?.bb.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
+            ((int.parse(homePitching?.outs?.ktotal.toString() ?? "0") /
+                    totalGame)
+                .toStringAsFixed(2)),
             '${homePitching?.whip ?? "0"}',
             '.${(homePitching?.oba ?? 0).toString().split('.').last}',
-            '${homePitching?.outs?.gidp ?? "0"}',
+            ((int.parse(homePitching?.outs?.gidp.toString() ?? "0") / totalGame)
+                .toStringAsFixed(2)),
           ];
         }
       } else {
@@ -426,7 +469,9 @@ class GameDetailsController extends GetxController {
 
   List<HitterPlayerStatMainModel> hitterAwayPlayerMainList = [];
   Future mlbStaticsAwayTeamResponse(
-      {String awayTeamId = '', bool isLoad = false}) async {
+      {String awayTeamId = '',
+      bool isLoad = false,
+      required SportEvents gameDetails}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
@@ -441,11 +486,21 @@ class GameDetailsController extends GetxController {
           mlbStaticsAwayList = response.statistics;
           mlbPlayerPitchingData = response.players ?? [];
         }
+        int totalGame = int.parse(gameDetails.awayLoss) +
+                    int.parse(gameDetails.awayWin) ==
+                0
+            ? 1
+            : int.parse(gameDetails.awayLoss) + int.parse(gameDetails.awayWin);
         var awayHitting = mlbStaticsAwayList?.hitting?.overall;
         var awayPitching = mlbStaticsAwayList?.pitching?.overall;
         for (var player in mlbPlayerPitchingData) {
           if (player.statistics?.hitting != null) {
             if (player.position != 'P') {
+              num totalGameVale =
+                  (player.statistics?.hitting?.overall?.games?.play == 0
+                          ? 1
+                          : player.statistics?.hitting?.overall?.games?.play) ??
+                      1;
               hitterAwayPlayerMainList.add(
                 HitterPlayerStatMainModel(
                     bb: '${player.statistics?.hitting?.overall?.onbase?.bb}',
@@ -463,32 +518,50 @@ class GameDetailsController extends GetxController {
                     slg: 'SLG',
                     slgValue: '${player.statistics?.hitting?.overall?.slg}',
                     run: 'Runs',
-                    runValue:
-                        '${player.statistics?.hitting?.overall?.runs?.total}',
+                    runValue: ((int.parse(player
+                                    .statistics?.hitting?.overall?.runs?.total
+                                    .toString() ??
+                                "0") /
+                            totalGameVale)
+                        .toStringAsFixed(2)),
                     totalBase: 'Total Bases',
-                    totalBaseValue:
-                        '${player.statistics?.hitting?.overall?.onbase?.tb}',
+                    totalBaseValue: ((int.parse(player
+                                    .statistics?.hitting?.overall?.onbase?.tb
+                                    .toString() ??
+                                "0") /
+                            totalGameVale)
+                        .toStringAsFixed(2)),
                     stolenBase: 'Stolen Bases',
                     ab: '${player.statistics?.hitting?.overall?.ab}',
-                    stolenBaseValue:
-                        '${player.statistics?.hitting?.overall?.steal?.stolen}'),
+                    stolenBaseValue: ((int.parse(
+                                player.statistics?.hitting?.overall?.steal?.stolen.toString() ?? "0") /
+                            totalGameVale)
+                        .toStringAsFixed(2))),
               );
             }
           }
         }
 
         mlbAwayHittingList = [
-          '${awayHitting?.runs?.total ?? "0"}',
-          '${awayHitting?.onbase?.h ?? "0"}',
-          '${awayHitting?.onbase?.hr ?? "0"}',
-          '${awayHitting?.rbi ?? "0"}',
-          '${awayHitting?.onbase?.bb ?? "0"}',
-          '${awayHitting?.outs?.ktotal ?? "0"}',
-          '${awayHitting?.steal?.stolen ?? "0"}',
+          ((int.parse(awayHitting?.runs?.total.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.onbase?.h.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.onbase?.hr.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.rbi.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.onbase?.bb.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.outs?.ktotal.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
           awayHitting?.avg ?? "0",
           '.${(awayHitting?.slg.toString().split('.').last)}',
           '${awayHitting?.ops ?? '0'}',
-          '${awayHitting?.outs?.gidp ?? '0'}',
+          ((int.parse(awayHitting?.outs?.gidp.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
           awayHitting?.abhr?.toStringAsFixed(2) ?? "0",
         ];
         mlbAwayPitchingList = [
@@ -497,13 +570,18 @@ class GameDetailsController extends GetxController {
           '.${(((awayPitching?.games?.save ?? 0) / (awayPitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
           '${awayPitching?.games?.blownSave ?? '0'}',
           '${awayPitching?.games?.qstart ?? '0'}',
-          '${awayPitching?.runs?.total ?? '0'}',
-          '${awayPitching?.onbase?.hr ?? '0'}',
-          '${awayPitching?.onbase?.bb ?? '0'}',
-          '${awayPitching?.outs?.ktotal ?? '0'}',
+          ((int.parse(awayPitching?.runs?.total.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayPitching?.onbase?.hr.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayPitching?.onbase?.bb.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
+          ((int.parse(awayPitching?.outs?.ktotal.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
           '${awayPitching?.whip ?? "0"}',
           '.${(awayPitching?.oba ?? 0).toString().split('.').last}',
-          '${awayPitching?.outs?.gidp ?? "0"}',
+          ((int.parse(awayPitching?.outs?.gidp.toString() ?? "0") / totalGame)
+              .toStringAsFixed(2)),
         ];
 
         // isLoading.value = false;
@@ -529,6 +607,8 @@ class GameDetailsController extends GetxController {
   List<String> nflHomeDefensiveList = [];
   List<String> nflAwayOffensiveList = [];
   List<String> nflAwayDefensiveList = [];
+  List<RunningBacks> runningBacksAwayList = [];
+  List<RunningBacks> runningBacksHomeList = [];
   Future nflStaticsHomeTeamResponse(
       {String homeTeamId = '',
       required SportEvents gameDetails,
@@ -547,25 +627,34 @@ class GameDetailsController extends GetxController {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
           if (response.season != null) {
             if (response.record != null) {
+              int totalGame = int.parse(gameDetails.awayLoss) +
+                          int.parse(gameDetails.awayWin) ==
+                      0
+                  ? 1
+                  : int.parse(gameDetails.awayLoss) +
+                      int.parse(gameDetails.awayWin);
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               nflHomeOffensiveList = [
-                '0',
-                '0',
-                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                offenciveData?.rushing?.yards.toString() ?? '0',
-                offenciveData?.passing?.yards.toString() ?? '0',
-                offenciveData?.rushing?.touchdowns.toString() ?? '0',
-                offenciveData?.passing?.touchdowns.toString() ?? '0',
-                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                (double.parse(
-                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                            .toString())
-                    .toStringAsFixed(1)),
+                ((int.parse("0") / totalGame).toStringAsFixed(2)),
+                '0.0',
+                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
@@ -573,22 +662,25 @@ class GameDetailsController extends GetxController {
                     .toStringAsFixed(1)),
               ];
               nflHomeDefensiveList = [
-                '0',
-                '0',
-                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                defenciveData?.rushing?.yards.toString() ?? '0',
-                defenciveData?.passing?.yards.toString() ?? '0',
-                defenciveData?.rushing?.touchdowns.toString() ?? '0',
-                defenciveData?.passing?.touchdowns.toString() ?? '0',
-                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                (double.parse(
-                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                            .toString())
-                    .toStringAsFixed(1)),
+                ((int.parse("0") / totalGame).toStringAsFixed(2)),
+                '0.0',
+                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -596,21 +688,32 @@ class GameDetailsController extends GetxController {
                 response.players?.forEach((player) {
                   if (player.position == 'RB' && player.gamesPlayed != 0) {
                     gameDetails.homeRunningBackPlayer.add(player);
+                    // runningBacksHomeList.add(RunningBacks(carries: carries, yard: yard, avgCarry: avgCarry, tds: tds, longestRun: longestRun, fumbles: fumbles))
                   }
                   if (player.position == 'WR' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
                   if (player.position == 'QB' && player.gamesStarted != 0) {
                     gameDetails.homePassingYard =
-                        player.passing?.yards.toString() ?? "0";
-                    gameDetails.homePassingTds =
-                        (player.passing?.touchdowns ?? "0").toString();
+                        ((int.parse(player.passing?.yards.toString() ?? "0") /
+                                totalGame)
+                            .toStringAsFixed(2));
+                    gameDetails.homePassingTds = ((int.parse(
+                                player.passing?.touchdowns.toString() ?? "0") /
+                            totalGame)
+                        .toStringAsFixed(2));
                     gameDetails.homeRushingYard =
-                        (player.rushing?.yards ?? "0").toString();
-                    gameDetails.homeRushingTds =
-                        (player.rushing?.touchdowns ?? "0").toString();
-                    gameDetails.homeInterCaption =
-                        (player.passing?.interceptions ?? "0").toString();
+                        ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                                totalGame)
+                            .toStringAsFixed(2));
+                    gameDetails.homeRushingTds = ((int.parse(
+                                player.rushing?.touchdowns.toString() ?? "0") /
+                            totalGame)
+                        .toStringAsFixed(2));
+                    gameDetails.homeFumble =
+                        (player.fumbles?.fumbles ?? "0").toString();
+                    /* gameDetails.homeQbr =
+                        (player.fumbles?. ?? "0").toString();*/
                     gameDetails.homePlayerName =
                         (player.name ?? "0").toString();
                   }
@@ -664,25 +767,34 @@ class GameDetailsController extends GetxController {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
           if (response.season != null) {
             if (response.record != null) {
+              int totalGame = int.parse(gameDetails.awayLoss) +
+                          int.parse(gameDetails.awayWin) ==
+                      0
+                  ? 1
+                  : int.parse(gameDetails.awayLoss) +
+                      int.parse(gameDetails.awayWin);
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               nflAwayOffensiveList = [
-                '0',
-                '0',
-                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                offenciveData?.rushing?.yards.toString() ?? '0',
-                offenciveData?.passing?.yards.toString() ?? '0',
-                offenciveData?.rushing?.touchdowns.toString() ?? '0',
-                offenciveData?.passing?.touchdowns.toString() ?? '0',
-                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                (double.parse(
-                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                            .toString())
-                    .toStringAsFixed(1)),
+                ((int.parse("0") / totalGame).toStringAsFixed(2)),
+                '0.0',
+                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
@@ -690,22 +802,25 @@ class GameDetailsController extends GetxController {
                     .toStringAsFixed(1)),
               ];
               nflAwayDefensiveList = [
-                '0',
-                '0',
-                (double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                defenciveData?.rushing?.yards.toString() ?? '0',
-                defenciveData?.passing?.yards.toString() ?? '0',
-                defenciveData?.rushing?.touchdowns.toString() ?? '0',
-                defenciveData?.passing?.touchdowns.toString() ?? '0',
-                (double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString())
-                    .toStringAsFixed(1)),
-                (double.parse(
-                        (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                            .toString())
-                    .toStringAsFixed(1)),
+                ((int.parse("0") / totalGame).toStringAsFixed(2)),
+                '0.0',
+                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -719,13 +834,25 @@ class GameDetailsController extends GetxController {
                   }
                   if (player.position == 'QB' && player.gamesStarted != 0) {
                     gameDetails.awayPassingYard =
-                        player.passing?.yards.toString() ?? "0";
-                    gameDetails.awayPassingTds =
-                        (player.passing?.touchdowns ?? "0").toString();
+                        ((int.parse(player.passing?.yards.toString() ?? "0") /
+                                totalGame)
+                            .toStringAsFixed(2));
+                    gameDetails.awayPassingTds = ((int.parse(
+                                player.passing?.touchdowns.toString() ?? "0") /
+                            totalGame)
+                        .toStringAsFixed(2));
                     gameDetails.awayRushingYard =
-                        (player.rushing?.yards ?? "0").toString();
-                    gameDetails.awayRushingTds =
-                        (player.rushing?.touchdowns ?? "0").toString();
+                        ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                                totalGame)
+                            .toStringAsFixed(2));
+                    gameDetails.awayRushingTds = ((int.parse(
+                                player.rushing?.touchdowns.toString() ?? "0") /
+                            totalGame)
+                        .toStringAsFixed(2));
+                    gameDetails.awayFumble =
+                        (player.fumbles?.fumbles ?? "0").toString();
+                    /* gameDetails.awayQbr =
+                        (player.fumbles?. ?? "0").toString();*/
                     gameDetails.awayInterCaption =
                         (player.passing?.interceptions ?? "0").toString();
                     gameDetails.awayPlayerName =
@@ -1111,6 +1238,23 @@ class HitterPlayerStatMainModel {
     required this.hAb,
     required this.ab,
     required this.hAbValue,
+  });
+}
+
+class RunningBacks {
+  String carries;
+  String yard;
+  String avgCarry;
+  String tds;
+  String longestRun;
+  String fumbles;
+  RunningBacks({
+    required this.carries,
+    required this.yard,
+    required this.avgCarry,
+    required this.tds,
+    required this.longestRun,
+    required this.fumbles,
   });
 }
 

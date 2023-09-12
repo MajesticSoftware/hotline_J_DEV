@@ -10,3 +10,4 @@ Map<String, String> requestHeader() {
 
 // ignore: deprecated_member_use
 final mobileView = MediaQueryData.fromView(WidgetsBinding.instance.window);
+RegExp regex = RegExp(r'([.]*0)(?!.*\d)');

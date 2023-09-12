@@ -445,9 +445,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                             verticalDirection: VerticalDirection.up,
                             children: [
                               Text(
-                                '${competitors.venue?.tmpInFahrenheit ?? 0}',
-                                style:
-                                    Theme.of(context).textTheme.displayMedium,
+                                '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit ?? 0}',
+                                style: competitors.venue?.tmpInFahrenheit == 0
+                                    ? Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .014)
+                                    : Theme.of(context).textTheme.displayMedium,
                               ),
                               Text(
                                 '°F',

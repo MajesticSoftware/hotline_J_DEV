@@ -104,6 +104,10 @@ class SportEvents {
   String homeRushingTds = '0';
   String homePassingTds = '0';
   String homeInterCaption = '0';
+  String homeFumble = '0';
+  String awayFumble = '0';
+  String homeQbr = '0';
+  String awayQbr = '0';
   List awayTeamInjuredPlayer = [];
   List<Players> awayReceiversPlayer = [];
   List<Players> homeReceiversPlayer = [];
@@ -150,6 +154,10 @@ class SportEvents {
     this.homeRushingTds = '0',
     this.homePassingTds = '0',
     this.homeInterCaption = '0',
+    this.homeFumble = '0',
+    this.awayFumble = '0',
+    this.homeQbr = '0',
+    this.awayQbr = '0',
     this.homeTeamInjuredPlayer = const [],
     this.awayTeamInjuredPlayer = const [],
     this.awayReceiversPlayer = const [],
