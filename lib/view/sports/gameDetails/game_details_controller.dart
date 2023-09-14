@@ -18,7 +18,6 @@ import '../../../theme/helper.dart';
 class GameDetailsController extends GetxController {
   List offensive = [
     'Points Per Game',
-    'Scoring Efficiency',
     'Redzone Efficiency',
     'Rushing Yards/Game',
     'Passing Yards/Game',
@@ -44,7 +43,6 @@ class GameDetailsController extends GetxController {
   ];
   List defensive = [
     'Points Allowed/Game',
-    'Opponent Scoring Efficiency',
     'Opponent Redzone Efficiency',
     'Rushing Yards Allowed/Game',
     'Passing Yards Allowed/Game',
@@ -92,7 +90,6 @@ class GameDetailsController extends GetxController {
     'Rushing TDs/Game',
     'Interceptions',
     "Fumbles",
-    "QBR",
   ];
 
   bool _isTab = true;
@@ -347,12 +344,12 @@ class GameDetailsController extends GetxController {
           mlbPlayerPitchingData = response.players ?? [];
           var homeHitting = mlbStaticsHomeList?.hitting?.overall;
           var homePitching = mlbStaticsHomeList?.pitching?.overall;
-          int totalGame = int.parse(gameDetails.awayLoss) +
-                      int.parse(gameDetails.awayWin) ==
+          int totalGame = int.parse(gameDetails.homeLoss) +
+                      int.parse(gameDetails.homeWin) ==
                   0
               ? 1
-              : int.parse(gameDetails.awayLoss) +
-                  int.parse(gameDetails.awayWin);
+              : int.parse(gameDetails.homeLoss) +
+                  int.parse(gameDetails.homeWin);
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
               if (player.position != "P") {
@@ -626,9 +623,23 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
+              String offensivePoint = ((((int.parse(
+                                  offenciveData?.touchdowns?.total.toString() ??
+                                      "0") *
+                              6) +
+                          (int.parse(
+                                  offenciveData?.fieldGoals?.made.toString() ??
+                                      "0") *
+                              3) +
+                          (int.parse(offenciveData?.extraPoints?.kicks?.made
+                                      .toString() ??
+                                  "0") *
+                              1)) /
+                      totalGame)
+                  .toStringAsFixed(2));
               nflHomeOffensiveList = [
+                offensivePoint,
                 ((int.parse("0") / totalGame).toStringAsFixed(2)),
-                '0.0',
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
@@ -652,9 +663,22 @@ class GameDetailsController extends GetxController {
                         .toString())
                     .toStringAsFixed(1)),
               ];
+              String defensivePoint = ((((int.parse(
+                                  defenciveData?.touchdowns?.total.toString() ??
+                                      "0") *
+                              6) +
+                          (int.parse(
+                                  defenciveData?.fieldGoals?.made.toString() ??
+                                      "0") *
+                              3) +
+                          (int.parse(defenciveData?.extraPoints?.kicks?.made
+                                      .toString() ??
+                                  "0") *
+                              1)) /
+                      totalGame)
+                  .toStringAsFixed(2));
               nflHomeDefensiveList = [
-                ((int.parse("0") / totalGame).toStringAsFixed(2)),
-                '0.0',
+                defensivePoint,
                 '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
@@ -768,9 +792,22 @@ class GameDetailsController extends GetxController {
                   ? 1
                   : int.parse(gameDetails.awayLoss) +
                   int.parse(gameDetails.awayWin);*/
+              String offensivePoint = ((((int.parse(
+                                  offenciveData?.touchdowns?.total.toString() ??
+                                      "0") *
+                              6) +
+                          (int.parse(
+                                  offenciveData?.fieldGoals?.made.toString() ??
+                                      "0") *
+                              3) +
+                          (int.parse(offenciveData?.extraPoints?.kicks?.made
+                                      .toString() ??
+                                  "0") *
+                              1)) /
+                      totalGame)
+                  .toStringAsFixed(2));
               nflAwayOffensiveList = [
-                ((int.parse("0") / totalGame).toStringAsFixed(2)),
-                '0.0',
+                offensivePoint,
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
@@ -794,9 +831,23 @@ class GameDetailsController extends GetxController {
                         .toString())
                     .toStringAsFixed(1)),
               ];
+              String defensivePoint = ((((int.parse(
+                                  defenciveData?.touchdowns?.total.toString() ??
+                                      "0") *
+                              6) +
+                          (int.parse(
+                                  defenciveData?.fieldGoals?.made.toString() ??
+                                      "0") *
+                              3) +
+                          (int.parse(defenciveData?.extraPoints?.kicks?.made
+                                      .toString() ??
+                                  "0") *
+                              1)) /
+                      totalGame)
+                  .toStringAsFixed(2));
+
               nflAwayDefensiveList = [
-                ((int.parse("0") / totalGame).toStringAsFixed(2)),
-                '0.0',
+                defensivePoint,
                 '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
