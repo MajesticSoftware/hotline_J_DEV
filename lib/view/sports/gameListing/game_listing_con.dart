@@ -361,7 +361,7 @@ class GameListingController extends GetxController {
               sportEventsList[index].homePlayerId =
                   (game.home?.probablePitcher?.id).toString();
               sportEventsList[index].wlHome =
-                  ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? "0"}')
+                  ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? '0'}')
                       .toString();
               sportEventsList[index].eraHome =
                   (game.home?.probablePitcher?.era ?? '0').toString();

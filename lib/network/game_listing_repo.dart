@@ -47,8 +47,8 @@ class GameListingRepo {
     String message = "";
 
     Uri uri = Uri.parse(sportKey == "NCAA"
-        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/boxscore.json?api_key=qucqbyh68myd733tsxtfnbau'
-        : "${AppUrls.NFL_BASE_URL}games/$gameId/boxscore.json?api_key=h4kantpwh2rhn783gdh6theg");
+        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=qucqbyh68myd733tsxtfnbau'
+        : "${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=h4kantpwh2rhn783gdh6theg");
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

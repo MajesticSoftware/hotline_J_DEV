@@ -531,6 +531,10 @@ Padding wrPlayersWidget(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, i) {
+                    num totalPlay = con.isTab1
+                        ? gameDetails.awayReceiversPlayer[i].gamesPlayed ?? 1
+                        : gameDetails.homeReceiversPlayer[i].gamesPlayed ?? 1;
+
                     return con.isTab1
                         ? ExpandableNotifier(
                             initialExpanded: i == con.isExpand,
@@ -547,19 +551,45 @@ Padding wrPlayersWidget(
                                         children: [
                                           expandableTileCardRunning(
                                               context, con,
-                                              value1: '0',
+                                              value1: ((int.parse(gameDetails
+                                                              .awayReceiversPlayer[
+                                                                  i]
+                                                              .receiving
+                                                              ?.receptions
+                                                              .toString() ??
+                                                          "0") /
+                                                      totalPlay)
+                                                  .toStringAsFixed(2)),
                                               title1: 'Receptions/Game',
                                               title2: 'TD/Game',
-                                              value2: '0'),
+                                              value2: ((int.parse(gameDetails
+                                                              .awayReceiversPlayer[
+                                                                  i]
+                                                              .receiving
+                                                              ?.touchdowns
+                                                              .toString() ??
+                                                          "0") /
+                                                      totalPlay)
+                                                  .toStringAsFixed(2))),
                                           expandableTileCardRunning(
                                               context, con,
-                                              value1: '0',
+                                              value1: ((int.parse(gameDetails
+                                                              .awayReceiversPlayer[
+                                                                  i]
+                                                              .receiving
+                                                              ?.yards
+                                                              .toString() ??
+                                                          "0") /
+                                                      totalPlay)
+                                                  .toStringAsFixed(2)),
                                               title1: 'Yards/Game',
                                               title2: 'Longest Catch',
-                                              value2: '0'),
+                                              value2:
+                                                  '${gameDetails.awayReceiversPlayer[i].receiving?.longest ?? "0"}'),
                                           expandableTileCardRunning(
                                               context, con,
-                                              value1: '0',
+                                              value1:
+                                                  '${gameDetails.awayReceiversPlayer[i].receiving?.avgYards ?? "0"}',
                                               title1: 'Average Catch',
                                               title2: 'Drops',
                                               value2: '0'),
@@ -584,17 +614,43 @@ Padding wrPlayersWidget(
                                     expanded: Column(
                                       children: [
                                         expandableTileCardRunning(context, con,
-                                            value1: '0',
+                                            value1: ((int.parse(gameDetails
+                                                            .homeReceiversPlayer[
+                                                                i]
+                                                            .receiving
+                                                            ?.receptions
+                                                            .toString() ??
+                                                        "0") /
+                                                    totalPlay)
+                                                .toStringAsFixed(2)),
                                             title1: 'Receptions/Game',
                                             title2: 'TD/Game',
-                                            value2: '0'),
+                                            value2: ((int.parse(gameDetails
+                                                            .homeReceiversPlayer[
+                                                                i]
+                                                            .receiving
+                                                            ?.touchdowns
+                                                            .toString() ??
+                                                        "0") /
+                                                    totalPlay)
+                                                .toStringAsFixed(2))),
                                         expandableTileCardRunning(context, con,
-                                            value1: '0',
+                                            value1: ((int.parse(gameDetails
+                                                            .homeReceiversPlayer[
+                                                                i]
+                                                            .receiving
+                                                            ?.yards
+                                                            .toString() ??
+                                                        "0") /
+                                                    totalPlay)
+                                                .toStringAsFixed(2)),
                                             title1: 'Yards/Game',
                                             title2: 'Longest Catch',
-                                            value2: '0'),
+                                            value2:
+                                                '${gameDetails.homeReceiversPlayer[i].receiving?.longest ?? "0"}'),
                                         expandableTileCardRunning(context, con,
-                                            value1: '0',
+                                            value1:
+                                                '${gameDetails.homeReceiversPlayer[i].receiving?.avgYards ?? "0"}',
                                             title1: 'Average Catch',
                                             title2: 'Drops',
                                             value2: '0'),
@@ -806,6 +862,11 @@ ListView runningBacksCard(
     shrinkWrap: true,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
+      num totalPlay = con.isTab
+          ? gameDetails.awayRunningBackPlayer[i].gamesPlayed ?? 1
+          : gameDetails.homeRunningBackPlayer[i].gamesPlayed ?? 1;
+      ;
+
       return con.isTab
           ? ExpandableNotifier(
               initialExpanded: i == con.isExpand,
@@ -824,17 +885,45 @@ ListView runningBacksCard(
                         expanded: Column(
                           children: [
                             expandableTileCardRunning(context, con,
-                                value1: '0',
+                                value1: ((int.parse(gameDetails
+                                                .awayRunningBackPlayer[i]
+                                                .rushing
+                                                ?.attempts
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2)),
                                 title1: 'Carries/Game',
                                 title2: 'TD/Game',
-                                value2: '0'),
+                                value2: ((int.parse(gameDetails
+                                                .awayRunningBackPlayer[i]
+                                                .rushing
+                                                ?.touchdowns
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2))),
                             expandableTileCardRunning(context, con,
-                                value1: '0',
+                                value1: ((int.parse(gameDetails
+                                                .awayRunningBackPlayer[i]
+                                                .rushing
+                                                ?.yards
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2)),
                                 title1: 'Yards/Game',
                                 title2: 'Longest Run',
-                                value2: '0'),
+                                value2:
+                                    '${gameDetails.awayRunningBackPlayer[i].rushing?.longest ?? "0"}'),
                             expandableTileCardRunning(context, con,
-                                value1: '0',
+                                value1: num.parse(gameDetails
+                                            .awayRunningBackPlayer[i]
+                                            .rushing
+                                            ?.avgYards
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(2),
                                 title1: 'Average Carry',
                                 title2: 'Fumbles',
                                 value2: '0'),
@@ -862,17 +951,45 @@ ListView runningBacksCard(
                       expanded: Column(
                         children: [
                           expandableTileCardRunning(context, con,
-                              value1: '0',
+                              value1: ((int.parse(gameDetails
+                                              .homeRunningBackPlayer[i]
+                                              .rushing
+                                              ?.attempts
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2)),
                               title1: 'Carries/Game',
                               title2: 'TD/Game',
-                              value2: '0'),
+                              value2: ((int.parse(gameDetails
+                                              .homeRunningBackPlayer[i]
+                                              .rushing
+                                              ?.touchdowns
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2))),
                           expandableTileCardRunning(context, con,
-                              value1: '0',
+                              value1: ((int.parse(gameDetails
+                                              .homeRunningBackPlayer[i]
+                                              .rushing
+                                              ?.yards
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2)),
                               title1: 'Yards/Game',
                               title2: 'Longest Run',
-                              value2: '0'),
+                              value2:
+                                  '${gameDetails.homeRunningBackPlayer[i].rushing?.longest ?? "0"}'),
                           expandableTileCardRunning(context, con,
-                              value1: '0',
+                              value1: num.parse(gameDetails
+                                          .homeRunningBackPlayer[i]
+                                          .rushing
+                                          ?.avgYards
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(2),
                               title1: 'Average Carry',
                               title2: 'Fumbles',
                               value2: '0'),
@@ -975,7 +1092,7 @@ Expanded hitterDataCard(
               : 0,
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: title.appCommonText(
               color: Theme.of(context).highlightColor,
               align: TextAlign.start,
@@ -1671,9 +1788,8 @@ Column commonRankingWidget(BuildContext context,
           children: [
             Expanded(
               flex: 2,
-              child: (double.tryParse(awayText) ?? awayText)
+              child: (num.tryParse(awayText) ?? awayText)
                   .toString()
-                  .replaceAll(regex, "")
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
                       weight: FontWeight.w700,
@@ -1692,9 +1808,8 @@ Column commonRankingWidget(BuildContext context,
             ),
             Expanded(
               flex: 2,
-              child: (double.tryParse(homeText) ?? homeText)
+              child: (num.tryParse(homeText) ?? homeText)
                   .toString()
-                  .replaceAll(regex, "")
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
                       weight: FontWeight.w700,
