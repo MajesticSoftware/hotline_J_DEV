@@ -592,7 +592,8 @@ Padding wrPlayersWidget(
                                                   '${gameDetails.awayReceiversPlayer[i].receiving?.avgYards ?? "0"}',
                                               title1: 'Average Catch',
                                               title2: 'Drops',
-                                              value2: '0'),
+                                              value2:
+                                                  '${gameDetails.awayReceiversPlayer[i].receiving?.droppedPasses ?? "0"}'),
                                         ],
                                       ))
                                 ],
@@ -653,7 +654,8 @@ Padding wrPlayersWidget(
                                                 '${gameDetails.homeReceiversPlayer[i].receiving?.avgYards ?? "0"}',
                                             title1: 'Average Catch',
                                             title2: 'Drops',
-                                            value2: '0'),
+                                            value2:
+                                                '${gameDetails.homeReceiversPlayer[i].receiving?.droppedPasses ?? "0"}'),
                                       ],
                                     ),
                                   ),
@@ -865,7 +867,6 @@ ListView runningBacksCard(
       num totalPlay = con.isTab
           ? gameDetails.awayRunningBackPlayer[i].gamesPlayed ?? 1
           : gameDetails.homeRunningBackPlayer[i].gamesPlayed ?? 1;
-      ;
 
       return con.isTab
           ? ExpandableNotifier(
@@ -926,7 +927,8 @@ ListView runningBacksCard(
                                     .toStringAsFixed(2),
                                 title1: 'Average Carry',
                                 title2: 'Fumbles',
-                                value2: '0'),
+                                value2:
+                                    '${gameDetails.awayRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
                           ],
                         ))
                   ],
@@ -992,7 +994,8 @@ ListView runningBacksCard(
                                   .toStringAsFixed(2),
                               title1: 'Average Carry',
                               title2: 'Fumbles',
-                              value2: '0'),
+                              value2:
+                                  '${gameDetails.homeRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
                         ],
                       ),
                     ),
