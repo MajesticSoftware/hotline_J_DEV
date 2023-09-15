@@ -1,4 +1,5 @@
 import 'package:hotlines/extras/extras.dart';
+import 'package:intl/intl.dart';
 import '../model/response_item.dart';
 
 class GameListingRepo {
@@ -21,6 +22,24 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NCAA RANKING
+  Future<ResponseItem> ncaaGameRanking() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        '${AppUrls.NCAA_BASE_URL}polls/AP25/${DateTime.now().year}/rankings.json?api_key=${AppUrls.NCAA_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///BOX SCORE API
   Future<ResponseItem> boxScoreRepo({String gameId = ''}) async {
     ResponseItem result;
@@ -29,7 +48,7 @@ class GameListingRepo {
     String message = "";
 
     Uri uri = Uri.parse(
-        '${AppUrls.MLB_BASE_URL}games/$gameId/boxscore.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+        '${AppUrls.MLB_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.MLB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -47,8 +66,8 @@ class GameListingRepo {
     String message = "";
 
     Uri uri = Uri.parse(sportKey == "NCAA"
-        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=qucqbyh68myd733tsxtfnbau'
-        : "${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=h4kantpwh2rhn783gdh6theg");
+        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NCAA_APIKEY}'
+        : "${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NFL_APIKEY}");
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -66,7 +85,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(
-        '${AppUrls.MLB_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+        '${AppUrls.MLB_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.MLB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -82,7 +101,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(
-        '${AppUrls.MLB_BASE_URL}players/$playerId/profile.json?api_key=5hnm7xhtgc8q22q2x4w6urvb');
+        '${AppUrls.MLB_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.MLB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -100,8 +119,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "NFL"
-        ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=h4kantpwh2rhn783gdh6theg'
-        : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=qucqbyh68myd733tsxtfnbau');
+        ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NFL_APIKEY}'
+        : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -136,8 +155,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "MLB"
-        ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=5hnm7xhtgc8q22q2x4w6urvb'
-        : '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year.toString()}/REG/01/injuries.json?api_key=h4kantpwh2rhn783gdh6theg');
+        ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=${AppUrls.MLB_APIKEY}'
+        : '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year.toString()}/REG/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

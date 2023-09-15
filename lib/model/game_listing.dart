@@ -90,8 +90,8 @@ class SportEvents {
   String wlAway = '0';
   String eraHome = '0';
   String eraAway = '0';
-  String? awayPlayerId;
-  String? homePlayerId;
+  String awayPlayerId = '';
+  String homePlayerId = '';
   String homePlayerName = '';
   String awayPlayerName = '';
   String awayRushingYard = '0';
@@ -106,7 +106,8 @@ class SportEvents {
   String homeInterCaption = '0';
   String homeFumble = '0';
   String awayFumble = '0';
-
+  String awayRank = '0';
+  String homeRank = '0';
   List awayTeamInjuredPlayer = [];
   List<Players> awayReceiversPlayer = [];
   List<Players> homeReceiversPlayer = [];
@@ -143,6 +144,10 @@ class SportEvents {
     this.homeWin = '0',
     this.awayLoss = '0',
     this.homeLoss = '0',
+    this.eraHome = "0",
+    this.eraAway = "0",
+    this.wlHome = "0",
+    this.wlAway = '0',
     this.awayRushingYard = '0',
     this.awayPassingYard = '0',
     this.awayRushingTds = '0',
@@ -155,6 +160,10 @@ class SportEvents {
     this.homeInterCaption = '0',
     this.homeFumble = '0',
     this.awayFumble = '0',
+    this.awayPlayerId = '',
+    this.homePlayerId = '',
+    this.awayRank = '',
+    this.homeRank = '',
     this.homeTeamInjuredPlayer = const [],
     this.awayTeamInjuredPlayer = const [],
     this.awayReceiversPlayer = const [],

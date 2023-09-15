@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
+import 'package:hotlines/model/ranking_model.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/DET_KC_model.dart';
@@ -588,8 +589,45 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  ///NFL STATICS
+  Future ncaaGameRanking(
+      {String awayTeamId = '',
+      String homeTeamId = '',
+      bool isLoad = false,
+      required SportEvents gameDetails}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().ncaaGameRanking();
+    try {
+      if (result.status) {
+        RankingModel response = RankingModel.fromJson(result.data);
+        if (response.rankings != null) {
+          response.rankings?.forEach((player) {
+            if (player.id.toString() == homeTeamId) {
+              gameDetails.homeRank = player.rank.toString();
+            }
+            if (player.id.toString() == awayTeamId) {
+              gameDetails.awayRank = player.rank.toString();
+            }
+          });
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR STATIC ----$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
 
+  ///NFL STATICS
   List<String> nflHomeOffensiveList = [];
   List<String> nflHomeDefensiveList = [];
   List<String> nflAwayOffensiveList = [];
@@ -614,12 +652,6 @@ class GameDetailsController extends GetxController {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
           if (response.season != null) {
             if (response.record != null) {
-              /*  int totalGame = int.parse(gameDetails.awayLoss) +
-                          int.parse(gameDetails.awayWin) ==
-                      0
-                  ? 1
-                  : int.parse(gameDetails.awayLoss) +
-                      int.parse(gameDetails.awayWin);*/
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
@@ -638,8 +670,7 @@ class GameDetailsController extends GetxController {
                       totalGame)
                   .toStringAsFixed(2));
               nflHomeOffensiveList = [
-                offensivePoint,
-                ((int.parse("0") / totalGame).toStringAsFixed(2)),
+                '$offensivePoint ${gameDetails.homeRank == '0' ? "" : '(${gameDetails.homeRank})'}',
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
@@ -785,13 +816,7 @@ class GameDetailsController extends GetxController {
             if (response.record != null) {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
-              num totalGame = offenciveData?.gamesPlayed ??
-                  1; /*int.parse(gameDetails.awayLoss) +
-                  int.parse(gameDetails.awayWin) ==
-                  0
-                  ? 1
-                  : int.parse(gameDetails.awayLoss) +
-                  int.parse(gameDetails.awayWin);*/
+              num totalGame = offenciveData?.gamesPlayed ?? 1;
               String offensivePoint = ((((int.parse(
                                   offenciveData?.touchdowns?.total.toString() ??
                                       "0") *
@@ -807,7 +832,7 @@ class GameDetailsController extends GetxController {
                       totalGame)
                   .toStringAsFixed(2));
               nflAwayOffensiveList = [
-                offensivePoint,
+                '$offensivePoint ${gameDetails.awayRank == '0' ? "" : ' (${gameDetails.awayRank})'}',
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)

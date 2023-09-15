@@ -10,4 +10,7 @@ class AppUrls {
       "https://api.sportradar.us/nfl/official/production/v7/en/";
   static const String NCAA_BASE_URL =
       "https://api.sportradar.us/ncaafb/production/v7/en/";
+  static const String NCAA_APIKEY = "qucqbyh68myd733tsxtfnbau";
+  static const String NFL_APIKEY = "h4kantpwh2rhn783gdh6theg";
+  static const String MLB_APIKEY = "5hnm7xhtgc8q22q2x4w6urvb";
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:get/get.dart';
@@ -359,7 +360,7 @@ class GameListingController extends GetxController {
               sportEventsList[index].homeWin = (game.home?.win).toString();
               sportEventsList[index].homeLoss = (game.home?.loss).toString();
               sportEventsList[index].homePlayerId =
-                  (game.home?.probablePitcher?.id).toString();
+                  (game.home?.probablePitcher?.id ?? "").toString();
               sportEventsList[index].wlHome =
                   ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? '0'}')
                       .toString();
@@ -374,7 +375,7 @@ class GameListingController extends GetxController {
               sportEventsList[index].awayWin = (game.away?.win).toString();
               sportEventsList[index].awayLoss = (game.away?.loss).toString();
               sportEventsList[index].awayPlayerId =
-                  (game.away?.probablePitcher?.id).toString();
+                  (game.away?.probablePitcher?.id ?? "").toString();
               sportEventsList[index].wlAway =
                   ('${game.away?.probablePitcher?.win ?? '0'}-${game.away?.probablePitcher?.loss ?? "0"}')
                       .toString();
@@ -399,6 +400,20 @@ class GameListingController extends GetxController {
         errorText,
       );
     }
+    /*timer = Future.delayed(const Duration(minutes: 1), () {
+      if (sportEventsList[index].uuids != null) {
+        boxScoreResponse(
+            homeTeamId:
+                replaceId(sportEventsList[index].competitors[0].uuids ?? '') ??
+                    "",
+            awayTeamId:
+                replaceId(sportEventsList[index].competitors[1].uuids ?? '') ??
+                    "",
+            gameId: replaceId(sportEventsList[index].uuids ?? ''),
+            index: index);
+      }
+    });*/
+
     update();
   }
 
@@ -450,10 +465,22 @@ class GameListingController extends GetxController {
         errorText,
       );
     }
+
+    /* timerNCAA = Future.delayed(const Duration(minutes: 1), () {
+      if (sportEventsList[index].uuids != null) {
+        boxScoreResponseNCAA(
+            key: key,
+            gameId: replaceId(sportEventsList[index].uuids ?? ''),
+            index: index);
+      }
+    });*/
+
     update();
   }
 
   ///GAME LISTING FOR ALL GAME
+
+  Future timerNCAA = Future.delayed(Duration.zero);
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
@@ -536,6 +563,23 @@ class GameListingController extends GetxController {
     });
   }
 
+  @override
+  void dispose() {
+    timer.ignore();
+    timerNCAA.ignore();
+    super.dispose();
+  }
+
+  @override
+  void onClose() {
+    timer.ignore();
+    timerNCAA.ignore();
+    Get.delete<GameListingController>();
+    super.onClose();
+    log('I am closed');
+  }
+
+  Future timer = Future.delayed(Duration.zero);
   getGameListingForMLBRes(bool isLoad,
       {String apiKey = '',
       String sportKey = '',

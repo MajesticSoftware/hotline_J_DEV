@@ -137,16 +137,16 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      if (widget.gameDetails.awayPlayerId != "null") {
+      if ((widget.gameDetails.awayPlayerId ?? "").isNotEmpty) {
         gameDetailsController.profileAwayResponse(
           isLoad: isLoad,
-          awayTeamId: widget.gameDetails.awayPlayerId!,
+          awayTeamId: widget.gameDetails.awayPlayerId ?? "",
         );
       }
-      if (widget.gameDetails.homePlayerId != "null") {
+      if ((widget.gameDetails.homePlayerId ?? "").isNotEmpty) {
         gameDetailsController.profileHomeResponse(
           isLoad: isLoad,
-          homeTeamId: widget.gameDetails.homePlayerId!,
+          homeTeamId: widget.gameDetails.homePlayerId ?? "",
         );
       }
 
@@ -225,16 +225,24 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      gameDetailsController.nflStaticsAwayTeamResponse(
-          isLoad: isLoad,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-      gameDetailsController.nflStaticsHomeTeamResponse(
-          isLoad: isLoad,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      gameDetailsController
+          .ncaaGameRanking(
+              isLoad: isLoad,
+              gameDetails: widget.gameDetails,
+              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
+          .then((value) {
+        gameDetailsController.nflStaticsAwayTeamResponse(
+            isLoad: isLoad,
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+        gameDetailsController.nflStaticsHomeTeamResponse(
+            isLoad: isLoad,
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      });
     }
     gameDetailsController.update();
   }

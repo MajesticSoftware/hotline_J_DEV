@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:intl/intl.dart';
@@ -924,6 +925,23 @@ ListView runningBacksCard(
                                 title2: 'Fumbles',
                                 value2:
                                     '${gameDetails.awayRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
+                            expandableTileCardRunning(context, con,
+                                value1: num.parse(gameDetails
+                                            .awayRunningBackPlayer[i]
+                                            .receiving
+                                            ?.yards
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(1),
+                                title1: 'Rec Yards/Game',
+                                title2: 'Rec TD/Game',
+                                value2: num.parse(gameDetails
+                                            .awayRunningBackPlayer[i]
+                                            .receiving
+                                            ?.touchdowns
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(1)),
                           ],
                         ))
                   ],
@@ -991,6 +1009,23 @@ ListView runningBacksCard(
                               title2: 'Fumbles',
                               value2:
                                   '${gameDetails.homeRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
+                          expandableTileCardRunning(context, con,
+                              value1: num.parse(gameDetails
+                                          .homeRunningBackPlayer[i]
+                                          .receiving
+                                          ?.yards
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(1),
+                              title1: 'Rec Yards/Game',
+                              title2: 'Rec TD/Game',
+                              value2: num.parse(gameDetails
+                                          .homeRunningBackPlayer[i]
+                                          .receiving
+                                          ?.touchdowns
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(1)),
                         ],
                       ),
                     ),
@@ -1786,15 +1821,59 @@ Column commonRankingWidget(BuildContext context,
           children: [
             Expanded(
               flex: 2,
-              child: (num.tryParse(awayText) ?? awayText)
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      weight: FontWeight.w700,
-                      align: mobileView.size.shortestSide < 600
+              child: awayText.contains('(')
+                  ? RichText(
+                      textAlign: mobileView.size.shortestSide < 600
                           ? TextAlign.center
                           : TextAlign.end,
-                      size: MediaQuery.of(context).size.height * .014),
+                      text: TextSpan(
+                          text: (num.tryParse(awayText) ?? awayText)
+                              .toString()
+                              .split(' ')
+                              .first,
+                          style: GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * .014),
+                          children: [
+                            TextSpan(
+                                text:
+                                    ' ${(num.tryParse(awayText) ?? awayText).toString().split(' ').last}',
+                                style: GoogleFonts.nunitoSans(
+                                    color: num.parse((num.tryParse(awayText) ??
+                                                    awayText)
+                                                .toString()
+                                                .split(' ')
+                                                .last
+                                                .replaceAll('(', '')
+                                                .replaceAll(')', "")) <=
+                                            12
+                                        ? Colors.green
+                                        : num.parse((num.tryParse(awayText) ??
+                                                        awayText)
+                                                    .toString()
+                                                    .split(' ')
+                                                    .last
+                                                    .replaceAll('(', '')
+                                                    .replaceAll(')', "")) >=
+                                                15
+                                            ? redColor
+                                            : Colors.amber,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            .014))
+                          ]))
+                  : (num.tryParse(awayText) ?? awayText)
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          weight: FontWeight.w700,
+                          align: mobileView.size.shortestSide < 600
+                              ? TextAlign.center
+                              : TextAlign.end,
+                          size: MediaQuery.of(context).size.height * .014),
             ),
             Expanded(
               flex: isReport ? 3 : 2,
@@ -1806,15 +1885,59 @@ Column commonRankingWidget(BuildContext context,
             ),
             Expanded(
               flex: 2,
-              child: (num.tryParse(homeText) ?? homeText)
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      weight: FontWeight.w700,
-                      align: mobileView.size.shortestSide < 600
+              child: homeText.contains('(')
+                  ? RichText(
+                      textAlign: mobileView.size.shortestSide < 600
                           ? TextAlign.center
                           : TextAlign.start,
-                      size: MediaQuery.of(context).size.height * .014),
+                      text: TextSpan(
+                          text: (num.tryParse(homeText) ?? homeText)
+                              .toString()
+                              .split(' ')
+                              .first,
+                          style: GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * .014),
+                          children: [
+                            TextSpan(
+                                text:
+                                    ' ${(num.tryParse(homeText) ?? homeText).toString().split(' ').last}',
+                                style: GoogleFonts.nunitoSans(
+                                    color: num.parse((num.tryParse(homeText) ??
+                                                    homeText)
+                                                .toString()
+                                                .split(' ')
+                                                .last
+                                                .replaceAll('(', '')
+                                                .replaceAll(')', "")) <=
+                                            12
+                                        ? Colors.green
+                                        : num.parse((num.tryParse(homeText) ??
+                                                        homeText)
+                                                    .toString()
+                                                    .split(' ')
+                                                    .last
+                                                    .replaceAll('(', '')
+                                                    .replaceAll(')', "")) >=
+                                                15
+                                            ? redColor
+                                            : Colors.amber,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            .014))
+                          ]))
+                  : (num.tryParse(homeText) ?? homeText)
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          weight: FontWeight.w700,
+                          align: mobileView.size.shortestSide < 600
+                              ? TextAlign.center
+                              : TextAlign.start,
+                          size: MediaQuery.of(context).size.height * .014),
             )
           ],
         ),
@@ -2236,7 +2359,7 @@ SizedBox emptyListWidget(BuildContext context) {
   return SizedBox(
     height: MediaQuery.of(context).size.height * .038,
     child: Center(
-        child: 'No Data'.appCommonText(
+        child: 'Bets available closer to game time'.appCommonText(
             weight: FontWeight.w400,
             size: Get.height * .014,
             color: Theme.of(context).highlightColor)),
@@ -2472,7 +2595,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                       ],
                     )),
                 Expanded(
-                    flex: 3,
+                    flex: mobileView.size.shortestSide < 600 ? 5 : 3,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -2493,42 +2616,41 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                           height: MediaQuery.of(context).size.width * .003,
                         ),
                         Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            (gameDetails.venue != null
-                                    ? '${gameDetails.venue?.name}, '
-                                    : '')
-                                .toString()
-                                .appCommonText(
-                                    size: MediaQuery.of(context).size.height *
-                                        .014,
-                                    color: lightGrayColor,
-                                    weight: FontWeight.w600),
-                            (gameDetails.venue != null
-                                    ? gameDetails.venue?.tmpInFahrenheit == 0
-                                        ? "TBD"
-                                        : gameDetails.venue?.tmpInFahrenheit
-                                    : 00)
-                                .toString()
-                                .appCommonText(
-                                    size: MediaQuery.of(context).size.height *
-                                        .014,
-                                    color: lightGrayColor,
-                                    weight: FontWeight.w400),
-                            ' °F  '.appCommonText(
-                              size: MediaQuery.of(context).size.height * .01,
-                              weight: FontWeight.w300,
-                              color: lightGrayColor,
-                            ),
-                            getWeatherIcon(
-                                (gameDetails.venue != null
-                                    ? gameDetails.venue?.weather ?? 'Sunny'
-                                    : 'Sunny'),
-                                context,
-                                MediaQuery.of(context).size.height * .02),
-                          ],
-                        )
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              (gameDetails.venue != null
+                                      ? '${gameDetails.venue?.name}, '
+                                      : '')
+                                  .toString()
+                                  .appCommonText(
+                                      size: MediaQuery.of(context).size.height *
+                                          .014,
+                                      color: lightGrayColor,
+                                      weight: FontWeight.w600),
+                              (gameDetails.venue != null
+                                      ? gameDetails.venue?.tmpInFahrenheit == 0
+                                          ? "TBD"
+                                          : gameDetails.venue?.tmpInFahrenheit
+                                      : 00)
+                                  .toString()
+                                  .appCommonText(
+                                      size: MediaQuery.of(context).size.height *
+                                          .014,
+                                      color: lightGrayColor,
+                                      weight: FontWeight.w400),
+                              ' °F  '.appCommonText(
+                                size: MediaQuery.of(context).size.height * .01,
+                                weight: FontWeight.w300,
+                                color: lightGrayColor,
+                              ),
+                              getWeatherIcon(
+                                  (gameDetails.venue != null
+                                      ? gameDetails.venue?.weather ?? 'Sunny'
+                                      : 'Sunny'),
+                                  context,
+                                  MediaQuery.of(context).size.height * .02)
+                            ])
                       ],
                     )),
                 Expanded(

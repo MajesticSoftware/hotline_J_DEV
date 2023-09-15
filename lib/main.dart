@@ -10,7 +10,6 @@ import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
 
 import 'view/sports/selectSport/selecte_game_con.dart';
-import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
   await GetStorage.init();
@@ -42,6 +41,6 @@ class BaseBindings extends Bindings {
   void dependencies() {
     Get.lazyPut(() => SelectGameController(), fenix: true);
     Get.lazyPut(() => GameDetailsController(), fenix: true);
-    Get.lazyPut(() => GameListingController(), fenix: true);
+    // Get.lazyPut(() => GameListingController(), fenix: true);
   }
 }

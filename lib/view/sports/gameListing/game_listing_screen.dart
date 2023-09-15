@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -37,12 +39,19 @@ class GameListingScreen extends StatefulWidget {
 }
 
 class _GameListingScreenState extends State<GameListingScreen> {
-  final GameListingController gameListingController = Get.find();
+  final GameListingController gameListingController =
+      Get.put(GameListingController());
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     var client = http.Client();
+    /* if (widget.sportKey == "MLB") {
+      gameListingController.timer!.cancel();
+    } else {
+      gameListingController.timerNCAA!.cancel();
+    }
+    gameListingController.update();*/
     client.close();
   }
 
@@ -139,6 +148,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
+                    Get.delete<GameListingController>();
                     Get.back();
                   },
                   child: Padding(
@@ -255,303 +265,332 @@ class _GameListingScreenState extends State<GameListingScreen> {
     try {
       return competitors.status == 'closed' && widget.sportKey == "NFL"
           ? const SizedBox()
-          : Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * .02,
-                  top: MediaQuery.of(context).size.width * .014,
-                  right: MediaQuery.of(context).size.width * .02),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    border: Border.all(
-                        color: isDark || selectGameController.isDarkMode
-                            ? greyColor
-                            : dividerColor),
-                    borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.width * .02)),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: MediaQuery.of(context).size.height * .006,
-                            horizontal:
-                                MediaQuery.of(context).size.width * .02),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+          : competitors.status == 'postponed'
+              ? const SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .02,
+                      top: MediaQuery.of(context).size.width * .014,
+                      right: MediaQuery.of(context).size.width * .02),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        border: Border.all(
+                            color: isDark || selectGameController.isDarkMode
+                                ? greyColor
+                                : dividerColor),
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .02)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.height * .006,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * .02),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                commonCachedNetworkImage(
-                                  width: Get.height * .044,
-                                  height: Get.height * .044,
-                                  imageUrl: gameListingController
-                                              .sportEventsList[index]
-                                              .awayTeam ==
-                                          'North Carolina State Wolfpack'
-                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                      : gameListingController
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                      width: Get.height * .044,
+                                      height: Get.height * .044,
+                                      imageUrl: gameListingController
                                                   .sportEventsList[index]
                                                   .awayTeam ==
-                                              'Louisiana-Lafayette Ragin Cajuns'
-                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                              'North Carolina State Wolfpack'
+                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                           : gameListingController
                                                       .sportEventsList[index]
                                                       .awayTeam ==
-                                                  'Sam Houston State Bearkats'
-                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                              : competitors.gameLogoAwayLink,
-                                ),
-                                // 10.W(),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * .01,
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    (gameListingController
-                                            .sportEventsList[index].awayTeam)
-                                        .toString(),
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge,
-                                    textAlign: TextAlign.start,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                Text(
-                                  (gameListingController
-                                          .sportEventsList[index].awayScore)
-                                      .toString(),
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                  textAlign: TextAlign.start,
-                                  maxLines: 2,
-                                )
-                              ],
-                            ),
-                            5.H(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 0,
-                                  child: Text(
-                                    '  Vs',
-                                    style:
-                                        Theme.of(context).textTheme.labelSmall,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                    flex: 4, child: commonDivider(context)),
-                              ],
-                            ),
-                            5.H(),
-                            Row(
-                              children: [
-                                commonCachedNetworkImage(
-                                    width: Get.height * .044,
-                                    height: Get.height * .044,
-                                    imageUrl: gameListingController
+                                                  'Louisiana-Lafayette Ragin Cajuns'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                              : gameListingController
+                                                          .sportEventsList[
+                                                              index]
+                                                          .awayTeam ==
+                                                      'Sam Houston State Bearkats'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                  : competitors
+                                                      .gameLogoAwayLink,
+                                    ),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
                                                 .sportEventsList[index]
-                                                .homeTeam ==
-                                            'North Carolina State Wolfpack'
-                                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                        : gameListingController
+                                                .awayTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      (gameListingController
+                                              .sportEventsList[index].awayScore)
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 0,
+                                      child: Text(
+                                        '  Vs',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 4, child: commonDivider(context)),
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                        width: Get.height * .044,
+                                        height: Get.height * .044,
+                                        imageUrl: gameListingController
                                                     .sportEventsList[index]
                                                     .homeTeam ==
-                                                'Louisiana-Lafayette Ragin Cajuns'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                'North Carolina State Wolfpack'
+                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                             : gameListingController
                                                         .sportEventsList[index]
                                                         .homeTeam ==
-                                                    'Sam Houston State Bearkats'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                : competitors.gameHomeLogoLink),
-                                // 10.W(),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * .01,
+                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                : gameListingController
+                                                            .sportEventsList[
+                                                                index]
+                                                            .homeTeam ==
+                                                        'Sam Houston State Bearkats'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                    : competitors
+                                                        .gameHomeLogoLink),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .sportEventsList[index]
+                                                .homeTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      gameListingController
+                                          .sportEventsList[index].homeScore
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
                                 ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    (gameListingController
-                                            .sportEventsList[index].homeTeam)
-                                        .toString(),
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge,
-                                    textAlign: TextAlign.start,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                Text(
-                                  gameListingController
-                                      .sportEventsList[index].homeScore
-                                      .toString(),
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                  textAlign: TextAlign.start,
-                                  maxLines: 2,
-                                )
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          (MediaQuery.of(context).size.height * .005).H(),
-                          Text(
-                            '$date, $dateTime',
-                            style: Theme.of(context).textTheme.displaySmall,
-                            textAlign: TextAlign.center,
                           ),
-                          competitors.status == 'live'
-                              ? Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * .02,
-                                  width:
-                                      MediaQuery.of(context).size.width * .07,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(105),
-                                      color: redColor),
-                                  child: Center(
-                                    child: 'LIVE'.appCommonText(
-                                        color: whiteColor,
-                                        size:
-                                            MediaQuery.of(context).size.height *
-                                                .012,
-                                        weight: FontWeight.bold),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          getWeatherIcon(
-                              competitors.venue?.weather ?? 'Sunny',
-                              context,
-                              MediaQuery.of(context).size.height * .064),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            textBaseline: TextBaseline.alphabetic,
-                            verticalDirection: VerticalDirection.up,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              (MediaQuery.of(context).size.height * .005).H(),
                               Text(
-                                '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit ?? 0}',
-                                style: competitors.venue?.tmpInFahrenheit == 0
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall!
-                                        .copyWith(
-                                            fontSize: MediaQuery.of(context)
+                                '$date, $dateTime',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.center,
+                              ),
+                              competitors.status == 'live'
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .02,
+                                      width: MediaQuery.of(context).size.width *
+                                          .07,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(105),
+                                          color: redColor),
+                                      child: Center(
+                                        child: 'LIVE'.appCommonText(
+                                            color: whiteColor,
+                                            size: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                .014)
-                                    : Theme.of(context).textTheme.displayMedium,
-                              ),
-                              Text(
-                                '°F',
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
+                                                .012,
+                                            weight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              getWeatherIcon(
+                                  competitors.venue?.weather ?? 'Sunny',
+                                  context,
+                                  MediaQuery.of(context).size.height * .064),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text(
+                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit ?? 0}',
+                                    style: competitors.venue?.tmpInFahrenheit ==
+                                            0
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .014)
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .displayMedium,
+                                  ),
+                                  Text(
+                                    '°F',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                ],
+                              )
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        buildExpandedBoxWidget(context,
+                            bottomText:
+                                competitors.homeSpreadValue.contains('-')
+                                    ? competitors.homeSpreadValue
+                                    : '+${competitors.homeSpreadValue}',
+                            upText: competitors.awaySpreadValue.contains('-')
+                                ? competitors.awaySpreadValue
+                                : '+${competitors.awaySpreadValue}'),
+                        buildExpandedBoxWidget(context,
+                            bottomText: competitors.homeMoneyLineValue,
+                            upText: competitors.awayMoneyLineValue),
+                        Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('o',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.awayOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .02,
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('u',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.homeOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                )
+                              ],
+                            )),
+                      ],
                     ),
-                    buildExpandedBoxWidget(context,
-                        bottomText: competitors.homeSpreadValue.contains('-')
-                            ? competitors.homeSpreadValue
-                            : '+${competitors.homeSpreadValue}',
-                        upText: competitors.awaySpreadValue.contains('-')
-                            ? competitors.awaySpreadValue
-                            : '+${competitors.awaySpreadValue}'),
-                    buildExpandedBoxWidget(context,
-                        bottomText: competitors.homeMoneyLineValue,
-                        upText: competitors.awayMoneyLineValue),
-                    Expanded(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height * .04,
-                              // width: MediaQuery.of(context).size.width * .09,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width *
-                                          .008)),
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                textBaseline: TextBaseline.alphabetic,
-                                verticalDirection: VerticalDirection.up,
-                                children: [
-                                  Text('o',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                  Text((competitors.awayOUValue).toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                ],
-                              )),
-                            ).paddingSymmetric(
-                              horizontal: mobileView.size.shortestSide < 600
-                                  ? MediaQuery.of(context).size.height * .008
-                                  : MediaQuery.of(context).size.height * .015,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * .02,
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * .04,
-                              // width: MediaQuery.of(context).size.width * .09,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width *
-                                          .008)),
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                textBaseline: TextBaseline.alphabetic,
-                                verticalDirection: VerticalDirection.up,
-                                children: [
-                                  Text('u',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                  Text((competitors.homeOUValue).toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                ],
-                              )),
-                            ).paddingSymmetric(
-                              horizontal: mobileView.size.shortestSide < 600
-                                  ? MediaQuery.of(context).size.height * .008
-                                  : MediaQuery.of(context).size.height * .015,
-                            )
-                          ],
-                        )),
-                  ],
-                ),
-              ),
-            );
+                  ),
+                );
     } catch (e) {
       return const SizedBox();
     }
