@@ -47,13 +47,13 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       sportId: 'sr:sport:16',
       isAvailable: true),
-
+/*
   LeagueModel(
-      sportId: '',
+      sportId: 'sr:sport:2',
       image: Assets.imagesNHL,
-      date: '',
+      date: formatted,
       key: 'NHL',
-      apiKey: '',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: false),
   LeagueModel(
       sportId: '',
@@ -68,7 +68,7 @@ List<LeagueModel> sportsLeagueList = [
       date: '',
       key: 'GOLF',
       apiKey: '',
-      isAvailable: false),
+      isAvailable: false),*/
   // LeagueModel(
   //     image: Assets.imagesUFC, date: '', key: 'UFC', isAvailable: false),
   // LeagueModel(

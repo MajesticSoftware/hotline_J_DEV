@@ -21,8 +21,8 @@ import 'package:http/http.dart' as http;
 import 'game_listing_con.dart';
 
 // ignore: must_be_immutable
-class GameListingScreen extends StatelessWidget {
-  GameListingScreen(
+class GameListingScreen extends StatefulWidget {
+  const GameListingScreen(
       {Key? key,
       required this.sportKey,
       required this.sportId,
@@ -34,13 +34,24 @@ class GameListingScreen extends StatelessWidget {
   final String keys;
   final String sportId;
 
+  @override
+  State<GameListingScreen> createState() => _GameListingScreenState();
+}
+
+class _GameListingScreenState extends State<GameListingScreen> {
   final GameListingController gameListingController = Get.find();
+  var client = http.Client();
+  @override
+  void dispose() {
+    super.dispose();
+    client.close();
+  }
 
   @override
   Widget build(BuildContext context) {
     isDark = PreferenceManager.getIsDarkMode() ?? false;
     return GetBuilder<GameListingController>(initState: (state) async {
-      sportKey == 'MLB'
+      widget.sportKey == 'MLB'
           ? gameListingController.setIsBack(false)
           : gameListingController.setIsBack1(false);
       return getResponse(true);
@@ -61,15 +72,24 @@ class GameListingScreen extends StatelessWidget {
   }
 
   getResponse(bool isLoad) async {
-    if (sportKey == 'MLB') {
+    if (widget.sportKey == 'MLB') {
       return await gameListingController.getGameListingForMLBRes(isLoad,
-          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
-    } else if (sportKey == 'NFL') {
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
+    } else if (widget.sportKey == 'NFL') {
       return await gameListingController.getGameListingForNFLGame(isLoad,
-          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
     } else {
       return gameListingController.getGameListingForNCAAGame(isLoad,
-          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
+          apiKey: widget.keys,
+          sportKey: widget.sportKey,
+          date: widget.date,
+          sportId: widget.sportId);
     }
   }
 
@@ -123,7 +143,7 @@ class GameListingScreen extends StatelessWidget {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    sportKey == 'MLB'
+                    widget.sportKey == 'MLB'
                         ? con.setIsBack(true)
                         : con.setIsBack1(true);
                     con.timer = null;
@@ -146,7 +166,7 @@ class GameListingScreen extends StatelessWidget {
                       fit: BoxFit.contain),
                 ),
                 Expanded(
-                  child: sportKey.appCommonText(
+                  child: widget.sportKey.appCommonText(
                       color: whiteColor,
                       align: TextAlign.end,
                       weight: FontWeight.w700,
@@ -181,9 +201,9 @@ class GameListingScreen extends StatelessWidget {
                                 Get.to(SportDetailsScreen(
                                   gameDetails:
                                       controller.sportEventsList[index],
-                                  sportKey: sportKey,
-                                  sportId: sportId,
-                                  date: date,
+                                  sportKey: widget.sportKey,
+                                  sportId: widget.sportId,
+                                  date: widget.date,
                                 ));
                               },
                               child: teamWidget(
@@ -243,7 +263,7 @@ class GameListingScreen extends StatelessWidget {
     String dateTime = DateFormat.jm()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     try {
-      return competitors.status == 'closed' && sportKey == "NFL"
+      return competitors.status == 'closed' && widget.sportKey == "NFL"
           ? const SizedBox()
           : competitors.status == 'postponed'
               ? const SizedBox()
