@@ -2231,7 +2231,7 @@ Container headerTitleWidget(BuildContext context, String title,
       ));
 }
 
-Padding hotlinesWidget(BuildContext context, GameDetailsController con) {
+Padding hotlinesWidget(BuildContext context, GameDetailsController con,SportEvents gameDetails,) {
   return Padding(
     padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.height * .02),
@@ -2268,7 +2268,7 @@ Padding hotlinesWidget(BuildContext context, GameDetailsController con) {
               ? circularWidget(context)
                   .paddingAll(MediaQuery.of(context).size.height * .038)
               : con.hotlinesData.isEmpty && !con.isHotlines
-                  ? emptyListWidget(context)
+                  ? emptyListWidget(context,gameDetails,)
                   : hotlinesCard(con),
         ],
       ),
@@ -2355,11 +2355,11 @@ ListView hotlinesCard(GameDetailsController con) {
   );
 }
 
-SizedBox emptyListWidget(BuildContext context) {
+SizedBox emptyListWidget(BuildContext context,SportEvents gameDetails,) {
   return SizedBox(
     height: MediaQuery.of(context).size.height * .038,
     child: Center(
-        child: 'Bets available closer to game time'.appCommonText(
+        child:(gameDetails.status=='live'||gameDetails.status=='closed'?'Bets not available':'Bets available closer to game time').appCommonText(
             weight: FontWeight.w400,
             size: Get.height * .014,
             color: Theme.of(context).highlightColor)),
@@ -2586,12 +2586,60 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                 align: TextAlign.end,
                                 maxLine: 1,
                                 color: whiteColor),
-                        ('${gameDetails.awayWin}-${gameDetails.awayLoss}')
-                            .appCommonText(
-                                align: TextAlign.end,
-                                weight: FontWeight.w400,
-                                size: MediaQuery.of(context).size.height * .014,
-                                color: whiteColor),
+                        gameDetails.awayRank != "0"
+                            ? RichText(
+                                textAlign: TextAlign.end,
+                                text: TextSpan(
+                                    text: ('${gameDetails.awayWin}-${gameDetails.awayLoss}'),
+                                    style: GoogleFonts.nunitoSans(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                .014),
+                                    children: [
+                                      TextSpan(
+                                          text:
+                                gameDetails.awayRank == '0' ? "" : ' (${gameDetails.awayRank})',
+                                          style: GoogleFonts.nunitoSans(
+                                              color: ( num.tryParse(
+                                                  gameDetails.awayRank ==
+                                                      '0'
+                                                      ? ""
+                                                      : ' (${gameDetails.awayRank})'
+                                                  .toString()
+                                                  .replaceAll(
+                                                  '(', '')
+                                                  .replaceAll(
+                                                  ')', ""))??0) <=
+                                                      12
+                                                  ? Colors.green
+                                                  : ( num.tryParse(
+                                                  gameDetails.awayRank ==
+                                                      '0'
+                                                      ? ""
+                                                      : ' (${gameDetails.awayRank})'
+                                                      .toString()
+                                                      .replaceAll(
+                                                      '(', '')
+                                                      .replaceAll(
+                                                      ')', ""))??0)>=
+                                                          15
+                                                      ? redColor
+                                                      : Colors.amber,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .014))
+                                    ]))
+                            : ('${gameDetails.awayWin}-${gameDetails.awayLoss}')
+                                .appCommonText(
+                                    align: TextAlign.end,
+                                    weight: FontWeight.w400,
+                                    size: MediaQuery.of(context).size.height *
+                                        .014,
+                                    color: whiteColor),
                       ],
                     )),
                 Expanded(
@@ -2615,42 +2663,67 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                         SizedBox(
                           height: MediaQuery.of(context).size.width * .003,
                         ),
-                        Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.center,
-                            children: [
-                              (gameDetails.venue != null
-                                      ? '${gameDetails.venue?.name}, '
-                                      : '')
-                                  .toString()
-                                  .appCommonText(
-                                      size: MediaQuery.of(context).size.height *
-                                          .014,
-                                      color: lightGrayColor,
-                                      weight: FontWeight.w600),
-                              (gameDetails.venue != null
-                                      ? gameDetails.venue?.tmpInFahrenheit == 0
-                                          ? "TBD"
-                                          : gameDetails.venue?.tmpInFahrenheit
-                                      : 00)
-                                  .toString()
-                                  .appCommonText(
-                                      size: MediaQuery.of(context).size.height *
-                                          .014,
-                                      color: lightGrayColor,
-                                      weight: FontWeight.w400),
-                              ' °F  '.appCommonText(
-                                size: MediaQuery.of(context).size.height * .01,
-                                weight: FontWeight.w300,
-                                color: lightGrayColor,
-                              ),
-                              getWeatherIcon(
+                        Row(
+                         //  crossAxisAlignment: WrapCrossAlignment.center,
+                         // alignment: WrapAlignment.center,
+                          children: [
+
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+
+
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: (gameDetails.venue != null
+                                          ? '${gameDetails.venue?.name}, '
+                                          : '')
+                                          .toString()
+                                          .appCommonText(
+                                          size: MediaQuery.of(context).size.height *
+                                              .014,
+                                          color: lightGrayColor,
+                                          weight: FontWeight.w600),
+                                    ),
+                                  ),
                                   (gameDetails.venue != null
-                                      ? gameDetails.venue?.weather ?? 'Sunny'
-                                      : 'Sunny'),
-                                  context,
-                                  MediaQuery.of(context).size.height * .02)
-                            ])
+                                      ? gameDetails
+                                      .venue?.tmpInFahrenheit ==
+                                      0
+                                      ? "TBD"
+                                      : gameDetails
+                                      .venue?.tmpInFahrenheit
+                                      : 00)
+                                      .toString()
+                                      .appCommonText(
+                                      size: MediaQuery.of(context)
+                                          .size
+                                          .height *
+                                          .014,
+                                      color: whiteColor,
+                                      weight: FontWeight.w400),
+                                  ' °F  '.appCommonText(
+                                    size: MediaQuery.of(context).size.height *
+                                        .01,
+                                    weight: FontWeight.w300,
+                                    color: whiteColor,
+                                  ),
+
+
+                                  getWeatherIcon(
+                                      (gameDetails.venue != null
+                                          ? gameDetails.venue?.weather ??
+                                          'Sunny'
+                                          : 'Sunny'),
+                                      context,
+                                      MediaQuery.of(context).size.height * .02)
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     )),
                 Expanded(
@@ -2686,7 +2759,54 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                 align: TextAlign.start,
                                 maxLine: 1,
                                 color: whiteColor),
-                        (' ${gameDetails.homeWin}-${gameDetails.homeLoss}')
+                        gameDetails.homeRank != "0"
+                            ? RichText(
+                            textAlign: TextAlign.end,
+                            text: TextSpan(
+                                text: ('${gameDetails.homeRank}-${gameDetails.homeRank}'),
+                                style: GoogleFonts.nunitoSans(
+                                    color: whiteColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize:
+                                    MediaQuery.of(context).size.height *
+                                        .014),
+                                children: [
+                                  TextSpan(
+                                      text:
+                                      gameDetails.homeRank == '0' ? "" : ' (${gameDetails.homeRank})',
+                                      style: GoogleFonts.nunitoSans(
+                                          color: ( num.tryParse(
+                                              gameDetails.homeRank ==
+                                                  '0'
+                                                  ? ""
+                                                  : ' (${gameDetails.homeRank})'
+                                                  .toString()
+                                                  .replaceAll(
+                                                  '(', '')
+                                                  .replaceAll(
+                                                  ')', ""))??0) <=
+                                              12
+                                              ? Colors.green
+                                              :( num.tryParse(
+                                              gameDetails.homeRank ==
+                                                  '0'
+                                                  ? ""
+                                                  : ' (${gameDetails.homeRank})'
+                                                  .toString()
+                                                  .replaceAll(
+                                                  '(', '')
+                                                  .replaceAll(
+                                                  ')', ""))??0)>=
+                                              15
+                                              ? redColor
+                                              : Colors.amber,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                              .014))
+                                ]))
+                            : (' ${gameDetails.homeWin}-${gameDetails.homeLoss}${gameDetails.homeRank == '0' ? "" : '(${gameDetails.homeRank})'}')
                             .appCommonText(
                                 align: TextAlign.end,
                                 weight: FontWeight.w400,

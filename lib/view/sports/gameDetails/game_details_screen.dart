@@ -13,8 +13,8 @@ import '../../../utils/app_progress.dart';
 import 'game_details_widgets.dart';
 
 // ignore: must_be_immutable
-class SportDetailsScreen extends StatefulWidget {
-  const SportDetailsScreen({
+class SportDetailsScreen extends StatelessWidget {
+  SportDetailsScreen({
     Key? key,
     required this.gameDetails,
     required this.sportKey,
@@ -26,35 +26,24 @@ class SportDetailsScreen extends StatefulWidget {
   final String sportId;
   final String date;
 
-  @override
-  State<SportDetailsScreen> createState() => _SportDetailsScreenState();
-}
-
-class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final GameDetailsController gameDetailsController = Get.find();
-  Competitors? homeTeam;
-  Competitors? awayTeam;
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    var client = http.Client();
-    client.close();
-  }
+  Competitors? homeTeam;
+
+  Competitors? awayTeam;
 
   @override
   Widget build(BuildContext context) {
     bool isDark = PreferenceManager.getIsDarkMode() ?? false;
-    if (widget.gameDetails.competitors[0].qualifier == 'home') {
-      homeTeam = widget.gameDetails.competitors[0];
+    if (gameDetails.competitors[0].qualifier == 'home') {
+      homeTeam = gameDetails.competitors[0];
     } else {
-      awayTeam = widget.gameDetails.competitors[0];
+      awayTeam = gameDetails.competitors[0];
     }
-    if (widget.gameDetails.competitors[1].qualifier == 'away') {
-      awayTeam = widget.gameDetails.competitors[1];
+    if (gameDetails.competitors[1].qualifier == 'away') {
+      awayTeam = gameDetails.competitors[1];
     } else {
-      homeTeam = widget.gameDetails.competitors[1];
+      homeTeam = gameDetails.competitors[1];
     }
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -78,23 +67,22 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
-                        headerWidget(
-                            context, widget.gameDetails, awayTeam, homeTeam),
-                        hotlinesWidget(context, con),
-                        teamReportWidget(context, widget.sportKey,
-                            widget.gameDetails, awayTeam, homeTeam),
-                        playerStatWidget(context, con, widget.sportKey,
-                            widget.gameDetails, awayTeam, homeTeam),
-                        hitterPlayerStatWidget(context, con, widget.gameDetails,
-                            awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'MLB'
+                        headerWidget(context, gameDetails, awayTeam, homeTeam),
+                        hotlinesWidget(context, con, gameDetails),
+                        teamReportWidget(
+                            context, sportKey, gameDetails, awayTeam, homeTeam),
+                        playerStatWidget(context, con, sportKey, gameDetails,
+                            awayTeam, homeTeam),
+                        hitterPlayerStatWidget(context, con, gameDetails,
+                            awayTeam, homeTeam, sportKey),
+                        sportKey == 'MLB'
                             ? const SizedBox()
-                            : wrPlayersWidget(context, con, widget.gameDetails,
-                                awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'NCAA'
+                            : wrPlayersWidget(context, con, gameDetails,
+                                awayTeam, homeTeam, sportKey),
+                        sportKey == 'NCAA'
                             ? const SizedBox()
-                            : injuryReportWidget(context, widget.gameDetails,
-                                widget.sportKey, awayTeam, homeTeam),
+                            : injuryReportWidget(context, gameDetails, sportKey,
+                                awayTeam, homeTeam),
                         40.H(),
                       ],
                     ),
@@ -116,14 +104,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     gameDetailsController.hotlinesFData.clear();
     gameDetailsController.hotlinesMData.clear();
     gameDetailsController.hotlinesData.clear();
-    if (widget.sportKey == 'MLB') {
+    if (sportKey == 'MLB') {
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
                 awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
+                sportId: sportId,
+                date: date,
                 start: i,
                 isLoad: isLoad,
                 homeTeamId: homeTeam?.id ?? "")
@@ -137,42 +125,42 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      if ((widget.gameDetails.awayPlayerId ?? "").isNotEmpty) {
+      if ((gameDetails.awayPlayerId ?? "").isNotEmpty) {
         gameDetailsController.profileAwayResponse(
           isLoad: isLoad,
-          awayTeamId: widget.gameDetails.awayPlayerId ?? "",
+          awayTeamId: gameDetails.awayPlayerId ?? "",
         );
       }
-      if ((widget.gameDetails.homePlayerId ?? "").isNotEmpty) {
+      if ((gameDetails.homePlayerId ?? "").isNotEmpty) {
         gameDetailsController.profileHomeResponse(
           isLoad: isLoad,
-          homeTeamId: widget.gameDetails.homePlayerId ?? "",
+          homeTeamId: gameDetails.homePlayerId ?? "",
         );
       }
 
       gameDetailsController.mlbStaticsAwayTeamResponse(
           isLoad: isLoad,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          gameDetails: widget.gameDetails);
+          gameDetails: gameDetails);
       gameDetailsController.mlbStaticsHomeTeamResponse(
           isLoad: isLoad,
           homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-          gameDetails: widget.gameDetails);
+          gameDetails: gameDetails);
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
-          sportEvent: widget.gameDetails,
+          sportEvent: gameDetails,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
     }
-    if (widget.sportKey == 'NFL') {
+    if (sportKey == 'NFL') {
       gameDetailsController.hotlinesFinalData.clear();
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
                 awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
+                sportId: sportId,
+                date: date,
                 start: i,
                 isLoad: isLoad,
                 homeTeamId: homeTeam?.id ?? "")
@@ -189,28 +177,36 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
 
       gameDetailsController.nflStaticsAwayTeamResponse(
           isLoad: isLoad,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''));
       gameDetailsController.nflStaticsHomeTeamResponse(
           isLoad: isLoad,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
       gameDetailsController.mlbInjuriesResponse(
           isLoad: isLoad,
-          sportEvent: widget.gameDetails,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+          sportEvent: gameDetails,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
     }
-    if (widget.sportKey == 'NCAA') {
+    if (sportKey == 'NCAA') {
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
                 awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
+                sportId: sportId,
+                date: date,
                 start: i,
                 isLoad: isLoad,
                 homeTeamId: homeTeam?.id ?? "")
@@ -228,19 +224,19 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       gameDetailsController
           .ncaaGameRanking(
               isLoad: isLoad,
-              gameDetails: widget.gameDetails,
+              gameDetails: gameDetails,
               homeTeamId: replaceId(homeTeam?.uuids ?? ''),
               awayTeamId: replaceId(awayTeam?.uuids ?? ''))
           .then((value) {
         gameDetailsController.nflStaticsAwayTeamResponse(
             isLoad: isLoad,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
+            gameDetails: gameDetails,
+            sportKey: sportKey,
             awayTeamId: replaceId(awayTeam?.uuids ?? ''));
         gameDetailsController.nflStaticsHomeTeamResponse(
             isLoad: isLoad,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
+            gameDetails: gameDetails,
+            sportKey: sportKey,
             homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       });
     }

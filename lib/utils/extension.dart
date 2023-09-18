@@ -23,6 +23,7 @@ extension AddSpace on num {
 replaceId(String id) {
   String fistId = id.split(',').first;
   String secondId = id.split(',').last;
+
   if (fistId.contains("-")) {
     return fistId;
   } else if (secondId.contains("-")) {

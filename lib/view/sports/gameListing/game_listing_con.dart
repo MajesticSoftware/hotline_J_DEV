@@ -43,10 +43,10 @@ class GameListingController extends GetxController {
         if (sportEvents != null) {
           for (var event in sportEvents) {
             DateTime time = (DateTime.parse(event.scheduled ?? ''));
-            log('UTC TIME---> ${time.toUtc()} |||| ${DateTime.now().toUtc()}');
+            // log('UTC TIME---> ${time.toUtc()} |||| ${DateTime.now().toUtc()}');
             var difference =
                 (time.toUtc().difference((DateTime.now().toUtc())));
-            log('difference----->>  ${difference.inHours}');
+            // log('difference----->>  ${difference.inHours}');
             if (event.season?.id == 'sr:season:100127' &&
                 sportKey == 'MLB' &&
                 (difference.inHours >= (-6))) {
@@ -116,6 +116,7 @@ class GameListingController extends GetxController {
         //   result.message,
         // );
       }
+      isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       log('ERORE----$e');
@@ -329,6 +330,24 @@ class GameListingController extends GetxController {
     }
   }
 
+  bool _isBack = false;
+
+  bool get isBack => _isBack;
+
+  setIsBack(bool value) {
+    _isBack = value;
+    update();
+  }
+
+  bool _isBack1 = false;
+
+  bool get isBack1 => _isBack1;
+
+  setIsBack1(bool value) {
+    _isBack1 = value;
+    update();
+  }
+
   ///BOX SCORE API
   Future boxScoreResponse(
       {String gameId = '',
@@ -337,7 +356,7 @@ class GameListingController extends GetxController {
       bool isLoad = false,
       String key = '',
       int index = 0}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().boxScoreRepo(gameId: gameId);
@@ -400,19 +419,25 @@ class GameListingController extends GetxController {
         errorText,
       );
     }
-    /*timer = Future.delayed(const Duration(minutes: 1), () {
-      if (sportEventsList[index].uuids != null) {
-        boxScoreResponse(
-            homeTeamId:
-                replaceId(sportEventsList[index].competitors[0].uuids ?? '') ??
-                    "",
-            awayTeamId:
-                replaceId(sportEventsList[index].competitors[1].uuids ?? '') ??
-                    "",
-            gameId: replaceId(sportEventsList[index].uuids ?? ''),
-            index: index);
+    timer = Timer.periodic(const Duration(minutes: 1), (t) {
+      if (isBack) {
+        t.cancel();
+        timer?.cancel();
+        timer = null;
+      } else {
+        if (sportEventsList[index].uuids != null) {
+          boxScoreResponse(
+              homeTeamId: replaceId(
+                      sportEventsList[index].competitors[0].uuids ?? '') ??
+                  "",
+              awayTeamId: replaceId(
+                      sportEventsList[index].competitors[1].uuids ?? '') ??
+                  "",
+              gameId: replaceId(sportEventsList[index].uuids ?? ''),
+              index: index);
+        }
       }
-    });*/
+    });
 
     update();
   }
@@ -444,7 +469,7 @@ class GameListingController extends GetxController {
           sportEventsList[index].homeWin =
               (game.summary?.home?.record?.wins ?? "0").toString();
           sportEventsList[index].homeLoss =
-              (game.summary?.home?.record?.losses ?? "0").toString();
+              '${game.summary?.home?.record?.losses ?? "0"}'.toString();
           sportEventsList[index].awayScore =
               (game.summary?.away?.points ?? "0").toString();
           sportEventsList[index].awayWin =
@@ -466,26 +491,32 @@ class GameListingController extends GetxController {
       );
     }
 
-    /* timerNCAA = Future.delayed(const Duration(minutes: 1), () {
-      if (sportEventsList[index].uuids != null) {
-        boxScoreResponseNCAA(
-            key: key,
-            gameId: replaceId(sportEventsList[index].uuids ?? ''),
-            index: index);
+    timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
+      if (isBack1) {
+        t.cancel();
+        timerNCAA?.cancel();
+        timerNCAA = null;
+      } else {
+        if (sportEventsList[index].uuids != null) {
+          boxScoreResponseNCAA(
+              key: key,
+              gameId: replaceId(sportEventsList[index].uuids ?? ''),
+              index: index);
+        }
       }
-    });*/
+    });
 
     update();
   }
 
   ///GAME LISTING FOR ALL GAME
-
-  Future timerNCAA = Future.delayed(Duration.zero);
+  Timer? timer;
+  Timer? timerNCAA;
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
       String date = '',
-      String sportId = ''}) async {
+      String sportId = ''}) {
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -493,6 +524,7 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) async {
+      isLoading.value = false;
       tomorrowEventsList.clear();
       for (int i = 1; i <= 7; i++) {
         await gameListingTomorrowApiRes(
@@ -544,6 +576,7 @@ class GameListingController extends GetxController {
                 .format(DateTime.parse(date).add(Duration(days: i))),
             sportId: sportId);
         if (i == 7) {
+          isLoading.value = false;
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
@@ -565,21 +598,19 @@ class GameListingController extends GetxController {
 
   @override
   void dispose() {
-    timer.ignore();
-    timerNCAA.ignore();
+    timer = null;
+    timerNCAA = null;
     super.dispose();
   }
 
   @override
   void onClose() {
-    timer.ignore();
-    timerNCAA.ignore();
-    Get.delete<GameListingController>();
+    timer = null;
+    timerNCAA = null;
     super.onClose();
     log('I am closed');
   }
 
-  Future timer = Future.delayed(Duration.zero);
   getGameListingForMLBRes(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
@@ -603,6 +634,7 @@ class GameListingController extends GetxController {
               date: formatted,
               sportId: sportId)
           .then((value) async {
+        isLoading.value = false;
         getAllEventList(sportKey);
         if (sportEventsList.isNotEmpty) {
           for (int i = 0; i < sportEventsList.length; i++) {
@@ -628,7 +660,7 @@ class GameListingController extends GetxController {
   ///other apis
   void gameListingsWithLogoResponse(String year, String sportKey,
       {bool isLoad = false}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
 
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);

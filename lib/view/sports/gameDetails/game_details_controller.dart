@@ -670,7 +670,7 @@ class GameDetailsController extends GetxController {
                       totalGame)
                   .toStringAsFixed(2));
               nflHomeOffensiveList = [
-                '$offensivePoint ${gameDetails.homeRank == '0' ? "" : '(${gameDetails.homeRank})'}',
+                offensivePoint,
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
@@ -832,7 +832,7 @@ class GameDetailsController extends GetxController {
                       totalGame)
                   .toStringAsFixed(2));
               nflAwayOffensiveList = [
-                '$offensivePoint ${gameDetails.awayRank == '0' ? "" : ' (${gameDetails.awayRank})'}',
+                offensivePoint,
                 '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)

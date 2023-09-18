@@ -8,6 +8,7 @@ import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/main/splash_screen.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import 'view/sports/selectSport/selecte_game_con.dart';
 
@@ -41,6 +42,6 @@ class BaseBindings extends Bindings {
   void dependencies() {
     Get.lazyPut(() => SelectGameController(), fenix: true);
     Get.lazyPut(() => GameDetailsController(), fenix: true);
-    // Get.lazyPut(() => GameListingController(), fenix: true);
+    Get.lazyPut(() => GameListingController(), fenix: true);
   }
 }

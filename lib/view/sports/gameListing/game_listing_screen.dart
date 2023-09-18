@@ -21,8 +21,8 @@ import 'package:http/http.dart' as http;
 import 'game_listing_con.dart';
 
 // ignore: must_be_immutable
-class GameListingScreen extends StatefulWidget {
-  const GameListingScreen(
+class GameListingScreen extends StatelessWidget {
+  GameListingScreen(
       {Key? key,
       required this.sportKey,
       required this.sportId,
@@ -34,67 +34,42 @@ class GameListingScreen extends StatefulWidget {
   final String keys;
   final String sportId;
 
-  @override
-  State<GameListingScreen> createState() => _GameListingScreenState();
-}
-
-class _GameListingScreenState extends State<GameListingScreen> {
-  final GameListingController gameListingController =
-      Get.put(GameListingController());
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    var client = http.Client();
-    /* if (widget.sportKey == "MLB") {
-      gameListingController.timer!.cancel();
-    } else {
-      gameListingController.timerNCAA!.cancel();
-    }
-    gameListingController.update();*/
-    client.close();
-  }
+  final GameListingController gameListingController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     isDark = PreferenceManager.getIsDarkMode() ?? false;
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: commonAppBar(context),
-      body: Stack(
-        children: [
-          GetBuilder<GameListingController>(initState: (state) async {
-            return getResponse(true);
-          }, builder: (controller) {
-            return gameListingView(context);
-          }),
-          Obx(() => gameListingController.isLoading.value
-              ? const AppProgress()
-              : const SizedBox())
-        ],
-      ),
-    );
+    return GetBuilder<GameListingController>(initState: (state) async {
+      sportKey == 'MLB'
+          ? gameListingController.setIsBack(false)
+          : gameListingController.setIsBack1(false);
+      return getResponse(true);
+    }, builder: (controller) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: commonAppBar(context, controller),
+        body: Stack(
+          children: [
+            gameListingView(context),
+            Obx(() => gameListingController.isLoading.value
+                ? const AppProgress()
+                : const SizedBox())
+          ],
+        ),
+      );
+    });
   }
 
   getResponse(bool isLoad) async {
-    if (widget.sportKey == 'MLB') {
+    if (sportKey == 'MLB') {
       return await gameListingController.getGameListingForMLBRes(isLoad,
-          apiKey: widget.keys,
-          sportKey: widget.sportKey,
-          date: widget.date,
-          sportId: widget.sportId);
-    } else if (widget.sportKey == 'NFL') {
+          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == 'NFL') {
       return await gameListingController.getGameListingForNFLGame(isLoad,
-          apiKey: widget.keys,
-          sportKey: widget.sportKey,
-          date: widget.date,
-          sportId: widget.sportId);
+          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
     } else {
-      return await gameListingController.getGameListingForNCAAGame(isLoad,
-          apiKey: widget.keys,
-          sportKey: widget.sportKey,
-          date: widget.date,
-          sportId: widget.sportId);
+      return gameListingController.getGameListingForNCAAGame(isLoad,
+          apiKey: keys, sportKey: sportKey, date: date, sportId: sportId);
     }
   }
 
@@ -132,7 +107,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
     );
   }
 
-  PreferredSize commonAppBar(BuildContext context) {
+  PreferredSize commonAppBar(BuildContext context, GameListingController con) {
     return PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
         child: Container(
@@ -148,6 +123,11 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
+                    sportKey == 'MLB'
+                        ? con.setIsBack(true)
+                        : con.setIsBack1(true);
+                    con.timer = null;
+                    con.timerNCAA = null;
                     Get.delete<GameListingController>();
                     Get.back();
                   },
@@ -166,7 +146,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                       fit: BoxFit.contain),
                 ),
                 Expanded(
-                  child: widget.sportKey.appCommonText(
+                  child: sportKey.appCommonText(
                       color: whiteColor,
                       align: TextAlign.end,
                       weight: FontWeight.w700,
@@ -201,9 +181,9 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 Get.to(SportDetailsScreen(
                                   gameDetails:
                                       controller.sportEventsList[index],
-                                  sportKey: widget.sportKey,
-                                  sportId: widget.sportId,
-                                  date: widget.date,
+                                  sportKey: sportKey,
+                                  sportId: sportId,
+                                  date: date,
                                 ));
                               },
                               child: teamWidget(
@@ -263,7 +243,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
     String dateTime = DateFormat.jm()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     try {
-      return competitors.status == 'closed' && widget.sportKey == "NFL"
+      return competitors.status == 'closed' && sportKey == "NFL"
           ? const SizedBox()
           : competitors.status == 'postponed'
               ? const SizedBox()

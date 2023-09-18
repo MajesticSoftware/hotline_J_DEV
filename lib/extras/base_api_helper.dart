@@ -27,10 +27,14 @@ class BaseApiHelper {
       Uri requestUrl, Map<String, String> headers) async {
     printData(tittle: "request", val: requestUrl);
     var client = http.Client();
-    return await client
-        .get(requestUrl, headers: headers)
-        .then((response) => baseOnValue(response))
-        .onError((error, stackTrace) => onError(error, requestUrl));
+    try {
+      return await client
+          .get(requestUrl, headers: headers)
+          .then((response) => baseOnValue(response))
+          .onError((error, stackTrace) => onError(error, requestUrl));
+    } finally {
+      client.close();
+    }
   }
 
   /*static Future<ResponseItem> jasonRequest() async {
