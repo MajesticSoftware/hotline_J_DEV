@@ -126,6 +126,7 @@ class GameListingController extends GetxController {
     sportEventsList = todayEventsList + tomorrowEventsList;
 
     log('sportEventsList----${sportEventsList.length}');
+    log('todayEventsList----${todayEventsList.length}');
     isLoading.value = false;
     for (var event in sportEventsList) {
       if (event.competitors.isNotEmpty) {
@@ -415,7 +416,8 @@ class GameListingController extends GetxController {
             timerNCAA = null;
           } else {
             for (int i = 0; i < todayEventsList.length; i++) {
-              if (todayEventsList[i].status == 'live') {
+              if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
+                  DateTime.now().day) {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
                       homeTeamId: replaceId(
@@ -490,7 +492,8 @@ class GameListingController extends GetxController {
           } else {
             log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
-              if (todayEventsList[i].status == 'live') {
+              if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
+                  DateTime.now().day) {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
                       homeTeamId: replaceId(
@@ -573,7 +576,8 @@ class GameListingController extends GetxController {
             } else {
               log('TODAY DATE---${todayEventsList.length}');
               for (int i = 0; i < todayEventsList.length; i++) {
-                if (todayEventsList[i].status == 'live') {
+                if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
+                    DateTime.now().day) {
                   if (todayEventsList[i].uuids != null) {
                     boxScoreResponse(
                         homeTeamId: replaceId(

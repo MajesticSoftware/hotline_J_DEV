@@ -67,7 +67,7 @@ class GameListingRepo {
 
     Uri uri = Uri.parse(sportKey == "NCAA"
         ? '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NCAA_APIKEY}'
-        : "${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NFL_APIKEY}");
+        : "${AppUrls.NFL_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NFL_APIKEY}");
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
