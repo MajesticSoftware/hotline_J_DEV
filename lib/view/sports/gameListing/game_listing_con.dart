@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
-import 'package:hotlines/model/player_profile_model.dart';
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
@@ -82,7 +80,7 @@ class GameListingController extends GetxController {
       String sportKey = "",
       bool isLoad = false,
       String key = ''}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -114,7 +112,6 @@ class GameListingController extends GetxController {
         //   result.message,
         // );
       }
-      isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       log('ERORE----$e');
@@ -127,7 +124,9 @@ class GameListingController extends GetxController {
   getAllEventList(String sportKey) {
     sportEventsList.clear();
     sportEventsList = todayEventsList + tomorrowEventsList;
+
     log('sportEventsList----${sportEventsList.length}');
+    isLoading.value = false;
     for (var event in sportEventsList) {
       if (event.competitors.isNotEmpty) {
         if (event.competitors[0].qualifier == 'home') {
@@ -141,121 +140,7 @@ class GameListingController extends GetxController {
           event.homeTeam = event.competitors[1].name ?? '';
         }
       }
-      /* if (event.markets.isNotEmpty) {
-        for (var marketData in event.markets) {
-          ///MONEY LINES
-          if (marketData.oddsTypeId == 1) {
-            for (var bookData in marketData.books) {
-              int fanDuelIndex = marketData.books
-                  .indexWhere((element) => element.name == 'FanDuel');
-              if (fanDuelIndex >= 0) {
-                if (bookData.name.isNotEmpty) {
-                  if (bookData.name == 'FanDuel') {
-                    if (bookData.outcomes?[0].type == 'home') {
-                      event.homeMoneyLine =
-                          bookData.outcomes?[0].odds.toString() ?? '00';
-                    }
-                    if (bookData.outcomes?[1].type == 'away') {
-                      event.awayMoneyLine =
-                          bookData.outcomes?[1].odds.toString() ?? '00';
-                    }
-                  }
-                }
-              } else if (bookData.name == 'Bet365NewJersey') {
-                if (bookData.outcomes?[0].type == 'home') {
-                  event.homeMoneyLine =
-                      bookData.outcomes?[0].odds.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'away') {
-                  event.awayMoneyLine =
-                      bookData.outcomes?[1].odds.toString() ?? '';
-                }
-              } else if (bookData.name == 'MGM') {
-                if (bookData.outcomes?[0].type == 'home') {
-                  event.homeMoneyLine =
-                      bookData.outcomes?[0].odds.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'away') {
-                  event.awayMoneyLine =
-                      bookData.outcomes?[1].odds.toString() ?? '';
-                }
-              }
-            }
-          }
 
-          ///OVER-UNDER
-          if (marketData.oddsTypeId == 3) {
-            for (var bookData in marketData.books) {
-              int fanDuelIndex = marketData.books
-                  .indexWhere((element) => element.name == 'FanDuel');
-              if (fanDuelIndex >= 0) {
-                if (bookData.name == 'FanDuel') {
-                  if (bookData.outcomes?[0].type == 'over') {
-                    event.awayOU =
-                        bookData.outcomes?[0].total.toString() ?? '00';
-                  }
-                  if (bookData.outcomes?[1].type == 'under') {
-                    event.homeOU =
-                        bookData.outcomes?[1].total.toString() ?? '00';
-                  }
-                }
-              } else if (bookData.name == 'Bet365NewJersey') {
-                if (bookData.outcomes?[0].type == 'over') {
-                  event.awayOU = bookData.outcomes?[0].total.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'under') {
-                  event.homeOU = bookData.outcomes?[1].total.toString() ?? '';
-                }
-              } else if (bookData.name == 'MGM') {
-                if (bookData.outcomes?[0].type == 'over') {
-                  event.awayOU = bookData.outcomes?[0].total.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'under') {
-                  event.homeOU = bookData.outcomes?[1].total.toString() ?? '';
-                }
-              }
-            }
-          }
-
-          ///SPREAD
-          if (marketData.oddsTypeId == 4) {
-            for (var bookData in marketData.books) {
-              int fanDuelIndex = marketData.books
-                  .indexWhere((element) => element.name == 'FanDuel');
-              if (fanDuelIndex >= 0) {
-                if (bookData.name == 'FanDuel') {
-                  if (bookData.outcomes?[0].type == 'home') {
-                    event.homeSpread =
-                        bookData.outcomes?[0].spread.toString() ?? '00';
-                  }
-                  if (bookData.outcomes?[1].type == 'away') {
-                    event.awaySpread =
-                        bookData.outcomes?[1].spread.toString() ?? '00';
-                  }
-                }
-              } else if (bookData.name == 'Bet365NewJersey') {
-                if (bookData.outcomes?[0].type == 'home') {
-                  event.homeSpread =
-                      bookData.outcomes?[0].spread.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'away') {
-                  event.awaySpread =
-                      bookData.outcomes?[1].spread.toString() ?? '';
-                }
-              } else if (bookData.name == 'MGM') {
-                if (bookData.outcomes?[0].type == 'home') {
-                  event.homeSpread =
-                      bookData.outcomes?[0].spread.toString() ?? '';
-                }
-                if (bookData.outcomes?[1].type == 'away') {
-                  event.awaySpread =
-                      bookData.outcomes?[1].spread.toString() ?? '';
-                }
-              }
-            }
-          }
-        }
-      }*/
       if (event.consensus != null) {
         ///MONEY LINES
         if (event.markets.isNotEmpty) {
@@ -351,7 +236,7 @@ class GameListingController extends GetxController {
       String awayTeamId = '',
       bool isLoad = false,
       String key = '',
-      int index = 0}) async {
+      required int index}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
@@ -403,37 +288,16 @@ class GameListingController extends GetxController {
           }
         }
       } else {
-        isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
-      isLoading.value = false;
       log('ERORE1----$e');
-      showAppSnackBar(
-        errorText,
-      );
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
-/*    timer = Timer.periodic(const Duration(minutes: 1), (t) {
-      if (isBack) {
-        t.cancel();
-        timer?.cancel();
-        timer = null;
-      } else {
-        if (sportEventsList[index].uuids != null) {
-          boxScoreResponse(
-              homeTeamId: replaceId(
-                      sportEventsList[index].competitors[0].uuids ?? '') ??
-                  "",
-              awayTeamId: replaceId(
-                      sportEventsList[index].competitors[1].uuids ?? '') ??
-                  "",
-              gameId: replaceId(sportEventsList[index].uuids ?? ''),
-              index: index);
-        }
-      }
-    });*/
 
     update();
   }
@@ -474,34 +338,28 @@ class GameListingController extends GetxController {
               (game.summary?.away?.record?.losses ?? "0").toString();
         }
       } else {
-        isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
-      isLoading.value = false;
-      log('ERORE1----$e');
-      showAppSnackBar(
-        errorText,
-      );
+      // isLoading.value = false;
+      // log('ERORE1----$e');
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
 
-    /*timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
-      if (isBack1) {
-        t.cancel();
-        timerNCAA?.cancel();
-        timerNCAA = null;
-      } else {
-        if (sportEventsList[index].uuids != null) {
-          boxScoreResponseNCAA(
-              key: key,
-              gameId: replaceId(sportEventsList[index].uuids ?? ''),
-              index: index);
-        }
-      }
-    });*/
+    update();
+  }
 
+  bool _isPagination = false;
+
+  bool get isPagination => _isPagination;
+
+  set isPagination(bool value) {
+    _isPagination = value;
     update();
   }
 
@@ -520,17 +378,20 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) async {
-      isLoading.value = false;
       tomorrowEventsList.clear();
-      for (int i = 1; i <= 5; i++) {
-        await gameListingTomorrowApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: DateFormat('yyyy-MM-dd')
-                .format(DateTime.parse(date).add(Duration(days: i))),
-            sportId: sportId);
-        if (i == 5) {
+      for (int i = 1; i <= 4; i++) {
+        isPagination = true;
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(Duration(days: i))),
+                sportId: sportId)
+            .then((value) {
+          if (i == 4) {
+            isPagination = false;
+          }
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
@@ -544,8 +405,32 @@ class GameListingController extends GetxController {
           }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: true);
-          break;
-        }
+        });
+      }
+      if (todayEventsList.isNotEmpty) {
+        timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
+          if (isBack) {
+            t.cancel();
+            timerNCAA?.cancel();
+            timerNCAA = null;
+          } else {
+            for (int i = 0; i < todayEventsList.length; i++) {
+              if (todayEventsList[i].status == 'live') {
+                if (todayEventsList[i].uuids != null) {
+                  boxScoreResponseNCAA(
+                      homeTeamId: replaceId(
+                              todayEventsList[i].competitors[0].uuids ?? '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              todayEventsList[i].competitors[1].uuids ?? '') ??
+                          "",
+                      gameId: replaceId(todayEventsList[i].uuids ?? ''),
+                      index: i);
+                }
+              }
+            }
+          }
+        });
       }
     });
   }
@@ -564,15 +449,21 @@ class GameListingController extends GetxController {
         .then((value) async {
       tomorrowEventsList.clear();
       for (int i = 1; i <= 5; i++) {
-        await gameListingTomorrowApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: DateFormat('yyyy-MM-dd')
-                .format(DateTime.parse(date).add(Duration(days: i))),
-            sportId: sportId);
-        if (i == 5) {
-          isLoading.value = false;
+        isPagination = true;
+
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(Duration(days: i))),
+                sportId: sportId)
+            .then((value) {
+          if (i == 5) {
+            isPagination = false;
+          }
+          // if (i == 5) {
+          //   isLoading.value = false;
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
@@ -586,8 +477,35 @@ class GameListingController extends GetxController {
           }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: true);
-          break;
-        }
+          // break;
+          // }
+        });
+      }
+      if (todayEventsList.isNotEmpty) {
+        timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
+          if (isBack) {
+            t.cancel();
+            timerNCAA?.cancel();
+            timerNCAA = null;
+          } else {
+            log('TODAY DATE---${todayEventsList.length}');
+            for (int i = 0; i < todayEventsList.length; i++) {
+              if (todayEventsList[i].status == 'live') {
+                if (todayEventsList[i].uuids != null) {
+                  boxScoreResponseNCAA(
+                      homeTeamId: replaceId(
+                              todayEventsList[i].competitors[0].uuids ?? '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              todayEventsList[i].competitors[1].uuids ?? '') ??
+                          "",
+                      gameId: replaceId(todayEventsList[i].uuids ?? ''),
+                      index: i);
+                }
+              }
+            }
+          }
+        });
       }
     });
   }
@@ -616,21 +534,20 @@ class GameListingController extends GetxController {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
-    await gameListingTodayApiRes(
+    gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
             sportId: sportId)
         .then((value) async {
-      await gameListingTomorrowApiRes(
+      gameListingTomorrowApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: formatted,
               sportId: sportId)
-          .then((value) async {
-        isLoading.value = false;
+          .then((value) {
         getAllEventList(sportKey);
         if (sportEventsList.isNotEmpty) {
           for (int i = 0; i < sportEventsList.length; i++) {
@@ -646,6 +563,34 @@ class GameListingController extends GetxController {
                   index: i);
             }
           }
+        }
+        if (todayEventsList.isNotEmpty) {
+          timer = Timer.periodic(const Duration(minutes: 1), (t) {
+            if (isBack) {
+              t.cancel();
+              timer?.cancel();
+              timer = null;
+            } else {
+              log('TODAY DATE---${todayEventsList.length}');
+              for (int i = 0; i < todayEventsList.length; i++) {
+                if (todayEventsList[i].status == 'live') {
+                  if (todayEventsList[i].uuids != null) {
+                    boxScoreResponse(
+                        homeTeamId: replaceId(
+                                todayEventsList[i].competitors[0].uuids ??
+                                    '') ??
+                            "",
+                        awayTeamId: replaceId(
+                                todayEventsList[i].competitors[1].uuids ??
+                                    '') ??
+                            "",
+                        gameId: replaceId(todayEventsList[i].uuids ?? ''),
+                        index: i);
+                  }
+                }
+              }
+            }
+          });
         }
         gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
             isLoad: isLoad);

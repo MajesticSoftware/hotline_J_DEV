@@ -7,30 +7,29 @@ class NFLInjuryModel {
   NFLInjuryModel({this.season, this.week, this.teams, this.sComment});
 
   NFLInjuryModel.fromJson(Map<String, dynamic> json) {
-    season =
-        json['season'] != null ? new Season.fromJson(json['season']) : null;
-    week = json['week'] != null ? new Week.fromJson(json['week']) : null;
+    season = json['season'] != null ? Season.fromJson(json['season']) : null;
+    week = json['week'] != null ? Week.fromJson(json['week']) : null;
     if (json['teams'] != null) {
       teams = <Teams>[];
       json['teams'].forEach((v) {
-        teams!.add(new Teams.fromJson(v));
+        teams!.add(Teams.fromJson(v));
       });
     }
     sComment = json['_comment'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.season != null) {
-      data['season'] = this.season!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (season != null) {
+      data['season'] = season!.toJson();
     }
-    if (this.week != null) {
-      data['week'] = this.week!.toJson();
+    if (week != null) {
+      data['week'] = week!.toJson();
     }
-    if (this.teams != null) {
-      data['teams'] = this.teams!.map((v) => v.toJson()).toList();
+    if (teams != null) {
+      data['teams'] = teams!.map((v) => v.toJson()).toList();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -51,11 +50,11 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['year'] = this.year;
-    data['type'] = this.type;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['year'] = year;
+    data['type'] = type;
+    data['name'] = name;
     return data;
   }
 }
@@ -74,10 +73,10 @@ class Week {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['sequence'] = this.sequence;
-    data['title'] = this.title;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['sequence'] = sequence;
+    data['title'] = title;
     return data;
   }
 }
@@ -101,20 +100,20 @@ class Teams {
     if (json['players'] != null) {
       players = <Players>[];
       json['players'].forEach((v) {
-        players!.add(new Players.fromJson(v));
+        players!.add(Players.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['alias'] = this.alias;
-    data['sr_id'] = this.srId;
-    if (this.players != null) {
-      data['players'] = this.players!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['alias'] = alias;
+    data['sr_id'] = srId;
+    if (players != null) {
+      data['players'] = players!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -145,20 +144,20 @@ class Players {
     if (json['injuries'] != null) {
       injuries = <Injuries>[];
       json['injuries'].forEach((v) {
-        injuries!.add(new Injuries.fromJson(v));
+        injuries!.add(Injuries.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['jersey'] = this.jersey;
-    data['position'] = this.position;
-    data['sr_id'] = this.srId;
-    if (this.injuries != null) {
-      data['injuries'] = this.injuries!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['jersey'] = jersey;
+    data['position'] = position;
+    data['sr_id'] = srId;
+    if (injuries != null) {
+      data['injuries'] = injuries!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -180,23 +179,22 @@ class Injuries {
 
   Injuries.fromJson(Map<String, dynamic> json) {
     statusDate = json['status_date'];
-    practice = json['practice'] != null
-        ? new Practice.fromJson(json['practice'])
-        : null;
+    practice =
+        json['practice'] != null ? Practice.fromJson(json['practice']) : null;
     primary = json['primary'];
     secondary = json['secondary'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status_date'] = this.statusDate;
-    if (this.practice != null) {
-      data['practice'] = this.practice!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status_date'] = statusDate;
+    if (practice != null) {
+      data['practice'] = practice!.toJson();
     }
-    data['primary'] = this.primary;
-    data['secondary'] = this.secondary;
-    data['status'] = this.status;
+    data['primary'] = primary;
+    data['secondary'] = secondary;
+    data['status'] = status;
     return data;
   }
 }
@@ -211,8 +209,8 @@ class Practice {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
     return data;
   }
 }

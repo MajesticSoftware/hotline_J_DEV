@@ -44,39 +44,39 @@ class NCAABoxScoreModel {
     conferenceGame = json['conference_game'];
     duration = json['duration'];
     weather =
-        json['weather'] != null ? new Weather.fromJson(json['weather']) : null;
+        json['weather'] != null ? Weather.fromJson(json['weather']) : null;
     summary =
-        json['summary'] != null ? new Summary.fromJson(json['summary']) : null;
-    home = json['home'] != null ? new Home.fromJson(json['home']) : null;
-    away = json['away'] != null ? new Home.fromJson(json['away']) : null;
+        json['summary'] != null ? Summary.fromJson(json['summary']) : null;
+    home = json['home'] != null ? Home.fromJson(json['home']) : null;
+    away = json['away'] != null ? Home.fromJson(json['away']) : null;
     sComment = json['_comment'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['status'] = this.status;
-    data['scheduled'] = this.scheduled;
-    data['attendance'] = this.attendance;
-    data['entry_mode'] = this.entryMode;
-    data['clock'] = this.clock;
-    data['quarter'] = this.quarter;
-    data['sr_id'] = this.srId;
-    data['conference_game'] = this.conferenceGame;
-    data['duration'] = this.duration;
-    if (this.weather != null) {
-      data['weather'] = this.weather!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['status'] = status;
+    data['scheduled'] = scheduled;
+    data['attendance'] = attendance;
+    data['entry_mode'] = entryMode;
+    data['clock'] = clock;
+    data['quarter'] = quarter;
+    data['sr_id'] = srId;
+    data['conference_game'] = conferenceGame;
+    data['duration'] = duration;
+    if (weather != null) {
+      data['weather'] = weather!.toJson();
     }
-    if (this.summary != null) {
-      data['summary'] = this.summary!.toJson();
+    if (summary != null) {
+      data['summary'] = summary!.toJson();
     }
-    if (this.home != null) {
-      data['home'] = this.home!.toJson();
+    if (home != null) {
+      data['home'] = home!.toJson();
     }
-    if (this.away != null) {
-      data['away'] = this.away!.toJson();
+    if (away != null) {
+      data['away'] = away!.toJson();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -93,16 +93,16 @@ class Weather {
     condition = json['condition'];
     humidity = json['humidity'];
     temp = json['temp'];
-    wind = json['wind'] != null ? new Wind.fromJson(json['wind']) : null;
+    wind = json['wind'] != null ? Wind.fromJson(json['wind']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['condition'] = this.condition;
-    data['humidity'] = this.humidity;
-    data['temp'] = this.temp;
-    if (this.wind != null) {
-      data['wind'] = this.wind!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['condition'] = condition;
+    data['humidity'] = humidity;
+    data['temp'] = temp;
+    if (wind != null) {
+      data['wind'] = wind!.toJson();
     }
     return data;
   }
@@ -120,9 +120,9 @@ class Wind {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['speed'] = this.speed;
-    data['direction'] = this.direction;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['speed'] = speed;
+    data['direction'] = direction;
     return data;
   }
 }
@@ -137,30 +137,29 @@ class Summary {
   Summary({this.season, this.week, this.venue, this.home, this.away});
 
   Summary.fromJson(Map<String, dynamic> json) {
-    season =
-        json['season'] != null ? new Season.fromJson(json['season']) : null;
-    week = json['week'] != null ? new Week.fromJson(json['week']) : null;
-    venue = json['venue'] != null ? new Venue.fromJson(json['venue']) : null;
-    home = json['home'] != null ? new Home.fromJson(json['home']) : null;
-    away = json['away'] != null ? new Home.fromJson(json['away']) : null;
+    season = json['season'] != null ? Season.fromJson(json['season']) : null;
+    week = json['week'] != null ? Week.fromJson(json['week']) : null;
+    venue = json['venue'] != null ? Venue.fromJson(json['venue']) : null;
+    home = json['home'] != null ? Home.fromJson(json['home']) : null;
+    away = json['away'] != null ? Home.fromJson(json['away']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.season != null) {
-      data['season'] = this.season!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (season != null) {
+      data['season'] = season!.toJson();
     }
-    if (this.week != null) {
-      data['week'] = this.week!.toJson();
+    if (week != null) {
+      data['week'] = week!.toJson();
     }
-    if (this.venue != null) {
-      data['venue'] = this.venue!.toJson();
+    if (venue != null) {
+      data['venue'] = venue!.toJson();
     }
-    if (this.home != null) {
-      data['home'] = this.home!.toJson();
+    if (home != null) {
+      data['home'] = home!.toJson();
     }
-    if (this.away != null) {
-      data['away'] = this.away!.toJson();
+    if (away != null) {
+      data['away'] = away!.toJson();
     }
     return data;
   }
@@ -182,11 +181,11 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['year'] = this.year;
-    data['type'] = this.type;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['year'] = year;
+    data['type'] = type;
+    data['name'] = name;
     return data;
   }
 }
@@ -205,10 +204,10 @@ class Week {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['sequence'] = this.sequence;
-    data['title'] = this.title;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['sequence'] = sequence;
+    data['title'] = title;
     return data;
   }
 }
@@ -253,26 +252,25 @@ class Venue {
     surface = json['surface'];
     roofType = json['roof_type'];
     srId = json['sr_id'];
-    location = json['location'] != null
-        ? new Location.fromJson(json['location'])
-        : null;
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['zip'] = this.zip;
-    data['address'] = this.address;
-    data['capacity'] = this.capacity;
-    data['surface'] = this.surface;
-    data['roof_type'] = this.roofType;
-    data['sr_id'] = this.srId;
-    if (this.location != null) {
-      data['location'] = this.location!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['city'] = city;
+    data['state'] = state;
+    data['country'] = country;
+    data['zip'] = zip;
+    data['address'] = address;
+    data['capacity'] = capacity;
+    data['surface'] = surface;
+    data['roof_type'] = roofType;
+    data['sr_id'] = srId;
+    if (location != null) {
+      data['location'] = location!.toJson();
     }
     return data;
   }
@@ -290,9 +288,9 @@ class Location {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['lat'] = lat;
+    data['lng'] = lng;
     return data;
   }
 }
@@ -334,24 +332,23 @@ class Home {
     points = json['points'];
     usedChallenges = json['used_challenges'];
     remainingChallenges = json['remaining_challenges'];
-    record =
-        json['record'] != null ? new Record.fromJson(json['record']) : null;
+    record = json['record'] != null ? Record.fromJson(json['record']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['alias'] = this.alias;
-    data['sr_id'] = this.srId;
-    data['used_timeouts'] = this.usedTimeouts;
-    data['remaining_timeouts'] = this.remainingTimeouts;
-    data['points'] = this.points;
-    data['used_challenges'] = this.usedChallenges;
-    data['remaining_challenges'] = this.remainingChallenges;
-    if (this.record != null) {
-      data['record'] = this.record!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['alias'] = alias;
+    data['sr_id'] = srId;
+    data['used_timeouts'] = usedTimeouts;
+    data['remaining_timeouts'] = remainingTimeouts;
+    data['points'] = points;
+    data['used_challenges'] = usedChallenges;
+    data['remaining_challenges'] = remainingChallenges;
+    if (record != null) {
+      data['record'] = record!.toJson();
     }
     return data;
   }
@@ -371,10 +368,10 @@ class Record {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['wins'] = this.wins;
-    data['losses'] = this.losses;
-    data['ties'] = this.ties;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['wins'] = wins;
+    data['losses'] = losses;
+    data['ties'] = ties;
     return data;
   }
 }

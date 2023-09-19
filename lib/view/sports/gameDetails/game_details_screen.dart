@@ -6,7 +6,7 @@ import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/extension.dart';
 
 import '../../../constant/shred_preference.dart';
-import '../../../extras/constants.dart';
+
 import 'game_details_controller.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -118,55 +118,32 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     gameDetailsController.hotlinesMData.clear();
     gameDetailsController.hotlinesData.clear();
     if (widget.sportKey == 'MLB') {
-      for (int i = 0; i <= 15; i += 5) {
-        log('i====$i');
-        await gameDetailsController
-            .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          gameDetailsController.isHotlines = false;
-        });
-        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.update();
-          break;
-        }
-      }
-
       gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: isLoad,
+          isLoad: false,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
           gameDetails: widget.gameDetails);
       gameDetailsController.mlbStaticsHomeTeamResponse(
-          isLoad: isLoad,
+          isLoad: false,
           homeTeamId: replaceId(homeTeam?.uuids ?? ''),
           gameDetails: widget.gameDetails);
       gameDetailsController.mlbInjuriesResponse(
-          isLoad: isLoad,
+          isLoad: false,
           sportEvent: widget.gameDetails,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       if ((widget.gameDetails.awayPlayerId).isNotEmpty) {
         gameDetailsController.profileAwayResponse(
-          isLoad: isLoad,
-          awayTeamId: widget.gameDetails.awayPlayerId ?? "",
+          isLoad: false,
+          awayTeamId: widget.gameDetails.awayPlayerId,
         );
       }
       if ((widget.gameDetails.homePlayerId).isNotEmpty) {
         gameDetailsController.profileHomeResponse(
-          isLoad: isLoad,
-          homeTeamId: widget.gameDetails.homePlayerId ?? "",
+          isLoad: false,
+          homeTeamId: widget.gameDetails.homePlayerId,
         );
       }
-    }
-    if (widget.sportKey == 'NFL') {
-      gameDetailsController.hotlinesFinalData.clear();
-      for (int i = 0; i <= 15; i += 5) {
+      for (int i = 0; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
@@ -179,30 +156,53 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             .then((value) {
           gameDetailsController.isHotlines = false;
         });
-
-        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
+        if (gameDetailsController.hotlinesData.isNotEmpty) {
           gameDetailsController.isHotlines = false;
           gameDetailsController.update();
           break;
         }
       }
+    }
+    if (widget.sportKey == 'NFL') {
+      gameDetailsController.hotlinesData.clear();
+      for (int i = 0; i <= 10; i += 5) {
+        log('i====$i');
+        await gameDetailsController
+            .hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: widget.sportId,
+                date: widget.date,
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.isLoading.value = false;
+        });
 
+        if (gameDetailsController.hotlinesData.isNotEmpty) {
+          gameDetailsController.isHotlines = false;
+          gameDetailsController.isLoading.value = false;
+          gameDetailsController.update();
+          break;
+        }
+      }
       gameDetailsController.nflStaticsAwayTeamResponse(
-          isLoad: isLoad,
+          isLoad: false,
           gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
           awayTeamId: awayTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(awayTeam?.uuids ?? ''));
       gameDetailsController.nflStaticsHomeTeamResponse(
-          isLoad: isLoad,
+          isLoad: false,
           gameDetails: widget.gameDetails,
           sportKey: widget.sportKey,
           homeTeamId: homeTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
       gameDetailsController.mlbInjuriesResponse(
-          isLoad: isLoad,
+          isLoad: false,
           sportEvent: widget.gameDetails,
           awayTeamId: awayTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
@@ -212,7 +212,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               : replaceId(homeTeam?.uuids ?? ''));
     }
     if (widget.sportKey == 'NCAA') {
-      for (int i = 0; i <= 15; i += 5) {
+      for (int i = 0; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
@@ -226,7 +226,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           gameDetailsController.isHotlines = false;
           gameDetailsController.isLoading.value = false;
         });
-        if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
+        if (gameDetailsController.hotlinesData.isNotEmpty) {
           gameDetailsController.isHotlines = false;
           gameDetailsController.isLoading.value = false;
           gameDetailsController.update();
@@ -235,18 +235,18 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       }
       gameDetailsController
           .ncaaGameRanking(
-              isLoad: isLoad,
+              isLoad: false,
               gameDetails: widget.gameDetails,
               homeTeamId: replaceId(homeTeam?.uuids ?? ''),
               awayTeamId: replaceId(awayTeam?.uuids ?? ''))
           .then((value) {
         gameDetailsController.nflStaticsAwayTeamResponse(
-            isLoad: isLoad,
+            isLoad: false,
             gameDetails: widget.gameDetails,
             sportKey: widget.sportKey,
             awayTeamId: replaceId(awayTeam?.uuids ?? ''));
         gameDetailsController.nflStaticsHomeTeamResponse(
-            isLoad: isLoad,
+            isLoad: false,
             gameDetails: widget.gameDetails,
             sportKey: widget.sportKey,
             homeTeamId: replaceId(homeTeam?.uuids ?? ''));

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -181,41 +179,62 @@ class _GameListingScreenState extends State<GameListingScreen> {
   tableDetailWidget(BuildContext context) {
     return Expanded(
         child: GetBuilder<GameListingController>(
-      initState: (state) {},
+      initState: (state) {
+        gameListingController.sportEventsList.sort((a, b) =>
+            DateTime.parse(a.scheduled ?? "")
+                .compareTo(DateTime.parse(b.scheduled ?? "")));
+      },
       builder: (controller) {
         return controller.isLoading.value
             ? const SizedBox()
-            : controller.sportEventsList.isNotEmpty
-                ? RefreshIndicator(
+            : controller.sportEventsList.isEmpty && !controller.isPagination
+                ? emptyDataWidget(context)
+                : RefreshIndicator(
                     onRefresh: () async {
                       return await getResponse(false);
                     },
                     color: Theme.of(context).disabledColor,
                     child: ListView.builder(
-                      itemCount: controller.sportEventsList.length,
+                      itemCount: controller.sportEventsList.length + 1,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         try {
-                          return GestureDetector(
-                              onTap: () {
-                                Get.to(SportDetailsScreen(
-                                  gameDetails:
+                          return index == controller.sportEventsList.length
+                              ? !gameListingController.isLoading.value &&
+                                      gameListingController.isPagination
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            )),
+                                      ),
+                                    )
+                                  : const SizedBox()
+                              : GestureDetector(
+                                  onTap: () {
+                                    Get.to(SportDetailsScreen(
+                                      gameDetails:
+                                          controller.sportEventsList[index],
+                                      sportKey: widget.sportKey,
+                                      sportId: widget.sportId,
+                                      date: widget.date,
+                                    ));
+                                  },
+                                  child: teamWidget(
                                       controller.sportEventsList[index],
-                                  sportKey: widget.sportKey,
-                                  sportId: widget.sportId,
-                                  date: widget.date,
-                                ));
-                              },
-                              child: teamWidget(
-                                  controller.sportEventsList[index], context,
-                                  index: index));
+                                      context,
+                                      index: index));
                         } catch (e) {
                           return const SizedBox();
                         }
                       },
                     ),
-                  )
-                : emptyDataWidget(context);
+                  );
       },
     ));
   }

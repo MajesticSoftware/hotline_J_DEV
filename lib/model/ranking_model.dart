@@ -15,37 +15,37 @@ class RankingModel {
       this.candidates});
 
   RankingModel.fromJson(Map<String, dynamic> json) {
-    poll = json['poll'] != null ? new Poll.fromJson(json['poll']) : null;
+    poll = json['poll'] != null ? Poll.fromJson(json['poll']) : null;
     season = json['season'];
     week = json['week'];
     effectiveTime = json['effective_time'];
     if (json['rankings'] != null) {
       rankings = <Rankings>[];
       json['rankings'].forEach((v) {
-        rankings!.add(new Rankings.fromJson(v));
+        rankings!.add(Rankings.fromJson(v));
       });
     }
     if (json['candidates'] != null) {
       candidates = <Candidates>[];
       json['candidates'].forEach((v) {
-        candidates!.add(new Candidates.fromJson(v));
+        candidates!.add(Candidates.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.poll != null) {
-      data['poll'] = this.poll!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (poll != null) {
+      data['poll'] = poll!.toJson();
     }
-    data['season'] = this.season;
-    data['week'] = this.week;
-    data['effective_time'] = this.effectiveTime;
-    if (this.rankings != null) {
-      data['rankings'] = this.rankings!.map((v) => v.toJson()).toList();
+    data['season'] = season;
+    data['week'] = week;
+    data['effective_time'] = effectiveTime;
+    if (rankings != null) {
+      data['rankings'] = rankings!.map((v) => v.toJson()).toList();
     }
-    if (this.candidates != null) {
-      data['candidates'] = this.candidates!.map((v) => v.toJson()).toList();
+    if (candidates != null) {
+      data['candidates'] = candidates!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -65,10 +65,10 @@ class Poll {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['alias'] = this.alias;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['alias'] = alias;
+    data['name'] = name;
     return data;
   }
 }
@@ -111,17 +111,17 @@ class Rankings {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['rank'] = this.rank;
-    data['wins'] = this.wins;
-    data['losses'] = this.losses;
-    data['ties'] = this.ties;
-    data['prev_rank'] = this.prevRank;
-    data['points'] = this.points;
-    data['fp_votes'] = this.fpVotes;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['rank'] = rank;
+    data['wins'] = wins;
+    data['losses'] = losses;
+    data['ties'] = ties;
+    data['prev_rank'] = prevRank;
+    data['points'] = points;
+    data['fp_votes'] = fpVotes;
     return data;
   }
 }
@@ -158,15 +158,15 @@ class Candidates {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['wins'] = this.wins;
-    data['losses'] = this.losses;
-    data['ties'] = this.ties;
-    data['prev_rank'] = this.prevRank;
-    data['votes'] = this.votes;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['wins'] = wins;
+    data['losses'] = losses;
+    data['ties'] = ties;
+    data['prev_rank'] = prevRank;
+    data['votes'] = votes;
     return data;
   }
 }

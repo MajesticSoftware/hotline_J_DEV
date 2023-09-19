@@ -241,7 +241,7 @@ class OverallHitting {
     steal = json['steal'] != null ? Steal.fromJson(json['steal']) : null;
     pitches =
         json['pitches'] != null ? Pitches.fromJson(json['pitches']) : null;
-    games = json['games'] != null ? new Games.fromJson(json['games']) : null;
+    games = json['games'] != null ? Games.fromJson(json['games']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -292,8 +292,8 @@ class OverallHitting {
     if (pitches != null) {
       data['pitches'] = pitches!.toJson();
     }
-    if (this.games != null) {
-      data['games'] = this.games!.toJson();
+    if (games != null) {
+      data['games'] = games!.toJson();
     }
     return data;
   }

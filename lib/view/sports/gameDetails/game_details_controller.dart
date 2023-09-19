@@ -258,16 +258,16 @@ class GameDetailsController extends GetxController {
             }
           }
         } else {
-          isLoading.value = false;
+          // isLoading.value = false;
         }
       } else {
-        isLoading.value = false;
+        // isLoading.value = false;
         showAppSnackBar(
           result.message,
         );
       }
     } catch (e) {
-      isLoading.value = false;
+      // isLoading.value = false;
       log('ERORE1----$e');
       showAppSnackBar(
         errorText,
@@ -307,16 +307,16 @@ class GameDetailsController extends GetxController {
             }
           }
         } else {
-          isLoading.value = false;
+          // isLoading.value = false;
         }
       } else {
-        isLoading.value = false;
+        // isLoading.value = false;
         showAppSnackBar(
           result.message,
         );
       }
     } catch (e) {
-      isLoading.value = false;
+      // isLoading.value = false;
       log('ERORE13333----$e');
       showAppSnackBar(
         errorText,
@@ -330,7 +330,7 @@ class GameDetailsController extends GetxController {
       {String homeTeamId = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
@@ -443,15 +443,15 @@ class GameDetailsController extends GetxController {
           ];
         }
       } else {
-        isLoading.value = false;
+        // isLoading.value = false;
 
         showAppSnackBar(
           result.message,
         );
       }
-      isLoading.value = false;
+      // isLoading.value = false;
     } catch (e) {
-      isLoading.value = false;
+      // isLoading.value = false;
       log('ERORE STATIC----$e');
       showAppSnackBar(
         result.message,
@@ -465,7 +465,7 @@ class GameDetailsController extends GetxController {
       {String awayTeamId = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
@@ -574,13 +574,13 @@ class GameDetailsController extends GetxController {
 
         // isLoading.value = false;
       } else {
-        isLoading.value = false;
+        // isLoading.value = false;
         showAppSnackBar(
           result.message,
         );
       }
     } catch (e) {
-      isLoading.value = false;
+      // isLoading.value = false;
       log('ERROR STATIC ----$e');
       showAppSnackBar(
         errorText,
@@ -968,7 +968,6 @@ class GameDetailsController extends GetxController {
   List<HotlinesModel> _hotlinesMData = [];
   List<HotlinesModel> hotlinesMainData = [];
   List<HotlinesModel> _hotlinesDData = [];
-  List<HotlinesModel> hotlinesFinalData = [];
   List<HotlinesModel> _hotlinesData = [];
   List<HotlinesModel> get hotlinesData => _hotlinesData;
   set hotlinesData(List<HotlinesModel> value) {
@@ -1001,7 +1000,6 @@ class GameDetailsController extends GetxController {
     result = await GameListingRepo()
         .hotlinesDataRepo(sportId: sportId, date: date, start: start);
     try {
-      isHotlines = true;
       if (result.status) {
         HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
         final sportScheduleSportEventsPlayersProps =
@@ -1134,7 +1132,8 @@ class GameDetailsController extends GetxController {
           result.message,
         );
       }
-      // isHotlines.value = false;
+      isHotlines = false;
+      isLoading.value = false;
     } catch (e) {
       isHotlines = false;
       isLoading.value = false;
@@ -1144,7 +1143,7 @@ class GameDetailsController extends GetxController {
       // );
     }
     update();
-    return hotlinesFinalData;
+    return hotlinesData;
   }
 
   ///MLB INJURY REPORT
@@ -1184,7 +1183,6 @@ class GameDetailsController extends GetxController {
               }
             });
           }
-          isLoading.value = false;
         } else {
           NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
           if (response.teams != null) {

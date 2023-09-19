@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 class PlayerProfileModel {
@@ -267,7 +266,7 @@ class Bullpen {
   }) =>
       Bullpen(
         whip: whip ?? this.whip,
-        ip2: ip2 ?? this.ip2,
+        ip2: ip2 ?? ip2,
         outcome: outcome ?? this.outcome,
         onbase: onbase ?? this.onbase,
         outs: outs ?? this.outs,
