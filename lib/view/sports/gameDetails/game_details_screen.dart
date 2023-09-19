@@ -131,24 +131,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             .then((value) {
           gameDetailsController.isHotlines = false;
         });
-
         if (gameDetailsController.hotlinesFinalData.isNotEmpty) {
           gameDetailsController.isHotlines = false;
           gameDetailsController.update();
           break;
         }
-      }
-      if ((widget.gameDetails.awayPlayerId ?? "").isNotEmpty) {
-        gameDetailsController.profileAwayResponse(
-          isLoad: isLoad,
-          awayTeamId: widget.gameDetails.awayPlayerId ?? "",
-        );
-      }
-      if ((widget.gameDetails.homePlayerId ?? "").isNotEmpty) {
-        gameDetailsController.profileHomeResponse(
-          isLoad: isLoad,
-          homeTeamId: widget.gameDetails.homePlayerId ?? "",
-        );
       }
 
       gameDetailsController.mlbStaticsAwayTeamResponse(
@@ -164,6 +151,18 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           sportEvent: widget.gameDetails,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      if ((widget.gameDetails.awayPlayerId).isNotEmpty) {
+        gameDetailsController.profileAwayResponse(
+          isLoad: isLoad,
+          awayTeamId: widget.gameDetails.awayPlayerId ?? "",
+        );
+      }
+      if ((widget.gameDetails.homePlayerId).isNotEmpty) {
+        gameDetailsController.profileHomeResponse(
+          isLoad: isLoad,
+          homeTeamId: widget.gameDetails.homePlayerId ?? "",
+        );
+      }
     }
     if (widget.sportKey == 'NFL') {
       gameDetailsController.hotlinesFinalData.clear();

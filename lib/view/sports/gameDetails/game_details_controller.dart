@@ -228,7 +228,7 @@ class GameDetailsController extends GetxController {
   ///PLAYER PROFILE
   Future profileHomeResponse(
       {String homeTeamId = '', bool isLoad = false}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result =
@@ -278,7 +278,7 @@ class GameDetailsController extends GetxController {
 
   Future profileAwayResponse(
       {String awayTeamId = '', bool isLoad = false}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result =
@@ -454,7 +454,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERORE STATIC----$e');
       showAppSnackBar(
-        errorText,
+        result.message,
       );
     }
     update();
@@ -1154,7 +1154,7 @@ class GameDetailsController extends GetxController {
       String sportKey = '',
       SportEvents? sportEvent,
       bool isLoad = false}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbInjuriesRepo(sportKey);
@@ -1184,6 +1184,7 @@ class GameDetailsController extends GetxController {
               }
             });
           }
+          isLoading.value = false;
         } else {
           NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
           if (response.teams != null) {

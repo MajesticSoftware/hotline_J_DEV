@@ -71,9 +71,7 @@ class GameListingController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERORE----$e');
-      showAppSnackBar(
-        errorText,
-      );
+      showAppSnackBar(result.message);
     }
     update();
   }
@@ -120,9 +118,7 @@ class GameListingController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERORE----$e');
-      showAppSnackBar(
-        errorText,
-      );
+      showAppSnackBar(result.message);
     }
     update();
   }
@@ -419,7 +415,7 @@ class GameListingController extends GetxController {
         errorText,
       );
     }
-    timer = Timer.periodic(const Duration(minutes: 1), (t) {
+/*    timer = Timer.periodic(const Duration(minutes: 1), (t) {
       if (isBack) {
         t.cancel();
         timer?.cancel();
@@ -437,7 +433,7 @@ class GameListingController extends GetxController {
               index: index);
         }
       }
-    });
+    });*/
 
     update();
   }
@@ -491,7 +487,7 @@ class GameListingController extends GetxController {
       );
     }
 
-    timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
+    /*timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
       if (isBack1) {
         t.cancel();
         timerNCAA?.cancel();
@@ -504,7 +500,7 @@ class GameListingController extends GetxController {
               index: index);
         }
       }
-    });
+    });*/
 
     update();
   }
@@ -526,7 +522,7 @@ class GameListingController extends GetxController {
         .then((value) async {
       isLoading.value = false;
       tomorrowEventsList.clear();
-      for (int i = 1; i <= 7; i++) {
+      for (int i = 1; i <= 5; i++) {
         await gameListingTomorrowApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -534,7 +530,7 @@ class GameListingController extends GetxController {
             date: DateFormat('yyyy-MM-dd')
                 .format(DateTime.parse(date).add(Duration(days: i))),
             sportId: sportId);
-        if (i == 7) {
+        if (i == 5) {
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
@@ -567,7 +563,7 @@ class GameListingController extends GetxController {
             sportId: sportId)
         .then((value) async {
       tomorrowEventsList.clear();
-      for (int i = 1; i <= 7; i++) {
+      for (int i = 1; i <= 5; i++) {
         await gameListingTomorrowApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -575,7 +571,7 @@ class GameListingController extends GetxController {
             date: DateFormat('yyyy-MM-dd')
                 .format(DateTime.parse(date).add(Duration(days: i))),
             sportId: sportId);
-        if (i == 7) {
+        if (i == 5) {
           isLoading.value = false;
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
