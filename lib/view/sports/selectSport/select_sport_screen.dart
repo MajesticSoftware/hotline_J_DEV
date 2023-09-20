@@ -9,7 +9,7 @@ import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import 'selecte_game_con.dart';
 import '../../../generated/assets.dart';
-import '../../../model/DET_KC_model.dart';
+import '../../../model/game_model.dart';
 import '../../../model/leauge_model.dart';
 import '../../../theme/helper.dart';
 import '../../../theme/theme.dart';
@@ -86,7 +86,7 @@ class SelectSportScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            /*SizedBox(
               height: Get.height * .015,
             ),
             Row(
@@ -117,7 +117,7 @@ class SelectSportScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ),*/
             SizedBox(
               height: Get.height * .015,
             ),

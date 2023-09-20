@@ -10,6 +10,7 @@ class NCAABoxScoreModel {
   bool? conferenceGame;
   String? duration;
   Weather? weather;
+  Situation? situation;
   Summary? summary;
   Home? home;
   Home? away;
@@ -27,6 +28,7 @@ class NCAABoxScoreModel {
       this.conferenceGame,
       this.duration,
       this.weather,
+      this.situation,
       this.summary,
       this.home,
       this.away,
@@ -49,6 +51,9 @@ class NCAABoxScoreModel {
         json['summary'] != null ? Summary.fromJson(json['summary']) : null;
     home = json['home'] != null ? Home.fromJson(json['home']) : null;
     away = json['away'] != null ? Home.fromJson(json['away']) : null;
+    situation = json['situation'] != null
+        ? Situation.fromJson(json['situation'])
+        : null;
     sComment = json['_comment'];
   }
 
@@ -67,6 +72,9 @@ class NCAABoxScoreModel {
     if (weather != null) {
       data['weather'] = weather!.toJson();
     }
+    if (situation != null) {
+      data['situation'] = situation!.toJson();
+    }
     if (summary != null) {
       data['summary'] = summary!.toJson();
     }
@@ -77,6 +85,36 @@ class NCAABoxScoreModel {
       data['away'] = away!.toJson();
     }
     data['_comment'] = sComment;
+    return data;
+  }
+}
+
+class Situation {
+  String? clock;
+  int? down;
+  int? yfd;
+
+  Location? location;
+
+  Situation({this.clock, this.down, this.yfd, this.location});
+
+  Situation.fromJson(Map<String, dynamic> json) {
+    clock = json['clock'];
+    down = json['down'];
+    yfd = json['yfd'];
+
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['clock'] = clock;
+    data['down'] = down;
+    data['yfd'] = yfd;
+    if (location != null) {
+      data['location'] = location!.toJson();
+    }
     return data;
   }
 }

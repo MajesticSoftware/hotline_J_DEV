@@ -79,9 +79,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
-                        headerWidget(
-                            context, widget.gameDetails, awayTeam, homeTeam),
-                        hotlinesWidget(context, con, widget.gameDetails),
+                        headerWidget(context, widget.gameDetails, awayTeam,
+                            homeTeam, widget.sportKey),
+                        hotlinesWidget(context, con, widget.gameDetails,
+                            awayTeam, homeTeam),
                         teamReportWidget(context, widget.sportKey,
                             widget.gameDetails, awayTeam, homeTeam),
                         playerStatWidget(context, con, widget.sportKey,

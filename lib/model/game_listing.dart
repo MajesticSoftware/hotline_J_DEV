@@ -56,6 +56,7 @@ class Sport {
 
 class SportEvents {
   String? id;
+  String currentTime = "";
   String? scheduled;
   bool? startTimeTbd;
   String? status;
@@ -128,6 +129,7 @@ class SportEvents {
     this.marketsLastUpdated,
     this.consensus,
     this.uuids,
+    this.currentTime = "",
     this.awayTeam = '',
     this.homeTeam = '',
     this.homeGameLogo = '',
@@ -438,11 +440,14 @@ class Venue {
   String? mapCoordinates;
   String? countryCode;
   String? uuids;
-  int? temp;
-  String? weather;
+  num? temp;
+  int? weather;
 
-  int get tmpInFahrenheit {
-    return temp == 0 ? 0 : temp ?? 0;
+  num get tmpInFahrenheit {
+    if (temp != null) {
+      return ((((temp!) - 273.15) * (9 / 5))) + 32;
+    }
+    return 0;
   }
 
   Venue(
@@ -454,7 +459,7 @@ class Venue {
       this.mapCoordinates,
       this.countryCode,
       this.temp = 0,
-      this.weather = 'Sunny',
+      this.weather,
       this.uuids});
 
   Venue.fromJson(Map<String, dynamic> json) {

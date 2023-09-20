@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/theme.dart';
+import 'layouts.dart';
 
 extension MediaQueryValues on BuildContext {
   double get width => MediaQuery.of(this).size.width;
@@ -90,6 +91,57 @@ TextStyle defaultTextStyle(
       fontSize: size.toDouble(),
       fontWeight: weight,
       decoration: decoration);
+}
+
+TextField commonTextFiled(BuildContext context,
+    {TextEditingController? controller, void Function(String)? onChanged}) {
+  return TextField(
+      onChanged: onChanged,
+      controller: controller,
+      style: defaultTextStyle(size: MediaQuery.of(context).size.height * .014),
+      decoration: InputDecoration(
+        contentPadding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .01),
+        hintStyle:
+            hintTextStyle(size: MediaQuery.of(context).size.height * .02),
+        prefixIcon: const Icon(Icons.search, color: boxColor),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(MediaQuery.of(context).size.width * .01),
+          ),
+          borderSide: const BorderSide(
+            color: greyColor,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(MediaQuery.of(context).size.width * .01),
+          ),
+          borderSide: const BorderSide(
+            color: boxColor,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(MediaQuery.of(context).size.width * .01),
+          ),
+          borderSide: BorderSide(
+            color: isDark || selectGameController.isDarkMode
+                ? greyColor
+                : dividerColor,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(MediaQuery.of(context).size.width * .01),
+          ),
+          borderSide: BorderSide(
+            color: isDark || selectGameController.isDarkMode
+                ? greyColor
+                : dividerColor,
+          ),
+        ),
+      ));
 }
 
 TextStyle hintTextStyle(

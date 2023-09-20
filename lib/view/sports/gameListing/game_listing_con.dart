@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
+import 'package:hotlines/model/weather_model.dart';
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
@@ -15,8 +17,17 @@ import '../../../utils/extension.dart';
 
 class GameListingController extends GetxController {
   RxBool isLoading = false.obs;
-
+  TextEditingController searchCon = TextEditingController();
   List<SportEvents> sportEventsList = [];
+  List<SportEvents> _searchList = [];
+
+  List<SportEvents> get searchList => _searchList;
+
+  set searchList(List<SportEvents> value) {
+    _searchList = value;
+    update();
+  }
+
   List<SportEvents> todayEventsList = [];
   List<SportEvents> tomorrowEventsList = [];
 
@@ -60,6 +71,9 @@ class GameListingController extends GetxController {
             }
           }
         }
+        todayEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
+            .day
+            .compareTo(DateTime.parse(b.scheduled ?? "").day));
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -106,6 +120,9 @@ class GameListingController extends GetxController {
             }
           }
         }
+        tomorrowEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
+            .day
+            .compareTo(DateTime.parse(b.scheduled ?? "").day));
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -121,12 +138,12 @@ class GameListingController extends GetxController {
   }
 
   ///GET ALL EVENT BY HOME AWAY FILTER
-  getAllEventList(String sportKey) {
+  getAllEventList(String sportKey) async {
     sportEventsList.clear();
     sportEventsList = todayEventsList + tomorrowEventsList;
-
-    log('sportEventsList----${sportEventsList.length}');
-    log('todayEventsList----${todayEventsList.length}');
+    sportEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
+        .day
+        .compareTo(DateTime.parse(b.scheduled ?? "").day));
     isLoading.value = false;
     for (var event in sportEventsList) {
       if (event.competitors.isNotEmpty) {
@@ -248,14 +265,15 @@ class GameListingController extends GetxController {
         final game = response.game;
         if (game != null) {
           if (game.id == gameId) {
-            sportEventsList[index].venue?.temp =
-                int.parse((game.weather?.forecast?.tempF ?? '0').toString());
+            // sportEventsList[index].venue?.temp =
+            //     int.parse((game.weather?.forecast?.tempF ?? '0').toString());
             sportEventsList[index].inning =
                 game.outcome?.currentInning.toString() ?? '';
             sportEventsList[index].inningHalf =
                 game.outcome?.currentInningHalf.toString() ?? '';
-            sportEventsList[index].venue?.weather =
-                game.weather?.forecast?.condition;
+
+            // sportEventsList[index].venue?.weather =
+            //     game.weather?.forecast?.condition;
             if (game.home?.id == homeTeamId) {
               sportEventsList[index].homeScore = (game.home?.runs).toString();
               sportEventsList[index].homeWin = (game.home?.win).toString();
@@ -305,8 +323,6 @@ class GameListingController extends GetxController {
 
   Future boxScoreResponseNCAA(
       {String gameId = '',
-      String homeTeamId = '',
-      String awayTeamId = '',
       bool isLoad = false,
       String key = '',
       int index = 0}) async {
@@ -320,17 +336,40 @@ class GameListingController extends GetxController {
         NCAABoxScoreModel response = NCAABoxScoreModel.fromJson(result.data);
         final game = response;
         if (game.id == gameId) {
-          sportEventsList[index].venue?.temp =
+          String down = (game.situation?.down ?? "").toString();
+          if ((down) == '1') {
+            down = '${down}st';
+          } else if ((down).toString().endsWith('1') &&
+              !(down).toString().startsWith('1')) {
+            down = '${down}st';
+          } else if ((down).toString().endsWith('2') &&
+              !(down).toString().startsWith('1')) {
+            down = '${down}nd';
+          } else if ((down).toString().endsWith('3') &&
+              !(down).toString().startsWith('1')) {
+            down = '${down}rd';
+          } else {
+            down = down;
+          }
+          /*sportEventsList[index].venue?.temp =
               int.parse((game.weather?.temp ?? '0').toString());
-          sportEventsList[index].venue?.weather = game.weather?.condition;
+          sportEventsList[index].venue?.weather = game.weather?.condition;*/
           sportEventsList[index].inning = (game.quarter ?? "0").toString();
           sportEventsList[index].inningHalf = "Q";
+          if (game.situation != null) {
+            sportEventsList[index].currentTime =
+                'Q${(game.quarter ?? "0")} ${game.situation?.clock ?? ""}, $down & ${game.situation?.yfd ?? ""}';
+          } else {
+            sportEventsList[index].currentTime = '';
+          }
+
           sportEventsList[index].homeScore =
               (game.summary?.home?.points ?? "0").toString();
           sportEventsList[index].homeWin =
               (game.summary?.home?.record?.wins ?? "0").toString();
           sportEventsList[index].homeLoss =
               '${game.summary?.home?.record?.losses ?? "0"}'.toString();
+
           sportEventsList[index].awayScore =
               (game.summary?.away?.points ?? "0").toString();
           sportEventsList[index].awayWin =
@@ -397,6 +436,10 @@ class GameListingController extends GetxController {
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (sportEventsList[i].uuids != null) {
+                getWeather(
+                  sportEventsList[i].venue?.cityName ?? "",
+                  index: i,
+                );
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(sportEventsList[i].uuids ?? ''),
@@ -420,12 +463,7 @@ class GameListingController extends GetxController {
                   DateTime.now().day) {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
-                      homeTeamId: replaceId(
-                              todayEventsList[i].competitors[0].uuids ?? '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              todayEventsList[i].competitors[1].uuids ?? '') ??
-                          "",
+                      key: sportKey,
                       gameId: replaceId(todayEventsList[i].uuids ?? ''),
                       index: i);
                 }
@@ -450,9 +488,8 @@ class GameListingController extends GetxController {
             sportId: sportId)
         .then((value) async {
       tomorrowEventsList.clear();
-      for (int i = 1; i <= 5; i++) {
+      for (int i = 1; i <= 6; i++) {
         isPagination = true;
-
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -461,15 +498,17 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
-          if (i == 5) {
+          if (i == 6) {
             isPagination = false;
           }
-          // if (i == 5) {
-          //   isLoading.value = false;
           getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (sportEventsList[i].uuids != null) {
+                getWeather(
+                  sportEventsList[i].venue?.cityName ?? "",
+                  index: i,
+                );
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(sportEventsList[i].uuids ?? ''),
@@ -496,12 +535,7 @@ class GameListingController extends GetxController {
                   DateTime.now().day) {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
-                      homeTeamId: replaceId(
-                              todayEventsList[i].competitors[0].uuids ?? '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              todayEventsList[i].competitors[1].uuids ?? '') ??
-                          "",
+                      key: sportKey,
                       gameId: replaceId(todayEventsList[i].uuids ?? ''),
                       index: i);
                 }
@@ -555,6 +589,10 @@ class GameListingController extends GetxController {
         if (sportEventsList.isNotEmpty) {
           for (int i = 0; i < sportEventsList.length; i++) {
             if (sportEventsList[i].uuids != null) {
+              getWeather(
+                sportEventsList[i].venue?.cityName ?? "",
+                index: i,
+              );
               boxScoreResponse(
                   homeTeamId: replaceId(
                           sportEventsList[i].competitors[0].uuids ?? '') ??
@@ -668,6 +706,31 @@ class GameListingController extends GetxController {
       showAppSnackBar(
         errorText,
       );
+    }
+    update();
+  }
+
+  void getWeather(String cityName, {bool isLoad = false, int index = 0}) async {
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getWeather(cityName.split(',').first);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          sportEventsList[index].venue?.weather =
+              result.data['weather'][0]['id'];
+          sportEventsList[index].venue?.temp = result.data['main']['temp'] ?? 0;
+        }
+      } else {
+        isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERORE----$e');
+      showAppSnackBar(e.toString());
     }
     update();
   }

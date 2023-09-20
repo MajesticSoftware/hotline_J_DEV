@@ -4,13 +4,103 @@ class HotlinesModel {
   String tittle;
   String playerName;
   String bookId;
+  String teamId;
 
   HotlinesModel({
     required this.teamName,
+    required this.teamId,
     required this.value,
     required this.tittle,
     required this.playerName,
     required this.bookId,
+  });
+}
+
+///MLB STATICS MODEL
+
+class MLBPitchingStaticsModel {
+  String playerName;
+  String wl;
+  String era;
+  String whip;
+  String ip;
+  String h;
+  String k;
+  String bb;
+  String hr;
+
+  MLBPitchingStaticsModel({
+    required this.playerName,
+    required this.wl,
+    required this.era,
+    required this.whip,
+    required this.ip,
+    required this.h,
+    required this.k,
+    required this.bb,
+    required this.hr,
+  });
+}
+
+class HitterPlayerStatMainModel {
+  String playerName;
+  String position;
+  String hr;
+  String rbi;
+  String sb;
+  String bb;
+  String avg;
+  String run;
+  String runValue;
+  String totalBase;
+  String totalBaseValue;
+  String stolenBase;
+  String stolenBaseValue;
+  String obp;
+  String obpValue;
+  String slg;
+  String slgValue;
+  String hAb;
+  String ab;
+  String hAbValue;
+  HitterPlayerStatMainModel({
+    required this.playerName,
+    required this.position,
+    required this.hr,
+    required this.rbi,
+    required this.sb,
+    required this.bb,
+    required this.avg,
+    required this.run,
+    required this.runValue,
+    required this.totalBase,
+    required this.totalBaseValue,
+    required this.stolenBase,
+    required this.stolenBaseValue,
+    required this.obp,
+    required this.obpValue,
+    required this.slg,
+    required this.slgValue,
+    required this.hAb,
+    required this.ab,
+    required this.hAbValue,
+  });
+}
+
+class RunningBacks {
+  String carries;
+  String yard;
+  String avgCarry;
+  String tds;
+  String longestRun;
+  String fumbles;
+  RunningBacks({
+    required this.carries,
+    required this.yard,
+    required this.avgCarry,
+    required this.tds,
+    required this.longestRun,
+    required this.fumbles,
   });
 }
 

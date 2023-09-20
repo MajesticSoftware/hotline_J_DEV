@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +15,7 @@ import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../generated/assets.dart';
 
+import '../../../model/game_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
@@ -2229,7 +2232,7 @@ Container headerTitleWidget(BuildContext context, String title,
       ));
 }
 
-Padding hotlinesWidget(BuildContext context, GameDetailsController con,SportEvents gameDetails,) {
+Padding hotlinesWidget(BuildContext context, GameDetailsController con,SportEvents gameDetails,Competitors? awayTeam, Competitors? homeTeam) {
   return Padding(
     padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.height * .02),
@@ -2267,14 +2270,14 @@ Padding hotlinesWidget(BuildContext context, GameDetailsController con,SportEven
                   .paddingAll(MediaQuery.of(context).size.height * .038)
               : con.hotlinesData.isEmpty && !con.isHotlines
                   ? emptyListWidget(context,gameDetails,)
-                  : hotlinesCard(con),
+                  : hotlinesCard(con,gameDetails,awayTeam,homeTeam),
         ],
       ),
     ),
   );
 }
 
-ListView hotlinesCard(GameDetailsController con) {
+ListView hotlinesCard(GameDetailsController con,SportEvents gameDetails,Competitors? awayTeam, Competitors? homeTeam) {
   return ListView.separated(
     shrinkWrap: true,
     itemCount: con.hotlinesData.length >= 6 ? 6 : con.hotlinesData.length,
@@ -2291,6 +2294,20 @@ ListView hotlinesCard(GameDetailsController con) {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Image.network(homeTeam?.id == con.hotlinesData[index].teamId?homeTeam?.abbreviation == 'NCST'
+                  ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                  : homeTeam?.abbreviation == 'ULL'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                  : homeTeam?.abbreviation == 'SHS'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                  : gameDetails.gameHomeLogoLink:awayTeam?.abbreviation == 'NCST'
+                  ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                  : awayTeam?.abbreviation == 'ULL'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                  : awayTeam?.abbreviation == 'SHS'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                  : gameDetails.gameLogoAwayLink,  height: MediaQuery.of(context).size.height * .03,
+                width: MediaQuery.of(context).size.width * .04,fit: BoxFit.contain,).paddingOnly(right:MediaQuery.of(context).size.width * .01 ),
               Expanded(
                 flex: mobileView.size.shortestSide < 600 ? 7 : 4,
                 child: (con.hotlinesData[index].teamName).appCommonText(
@@ -2474,7 +2491,7 @@ Container tabTitleWidget(BuildContext context) {
 }
 
 headerWidget(BuildContext context, SportEvents gameDetails,
-    Competitors? awayTeam, Competitors? homeTeam) {
+    Competitors? awayTeam, Competitors? homeTeam,String sportKey) {
   isDark = PreferenceManager.getIsDarkMode() ?? false;
   return Stack(
     fit: StackFit.loose,
@@ -2507,6 +2524,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
           } else {
             date = '${date}th';
           }
+          log('gameDetails.homeWin--${gameDetails.homeWin}');
           return Container(
             width: Get.width,
             padding: EdgeInsets.zero,
@@ -2653,8 +2671,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                 color: whiteColor,
                                 size: MediaQuery.of(context).size.height * .048,
                                 weight: FontWeight.w700),
-                        '$day, $month $date , ${(gameDetails.status == 'live' ? '${gameDetails.inningHalf}${gameDetails.inning}' : dateTime)} '
-                            .appCommonText(
+                    ( ((sportKey=='NFL'||sportKey=='NCAA')&&gameDetails.currentTime.isNotEmpty)?gameDetails.currentTime:'$day, $month $date , ${(gameDetails.status == 'live' ? '${gameDetails.inningHalf}${gameDetails.inning}' : dateTime)} '
+                           ) .appCommonText(
                                 color: backGroundColor,
                                 size: MediaQuery.of(context).size.height * .014,
                                 weight: FontWeight.w600),
@@ -2692,7 +2710,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                       0
                                       ? "TBD"
                                       : gameDetails
-                                      .venue?.tmpInFahrenheit
+                                      .venue?.tmpInFahrenheit.toString().split('.').first
                                       : 00)
                                       .toString()
                                       .appCommonText(
@@ -2702,21 +2720,22 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                           .014,
                                       color: whiteColor,
                                       weight: FontWeight.w400),
-                                  ' °F  '.appCommonText(
+                                  ' °F '.appCommonText(
                                     size: MediaQuery.of(context).size.height *
                                         .01,
                                     weight: FontWeight.w300,
                                     color: whiteColor,
                                   ),
 
-
-                                  getWeatherIcon(
+                                  getWeatherIcon(gameDetails.venue?.weather??805,context,
+                                      MediaQuery.of(context).size.height * .02)
+                               /*   getWeatherIcon(
                                       (gameDetails.venue != null
                                           ? gameDetails.venue?.weather ??
                                           'Sunny'
                                           : 'Sunny'),
                                       context,
-                                      MediaQuery.of(context).size.height * .02)
+                                      MediaQuery.of(context).size.height * .02)*/
                                 ],
                               ),
                             ),
@@ -2761,7 +2780,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             ? RichText(
                             textAlign: TextAlign.end,
                             text: TextSpan(
-                                text: ('${gameDetails.homeRank}-${gameDetails.homeRank}'),
+                                text: ('${gameDetails.homeWin}-${gameDetails.homeLoss}'),
                                 style: GoogleFonts.nunitoSans(
                                     color: whiteColor,
                                     fontWeight: FontWeight.w400,

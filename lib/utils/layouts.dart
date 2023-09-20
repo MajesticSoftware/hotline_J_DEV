@@ -49,7 +49,7 @@ commonImageWidget(String image, BuildContext context,
   );
 }
 
-getWeatherIcon(String condition, BuildContext context, double height) {
+getWeatherIconOld(String condition, BuildContext context, double height) {
   // int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();
   // log('data---${data}');
   if (condition == 'Sunny') {
@@ -65,6 +65,34 @@ getWeatherIcon(String condition, BuildContext context, double height) {
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * .02),
       child: svgPicture(context, Assets.imagesSun4, height),
+    );
+  } else {
+    return svgPicture(context, Assets.imagesSun, height);
+  }
+}
+
+Widget getWeatherIcon(int condition, BuildContext context, double height) {
+  if (condition < 300) {
+    return svgPicture(context, Assets.imagesSun3, height);
+  } else if (condition < 400) {
+    return svgPicture(context, Assets.imagesSun3, height);
+  } else if (condition < 600) {
+    return svgPicture(context, Assets.imagesSun2, height);
+  } else if (condition < 700) {
+    return svgPicture(context, Assets.imagesSun1, height);
+  } else if (condition < 800) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .02),
+      child: svgPicture(context, Assets.imagesSun4, height),
+    );
+  } else if (condition == 800) {
+    return svgPicture(context, Assets.imagesSun, height);
+  } else if (condition <= 804) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .02),
+      child: svgPicture(context, Assets.imagesSun1, height),
     );
   } else {
     return svgPicture(context, Assets.imagesSun, height);

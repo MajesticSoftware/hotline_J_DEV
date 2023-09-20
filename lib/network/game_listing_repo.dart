@@ -66,7 +66,7 @@ class GameListingRepo {
     String message = "";
 
     Uri uri = Uri.parse(sportKey == "NCAA"
-        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NCAA_APIKEY}'
+        ? '${AppUrls.NCAA_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NCAA_APIKEY}'
         : "${AppUrls.NFL_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NFL_APIKEY}");
 
     result = await BaseApiHelper.getRequest(uri, {});
@@ -181,6 +181,18 @@ class GameListingRepo {
       'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
       'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
     });
+    return result;
+  }
+
+  Future<ResponseItem> getWeather(String city) async {
+    ResponseItem result;
+
+    Uri parameter;
+    Uri uri = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=528e561ab8ff57968a6dafb3558d7574');
+    parameter = uri.replace();
+
+    result = await BaseApiHelper.getRequest(parameter, {});
     return result;
   }
 }

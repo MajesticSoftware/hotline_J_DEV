@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -179,11 +181,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
   tableDetailWidget(BuildContext context) {
     return Expanded(
         child: GetBuilder<GameListingController>(
-      initState: (state) {
-        gameListingController.sportEventsList.sort((a, b) =>
-            DateTime.parse(a.scheduled ?? "")
-                .compareTo(DateTime.parse(b.scheduled ?? "")));
-      },
+      initState: (state) {},
       builder: (controller) {
         return controller.isLoading.value
             ? const SizedBox()
@@ -194,45 +192,108 @@ class _GameListingScreenState extends State<GameListingScreen> {
                       return await getResponse(false);
                     },
                     color: Theme.of(context).disabledColor,
-                    child: ListView.builder(
-                      itemCount: controller.sportEventsList.length + 1,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        try {
-                          return index == controller.sportEventsList.length
-                              ? !gameListingController.isLoading.value &&
-                                      gameListingController.isPagination
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: SizedBox(
-                                            width: 16,
-                                            height: 16,
-                                            child: CircularProgressIndicator(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            )),
-                                      ),
-                                    )
-                                  : const SizedBox()
-                              : GestureDetector(
-                                  onTap: () {
-                                    Get.to(SportDetailsScreen(
-                                      gameDetails:
-                                          controller.sportEventsList[index],
-                                      sportKey: widget.sportKey,
-                                      sportId: widget.sportId,
-                                      date: widget.date,
-                                    ));
+                    child: Column(
+                      children: [
+                        /*  (MediaQuery.of(context).size.height * .01).H(),
+                        commonTextFiled(
+                          context,
+                          controller: controller.searchCon,
+                          onChanged: (p0) {
+                            controller.searchList.clear();
+                            if (p0.isNotEmpty) {
+                              for (var element in controller.sportEventsList) {
+                                if (element.homeTeam.contains(
+                                        p0.capitalizeFirst.toString()) ||
+                                    element.awayTeam.contains(
+                                        p0.capitalizeFirst.toString())) {
+                                  controller.searchList.add(element);
+                                }
+                              }
+                              log('controller.searchList-->${controller.searchList.isNotEmpty ? controller.searchList[0].awayTeam : ''}');
+                            }
+                            controller.update();
+                          },
+                        ).paddingSymmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * .02),*/
+                        Expanded(
+                          child: controller.searchCon.text.isNotEmpty
+                              ? ListView.builder(
+                                  itemCount: controller.searchList.length,
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    try {
+                                      return GestureDetector(
+                                          onTap: () {
+                                            Get.to(SportDetailsScreen(
+                                              gameDetails:
+                                                  controller.searchList[index],
+                                              sportKey: widget.sportKey,
+                                              sportId: widget.sportId,
+                                              date: widget.date,
+                                            ));
+                                          },
+                                          child: teamWidget(
+                                              controller.searchList[index],
+                                              context,
+                                              index: index));
+                                    } catch (e) {
+                                      return const SizedBox();
+                                    }
                                   },
-                                  child: teamWidget(
-                                      controller.sportEventsList[index],
-                                      context,
-                                      index: index));
-                        } catch (e) {
-                          return const SizedBox();
-                        }
-                      },
+                                )
+                              : ListView.builder(
+                                  itemCount:
+                                      controller.sportEventsList.length + 1,
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    try {
+                                      return index ==
+                                              controller.sportEventsList.length
+                                          ? !gameListingController
+                                                      .isLoading.value &&
+                                                  gameListingController
+                                                      .isPagination
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Center(
+                                                    child: SizedBox(
+                                                        width: 16,
+                                                        height: 16,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                        )),
+                                                  ),
+                                                )
+                                              : const SizedBox()
+                                          : GestureDetector(
+                                              onTap: () {
+                                                Get.to(SportDetailsScreen(
+                                                  gameDetails: controller
+                                                      .sportEventsList[index],
+                                                  sportKey: widget.sportKey,
+                                                  sportId: widget.sportId,
+                                                  date: widget.date,
+                                                ));
+                                              },
+                                              child: teamWidget(
+                                                  controller
+                                                      .sportEventsList[index],
+                                                  context,
+                                                  index: index));
+                                    } catch (e) {
+                                      return const SizedBox();
+                                    }
+                                  },
+                                ),
+                        ),
+                      ],
                     ),
                   );
       },
@@ -481,9 +542,14 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     )
                                   : const SizedBox(),
                               getWeatherIcon(
+                                  competitors.venue?.weather ?? 805,
+                                  context,
+                                  MediaQuery.of(context).size.height * .064)
+                              /* getWeatherIcon(
                                   competitors.venue?.weather ?? 'Sunny',
                                   context,
-                                  MediaQuery.of(context).size.height * .064),
+                                  MediaQuery.of(context).size.height * .064),*/
+                              ,
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -491,7 +557,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 verticalDirection: VerticalDirection.up,
                                 children: [
                                   Text(
-                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit ?? 0}',
+                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
                                     style: competitors.venue?.tmpInFahrenheit ==
                                             0
                                         ? Theme.of(context)
