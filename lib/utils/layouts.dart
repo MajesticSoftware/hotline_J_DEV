@@ -124,7 +124,10 @@ Expanded buildExpandedBoxWidget(BuildContext context,
                 borderRadius: BorderRadius.circular(
                     MediaQuery.of(context).size.width * .008)),
             child: Center(
-              child: Text(upText, style: Theme.of(context).textTheme.bodySmall),
+              child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(upText,
+                      style: Theme.of(context).textTheme.bodySmall)),
             ),
           ).paddingSymmetric(
             horizontal: mobileView.size.shortestSide < 600
@@ -142,8 +145,11 @@ Expanded buildExpandedBoxWidget(BuildContext context,
                 borderRadius: BorderRadius.circular(
                     MediaQuery.of(context).size.width * .008)),
             child: Center(
-              child: Text(bottomText,
-                  style: Theme.of(context).textTheme.bodySmall),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(bottomText,
+                    style: Theme.of(context).textTheme.bodySmall),
+              ),
             ),
           ).paddingSymmetric(
             horizontal: mobileView.size.shortestSide < 600

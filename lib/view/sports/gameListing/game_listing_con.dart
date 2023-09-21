@@ -28,6 +28,28 @@ class GameListingController extends GetxController {
     update();
   }
 
+  searchData(String text) {
+    searchList.clear();
+    if (text.isNotEmpty) {
+      for (var element in sportEventsList) {
+        if (element.homeTeam
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase()) ||
+            element.awayTeam
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase())) {
+          if (searchList.length > 4) {
+            searchList.clear();
+          }
+          searchList.add(element);
+        }
+      }
+    }
+    update();
+  }
+
   List<SportEvents> todayEventsList = [];
   List<SportEvents> tomorrowEventsList = [];
 

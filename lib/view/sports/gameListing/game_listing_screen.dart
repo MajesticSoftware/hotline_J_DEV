@@ -148,6 +148,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                         : con.setIsBack1(true);
                     con.timer = null;
                     con.timerNCAA = null;
+                    FocusScope.of(context).unfocus();
                     Get.delete<GameListingController>();
                     Get.back();
                   },
@@ -194,56 +195,19 @@ class _GameListingScreenState extends State<GameListingScreen> {
                     color: Theme.of(context).disabledColor,
                     child: Column(
                       children: [
-                        /*  (MediaQuery.of(context).size.height * .01).H(),
+                        (MediaQuery.of(context).size.height * .01).H(),
                         commonTextFiled(
                           context,
                           controller: controller.searchCon,
                           onChanged: (p0) {
-                            controller.searchList.clear();
-                            if (p0.isNotEmpty) {
-                              for (var element in controller.sportEventsList) {
-                                if (element.homeTeam.contains(
-                                        p0.capitalizeFirst.toString()) ||
-                                    element.awayTeam.contains(
-                                        p0.capitalizeFirst.toString())) {
-                                  controller.searchList.add(element);
-                                }
-                              }
-                              log('controller.searchList-->${controller.searchList.isNotEmpty ? controller.searchList[0].awayTeam : ''}');
-                            }
-                            controller.update();
+                            controller.searchData(p0);
                           },
                         ).paddingSymmetric(
                             horizontal:
-                                MediaQuery.of(context).size.width * .02),*/
+                                MediaQuery.of(context).size.width * .02),
                         Expanded(
-                          child: controller.searchCon.text.isNotEmpty
+                          child: controller.searchCon.text.isEmpty
                               ? ListView.builder(
-                                  itemCount: controller.searchList.length,
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    try {
-                                      return GestureDetector(
-                                          onTap: () {
-                                            Get.to(SportDetailsScreen(
-                                              gameDetails:
-                                                  controller.searchList[index],
-                                              sportKey: widget.sportKey,
-                                              sportId: widget.sportId,
-                                              date: widget.date,
-                                            ));
-                                          },
-                                          child: teamWidget(
-                                              controller.searchList[index],
-                                              context,
-                                              index: index));
-                                    } catch (e) {
-                                      return const SizedBox();
-                                    }
-                                  },
-                                )
-                              : ListView.builder(
                                   itemCount:
                                       controller.sportEventsList.length + 1,
                                   physics:
@@ -287,6 +251,31 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                                       .sportEventsList[index],
                                                   context,
                                                   index: index));
+                                    } catch (e) {
+                                      return const SizedBox();
+                                    }
+                                  },
+                                )
+                              : ListView.builder(
+                                  itemCount: controller.searchList.length,
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    try {
+                                      return GestureDetector(
+                                          onTap: () {
+                                            Get.to(SportDetailsScreen(
+                                              gameDetails:
+                                                  controller.searchList[index],
+                                              sportKey: widget.sportKey,
+                                              sportId: widget.sportId,
+                                              date: widget.date,
+                                            ));
+                                          },
+                                          child: teamSearchWidget(
+                                              controller.searchList[index],
+                                              context,
+                                              index: index));
                                     } catch (e) {
                                       return const SizedBox();
                                     }
@@ -494,6 +483,346 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     Text(
                                       gameListingController
                                           .sportEventsList[index].homeScore
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              (MediaQuery.of(context).size.height * .005).H(),
+                              Text(
+                                '$date, $dateTime',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.center,
+                              ),
+                              competitors.status == 'live'
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .02,
+                                      width: MediaQuery.of(context).size.width *
+                                          .07,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(105),
+                                          color: redColor),
+                                      child: Center(
+                                        child: 'LIVE'.appCommonText(
+                                            color: whiteColor,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .012,
+                                            weight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              getWeatherIcon(
+                                  competitors.venue?.weather ?? 805,
+                                  context,
+                                  MediaQuery.of(context).size.height * .064)
+                              /* getWeatherIcon(
+                                  competitors.venue?.weather ?? 'Sunny',
+                                  context,
+                                  MediaQuery.of(context).size.height * .064),*/
+                              ,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text(
+                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
+                                    style: competitors.venue?.tmpInFahrenheit ==
+                                            0
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .014)
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .displayMedium,
+                                  ),
+                                  Text(
+                                    '°F',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        buildExpandedBoxWidget(context,
+                            bottomText:
+                                competitors.homeSpreadValue.contains('-')
+                                    ? competitors.homeSpreadValue
+                                    : '+${competitors.homeSpreadValue}',
+                            upText: competitors.awaySpreadValue.contains('-')
+                                ? competitors.awaySpreadValue
+                                : '+${competitors.awaySpreadValue}'),
+                        buildExpandedBoxWidget(context,
+                            bottomText: competitors.homeMoneyLineValue,
+                            upText: competitors.awayMoneyLineValue),
+                        Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('o',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.awayOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .02,
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('u',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.homeOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                )
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                );
+    } catch (e) {
+      return const SizedBox();
+    }
+  }
+
+  teamSearchWidget(SportEvents competitors, BuildContext context,
+      {int index = 0}) {
+    String date = DateFormat.MMMd()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    String dateTime = DateFormat.jm()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    try {
+      return competitors.status == 'closed' && widget.sportKey == "NFL"
+          ? const SizedBox()
+          : competitors.status == 'postponed'
+              ? const SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .02,
+                      top: MediaQuery.of(context).size.width * .014,
+                      right: MediaQuery.of(context).size.width * .02),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        border: Border.all(
+                            color: isDark || selectGameController.isDarkMode
+                                ? greyColor
+                                : dividerColor),
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .02)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.height * .006,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * .02),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                      width: Get.height * .044,
+                                      height: Get.height * .044,
+                                      imageUrl: gameListingController
+                                                  .searchList[index].awayTeam ==
+                                              'North Carolina State Wolfpack'
+                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                          : gameListingController
+                                                      .searchList[index]
+                                                      .awayTeam ==
+                                                  'Louisiana-Lafayette Ragin Cajuns'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                              : gameListingController
+                                                          .searchList[index]
+                                                          .awayTeam ==
+                                                      'Sam Houston State Bearkats'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                  : competitors
+                                                      .gameLogoAwayLink,
+                                    ),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .searchList[index].awayTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      (gameListingController
+                                              .searchList[index].awayScore)
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 0,
+                                      child: Text(
+                                        '  Vs',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 4, child: commonDivider(context)),
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                        width: Get.height * .044,
+                                        height: Get.height * .044,
+                                        imageUrl: gameListingController
+                                                    .searchList[index]
+                                                    .homeTeam ==
+                                                'North Carolina State Wolfpack'
+                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                            : gameListingController
+                                                        .searchList[index]
+                                                        .homeTeam ==
+                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                : gameListingController
+                                                            .searchList[index]
+                                                            .homeTeam ==
+                                                        'Sam Houston State Bearkats'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                    : competitors
+                                                        .gameHomeLogoLink),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .searchList[index].homeTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      gameListingController
+                                          .searchList[index].homeScore
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme

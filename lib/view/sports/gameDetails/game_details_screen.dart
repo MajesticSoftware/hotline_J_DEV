@@ -83,8 +83,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                             homeTeam, widget.sportKey),
                         hotlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam),
-                        teamReportWidget(context, widget.sportKey,
-                            widget.gameDetails, awayTeam, homeTeam),
+                        widget.sportKey == 'MLB'
+                            ? teamReportWidget(context, widget.sportKey,
+                                widget.gameDetails, awayTeam, homeTeam)
+                            : teamReportNFL(context, con, widget.gameDetails,
+                                awayTeam, homeTeam, widget.sportKey),
                         playerStatWidget(context, con, widget.sportKey,
                             widget.gameDetails, awayTeam, homeTeam),
                         hitterPlayerStatWidget(context, con, widget.gameDetails,

@@ -22,11 +22,11 @@ class GameDetailsController extends GetxController {
     'Redzone Efficiency',
     'Rushing Yards/Game',
     'Passing Yards/Game',
-    'Rushing TDs/Game',
-    'Passing TDs/Game',
+    /*'Rushing TDs/Game',
+    'Passing TDs/Game',*/
     '3rd Down Efficiency',
-    '4th Down Efficiency',
-    'Field goal Percentage',
+    /* '4th Down Efficiency',
+    'Field goal Percentage',*/
   ];
   List hittingMLB = [
     'Runs Scored/Game',
@@ -47,10 +47,10 @@ class GameDetailsController extends GetxController {
     'Opponent Redzone Efficiency',
     'Rushing Yards Allowed/Game',
     'Passing Yards Allowed/Game',
-    'Rushing TDs Allowed/Game',
-    'Passing TDs Allowed/Game',
+    /* 'Rushing TDs Allowed/Game',
+    'Passing TDs Allowed/Game',*/
     'Opponent 3rd Down Efficiency',
-    'Opponent 4th Down Efficiency',
+    // 'Opponent 4th Down Efficiency',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -110,6 +110,15 @@ class GameDetailsController extends GetxController {
   set isTab1(bool value) {
     _isTab1 = value;
 
+    update();
+  }
+
+  bool _isTeamReportTab = true;
+
+  bool get isTeamReportTab => _isTeamReportTab;
+
+  set isTeamReportTab(bool value) {
+    _isTeamReportTab = value;
     update();
   }
 
@@ -678,21 +687,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
+                /*   ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),
+                    .toStringAsFixed(2)),*/
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                /*  '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
                         .toString())
-                    .toStringAsFixed(1)),
+                    .toStringAsFixed(1)),*/
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -717,16 +726,16 @@ class GameDetailsController extends GetxController {
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                /*       ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),
+                    .toStringAsFixed(2)),*/
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                // '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -840,21 +849,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
+                /*  ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),
+                    .toStringAsFixed(2)),*/
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                /*  '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
                         .toString())
-                    .toStringAsFixed(1)),
+                    .toStringAsFixed(1)),*/
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -880,16 +889,16 @@ class GameDetailsController extends GetxController {
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                /* ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),
+                    .toStringAsFixed(2)),*/
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                // '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();

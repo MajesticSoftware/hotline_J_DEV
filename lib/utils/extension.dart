@@ -104,6 +104,7 @@ TextField commonTextFiled(BuildContext context,
             EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .01),
         hintStyle:
             hintTextStyle(size: MediaQuery.of(context).size.height * .02),
+        hintText: 'Search here...',
         prefixIcon: const Icon(Icons.search, color: boxColor),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(
