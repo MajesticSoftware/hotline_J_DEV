@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
-import 'package:hotlines/model/weather_model.dart';
+
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
@@ -33,13 +33,33 @@ class GameListingController extends GetxController {
     if (text.isNotEmpty) {
       for (var element in sportEventsList) {
         if (element.homeTeam
-                .toString()
-                .toLowerCase()
-                .contains(text.trim().toString().toLowerCase()) ||
-            element.awayTeam
-                .toString()
-                .toLowerCase()
-                .contains(text.trim().toString().toLowerCase())) {
+                    .toString()
+                    .toLowerCase()
+                    .contains(text.trim().toString().toLowerCase()) ||
+                element.awayTeam.toString().toLowerCase().contains(text
+                    .trim()
+                    .toString()
+                    .toLowerCase()) /*||
+            (element.awayTeamInjuredPlayer.indexWhere((player) => player.toString().toLowerCase() == text.toLowerCase().trim()) >=
+                0) ||
+            (element.homeTeamInjuredPlayer.indexWhere((player) =>
+                    player.toString().toLowerCase() ==
+                    text.toLowerCase().trim()) >=
+                0) ||
+            (element.homeTeamInjuredPlayer.indexWhere((player) =>
+                    player.toString().toLowerCase() ==
+                    text.toLowerCase().trim()) >=
+                0) ||
+            (element.homeReceiversPlayer.indexWhere((player) =>
+                    player.name.toString().toLowerCase() ==
+                    text.toLowerCase().trim()) >=
+                0) ||
+            (element.awayReceiversPlayer.indexWhere((player) =>
+                    player.name.toString().toLowerCase() == text.toLowerCase().trim()) >=
+                0) ||
+            (element.homeRunningBackPlayer.indexWhere((player) => player.name.toString().toLowerCase() == text.toLowerCase().trim()) >= 0) ||
+            (element.awayRunningBackPlayer.indexWhere((player) => player.name.toString().toLowerCase() == text.toLowerCase().trim()) >= 0)*/
+            ) {
           if (searchList.length > 4) {
             searchList.clear();
           }
@@ -104,8 +124,8 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE----$e');
-      showAppSnackBar(result.message);
+      log('ERROR TODAY GAME LISTING--------$e');
+      showAppSnackBar(errorText);
     }
     update();
   }
@@ -153,8 +173,8 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE----$e');
-      showAppSnackBar(result.message);
+      log('ERROR TOMORROW GAME LISTING-----$e');
+      showAppSnackBar(errorText);
     }
     update();
   }
@@ -334,7 +354,7 @@ class GameListingController extends GetxController {
         // );
       }
     } catch (e) {
-      log('ERORE1----$e');
+      log('ERROR BOX SCORE MLB----$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -384,7 +404,6 @@ class GameListingController extends GetxController {
           } else {
             sportEventsList[index].currentTime = '';
           }
-
           sportEventsList[index].homeScore =
               (game.summary?.home?.points ?? "0").toString();
           sportEventsList[index].homeWin =
@@ -407,7 +426,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       // isLoading.value = false;
-      // log('ERORE1----$e');
+      log('ERROR BOX SCORE NFL && NCAA--------$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -475,7 +494,7 @@ class GameListingController extends GetxController {
       }
       if (todayEventsList.isNotEmpty) {
         timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
-          if (isBack) {
+          if (isBack1) {
             t.cancel();
             timerNCAA?.cancel();
             timerNCAA = null;
@@ -546,7 +565,7 @@ class GameListingController extends GetxController {
       }
       if (todayEventsList.isNotEmpty) {
         timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
-          if (isBack) {
+          if (isBack1) {
             t.cancel();
             timerNCAA?.cancel();
             timerNCAA = null;
@@ -751,7 +770,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE----$e');
+      log('ERROR WEATHER----$e');
       showAppSnackBar(e.toString());
     }
     update();

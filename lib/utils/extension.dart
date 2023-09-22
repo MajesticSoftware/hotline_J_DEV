@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../theme/theme.dart';
 import 'layouts.dart';
@@ -93,56 +94,88 @@ TextStyle defaultTextStyle(
       decoration: decoration);
 }
 
-TextField commonTextFiled(BuildContext context,
-    {TextEditingController? controller, void Function(String)? onChanged}) {
-  return TextField(
-      onChanged: onChanged,
-      controller: controller,
-      style: defaultTextStyle(size: MediaQuery.of(context).size.height * .014),
-      decoration: InputDecoration(
-        contentPadding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .01),
-        hintStyle:
-            hintTextStyle(size: MediaQuery.of(context).size.height * .02),
-        hintText: 'Search here...',
-        prefixIcon: const Icon(Icons.search, color: boxColor),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(MediaQuery.of(context).size.width * .01),
-          ),
-          borderSide: const BorderSide(
-            color: greyColor,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(MediaQuery.of(context).size.width * .01),
-          ),
-          borderSide: const BorderSide(
-            color: boxColor,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(MediaQuery.of(context).size.width * .01),
-          ),
-          borderSide: BorderSide(
+Widget commonTextFiled(BuildContext context,
+    {TextEditingController? controller,
+    void Function(String)? onChanged,
+    required GameListingController ctrl}) {
+  return SizedBox(
+    height: MediaQuery.of(context).size.height * .05,
+    child: TextField(
+        onChanged: onChanged,
+        controller: controller,
+        cursorColor:
+            isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+        style: defaultTextStyle(
+            size: MediaQuery.of(context).size.height * .016,
+            color: Theme.of(context).highlightColor),
+        decoration: InputDecoration(
+          fillColor: Theme.of(context).canvasColor,
+          filled: true,
+          contentPadding: EdgeInsets.zero,
+          hintStyle: hintTextStyle(
+              size: MediaQuery.of(context).size.height * .016,
+              color: isDark || selectGameController.isDarkMode
+                  ? greyColor
+                  : greyColor.withOpacity(0.5)),
+          hintText: 'Search game here...',
+          prefixIcon: Icon(
+            Icons.search,
             color: isDark || selectGameController.isDarkMode
                 ? greyColor
-                : dividerColor,
+                : boxColor,
           ),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(MediaQuery.of(context).size.width * .01),
+          suffixIcon: InkWell(
+            onTap: () {
+              ctrl.searchCon.clear();
+              ctrl.update();
+            },
+            child: Icon(
+              Icons.close,
+              color: isDark || selectGameController.isDarkMode
+                  ? greyColor
+                  : boxColor,
+            ),
           ),
-          borderSide: BorderSide(
-            color: isDark || selectGameController.isDarkMode
-                ? greyColor
-                : dividerColor,
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(MediaQuery.of(context).size.width * .01),
+            ),
+            borderSide: const BorderSide(
+              color: greyColor,
+            ),
           ),
-        ),
-      ));
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(MediaQuery.of(context).size.width * .01),
+            ),
+            borderSide: BorderSide(
+              color: isDark || selectGameController.isDarkMode
+                  ? greyColor
+                  : boxColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(MediaQuery.of(context).size.width * .01),
+            ),
+            borderSide: BorderSide(
+              color: isDark || selectGameController.isDarkMode
+                  ? greyColor
+                  : dividerColor,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(MediaQuery.of(context).size.width * .01),
+            ),
+            borderSide: BorderSide(
+              color: isDark || selectGameController.isDarkMode
+                  ? greyColor
+                  : dividerColor,
+            ),
+          ),
+        )),
+  );
 }
 
 TextStyle hintTextStyle(

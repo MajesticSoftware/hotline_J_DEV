@@ -22,11 +22,11 @@ class GameDetailsController extends GetxController {
     'Redzone Efficiency',
     'Rushing Yards/Game',
     'Passing Yards/Game',
-    /*'Rushing TDs/Game',
-    'Passing TDs/Game',*/
+    'Rushing TDs/Game',
+    'Passing TDs/Game',
     '3rd Down Efficiency',
-    /* '4th Down Efficiency',
-    'Field goal Percentage',*/
+    '4th Down Efficiency',
+    'Field goal Percentage',
   ];
   List hittingMLB = [
     'Runs Scored/Game',
@@ -47,10 +47,11 @@ class GameDetailsController extends GetxController {
     'Opponent Redzone Efficiency',
     'Rushing Yards Allowed/Game',
     'Passing Yards Allowed/Game',
-    /* 'Rushing TDs Allowed/Game',
-    'Passing TDs Allowed/Game',*/
+    'Rushing TDs Allowed/Game',
+    'Passing TDs Allowed/Game',
     'Opponent 3rd Down Efficiency',
-    // 'Opponent 4th Down Efficiency',
+    'Opponent 4th Down Efficiency',
+    'Field goal Percentage',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -266,18 +267,16 @@ class GameDetailsController extends GetxController {
               homeIp = player.totals.statistics.pitching.overall.ip2.toString();
             }
           }
-        } else {
-          // isLoading.value = false;
         }
       } else {
         // isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       // isLoading.value = false;
-      log('ERORE1----$e');
+      log('ERROR PROFILE HOME RES------------$e');
       showAppSnackBar(
         errorText,
       );
@@ -320,13 +319,13 @@ class GameDetailsController extends GetxController {
         }
       } else {
         // isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       // isLoading.value = false;
-      log('ERORE13333----$e');
+      log('ERROR PROFILE AWAY RES----$e');
       showAppSnackBar(
         errorText,
       );
@@ -454,17 +453,17 @@ class GameDetailsController extends GetxController {
       } else {
         // isLoading.value = false;
 
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
       // isLoading.value = false;
     } catch (e) {
       // isLoading.value = false;
-      log('ERORE STATIC----$e');
-      showAppSnackBar(
-        result.message,
-      );
+      log('ERROR HOME STATIC RES ----$e');
+      // showAppSnackBar(
+      //   result.message,
+      // );
     }
     update();
   }
@@ -584,13 +583,13 @@ class GameDetailsController extends GetxController {
         // isLoading.value = false;
       } else {
         // isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       // isLoading.value = false;
-      log('ERROR STATIC ----$e');
+      log('ERROR AWAY STATIC RES -------$e');
       showAppSnackBar(
         errorText,
       );
@@ -622,13 +621,13 @@ class GameDetailsController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERROR STATIC ----$e');
+      log('ERROR NCAA RANKING-------$e');
       showAppSnackBar(
         errorText,
       );
@@ -687,21 +686,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                /*   ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
+                ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),*/
+                    .toStringAsFixed(2)),
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                /*  '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
                         .toString())
-                    .toStringAsFixed(1)),*/
+                    .toStringAsFixed(1)),
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -726,16 +725,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                /*       ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),*/
+                    .toStringAsFixed(2)),
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                // '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                (double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
+                            (defenciveData?.fieldGoals?.attempts ?? 0) *
+                            100)
+                        .toString())
+                    .toStringAsFixed(1)),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -789,15 +793,15 @@ class GameDetailsController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
 
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      log('ERORE1----$e');
+      log('ERROR NFL HOME STATICS-----------$e');
       showAppSnackBar(
         errorText,
       );
@@ -849,21 +853,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                /*  ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
+                ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),*/
+                    .toStringAsFixed(2)),
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                /*  '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
                             (offenciveData?.fieldGoals?.attempts ?? 0) *
                             100)
                         .toString())
-                    .toStringAsFixed(1)),*/
+                    .toStringAsFixed(1)),
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -889,16 +893,21 @@ class GameDetailsController extends GetxController {
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
-                /* ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
                             "0") /
                         totalGame)
-                    .toStringAsFixed(2)),*/
+                    .toStringAsFixed(2)),
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
-                // '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
+                (double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
+                            (defenciveData?.fieldGoals?.attempts ?? 0) *
+                            100)
+                        .toString())
+                    .toStringAsFixed(1)),
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -950,13 +959,13 @@ class GameDetailsController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERORE1----$e');
+      log('ERROR NFL AWAY STATICS------$e');
       showAppSnackBar(
         errorText,
       );
@@ -1138,16 +1147,16 @@ class GameDetailsController extends GetxController {
         }
       } else {
         isHotlines = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
       isHotlines = false;
       isLoading.value = false;
     } catch (e) {
       isHotlines = false;
       isLoading.value = false;
-      // log('ERROR>>>>>>>>----$e');
+      log('ERROR HOTLINES DATA------$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1216,17 +1225,16 @@ class GameDetailsController extends GetxController {
             });
           }
         }
-
         // isLoading.value = false;
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
-      log('ERROR1----$e');
+      log('ERROR MLB INJURIES-----$e');
       showAppSnackBar(
         errorText,
       );
@@ -1248,12 +1256,3 @@ class GameDetailsController extends GetxController {
     update();
   }
 }
-
-// class RunningBacksModel{
-//   String runningBack;
-//   String runningBack;
-//   String runningBack;
-//   String runningBack;
-//   String runningBack;
-//   String runningBack;
-// }

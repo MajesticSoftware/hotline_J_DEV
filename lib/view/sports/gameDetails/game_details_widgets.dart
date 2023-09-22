@@ -1,5 +1,5 @@
 
-import 'dart:developer';
+
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -700,91 +700,94 @@ Padding teamReportNFL(
               children: [
                 teamReportHeader(context, awayTeam, gameDetails, homeTeam,con),
                 commonDivider(context),
-                Row(
-                 children: [
-                   Expanded(child:  ListView.separated(
-                     padding: EdgeInsets.zero,
-                     physics: const BouncingScrollPhysics(),
-                     shrinkWrap: true,
-                     itemCount: controller.offensive.length,
-                     itemBuilder: (context, index) {
-                       return Column(
-                         children: [
-                  (       con.isTeamReportTab?((num.tryParse(controller
-                      .nflAwayOffensiveList.isEmpty
-                      ? '0'
-                      : controller.nflAwayOffensiveList[index]))??controller.nflAwayOffensiveList[index])
-                      .toString():  ((num.tryParse(controller
-                               .nflHomeOffensiveList.isEmpty
-                               ? '0'
-                               : controller.nflHomeOffensiveList[index]))??controller.nflHomeOffensiveList[index])
-                               .toString())
-                               .appCommonText(
-                               color: Theme.of(context).highlightColor,
-                               weight: FontWeight.w700,
-                               align:  TextAlign.center
-                                  ,
-                               size: MediaQuery.of(context).size.height * .014),
-                           controller.offensive[index].toString().appCommonText(
-                               color: darkGreyColor,
-                               align: TextAlign.center,
-                               weight: FontWeight.w600,
-                               size: MediaQuery.of(context).size.height * .012),
-                         ],
-                       ).paddingSymmetric(vertical: MediaQuery.of(context).size.height * .003);
-                     },
-                     separatorBuilder:
-                         (BuildContext context, int index) {
-                       return commonDivider(context);
-                     },
-                   ),),
-Column(
-  children: List.generate(5, (index) => Container(width: 1,height:MediaQuery.of(context).size.height * .044,color: backGroundColor,),),
-)
-,
-                   Expanded(child:  ListView.separated(
-                     padding: EdgeInsets.zero,
-                     physics: const BouncingScrollPhysics(),
-                     shrinkWrap: true,
-                     itemCount: controller.defensive.length,
-                     itemBuilder: (context, index) {
-                       return Column(
-                         children: [
-                           (       con.isTeamReportTab?((num.tryParse(controller
-                               .nflAwayDefensiveList.isEmpty
-                               ? '0'
-                               : controller.nflAwayDefensiveList[index]))??controller.nflAwayDefensiveList[index])
-                               .toString():  ((num.tryParse(controller
-                               .nflHomeDefensiveList.isEmpty
-                               ? '0'
-                               : controller.nflHomeDefensiveList[index]))??controller.nflHomeDefensiveList[index])
-                               .toString())
-                               .appCommonText(
-                               color: Theme.of(context).highlightColor,
-                               weight: FontWeight.w700,
-                               align:TextAlign.center
-                                   ,
-                               size: MediaQuery.of(context).size.height * .014),
-                           controller.defensive[index].toString().appCommonText(
-                               color: darkGreyColor,
-                               align: TextAlign.center,
-                               weight: FontWeight.w600,
-                               size: MediaQuery.of(context).size.height * .012),
-                         ],
-                       ).paddingSymmetric(vertical: MediaQuery.of(context).size.height * .003);
-                     },
-                     separatorBuilder:
-                         (BuildContext context, int index) {
-                       return commonDivider(context);
-                     },
-                   ),)
-                 ],
-                )
+                nflOffenseDefenseData(controller, con, context)
               ],
             ));
       }),
     ),
   );
+}
+
+Row nflOffenseDefenseData(GameDetailsController controller, GameDetailsController con, BuildContext context) {
+  return Row(
+               children: [
+                 Expanded(child:  ListView.separated(
+                   padding: EdgeInsets.zero,
+                   physics: const BouncingScrollPhysics(),
+                   shrinkWrap: true,
+                   itemCount: controller.offensive.length,
+                   itemBuilder: (context, index) {
+                     return Column(
+                       children: [
+                (       con.isTeamReportTab?((num.tryParse(controller
+                    .nflAwayOffensiveList.isEmpty
+                    ? '0'
+                    : controller.nflAwayOffensiveList[index]))??controller.nflAwayOffensiveList[index])
+                    .toString():  ((num.tryParse(controller
+                             .nflHomeOffensiveList.isEmpty
+                             ? '0'
+                             : controller.nflHomeOffensiveList[index]))??controller.nflHomeOffensiveList[index])
+                             .toString())
+                             .appCommonText(
+                             color: Theme.of(context).highlightColor,
+                             weight: FontWeight.w700,
+                             align:  TextAlign.center
+                                ,
+                             size: MediaQuery.of(context).size.height * .014),
+                         controller.offensive[index].toString().appCommonText(
+                             color: darkGreyColor,
+                             align: TextAlign.center,
+                             weight: FontWeight.w600,
+                             size: MediaQuery.of(context).size.height * .012),
+                       ],
+                     ).paddingSymmetric(vertical: MediaQuery.of(context).size.height * .003);
+                   },
+                   separatorBuilder:
+                       (BuildContext context, int index) {
+                     return commonDivider(context);
+                   },
+                 ),),
+                 Column(
+children: List.generate(9, (index) => Container(width: 1,height:MediaQuery.of(context).size.height * .044,color: backGroundColor,),),
+),
+                 Expanded(child:  ListView.separated(
+                   padding: EdgeInsets.zero,
+                   physics: const BouncingScrollPhysics(),
+                   shrinkWrap: true,
+                   itemCount: controller.defensive.length,
+                   itemBuilder: (context, index) {
+                     return Column(
+                       children: [
+                         (       !con.isTeamReportTab?((num.tryParse(controller
+                             .nflAwayDefensiveList.isEmpty
+                             ? '0'
+                             : controller.nflAwayDefensiveList[index]))??controller.nflAwayDefensiveList[index])
+                             .toString():  ((num.tryParse(controller
+                             .nflHomeDefensiveList.isEmpty
+                             ? '0'
+                             : controller.nflHomeDefensiveList[index]))??controller.nflHomeDefensiveList[index])
+                             .toString())
+                             .appCommonText(
+                             color: Theme.of(context).highlightColor,
+                             weight: FontWeight.w700,
+                             align:TextAlign.center
+                                 ,
+                             size: MediaQuery.of(context).size.height * .014),
+                         controller.defensive[index].toString().appCommonText(
+                             color: darkGreyColor,
+                             align: TextAlign.center,
+                             weight: FontWeight.w600,
+                             size: MediaQuery.of(context).size.height * .012),
+                       ],
+                     ).paddingSymmetric(vertical: MediaQuery.of(context).size.height * .003);
+                   },
+                   separatorBuilder:
+                       (BuildContext context, int index) {
+                     return commonDivider(context);
+                   },
+                 ),),
+               ],
+              );
 }
 
 Container teamReportHeader(BuildContext context, Competitors? awayTeam, SportEvents gameDetails, Competitors? homeTeam,GameDetailsController con) {
@@ -853,7 +856,7 @@ Container teamReportHeader(BuildContext context, Competitors? awayTeam, SportEve
                             commonCachedNetworkImage(
                                 width: Get.height * .025,
                                 height: Get.height * .025,
-                                imageUrl:con.isTeamReportTab?(awayTeam?.abbreviation == 'NCST'
+                                imageUrl:!con.isTeamReportTab?(awayTeam?.abbreviation == 'NCST'
                                     ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                     : awayTeam?.abbreviation == 'ULL'
                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"

@@ -147,7 +147,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           homeTeamId: widget.gameDetails.homePlayerId,
         );
       }
-      for (int i = 0; i <= 10; i += 5) {
+      for (int i = 1; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
@@ -169,7 +169,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
     }
     if (widget.sportKey == 'NFL') {
       gameDetailsController.hotlinesData.clear();
-      for (int i = 0; i <= 10; i += 5) {
+      for (int i = 1; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(
@@ -216,7 +216,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
               : replaceId(homeTeam?.uuids ?? ''));
     }
     if (widget.sportKey == 'NCAA') {
-      for (int i = 0; i <= 10; i += 5) {
+      for (int i = 1; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
             .hotlinesDataResponse(

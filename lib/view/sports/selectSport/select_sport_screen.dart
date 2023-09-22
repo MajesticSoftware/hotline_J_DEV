@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,8 @@ import '../gameListing/game_listing_screen.dart';
 // ignore: must_be_immutable
 class SelectSportScreen extends StatelessWidget {
   SelectSportScreen({Key? key}) : super(key: key);
-  final SelectGameController selectGameController = Get.find();
+  final SelectGameController selectGameController =
+      Get.put(SelectGameController());
   bool isDark = false;
   @override
   Widget build(BuildContext context) {

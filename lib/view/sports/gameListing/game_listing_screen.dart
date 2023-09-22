@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -59,13 +57,25 @@ class _GameListingScreenState extends State<GameListingScreen> {
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: commonAppBar(context, controller),
-        body: Stack(
-          children: [
-            gameListingView(context),
-            Obx(() => gameListingController.isLoading.value
-                ? const AppProgress()
-                : const SizedBox())
-          ],
+        body: WillPopScope(
+          onWillPop: () {
+            widget.sportKey == 'MLB'
+                ? gameListingController.setIsBack(true)
+                : gameListingController.setIsBack1(true);
+            gameListingController.timer = null;
+            gameListingController.timerNCAA = null;
+            FocusScope.of(context).unfocus();
+            Get.delete<GameListingController>();
+            return Future.value(true);
+          },
+          child: Stack(
+            children: [
+              gameListingView(context),
+              Obx(() => gameListingController.isLoading.value
+                  ? const AppProgress()
+                  : const SizedBox())
+            ],
+          ),
         ),
       );
     });
@@ -199,6 +209,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                         commonTextFiled(
                           context,
                           controller: controller.searchCon,
+                          ctrl: controller,
                           onChanged: (p0) {
                             controller.searchData(p0);
                           },
@@ -208,6 +219,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                         Expanded(
                           child: controller.searchCon.text.isEmpty
                               ? ListView.builder(
+                                  padding: EdgeInsets.zero,
                                   itemCount:
                                       controller.sportEventsList.length + 1,
                                   physics:
@@ -257,6 +269,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                   },
                                 )
                               : ListView.builder(
+                                  padding: EdgeInsets.zero,
                                   itemCount: controller.searchList.length,
                                   physics:
                                       const AlwaysScrollableScrollPhysics(),
