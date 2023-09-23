@@ -61,11 +61,25 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: commonAppBarWidget(context, isDark),
       body: GetBuilder<GameDetailsController>(initState: (state) async {
-        await _getResponse(true);
+        await gameDetailsController.getResponse(
+            isLoad: true,
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+            date: widget.date,
+            awayTeam: awayTeam,
+            homeTeam: homeTeam,
+            sportId: widget.sportId);
       }, builder: (con) {
         return RefreshIndicator(
           onRefresh: () async {
-            return await _getResponse(false);
+            return await gameDetailsController.getResponse(
+                isLoad: false,
+                gameDetails: widget.gameDetails,
+                sportKey: widget.sportKey,
+                date: widget.date,
+                awayTeam: awayTeam,
+                homeTeam: homeTeam,
+                sportId: widget.sportId);
           },
           color: Theme.of(context).disabledColor,
           child: Stack(
@@ -114,170 +128,5 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
         );
       }),
     );
-  }
-
-  Future _getResponse(bool isLoad) async {
-    gameDetailsController.hotlinesDData.clear();
-    gameDetailsController.hotlinesFData.clear();
-    gameDetailsController.hotlinesMData.clear();
-    gameDetailsController.hotlinesData.clear();
-    if (widget.sportKey == 'MLB') {
-      gameDetailsController.mlbStaticsAwayTeamResponse(
-          isLoad: false,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          gameDetails: widget.gameDetails);
-      gameDetailsController.mlbStaticsHomeTeamResponse(
-          isLoad: false,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-          gameDetails: widget.gameDetails);
-      gameDetailsController.mlbInjuriesResponse(
-          isLoad: false,
-          sportEvent: widget.gameDetails,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      if ((widget.gameDetails.awayPlayerId).isNotEmpty) {
-        gameDetailsController.profileAwayResponse(
-          isLoad: false,
-          awayTeamId: widget.gameDetails.awayPlayerId,
-        );
-      }
-      if ((widget.gameDetails.homePlayerId).isNotEmpty) {
-        gameDetailsController.profileHomeResponse(
-          isLoad: false,
-          homeTeamId: widget.gameDetails.homePlayerId,
-        );
-      }
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await gameDetailsController
-            .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          gameDetailsController.isHotlines = false;
-        });
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.update();
-          break;
-        }
-      }
-    }
-    if (widget.sportKey == 'NFL') {
-      gameDetailsController.isLoading.value = true;
-      gameDetailsController.nflStaticsAwayTeamResponse(
-          isLoad: false,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''));
-      gameDetailsController.recordsOfNCAAAndNFL(
-          isLoad: false,
-          sportEvent: widget.gameDetails,
-          key: widget.sportKey,
-          awayId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
-      gameDetailsController.nflStaticsHomeTeamResponse(
-          isLoad: false,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
-      gameDetailsController.mlbInjuriesResponse(
-          isLoad: false,
-          sportEvent: widget.gameDetails,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
-      gameDetailsController.hotlinesData.clear();
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await gameDetailsController
-            .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.isLoading.value = false;
-        });
-
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.isLoading.value = false;
-          gameDetailsController.update();
-          break;
-        }
-      }
-    }
-    if (widget.sportKey == 'NCAA') {
-      gameDetailsController.isLoading.value = true;
-      gameDetailsController
-          .ncaaGameRanking(
-              isLoad: false,
-              gameDetails: widget.gameDetails,
-              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
-          .then((value) {
-        gameDetailsController.recordsOfNCAAAndNFL(
-            isLoad: false,
-            sportEvent: widget.gameDetails,
-            key: widget.sportKey,
-            awayId: awayTeam?.abbreviation == 'LV'
-                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                : replaceId(awayTeam?.uuids ?? ''),
-            homeId: homeTeam?.abbreviation == 'LV'
-                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                : replaceId(homeTeam?.uuids ?? ''));
-        gameDetailsController.nflStaticsAwayTeamResponse(
-            isLoad: false,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-        gameDetailsController.nflStaticsHomeTeamResponse(
-            isLoad: false,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
-            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      });
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await gameDetailsController
-            .hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: widget.sportId,
-                date: widget.date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.isLoading.value = false;
-        });
-        if (gameDetailsController.hotlinesData.isNotEmpty) {
-          gameDetailsController.isHotlines = false;
-          gameDetailsController.isLoading.value = false;
-          gameDetailsController.update();
-          break;
-        }
-      }
-    }
-    gameDetailsController.update();
   }
 }

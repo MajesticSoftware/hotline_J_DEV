@@ -1,14 +1,15 @@
 import 'dart:developer';
-
+import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 import 'package:hotlines/model/ranking_model.dart';
+import 'package:hotlines/utils/utils.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/game_model.dart';
-import '../../../model/game_listing.dart';
-import '../../../model/hotlines_data_model.dart';
+
+import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
@@ -1021,7 +1022,8 @@ class GameDetailsController extends GetxController {
         .hotlinesDataRepo(sportId: sportId, date: date, start: start);
     try {
       if (result.status) {
-        HotlinesDataModel response = HotlinesDataModel.fromJson(result.data);
+        hotlines.HotlinesDataModel response =
+            hotlines.HotlinesDataModel.fromJson(result.data);
         final sportScheduleSportEventsPlayersProps =
             response.sportScheduleSportEventsPlayersProps;
         if (sportScheduleSportEventsPlayersProps != null) {
@@ -1326,6 +1328,176 @@ class GameDetailsController extends GetxController {
 
   set hotlinesDData(List<HotlinesModel> value) {
     _hotlinesDData = value;
+    update();
+  }
+
+  ///GET RESPONSE
+  Future getResponse(
+      {required bool isLoad,
+      required String sportId,
+      required String date,
+      required SportEvents gameDetails,
+      required String sportKey,
+      Competitors? homeTeam,
+      Competitors? awayTeam}) async {
+    hotlinesDData.clear();
+    hotlinesFData.clear();
+    hotlinesMData.clear();
+    hotlinesData.clear();
+    if (sportKey == 'MLB') {
+      mlbStaticsAwayTeamResponse(
+          isLoad: false,
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+          gameDetails: gameDetails);
+      mlbStaticsHomeTeamResponse(
+          isLoad: false,
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+          gameDetails: gameDetails);
+      mlbInjuriesResponse(
+          isLoad: false,
+          sportEvent: gameDetails,
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      if ((gameDetails.awayPlayerId).isNotEmpty) {
+        profileAwayResponse(
+          isLoad: false,
+          awayTeamId: gameDetails.awayPlayerId,
+        );
+      }
+      if ((gameDetails.homePlayerId).isNotEmpty) {
+        profileHomeResponse(
+          isLoad: false,
+          homeTeamId: gameDetails.homePlayerId,
+        );
+      }
+      for (int i = 1; i <= 10; i += 5) {
+        log('i====$i');
+        await hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: date,
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          isHotlines = false;
+        });
+        if (hotlinesData.isNotEmpty) {
+          isHotlines = false;
+          update();
+          break;
+        }
+      }
+    }
+    if (sportKey == 'NFL') {
+      isLoading.value = true;
+      nflStaticsAwayTeamResponse(
+          isLoad: false,
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''));
+      recordsOfNCAAAndNFL(
+          isLoad: false,
+          sportEvent: gameDetails,
+          key: sportKey,
+          awayId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      nflStaticsHomeTeamResponse(
+          isLoad: false,
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      mlbInjuriesResponse(
+          isLoad: false,
+          sportEvent: gameDetails,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      hotlinesData.clear();
+      for (int i = 1; i <= 10; i += 5) {
+        log('i====$i');
+        await hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: date,
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          isHotlines = false;
+          isLoading.value = false;
+        });
+
+        if (hotlinesData.isNotEmpty) {
+          isHotlines = false;
+          isLoading.value = false;
+          update();
+          break;
+        }
+      }
+    }
+    if (sportKey == 'NCAA') {
+      isLoading.value = true;
+
+      ncaaGameRanking(
+              isLoad: false,
+              gameDetails: gameDetails,
+              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
+          .then((value) {
+        recordsOfNCAAAndNFL(
+            isLoad: false,
+            sportEvent: gameDetails,
+            key: sportKey,
+            awayId: awayTeam?.abbreviation == 'LV'
+                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                : replaceId(awayTeam?.uuids ?? ''),
+            homeId: homeTeam?.abbreviation == 'LV'
+                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                : replaceId(homeTeam?.uuids ?? ''));
+        nflStaticsAwayTeamResponse(
+            isLoad: false,
+            gameDetails: gameDetails,
+            sportKey: sportKey,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+        nflStaticsHomeTeamResponse(
+            isLoad: false,
+            gameDetails: gameDetails,
+            sportKey: sportKey,
+            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      });
+      for (int i = 1; i <= 10; i += 5) {
+        log('i====$i');
+        await hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: date,
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          isHotlines = false;
+          isLoading.value = false;
+        });
+        if (hotlinesData.isNotEmpty) {
+          isHotlines = false;
+          isLoading.value = false;
+          update();
+          break;
+        }
+      }
+    }
     update();
   }
 }
