@@ -168,6 +168,40 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
       }
     }
     if (widget.sportKey == 'NFL') {
+      gameDetailsController.isLoading.value = true;
+      gameDetailsController.nflStaticsAwayTeamResponse(
+          isLoad: false,
+          gameDetails: widget.gameDetails,
+          sportKey: widget.sportKey,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''));
+      gameDetailsController.recordsOfNCAAAndNFL(
+          isLoad: false,
+          sportEvent: widget.gameDetails,
+          key: widget.sportKey,
+          awayId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      gameDetailsController.nflStaticsHomeTeamResponse(
+          isLoad: false,
+          gameDetails: widget.gameDetails,
+          sportKey: widget.sportKey,
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      gameDetailsController.mlbInjuriesResponse(
+          isLoad: false,
+          sportEvent: widget.gameDetails,
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
       gameDetailsController.hotlinesData.clear();
       for (int i = 1; i <= 10; i += 5) {
         log('i====$i');
@@ -191,31 +225,37 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      gameDetailsController.nflStaticsAwayTeamResponse(
-          isLoad: false,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''));
-      gameDetailsController.nflStaticsHomeTeamResponse(
-          isLoad: false,
-          gameDetails: widget.gameDetails,
-          sportKey: widget.sportKey,
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
-      gameDetailsController.mlbInjuriesResponse(
-          isLoad: false,
-          sportEvent: widget.gameDetails,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
     }
     if (widget.sportKey == 'NCAA') {
+      gameDetailsController.isLoading.value = true;
+      gameDetailsController
+          .ncaaGameRanking(
+              isLoad: false,
+              gameDetails: widget.gameDetails,
+              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
+          .then((value) {
+        gameDetailsController.recordsOfNCAAAndNFL(
+            isLoad: false,
+            sportEvent: widget.gameDetails,
+            key: widget.sportKey,
+            awayId: awayTeam?.abbreviation == 'LV'
+                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                : replaceId(awayTeam?.uuids ?? ''),
+            homeId: homeTeam?.abbreviation == 'LV'
+                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                : replaceId(homeTeam?.uuids ?? ''));
+        gameDetailsController.nflStaticsAwayTeamResponse(
+            isLoad: false,
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+        gameDetailsController.nflStaticsHomeTeamResponse(
+            isLoad: false,
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      });
       for (int i = 1; i <= 10; i += 5) {
         log('i====$i');
         await gameDetailsController
@@ -237,24 +277,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
           break;
         }
       }
-      gameDetailsController
-          .ncaaGameRanking(
-              isLoad: false,
-              gameDetails: widget.gameDetails,
-              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
-          .then((value) {
-        gameDetailsController.nflStaticsAwayTeamResponse(
-            isLoad: false,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-        gameDetailsController.nflStaticsHomeTeamResponse(
-            isLoad: false,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
-            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      });
     }
     gameDetailsController.update();
   }

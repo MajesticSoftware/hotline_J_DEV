@@ -77,6 +77,24 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> recordRepoNCAA({String sportKey = "NCAA"}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(sportKey == "NCAA"
+        ? '${AppUrls.NCAA_BASE_URL}seasons/${DateTime.now().year}/REG/standings/season.json?api_key=${AppUrls.NCAA_APIKEY}'
+        : "${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year}/REG/standings/season.json?api_key=${AppUrls.NFL_APIKEY}");
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///MLB STATICS
   Future<ResponseItem> mlbStaticsRepo(
       {String teamId = '', String seasons = ''}) async {

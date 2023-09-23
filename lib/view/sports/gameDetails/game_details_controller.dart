@@ -11,8 +11,10 @@ import '../../../model/game_listing.dart';
 import '../../../model/hotlines_data_model.dart';
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nfl_statics_model.dart';
+import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
 import '../../../model/response_item.dart';
+import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
@@ -602,7 +604,7 @@ class GameDetailsController extends GetxController {
       String homeTeamId = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().ncaaGameRanking();
@@ -647,7 +649,7 @@ class GameDetailsController extends GetxController {
       required SportEvents gameDetails,
       bool isLoad = false,
       String sportKey = ''}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
@@ -798,7 +800,7 @@ class GameDetailsController extends GetxController {
         // );
       }
 
-      isLoading.value = false;
+      // isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       log('ERROR NFL HOME STATICS-----------$e');
@@ -814,7 +816,7 @@ class GameDetailsController extends GetxController {
       required SportEvents gameDetails,
       bool isLoad = false,
       String sportKey = ''}) async {
-    isLoading.value = !isLoad ? false : true;
+    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
@@ -1163,6 +1165,77 @@ class GameDetailsController extends GetxController {
     }
     update();
     return hotlinesData;
+  }
+
+  ///GET NCAAF AND NFL RECORDS
+  Future recordsOfNCAAAndNFL({
+    String homeId = '',
+    String awayId = '',
+    bool isLoad = false,
+    required SportEvents sportEvent,
+    String key = '',
+  }) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().recordRepoNCAA(sportKey: key);
+    try {
+      if (result.status) {
+        if (key == 'NFL') {
+          NFLTeamRecordModel response =
+              NFLTeamRecordModel.fromJson(result.data);
+          final game = response.conferences;
+          if (game != null) {
+            for (var element in game) {
+              element.divisions?.forEach((division) {
+                division.teams?.forEach((team) {
+                  if (team.id == homeId) {
+                    sportEvent.homeWin = (team.wins ?? "0").toString();
+                    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+                  }
+                  if (team.id == awayId) {
+                    sportEvent.awayWin = (team.wins ?? "0").toString();
+                    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+                  }
+                });
+              });
+            }
+          }
+        } else {
+          TeamRecordModel response = TeamRecordModel.fromJson(result.data);
+          final game = response.divisions;
+          if (game != null) {
+            for (var element in game) {
+              element.conferences?.forEach((division) {
+                division.teams?.forEach((team) {
+                  if (team.id == homeId) {
+                    sportEvent.homeWin = (team.wins ?? "0").toString();
+                    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+                  }
+                  if (team.id == awayId) {
+                    sportEvent.awayWin = (team.wins ?? "0").toString();
+                    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+                  }
+                });
+              });
+            }
+          }
+        }
+      } else {
+        isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR RECORD NFL && NCAA--------$e');
+      // showAppSnackBar(
+      //   errorText,
+      // );
+    }
+
+    update();
   }
 
   ///MLB INJURY REPORT

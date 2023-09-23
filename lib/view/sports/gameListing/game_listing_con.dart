@@ -10,6 +10,7 @@ import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/response_item.dart';
+import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
@@ -114,8 +115,7 @@ class GameListingController extends GetxController {
           }
         }
         todayEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
-            .day
-            .compareTo(DateTime.parse(b.scheduled ?? "").day));
+            .compareTo(DateTime.parse(b.scheduled ?? "")));
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -163,8 +163,7 @@ class GameListingController extends GetxController {
           }
         }
         tomorrowEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
-            .day
-            .compareTo(DateTime.parse(b.scheduled ?? "").day));
+            .compareTo(DateTime.parse(b.scheduled ?? "")));
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -184,8 +183,7 @@ class GameListingController extends GetxController {
     sportEventsList.clear();
     sportEventsList = todayEventsList + tomorrowEventsList;
     sportEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
-        .day
-        .compareTo(DateTime.parse(b.scheduled ?? "").day));
+        .compareTo(DateTime.parse(b.scheduled ?? "")));
     isLoading.value = false;
     for (var event in sportEventsList) {
       if (event.competitors.isNotEmpty) {
@@ -406,17 +404,17 @@ class GameListingController extends GetxController {
           }
           sportEventsList[index].homeScore =
               (game.summary?.home?.points ?? "0").toString();
-          sportEventsList[index].homeWin =
+          /* sportEventsList[index].homeWin =
               (game.summary?.home?.record?.wins ?? "0").toString();
           sportEventsList[index].homeLoss =
-              '${game.summary?.home?.record?.losses ?? "0"}'.toString();
+              '${game.summary?.home?.record?.losses ?? "0"}'.toString();*/
 
           sportEventsList[index].awayScore =
               (game.summary?.away?.points ?? "0").toString();
-          sportEventsList[index].awayWin =
+          /*   sportEventsList[index].awayWin =
               (game.summary?.away?.record?.wins ?? "0").toString();
           sportEventsList[index].awayLoss =
-              (game.summary?.away?.record?.losses ?? "0").toString();
+              (game.summary?.away?.record?.losses ?? "0").toString();*/
         }
       } else {
         // isLoading.value = false;
@@ -481,6 +479,7 @@ class GameListingController extends GetxController {
                   sportEventsList[i].venue?.cityName ?? "",
                   index: i,
                 );
+
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(sportEventsList[i].uuids ?? ''),
