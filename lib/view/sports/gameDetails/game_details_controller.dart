@@ -135,15 +135,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  /*int _isExpand1 = -1;
-
-  int get isExpand1 => _isExpand1;
-
-  set isExpand1(int value) {
-    _isExpand1 = value;
-    update();
-  }*/
-
   RxBool isLoading = false.obs;
   stat.Statistics? mlbStaticsHomeList;
   stat.Statistics? mlbStaticsAwayList;
@@ -946,8 +937,7 @@ class GameDetailsController extends GetxController {
                         (player.fumbles?. ?? "0").toString();*/
                     gameDetails.awayInterCaption =
                         (player.passing?.interceptions ?? "0").toString();
-                    gameDetails.awayPlayerName =
-                        (player.name ?? "0").toString();
+                    gameDetails.awayPlayerName = (player.name ?? "").toString();
                   }
                 });
               }
@@ -1169,7 +1159,7 @@ class GameDetailsController extends GetxController {
     return hotlinesData;
   }
 
-  ///GET NCAAF AND NFL RECORDS
+  ///GET NCAA AND NFL RECORDS
   Future recordsOfNCAAAndNFL({
     String homeId = '',
     String awayId = '',

@@ -129,12 +129,14 @@ Widget commonTextFiled(BuildContext context,
               ctrl.searchCon.clear();
               ctrl.update();
             },
-            child: Icon(
-              Icons.close,
-              color: isDark || selectGameController.isDarkMode
-                  ? greyColor
-                  : boxColor,
-            ),
+            child: ctrl.searchCon.text.isNotEmpty
+                ? Icon(
+                    Icons.close,
+                    color: isDark || selectGameController.isDarkMode
+                        ? greyColor
+                        : boxColor,
+                  )
+                : SizedBox(),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(

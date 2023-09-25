@@ -10,7 +10,7 @@ import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/response_item.dart';
-import '../../../model/team_record_model.dart';
+
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
@@ -34,33 +34,13 @@ class GameListingController extends GetxController {
     if (text.isNotEmpty) {
       for (var element in sportEventsList) {
         if (element.homeTeam
-                    .toString()
-                    .toLowerCase()
-                    .contains(text.trim().toString().toLowerCase()) ||
-                element.awayTeam.toString().toLowerCase().contains(text
-                    .trim()
-                    .toString()
-                    .toLowerCase()) /*||
-            (element.awayTeamInjuredPlayer.indexWhere((player) => player.toString().toLowerCase() == text.toLowerCase().trim()) >=
-                0) ||
-            (element.homeTeamInjuredPlayer.indexWhere((player) =>
-                    player.toString().toLowerCase() ==
-                    text.toLowerCase().trim()) >=
-                0) ||
-            (element.homeTeamInjuredPlayer.indexWhere((player) =>
-                    player.toString().toLowerCase() ==
-                    text.toLowerCase().trim()) >=
-                0) ||
-            (element.homeReceiversPlayer.indexWhere((player) =>
-                    player.name.toString().toLowerCase() ==
-                    text.toLowerCase().trim()) >=
-                0) ||
-            (element.awayReceiversPlayer.indexWhere((player) =>
-                    player.name.toString().toLowerCase() == text.toLowerCase().trim()) >=
-                0) ||
-            (element.homeRunningBackPlayer.indexWhere((player) => player.name.toString().toLowerCase() == text.toLowerCase().trim()) >= 0) ||
-            (element.awayRunningBackPlayer.indexWhere((player) => player.name.toString().toLowerCase() == text.toLowerCase().trim()) >= 0)*/
-            ) {
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase()) ||
+            element.awayTeam
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase())) {
           if (searchList.length > 4) {
             searchList.clear();
           }
@@ -491,6 +471,7 @@ class GameListingController extends GetxController {
               isLoad: true);
         });
       }
+
       if (todayEventsList.isNotEmpty) {
         timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
           if (isBack1) {
@@ -498,13 +479,15 @@ class GameListingController extends GetxController {
             timerNCAA?.cancel();
             timerNCAA = null;
           } else {
-            for (int i = 0; i < todayEventsList.length; i++) {
-              if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
+            for (int i = 0; i < sportEventsList.length; i++) {
+              if (DateTime.parse(sportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
                   DateTime.now().day) {
-                if (todayEventsList[i].uuids != null) {
+                if (sportEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
                       key: sportKey,
-                      gameId: replaceId(todayEventsList[i].uuids ?? ''),
+                      gameId: replaceId(sportEventsList[i].uuids ?? ''),
                       index: i);
                 }
               }
@@ -562,6 +545,7 @@ class GameListingController extends GetxController {
           // }
         });
       }
+
       if (todayEventsList.isNotEmpty) {
         timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
           if (isBack1) {
@@ -571,7 +555,9 @@ class GameListingController extends GetxController {
           } else {
             log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
-              if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
+              if (DateTime.parse(todayEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
                   DateTime.now().day) {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
@@ -607,9 +593,9 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now);
+    // final DateTime now = DateTime.parse(date).add(const Duration(days: 1));
+    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final String formatted = formatter.format(now);
     tomorrowEventsList.clear();
     gameListingTodayApiRes(
             key: apiKey,
@@ -618,65 +604,71 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) async {
-      gameListingTomorrowApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: formatted,
-              sportId: sportId)
-          .then((value) {
-        getAllEventList(sportKey);
-        if (sportEventsList.isNotEmpty) {
-          for (int i = 0; i < sportEventsList.length; i++) {
-            if (sportEventsList[i].uuids != null) {
-              getWeather(
-                sportEventsList[i].venue?.cityName ?? "",
-                index: i,
-              );
-              boxScoreResponse(
-                  homeTeamId: replaceId(
-                          sportEventsList[i].competitors[0].uuids ?? '') ??
-                      "",
-                  awayTeamId: replaceId(
-                          sportEventsList[i].competitors[1].uuids ?? '') ??
-                      "",
-                  gameId: replaceId(sportEventsList[i].uuids ?? ''),
-                  index: i);
+      for (int i = 1; i <= 3; i++) {
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(Duration(days: i))),
+                sportId: sportId)
+            .then((value) {
+          getAllEventList(sportKey);
+          if (sportEventsList.isNotEmpty) {
+            for (int i = 0; i < sportEventsList.length; i++) {
+              if (sportEventsList[i].uuids != null) {
+                getWeather(
+                  sportEventsList[i].venue?.cityName ?? "",
+                  index: i,
+                );
+                boxScoreResponse(
+                    homeTeamId: replaceId(
+                            sportEventsList[i].competitors[0].uuids ?? '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            sportEventsList[i].competitors[1].uuids ?? '') ??
+                        "",
+                    gameId: replaceId(sportEventsList[i].uuids ?? ''),
+                    index: i);
+              }
             }
           }
+          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+              isLoad: isLoad);
+        });
+        if (i == 3) {
+          isPagination = false;
         }
-        if (todayEventsList.isNotEmpty) {
-          timer = Timer.periodic(const Duration(minutes: 1), (t) {
-            if (isBack) {
-              t.cancel();
-              timer?.cancel();
-              timer = null;
-            } else {
-              log('TODAY DATE---${todayEventsList.length}');
-              for (int i = 0; i < todayEventsList.length; i++) {
-                if (DateTime.parse(todayEventsList[i].scheduled ?? "").day ==
-                    DateTime.now().day) {
-                  if (todayEventsList[i].uuids != null) {
-                    boxScoreResponse(
-                        homeTeamId: replaceId(
-                                todayEventsList[i].competitors[0].uuids ??
-                                    '') ??
-                            "",
-                        awayTeamId: replaceId(
-                                todayEventsList[i].competitors[1].uuids ??
-                                    '') ??
-                            "",
-                        gameId: replaceId(todayEventsList[i].uuids ?? ''),
-                        index: i);
-                  }
+      }
+      if (todayEventsList.isNotEmpty) {
+        timer = Timer.periodic(const Duration(minutes: 1), (t) {
+          if (isBack) {
+            t.cancel();
+            timer?.cancel();
+            timer = null;
+          } else {
+            log('TODAY DATE---${todayEventsList.length}');
+            for (int i = 0; i < todayEventsList.length; i++) {
+              if (DateTime.parse(todayEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                  DateTime.now().day) {
+                if (todayEventsList[i].uuids != null) {
+                  boxScoreResponse(
+                      homeTeamId: replaceId(
+                              todayEventsList[i].competitors[0].uuids ?? '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              todayEventsList[i].competitors[1].uuids ?? '') ??
+                          "",
+                      gameId: replaceId(todayEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }
-          });
-        }
-        gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
-            isLoad: isLoad);
-      });
+          }
+        });
+      }
     });
   }
 

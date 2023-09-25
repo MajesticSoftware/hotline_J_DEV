@@ -1,6 +1,3 @@
-
-
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -167,6 +164,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
                 Expanded(
                   child: SvgPicture.asset(
                     Assets.imagesBackArrow,
+                    // ignore: deprecated_member_use
                     color: Colors.transparent,
                     height: MediaQuery.of(context).size.height * .02,
                     alignment: Alignment.centerLeft,
@@ -481,7 +479,7 @@ Padding hitterPlayerStatWidget(
             content: sportKey == 'MLB'
                 ? Column(
                     children: [
-                      headerOfHitterPlyerStat(context),
+                      headerOfHitterPlayerStat(context),
                       commonDivider(context),
                       hitterPlayerDetailCard(con),
                     ],
@@ -1612,7 +1610,7 @@ SizedBox runningAwayHeader(
   );
 }
 
-SizedBox headerOfHitterPlyerStat(BuildContext context) {
+SizedBox headerOfHitterPlayerStat(BuildContext context) {
   return SizedBox(
     height: MediaQuery.sizeOf(context).height * .034,
     child: Row(
