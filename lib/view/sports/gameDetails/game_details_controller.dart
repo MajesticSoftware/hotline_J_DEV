@@ -20,6 +20,10 @@ import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
+  List<String> awayQb = [];
+  List<String> homeQb = [];
+  List<String> homeDefense = [];
+  List<String> awayDefense = [];
   List offensive = [
     'Points Per Game',
     'Redzone Efficiency',
@@ -30,6 +34,7 @@ class GameDetailsController extends GetxController {
     '3rd Down Efficiency',
     '4th Down Efficiency',
     'Field goal Percentage',
+    'Turnovers / Game',
   ];
   List hittingMLB = [
     'Runs Scored/Game',
@@ -55,6 +60,7 @@ class GameDetailsController extends GetxController {
     'Opponent 3rd Down Efficiency',
     'Opponent 4th Down Efficiency',
     'Field goal Percentage',
+    'Turnovers Created/ Game'
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -96,6 +102,22 @@ class GameDetailsController extends GetxController {
     'Interceptions',
     "Fumbles",
   ];
+  List teamQuarterBacksDefence = [
+    'Passing Yards Allowed/Game (RANK)',
+    'Passing TDs Allowed/Game (RANK)',
+    'Rushing Yards Allowed/Game (RANK)',
+    'Rushing TDs Allowed/Game (RANK)',
+    'Interceptions(RANK)',
+    "Fumbles",
+  ];
+  bool _isQuarterBacksTab = true;
+
+  bool get isQuarterBacksTab => _isQuarterBacksTab;
+
+  set isQuarterBacksTab(bool value) {
+    _isQuarterBacksTab = value;
+    update();
+  }
 
   bool _isTab = true;
 
@@ -695,6 +717,7 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
+                "0"
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -734,6 +757,7 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
+                "0",
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -743,31 +767,30 @@ class GameDetailsController extends GetxController {
                     gameDetails.homeRunningBackPlayer.add(player);
                     // runningBacksHomeList.add(RunningBacks(carries: carries, yard: yard, avgCarry: avgCarry, tds: tds, longestRun: longestRun, fumbles: fumbles))
                   }
-                  if (player.position == 'WR' && player.gamesPlayed != 0) {
+                  if (player.position == 'WR' && player.gamesPlayed != 0 ||
+                      player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
                   if (player.position == 'QB' && player.gamesStarted != 0) {
                     num totalPlay = player.gamesPlayed ?? 1;
-                    gameDetails.homePassingYard =
-                        ((int.parse(player.passing?.yards.toString() ?? "0") /
-                                totalPlay)
-                            .toStringAsFixed(1));
-                    gameDetails.homePassingTds = ((int.parse(
-                                player.passing?.touchdowns.toString() ?? "0") /
-                            totalPlay)
-                        .toStringAsFixed(2));
-                    gameDetails.homeRushingYard =
-                        ((int.parse(player.rushing?.yards.toString() ?? "0") /
-                                totalPlay)
-                            .toStringAsFixed(1));
-                    gameDetails.homeRushingTds = ((int.parse(
-                                player.rushing?.touchdowns.toString() ?? "0") /
-                            totalPlay)
-                        .toStringAsFixed(2));
-                    gameDetails.homeFumble =
-                        (player.fumbles?.fumbles ?? "0").toString();
-                    /* gameDetails.homeQbr =
-                        (player.fumbles?. ?? "0").toString();*/
+                    homeQb = [
+                      ((int.parse(player.passing?.yards.toString() ?? "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(player.passing?.touchdowns.toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(player.rushing?.touchdowns.toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      (player.passing?.interceptions ?? "0").toString(),
+                      (player.fumbles?.fumbles ?? "0").toString(),
+                    ];
                     gameDetails.homePlayerName =
                         (player.name ?? "0").toString();
                   }
@@ -862,6 +885,7 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
+                "0",
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -902,6 +926,7 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
+                "0",
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -910,33 +935,45 @@ class GameDetailsController extends GetxController {
                   if (player.position == 'RB' && player.gamesPlayed != 0) {
                     gameDetails.awayRunningBackPlayer.add(player);
                   }
-                  if (player.position == 'WR' && player.gamesPlayed != 0) {
+                  if (player.position == 'WR' && player.gamesPlayed != 0 ||
+                      player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
                   if (player.position == 'QB' && player.gamesStarted != 0) {
                     num totalPlay = player.gamesPlayed ?? 1;
-                    gameDetails.awayPassingYard =
-                        ((int.parse(player.passing?.yards.toString() ?? "0") /
-                                totalPlay)
-                            .toStringAsFixed(1));
-                    gameDetails.awayPassingTds = ((int.parse(
-                                player.passing?.touchdowns.toString() ?? "0") /
-                            totalPlay)
-                        .toStringAsFixed(2));
-                    gameDetails.awayRushingYard =
-                        ((int.parse(player.rushing?.yards.toString() ?? "0") /
-                                totalPlay)
-                            .toStringAsFixed(1));
-                    gameDetails.awayRushingTds = ((int.parse(
-                                player.rushing?.touchdowns.toString() ?? "0") /
-                            totalPlay)
-                        .toStringAsFixed(2));
-                    gameDetails.awayFumble =
-                        (player.fumbles?.fumbles ?? "0").toString();
-                    /* gameDetails.awayQbr =
-                        (player.fumbles?. ?? "0").toString();*/
-                    gameDetails.awayInterCaption =
-                        (player.passing?.interceptions ?? "0").toString();
+                    awayQb = [
+                      ((int.parse(player.passing?.yards.toString() ?? "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(player.passing?.touchdowns.toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(player.rushing?.touchdowns.toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      (player.passing?.interceptions ?? "0").toString(),
+                      (player.fumbles?.fumbles ?? "0").toString(),
+                    ];
+                    /*con.awayDefense=[
+          gameDetails.awayPassingYard,
+          gameDetails.awayPassingTds,
+          gameDetails.awayRushingYard,
+          gameDetails.awayRushingTds,
+          gameDetails.awayInterCaption,
+          gameDetails.awayFumble,
+        ]; con.awayDefense=[
+          gameDetails.awayPassingYard,
+          gameDetails.awayPassingTds,
+          gameDetails.awayRushingYard,
+          gameDetails.awayRushingTds,
+          gameDetails.awayInterCaption,
+          gameDetails.awayFumble,
+        ];*/
                     gameDetails.awayPlayerName = (player.name ?? "").toString();
                   }
                 });

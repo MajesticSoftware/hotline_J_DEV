@@ -94,6 +94,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                       children: [
                         headerWidget(context, widget.gameDetails, awayTeam,
                             homeTeam, widget.sportKey),
+                        mainlinesWidget(context, con, widget.gameDetails,
+                            awayTeam, homeTeam),
                         hotlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam),
                         widget.sportKey == 'MLB'
@@ -101,8 +103,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                                 widget.gameDetails, awayTeam, homeTeam)
                             : teamReportNFL(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, widget.sportKey),
-                        playerStatWidget(context, con, widget.sportKey,
-                            widget.gameDetails, awayTeam, homeTeam),
+                        widget.sportKey == 'MLB'
+                            ? playerStatWidget(context, con, widget.sportKey,
+                                widget.gameDetails, awayTeam, homeTeam)
+                            : quarterBacks(context, con, widget.gameDetails,
+                                awayTeam, homeTeam, widget.sportKey),
                         hitterPlayerStatWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam, widget.sportKey),
                         widget.sportKey == 'MLB'

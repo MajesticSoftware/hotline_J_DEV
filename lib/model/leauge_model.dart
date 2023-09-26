@@ -4,6 +4,8 @@ import '../generated/assets.dart';
 
 class LeagueModel {
   String image;
+  String gameImage;
+  String gameName;
   String key;
   String apiKey;
   String date;
@@ -12,6 +14,8 @@ class LeagueModel {
 
   LeagueModel(
       {required this.image,
+      required this.gameImage,
+      required this.gameName,
       required this.key,
       required this.date,
       required this.apiKey,
@@ -25,6 +29,8 @@ final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
   LeagueModel(
+      gameImage: Assets.imagesMlb,
+      gameName: 'MLB',
       image: Assets.imagesMLB,
       date: formatted,
       key: 'MLB',
@@ -32,15 +38,19 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
-      image: Assets.imagesNCAA,
+      gameImage: Assets.imagesNcaa,
+      image: Assets.imagesNCAA1,
       date: formatted,
       // date: '2023-08-26',
       key: 'NCAA',
+      gameName: 'NCAAF',
       sportId: 'sr:sport:16',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
-      image: Assets.imagesNFT,
+      gameImage: Assets.imagesNfl,
+      gameName: 'NFL',
+      image: Assets.imagesNfl1,
       date: formatted,
       // date: '2023-09-08',
       key: 'NFL',

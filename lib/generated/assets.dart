@@ -28,11 +28,16 @@ class Assets {
   static const String imagesLogo = 'assets/images/logo.svg';
   static const String imagesMLB = 'assets/images/MLB.png';
   static const String imagesMgm = 'assets/images/mgm.png';
+  static const String imagesMlb = 'assets/images/mlb.svg';
   static const String imagesMoon = 'assets/images/moon.svg';
   static const String imagesNBA = 'assets/images/NBA.png';
   static const String imagesNCAA = 'assets/images/NCAA.png';
+  static const String imagesNCAA1 = 'assets/images/NCAA1.png';
   static const String imagesNFT = 'assets/images/NFT.png';
   static const String imagesNHL = 'assets/images/NHL.png';
+  static const String imagesNcaa = 'assets/images/ncaa.svg';
+  static const String imagesNfl = 'assets/images/nfl.svg';
+  static const String imagesNfl1 = 'assets/images/nfl1.png';
   static const String imagesNoSportImage = 'assets/images/no_sport_image.png';
   static const String imagesNodataImage = 'assets/images/nodataImage.svg';
   static const String imagesPITT = 'assets/images/PITT.png';

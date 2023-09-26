@@ -15,6 +15,7 @@ const String teamReport = 'Team Report';
 const String backButton = 'Return To Sport Selection';
 const String errorText = 'Something went to wrong!';
 const String hotlines = 'Hotlines';
+const String mainlines = 'Mainlines';
 const String gambling = 'Gambling 101';
 const String wantToDownloadTheAppOnYourDevice =
     'Want to download the app on your device?';

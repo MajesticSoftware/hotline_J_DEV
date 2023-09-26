@@ -29,6 +29,33 @@ class GameListingController extends GetxController {
     update();
   }
 
+  bool _isPagination = false;
+
+  bool get isPagination => _isPagination;
+
+  set isPagination(bool value) {
+    _isPagination = value;
+    update();
+  }
+
+  bool _isBack = false;
+
+  bool get isBack => _isBack;
+
+  setIsBack(bool value) {
+    _isBack = value;
+    update();
+  }
+
+  bool _isBack1 = false;
+
+  bool get isBack1 => _isBack1;
+
+  setIsBack1(bool value) {
+    _isBack1 = value;
+    update();
+  }
+
   searchData(String text) {
     searchList.clear();
     if (text.isNotEmpty) {
@@ -49,6 +76,21 @@ class GameListingController extends GetxController {
       }
     }
     update();
+  }
+
+  @override
+  void dispose() {
+    timer = null;
+    timerNCAA = null;
+    super.dispose();
+  }
+
+  @override
+  void onClose() {
+    timer = null;
+    timerNCAA = null;
+    super.onClose();
+    log('I am closed');
   }
 
   List<SportEvents> todayEventsList = [];
@@ -249,24 +291,6 @@ class GameListingController extends GetxController {
     }
   }
 
-  bool _isBack = false;
-
-  bool get isBack => _isBack;
-
-  setIsBack(bool value) {
-    _isBack = value;
-    update();
-  }
-
-  bool _isBack1 = false;
-
-  bool get isBack1 => _isBack1;
-
-  setIsBack1(bool value) {
-    _isBack1 = value;
-    update();
-  }
-
   ///BOX SCORE API
   Future boxScoreResponse(
       {String gameId = '',
@@ -413,15 +437,6 @@ class GameListingController extends GetxController {
     update();
   }
 
-  bool _isPagination = false;
-
-  bool get isPagination => _isPagination;
-
-  set isPagination(bool value) {
-    _isPagination = value;
-    update();
-  }
-
   ///GAME LISTING FOR ALL GAME
   Timer? timer;
   Timer? timerNCAA;
@@ -438,7 +453,7 @@ class GameListingController extends GetxController {
             sportId: sportId)
         .then((value) async {
       tomorrowEventsList.clear();
-      for (int i = 1; i <= 4; i++) {
+      for (int i = 1; i <= 6; i++) {
         isPagination = true;
         gameListingTomorrowApiRes(
                 key: apiKey,
@@ -448,7 +463,7 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
-          if (i == 4) {
+          if (i == 6) {
             isPagination = false;
           }
           getAllEventList(sportKey);
@@ -459,7 +474,6 @@ class GameListingController extends GetxController {
                   sportEventsList[i].venue?.cityName ?? "",
                   index: i,
                 );
-
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(sportEventsList[i].uuids ?? ''),
@@ -553,7 +567,7 @@ class GameListingController extends GetxController {
             timerNCAA?.cancel();
             timerNCAA = null;
           } else {
-            log('TODAY DATE---${todayEventsList.length}');
+            // log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
               if (DateTime.parse(todayEventsList[i].scheduled ?? "")
                       .toLocal()
@@ -571,21 +585,6 @@ class GameListingController extends GetxController {
         });
       }
     });
-  }
-
-  @override
-  void dispose() {
-    timer = null;
-    timerNCAA = null;
-    super.dispose();
-  }
-
-  @override
-  void onClose() {
-    timer = null;
-    timerNCAA = null;
-    super.onClose();
-    log('I am closed');
   }
 
   getGameListingForMLBRes(bool isLoad,
@@ -647,7 +646,7 @@ class GameListingController extends GetxController {
             timer?.cancel();
             timer = null;
           } else {
-            log('TODAY DATE---${todayEventsList.length}');
+            // log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
               if (DateTime.parse(todayEventsList[i].scheduled ?? "")
                       .toLocal()

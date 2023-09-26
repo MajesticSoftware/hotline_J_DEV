@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
@@ -100,9 +101,11 @@ Widget commonTextFiled(BuildContext context,
     required GameListingController ctrl}) {
   return SizedBox(
     height: MediaQuery.of(context).size.height * .05,
+    width: Get.width,
     child: TextField(
         onChanged: onChanged,
         controller: controller,
+        textAlign: TextAlign.start,
         cursorColor:
             isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
         style: defaultTextStyle(
@@ -113,13 +116,14 @@ Widget commonTextFiled(BuildContext context,
           filled: true,
           contentPadding: EdgeInsets.zero,
           hintStyle: hintTextStyle(
-              size: MediaQuery.of(context).size.height * .016,
+              size: MediaQuery.of(context).size.height * .018,
               color: isDark || selectGameController.isDarkMode
                   ? greyColor
                   : greyColor.withOpacity(0.5)),
           hintText: 'Search game here...',
           prefixIcon: Icon(
             Icons.search,
+            size: MediaQuery.of(context).size.height * .028,
             color: isDark || selectGameController.isDarkMode
                 ? greyColor
                 : boxColor,
@@ -132,11 +136,12 @@ Widget commonTextFiled(BuildContext context,
             child: ctrl.searchCon.text.isNotEmpty
                 ? Icon(
                     Icons.close,
+                    size: MediaQuery.of(context).size.height * .028,
                     color: isDark || selectGameController.isDarkMode
                         ? greyColor
                         : boxColor,
                   )
-                : SizedBox(),
+                : const SizedBox(),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(

@@ -9,4 +9,13 @@ class SelectGameController extends GetxController {
     _isDarkMode = value;
     update();
   }
+
+  bool _isOpen = false;
+
+  bool get isOpen => _isOpen;
+
+  set isOpen(bool value) {
+    _isOpen = value;
+    update();
+  }
 }

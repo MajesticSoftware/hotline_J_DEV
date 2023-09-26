@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
+import '../gameDetails/game_details_screen.dart';
 import 'selecte_game_con.dart';
 import '../../../generated/assets.dart';
 import '../../../model/game_model.dart';
@@ -16,8 +18,8 @@ import '../../../utils/utils.dart';
 import '../gameListing/game_listing_screen.dart';
 
 // ignore: must_be_immutable
-class SelectSportScreen extends StatelessWidget {
-  SelectSportScreen({Key? key}) : super(key: key);
+class SelectGameScreen extends StatelessWidget {
+  SelectGameScreen({Key? key}) : super(key: key);
   final SelectGameController selectGameController =
       Get.put(SelectGameController());
   bool isDark = false;
@@ -36,37 +38,42 @@ class SelectSportScreen extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * .01,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.height * .0),
-                child: Wrap(
-                    runSpacing: 0,
-                    alignment: WrapAlignment.start,
-                    spacing: Get.height * .02,
-                    children: List.generate(
-                      sportsLeagueList.length,
-                      (index) => commonImageWidget(
-                        sportsLeagueList[index].image,
-                        isComingSoon: sportsLeagueList[index].isAvailable,
-                        context,
-                        onTap: sportsLeagueList[index].isAvailable == true
-                            ? () {
-                                Get.to(
-                                    GameListingScreen(
-                                      sportKey: sportsLeagueList[index].key,
-                                      date: sportsLeagueList[index].date,
-                                      keys: sportsLeagueList[index].apiKey,
-                                      sportId: sportsLeagueList[index].sportId,
-                                    ),
-                                    transition: Transition.downToUp,
-                                    duration:
-                                        const Duration(milliseconds: 900));
-                              }
-                            : () {},
-                      ),
-                    )),
+            AnimatedContainer(
+              duration: Duration(seconds: 1),
+              child: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.height * .0),
+                  child: Wrap(
+                      runSpacing: 0,
+                      alignment: WrapAlignment.start,
+                      spacing: Get.height * .02,
+                      children: List.generate(
+                        sportsLeagueList.length,
+                        (index) => commonImageWidget(
+                          sportsLeagueList[index].image,
+                          sportsLeagueList[index].gameImage,
+                          sportsLeagueList[index].gameName,
+                          isComingSoon: sportsLeagueList[index].isAvailable,
+                          context,
+                          onTap: sportsLeagueList[index].isAvailable == true
+                              ? () {
+                                  Get.to(
+                                      GameListingScreen(
+                                        sportKey: sportsLeagueList[index].key,
+                                        date: sportsLeagueList[index].date,
+                                        keys: sportsLeagueList[index].apiKey,
+                                        sportId:
+                                            sportsLeagueList[index].sportId,
+                                      ),
+                                      transition: Transition.downToUp,
+                                      duration: const Duration(seconds: 1));
+                                }
+                              : () {},
+                        ),
+                      )),
+                ),
               ),
             ),
             const Spacer(),
@@ -75,21 +82,23 @@ class SelectSportScreen extends StatelessWidget {
                 showDataAlert(context);
               },
               child: Container(
-                height: MediaQuery.of(context).size.height * .045,
-                width: MediaQuery.of(context).size.width * .26,
+                height: MediaQuery.of(context).size.height * .14,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.height * .005),
+                        MediaQuery.of(context).size.height * .01),
                     color: Theme.of(context).primaryColor),
                 child: Center(
                   child: gambling.appCommonText(
                       color: Theme.of(context).cardColor,
-                      size: Get.height * .016,
-                      weight: FontWeight.w400,
+                      size: Get.height * .02,
+                      weight: FontWeight.w700,
                       align: TextAlign.center),
                 ),
               ),
-            ),
+            ).paddingSymmetric(
+                horizontal: MediaQuery.of(context).size.height * .02),
+
             /*SizedBox(
               height: Get.height * .015,
             ),
@@ -139,6 +148,70 @@ class SelectSportScreen extends StatelessWidget {
         ),
       );
     });
+  }
+
+  commonImageWidget(
+      String image, String gameImage, String gameName, BuildContext context,
+      {void Function()? onTap, bool isComingSoon = false}) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: isComingSoon
+              ? Container(
+                  width: Get.width,
+                  height: Get.height * .14,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Get.width * .02),
+                      image: DecorationImage(
+                        image: AssetImage(image),
+                        fit: BoxFit.cover,
+                      )),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: SvgPicture.asset(
+                            gameImage,
+                          )),
+                      (MediaQuery.of(context).size.height * .03).W(),
+                      Expanded(
+                        flex: 3,
+                        child: gameName.appCommonText(
+                            color: Colors.white,
+                            align: TextAlign.start,
+                            size: MediaQuery.of(context).size.height * .025,
+                            weight: FontWeight.w700),
+                      )
+                    ],
+                  ).paddingSymmetric(
+                      horizontal: MediaQuery.of(context).size.height * .02),
+                )
+              : ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context)
+                          .scaffoldBackgroundColor
+                          .withOpacity(0.5),
+                      BlendMode.dstATop),
+                  child: Image.asset(
+                    image,
+                    width: Get.width * .29,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+        ).paddingSymmetric(
+            horizontal: MediaQuery.of(context).size.height * .02,
+            vertical: MediaQuery.of(context).size.height * .01),
+        isComingSoon
+            ? const SizedBox()
+            : SvgPicture.asset(
+                Assets.imagesCommingSoon,
+                width: Get.width * .2,
+                fit: BoxFit.contain,
+              ),
+      ],
+    );
   }
 
   showDataAlert(BuildContext context) {

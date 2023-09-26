@@ -17,14 +17,14 @@ class NFLTeamRecordModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    if (this.season != null) {
-      data['season'] = this.season!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (season != null) {
+      data['season'] = season!.toJson();
     }
-    if (this.conferences != null) {
-      data['conferences'] = this.conferences!.map((v) => v.toJson()).toList();
+    if (conferences != null) {
+      data['conferences'] = conferences!.map((v) => v.toJson()).toList();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -45,11 +45,11 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['year'] = this.year;
-    data['type'] = this.type;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['year'] = year;
+    data['type'] = type;
+    data['name'] = name;
     return data;
   }
 }
@@ -75,12 +75,12 @@ class Conferences {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['alias'] = this.alias;
-    if (this.divisions != null) {
-      data['divisions'] = this.divisions!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['alias'] = alias;
+    if (divisions != null) {
+      data['divisions'] = divisions!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -107,12 +107,12 @@ class Divisions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['alias'] = this.alias;
-    if (this.teams != null) {
-      data['teams'] = this.teams!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['alias'] = alias;
+    if (teams != null) {
+      data['teams'] = teams!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -183,32 +183,32 @@ class Teams {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['alias'] = this.alias;
-    data['sr_id'] = this.srId;
-    if (this.rank != null) {
-      data['rank'] = this.rank!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['alias'] = alias;
+    data['sr_id'] = srId;
+    if (rank != null) {
+      data['rank'] = rank!.toJson();
     }
-    if (this.streak != null) {
-      data['streak'] = this.streak!.toJson();
+    if (streak != null) {
+      data['streak'] = streak!.toJson();
     }
-    if (this.strengthOfSchedule != null) {
-      data['strength_of_schedule'] = this.strengthOfSchedule!.toJson();
+    if (strengthOfSchedule != null) {
+      data['strength_of_schedule'] = strengthOfSchedule!.toJson();
     }
-    if (this.strengthOfVictory != null) {
-      data['strength_of_victory'] = this.strengthOfVictory!.toJson();
+    if (strengthOfVictory != null) {
+      data['strength_of_victory'] = strengthOfVictory!.toJson();
     }
-    data['wins'] = this.wins;
-    data['losses'] = this.losses;
-    data['ties'] = this.ties;
-    data['win_pct'] = this.winPct;
-    data['points_for'] = this.pointsFor;
-    data['points_against'] = this.pointsAgainst;
-    if (this.records != null) {
-      data['records'] = this.records!.map((v) => v.toJson()).toList();
+    data['wins'] = wins;
+    data['losses'] = losses;
+    data['ties'] = ties;
+    data['win_pct'] = winPct;
+    data['points_for'] = pointsFor;
+    data['points_against'] = pointsAgainst;
+    if (records != null) {
+      data['records'] = records!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -226,9 +226,9 @@ class Rank {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['conference'] = this.conference;
-    data['division'] = this.division;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['conference'] = conference;
+    data['division'] = division;
     return data;
   }
 }
@@ -247,10 +247,10 @@ class Streak {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['type'] = this.type;
-    data['length'] = this.length;
-    data['desc'] = this.desc;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['type'] = type;
+    data['length'] = length;
+    data['desc'] = desc;
     return data;
   }
 }
@@ -269,10 +269,10 @@ class StrengthOfSchedule {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['sos'] = this.sos;
-    data['wins'] = this.wins;
-    data['total'] = this.total;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['sos'] = sos;
+    data['wins'] = wins;
+    data['total'] = total;
     return data;
   }
 }
@@ -291,10 +291,10 @@ class StrengthOfVictory {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['sov'] = this.sov;
-    data['wins'] = this.wins;
-    data['total'] = this.total;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['sov'] = sov;
+    data['wins'] = wins;
+    data['total'] = total;
     return data;
   }
 }
@@ -328,14 +328,14 @@ class Records {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['category'] = this.category;
-    data['wins'] = this.wins;
-    data['losses'] = this.losses;
-    data['ties'] = this.ties;
-    data['win_pct'] = this.winPct;
-    data['points_for'] = this.pointsFor;
-    data['points_against'] = this.pointsAgainst;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['category'] = category;
+    data['wins'] = wins;
+    data['losses'] = losses;
+    data['ties'] = ties;
+    data['win_pct'] = winPct;
+    data['points_for'] = pointsFor;
+    data['points_against'] = pointsAgainst;
     return data;
   }
 }

@@ -77,6 +77,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NFL & NCAA RECORD
   Future<ResponseItem> recordRepoNCAA({String sportKey = "NCAA"}) async {
     ResponseItem result;
     bool status = true;
@@ -184,7 +185,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  ///OTHER APIS
+  ///OTHER APIS--LOGOS
   Future<ResponseItem> gameListingsWithLogo(
       String year, String sportKey) async {
     ResponseItem result;
@@ -202,6 +203,7 @@ class GameListingRepo {
     return result;
   }
 
+  ///GET WEATHER DATA
   Future<ResponseItem> getWeather(String city) async {
     ResponseItem result;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:hotlines/model/weather_model.dart';
 import 'package:hotlines/utils/extension.dart';
 
 import '../extras/constants.dart';
@@ -109,7 +110,7 @@ SvgPicture svgPicture(BuildContext context, String image, double height) {
 }
 
 Expanded buildExpandedBoxWidget(BuildContext context,
-    {String upText = '', String bottomText = ''}) {
+    {String upText = '', String bottomText = '', bool isDetail = false}) {
   return Expanded(
       flex: 1,
       child: Column(
@@ -135,7 +136,9 @@ Expanded buildExpandedBoxWidget(BuildContext context,
                 : MediaQuery.of(context).size.height * .015,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * .02,
+            height: isDetail
+                ? MediaQuery.of(context).size.height * .01
+                : MediaQuery.of(context).size.height * .02,
           ),
           Container(
             height: MediaQuery.of(context).size.height * .04,
