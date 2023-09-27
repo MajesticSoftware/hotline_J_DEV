@@ -17,6 +17,47 @@ import '../../../theme/helper.dart';
 import '../../../utils/extension.dart';
 
 class GameListingController extends GetxController {
+  String sportId = '';
+  String sportKey = '';
+  String apiKey = '';
+  String date = '';
+
+  bool _isDarkMode = false;
+
+  bool get isDarkMode => _isDarkMode;
+
+  set isDarkMode(bool value) {
+    _isDarkMode = value;
+    update();
+  }
+
+  bool _isOpen = false;
+
+  bool get isOpen => _isOpen;
+
+  set isOpen(bool value) {
+    _isOpen = value;
+    update();
+  }
+
+  bool _isOpen1 = false;
+
+  bool get isOpen1 => _isOpen1;
+
+  set isOpen1(bool value) {
+    _isOpen1 = value;
+    update();
+  }
+
+  bool _isSearch = false;
+
+  bool get isSearch => _isSearch;
+
+  set isSearch(bool value) {
+    _isSearch = value;
+    update();
+  }
+
   RxBool isLoading = false.obs;
   TextEditingController searchCon = TextEditingController();
   List<SportEvents> sportEventsList = [];
@@ -463,10 +504,10 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
+          getAllEventList(sportKey);
           if (i == 6) {
             isPagination = false;
           }
-          getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (sportEventsList[i].uuids != null) {
@@ -485,7 +526,6 @@ class GameListingController extends GetxController {
               isLoad: true);
         });
       }
-
       if (todayEventsList.isNotEmpty) {
         timerNCAA = Timer.periodic(const Duration(minutes: 1), (t) {
           if (isBack1) {
@@ -495,9 +535,10 @@ class GameListingController extends GetxController {
           } else {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (DateTime.parse(sportEventsList[i].scheduled ?? "")
-                      .toLocal()
-                      .day ==
-                  DateTime.now().day) {
+                          .toLocal()
+                          .day ==
+                      DateTime.now().day &&
+                  sportEventsList[i].status != 'closed') {
                 if (sportEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
                       key: sportKey,
@@ -535,10 +576,10 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
+          getAllEventList(sportKey);
           if (i == 6) {
             isPagination = false;
           }
-          getAllEventList(sportKey);
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (sportEventsList[i].uuids != null) {
@@ -570,9 +611,10 @@ class GameListingController extends GetxController {
             // log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
               if (DateTime.parse(todayEventsList[i].scheduled ?? "")
-                      .toLocal()
-                      .day ==
-                  DateTime.now().day) {
+                          .toLocal()
+                          .day ==
+                      DateTime.now().day &&
+                  sportEventsList[i].status != 'closed') {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponseNCAA(
                       key: sportKey,
@@ -649,9 +691,10 @@ class GameListingController extends GetxController {
             // log('TODAY DATE---${todayEventsList.length}');
             for (int i = 0; i < todayEventsList.length; i++) {
               if (DateTime.parse(todayEventsList[i].scheduled ?? "")
-                      .toLocal()
-                      .day ==
-                  DateTime.now().day) {
+                          .toLocal()
+                          .day ==
+                      DateTime.now().day &&
+                  sportEventsList[i].status != 'closed') {
                 if (todayEventsList[i].uuids != null) {
                   boxScoreResponse(
                       homeTeamId: replaceId(
@@ -728,15 +771,15 @@ class GameListingController extends GetxController {
         isLoading.value = false;
       } else {
         isLoading.value = false;
-        showAppSnackBar(
-          errorText,
-        );
+        // showAppSnackBar(
+        //   errorText,
+        // );
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(
-        errorText,
-      );
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
     update();
   }
@@ -761,7 +804,7 @@ class GameListingController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERROR WEATHER----$e');
-      showAppSnackBar(e.toString());
+      // showAppSnackBar(e.toString());
     }
     update();
   }

@@ -5,6 +5,7 @@ import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 import 'package:hotlines/model/ranking_model.dart';
 import 'package:hotlines/utils/utils.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constant/constant.dart';
 import '../../../model/game_model.dart';
@@ -26,11 +27,11 @@ class GameDetailsController extends GetxController {
   List<String> awayDefense = [];
   List offensive = [
     'Points Per Game',
-    'Redzone Efficiency',
     'Rushing Yards/Game',
     'Passing Yards/Game',
     'Rushing TDs/Game',
     'Passing TDs/Game',
+    'Redzone Efficiency',
     '3rd Down Efficiency',
     '4th Down Efficiency',
     'Field goal Percentage',
@@ -52,11 +53,11 @@ class GameDetailsController extends GetxController {
   ];
   List defensive = [
     'Points Allowed/Game',
-    'Opponent Redzone Efficiency',
     'Rushing Yards Allowed/Game',
     'Passing Yards Allowed/Game',
     'Rushing TDs Allowed/Game',
     'Passing TDs Allowed/Game',
+    'Opponent Redzone Efficiency',
     'Opponent 3rd Down Efficiency',
     'Opponent 4th Down Efficiency',
     'Field goal Percentage',
@@ -695,7 +696,6 @@ class GameDetailsController extends GetxController {
                   .toStringAsFixed(2));
               nflHomeOffensiveList = [
                 offensivePoint,
-                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -710,6 +710,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
+                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
@@ -735,7 +736,6 @@ class GameDetailsController extends GetxController {
                   .toStringAsFixed(2));
               nflHomeDefensiveList = [
                 defensivePoint,
-                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -750,6 +750,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
+                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
@@ -863,7 +864,6 @@ class GameDetailsController extends GetxController {
                   .toStringAsFixed(2));
               nflAwayOffensiveList = [
                 offensivePoint,
-                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -878,6 +878,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
+                '${(double.parse((offenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((offenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((offenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
@@ -904,7 +905,6 @@ class GameDetailsController extends GetxController {
 
               nflAwayDefensiveList = [
                 defensivePoint,
-                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -919,6 +919,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
+                '${(double.parse((defenciveData?.efficiency?.redzone?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((defenciveData?.efficiency?.thirddown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 '${(double.parse((defenciveData?.efficiency?.fourthdown?.pct ?? "0").toString()).toStringAsFixed(1))}%',
                 (double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
@@ -1397,24 +1398,34 @@ class GameDetailsController extends GetxController {
           homeTeamId: gameDetails.homePlayerId,
         );
       }
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          isHotlines = false;
-        });
-        if (hotlinesData.isNotEmpty) {
-          isHotlines = false;
-          update();
-          break;
+      hotlinesDataResponse(
+              awayTeamId: awayTeam?.id ?? "",
+              sportId: sportId,
+              date: date,
+              start: 0,
+              isLoad: isLoad,
+              homeTeamId: homeTeam?.id ?? "")
+          .then((value) async {
+        for (int i = 0; i <= 2; i++) {
+          log('i====$i');
+          await hotlinesDataResponse(
+                  awayTeamId: awayTeam?.id ?? "",
+                  sportId: sportId,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  start: 0,
+                  isLoad: isLoad,
+                  homeTeamId: homeTeam?.id ?? "")
+              .then((value) {
+            isHotlines = false;
+          });
+          if (hotlinesData.isNotEmpty) {
+            isHotlines = false;
+            update();
+            break;
+          }
         }
-      }
+      });
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
@@ -1452,27 +1463,37 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
       hotlinesData.clear();
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          isHotlines = false;
-          isLoading.value = false;
-        });
+      hotlinesDataResponse(
+              awayTeamId: awayTeam?.id ?? "",
+              sportId: sportId,
+              date: date,
+              start: 0,
+              isLoad: isLoad,
+              homeTeamId: homeTeam?.id ?? "")
+          .then((value) async {
+        for (int i = 0; i <= 4; i++) {
+          log('i====$i');
+          await hotlinesDataResponse(
+                  awayTeamId: awayTeam?.id ?? "",
+                  sportId: sportId,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  start: 0,
+                  isLoad: isLoad,
+                  homeTeamId: homeTeam?.id ?? "")
+              .then((value) {
+            isHotlines = false;
+            isLoading.value = false;
+          });
 
-        if (hotlinesData.isNotEmpty) {
-          isHotlines = false;
-          isLoading.value = false;
-          update();
-          break;
+          if (hotlinesData.isNotEmpty) {
+            isHotlines = false;
+            isLoading.value = false;
+            update();
+            break;
+          }
         }
-      }
+      });
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
@@ -1504,26 +1525,36 @@ class GameDetailsController extends GetxController {
             sportKey: sportKey,
             homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       });
-      for (int i = 1; i <= 10; i += 5) {
-        log('i====$i');
-        await hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: date,
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          isHotlines = false;
-          isLoading.value = false;
-        });
-        if (hotlinesData.isNotEmpty) {
-          isHotlines = false;
-          isLoading.value = false;
-          update();
-          break;
+      hotlinesDataResponse(
+              awayTeamId: awayTeam?.id ?? "",
+              sportId: sportId,
+              date: date,
+              start: 0,
+              isLoad: isLoad,
+              homeTeamId: homeTeam?.id ?? "")
+          .then((value) async {
+        for (int i = 1; i <= 4; i++) {
+          log('i====$i');
+          await hotlinesDataResponse(
+                  awayTeamId: awayTeam?.id ?? "",
+                  sportId: sportId,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  start: 0,
+                  isLoad: isLoad,
+                  homeTeamId: homeTeam?.id ?? "")
+              .then((value) {
+            isHotlines = false;
+            isLoading.value = false;
+          });
+          if (hotlinesData.isNotEmpty) {
+            isHotlines = false;
+            isLoading.value = false;
+            update();
+            break;
+          }
         }
-      }
+      });
     }
     update();
   }

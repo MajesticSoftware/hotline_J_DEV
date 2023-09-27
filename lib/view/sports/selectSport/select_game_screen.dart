@@ -1,13 +1,22 @@
+import 'dart:developer';
+
+import 'package:animation_list/animation_list.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hotlines/utils/animated_search.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
+import '../../../model/game_listing.dart';
+import '../../../utils/app_progress.dart';
 import '../gameDetails/game_details_screen.dart';
+import '../gameListing/game_listing_con.dart';
 import 'selecte_game_con.dart';
 import '../../../generated/assets.dart';
 import '../../../model/game_model.dart';
@@ -20,46 +29,80 @@ import '../gameListing/game_listing_screen.dart';
 // ignore: must_be_immutable
 class SelectGameScreen extends StatelessWidget {
   SelectGameScreen({Key? key}) : super(key: key);
-  final SelectGameController selectGameController =
-      Get.put(SelectGameController());
+
+  final GameListingController gameListingController =
+      Get.put(GameListingController());
   bool isDark = false;
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SelectGameController>(builder: (controller) {
-      isDark = PreferenceManager.getIsDarkMode() ?? false;
-      return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: commonAppBar(context, controller),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .01,
-            ),
-            AnimatedContainer(
-              duration: Duration(seconds: 1),
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.height * .0),
-                  child: Wrap(
-                      runSpacing: 0,
-                      alignment: WrapAlignment.start,
-                      spacing: Get.height * .02,
-                      children: List.generate(
-                        sportsLeagueList.length,
-                        (index) => commonImageWidget(
-                          sportsLeagueList[index].image,
-                          sportsLeagueList[index].gameImage,
-                          sportsLeagueList[index].gameName,
-                          isComingSoon: sportsLeagueList[index].isAvailable,
-                          context,
-                          onTap: sportsLeagueList[index].isAvailable == true
-                              ? () {
-                                  Get.to(
+    return GetBuilder<GameListingController>(
+        initState: (state) async {},
+        builder: (controller) {
+          isDark = PreferenceManager.getIsDarkMode() ?? false;
+          return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            appBar: commonAppBar(context, controller),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: controller.isOpen
+                ? buildAnimSearchBar(controller, context)
+                    .paddingSymmetric(horizontal: Get.width * .03)
+                : const SizedBox(),
+            body: controller.isOpen1
+                ? tableDetailWidget(context, controller)
+                : AnimatedContainer(
+                    margin: EdgeInsets.only(top: controller.isOpen ? 800 : 0),
+                    transformAlignment: Alignment.bottomCenter,
+                    duration: const Duration(milliseconds: 500),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .01,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Wrap(
+                                runSpacing: 0,
+                                alignment: WrapAlignment.start,
+                                spacing: Get.height * .02,
+                                children: List.generate(
+                                  sportsLeagueList.length,
+                                  (index) => commonImageWidget(
+                                    sportsLeagueList[index].image,
+                                    sportsLeagueList[index].gameImage,
+                                    sportsLeagueList[index].gameName,
+                                    isComingSoon:
+                                        sportsLeagueList[index].isAvailable,
+                                    context,
+                                    onTap: sportsLeagueList[index]
+                                                .isAvailable ==
+                                            true
+                                        ? () {
+                                            controller.isOpen = true;
+                                            controller.sportKey =
+                                                sportsLeagueList[index].key;
+                                            controller.date =
+                                                sportsLeagueList[index].date;
+                                            controller.apiKey =
+                                                sportsLeagueList[index].apiKey;
+                                            controller.sportId =
+                                                sportsLeagueList[index].sportId;
+                                            controller.sportKey == 'MLB'
+                                                ? controller.setIsBack(false)
+                                                : controller.setIsBack1(false);
+                                            getResponse(true, controller).then(
+                                                (value) => Future.delayed(
+                                                        Duration(
+                                                            milliseconds: 500),
+                                                        () {
+                                                      controller.isOpen1 = true;
+                                                    }));
+
+                                            /* Get.to(
                                       GameListingScreen(
                                         sportKey: sportsLeagueList[index].key,
                                         date: sportsLeagueList[index].date,
@@ -68,86 +111,115 @@ class SelectGameScreen extends StatelessWidget {
                                             sportsLeagueList[index].sportId,
                                       ),
                                       transition: Transition.downToUp,
-                                      duration: const Duration(seconds: 1));
-                                }
-                              : () {},
-                        ),
-                      )),
+                                      duration: const Duration(seconds: 1));*/
+                                          }
+                                        : () {},
+                                  ),
+                                )),
+                          ),
+                          SizedBox(
+                            height: Get.height * .01,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showDataAlert(context);
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * .14,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.height * .01),
+                                  color: Theme.of(context).primaryColor),
+                              child: Center(
+                                child: gambling.appCommonText(
+                                    color: Theme.of(context).cardColor,
+                                    size: Get.height * .025,
+                                    weight: FontWeight.w700,
+                                    align: TextAlign.center),
+                              ),
+                            ),
+                          ).paddingSymmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.height * .02,
+                          ),
+                          /* Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: wantToDownloadTheAppOnYourDevice,
+                            style: TextStyle(
+                                fontSize: Get.height * .022,
+                                color: darkGreyColor,
+                                fontWeight: FontWeight.w400),
+                            children: [
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => launchInBrowser(Uri.parse(
+                                        'https://www.hotlinesmd.com/contact')),
+                                  text: mobileView.size.shortestSide < 600
+                                      ? '\n$contactUs'
+                                      : contactUs,
+                                  style: TextStyle(
+                                      fontSize: Get.height * .022,
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w700))
+                            ]),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            const Spacer(),
-            InkWell(
-              onTap: () {
-                showDataAlert(context);
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.height * .14,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.height * .01),
-                    color: Theme.of(context).primaryColor),
-                child: Center(
-                  child: gambling.appCommonText(
-                      color: Theme.of(context).cardColor,
-                      size: Get.height * .02,
-                      weight: FontWeight.w700,
-                      align: TextAlign.center),
+                SizedBox(
+                  height: Get.height * .015,
                 ),
-              ),
-            ).paddingSymmetric(
-                horizontal: MediaQuery.of(context).size.height * .02),
-
-            /*SizedBox(
-              height: Get.height * .015,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                        text: wantToDownloadTheAppOnYourDevice,
-                        style: TextStyle(
-                            fontSize: Get.height * .022,
-                            color: darkGreyColor,
-                            fontWeight: FontWeight.w400),
-                        children: [
-                          TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => launchInBrowser(Uri.parse(
-                                    'https://www.hotlinesmd.com/contact')),
-                              text: mobileView.size.shortestSide < 600
-                                  ? '\n$contactUs'
-                                  : contactUs,
-                              style: TextStyle(
-                                  fontSize: Get.height * .022,
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w700))
-                        ]),
+                (mobileView.size.shortestSide < 600 ? mobileMsg : msg)
+                    .appCommonText(
+                        color: Theme.of(context).dividerColor,
+                        size: Get.height * .016,
+                        weight: FontWeight.w300,
+                        fontStyle: FontStyle.italic,
+                        align: TextAlign.center),
+                SizedBox(
+                  height: Get.height * .02,
+                )*/
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),*/
-            SizedBox(
-              height: Get.height * .015,
-            ),
-            (mobileView.size.shortestSide < 600 ? mobileMsg : msg)
-                .appCommonText(
-                    color: Theme.of(context).dividerColor,
-                    size: Get.height * .016,
-                    weight: FontWeight.w300,
-                    fontStyle: FontStyle.italic,
-                    align: TextAlign.center),
-            SizedBox(
-              height: Get.height * .02,
-            )
-          ],
-        ),
-      );
-    });
+          );
+        });
+  }
+
+  AnimSearchBar buildAnimSearchBar(
+      GameListingController controller, BuildContext context) {
+    return AnimSearchBar(
+      rtl: true,
+      width: Get.width,
+      color: isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+      style: defaultTextStyle(
+          size: MediaQuery.sizeOf(context).height * .02,
+          color: isDark || selectGameController.isDarkMode
+              ? greyColor
+              : whiteColor),
+      searchIconColor:
+          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+      textFieldColor:
+          isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+      helpText: 'Search game here...',
+      textFieldIconColor:
+          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+      textController: controller.searchCon,
+      onSuffixTap: () {
+        controller.searchCon.clear();
+      },
+      onSubmitted: (String text) {
+        controller.searchData(text);
+        controller.update();
+      },
+    );
   }
 
   commonImageWidget(
@@ -497,124 +569,987 @@ class SelectGameScreen extends StatelessWidget {
         });
   }
 
-  PreferredSize commonAppBar(
-      BuildContext context, SelectGameController controller) {
-    return PreferredSize(
-        preferredSize: const Size.fromHeight(147.0),
-        child: Container(
-          height: MediaQuery.of(context).size.height * .12,
-          alignment: Alignment.bottomCenter,
-          color: Theme.of(context).secondaryHeaderColor,
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height * .024,
-                left: MediaQuery.of(context).size.width * .04,
-                right: MediaQuery.of(context).size.width * .04),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                transperWidget(context),
-                SvgPicture.asset(Assets.imagesLogo,
-                    height: MediaQuery.of(context).size.height * .025,
-                    fit: BoxFit.fill),
-                Container(
-                  height: MediaQuery.of(context).size.height * .033,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          MediaQuery.of(context).size.width * .005),
-                      border: Border.all(
-                          color: isDark || controller.isDarkMode
-                              ? blackColor
-                              : Colors.transparent,
-                          width: 2),
-                      color: isDark || controller.isDarkMode
-                          ? blackColor
-                          : dividerColor),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          PreferenceManager.setIsDarkMod(false);
-                          Get.changeThemeMode(ThemeMode.light);
-                          controller.isDarkMode = false;
-                          isDark = false;
-                          controller.update();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * .002),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .039,
-                            height: MediaQuery.of(context).size.height * .04,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.horizontal(
-                                    left: Radius.circular(
-                                        MediaQuery.of(context).size.width *
-                                            .005)),
-                                color: isDark || controller.isDarkMode
-                                    ? blackColor
-                                    : whiteColor),
+  tableDetailWidget(BuildContext context, GameListingController controller) {
+    return Stack(
+      children: [
+        controller.isLoading.value
+            ? const SizedBox()
+            : controller.sportEventsList.isEmpty && controller.isLoading.value
+                ? emptyDataWidget(context)
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      return await getResponse(false, controller);
+                    },
+                    color: Theme.of(context).disabledColor,
+                    child: Column(
+                      children: [
+                        isDark || selectGameController.isDarkMode
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1),
+                                child: commonDivider(context),
+                              )
+                            : const SizedBox(),
+                        tabTitleWidget(context),
+                        (MediaQuery.of(context).size.height * .01).H(),
+                        controller.searchCon.text.isEmpty
+                            ? Expanded(
+                                child: AnimationList(
+                                    duration: 1500,
+                                    reBounceDepth: 30,
+                                    primary: false,
+                                    clipBehavior: Clip.hardEdge,
+                                    children: List.generate(
+                                        controller.sportEventsList.length,
+                                        (index) => InkWell(
+                                            onTap: () {
+                                              log('ON TAP---$index');
+                                              Get.to(SportDetailsScreen(
+                                                gameDetails: controller
+                                                    .sportEventsList[index],
+                                                sportKey: controller.sportKey,
+                                                sportId: controller.sportId,
+                                                date: controller.date,
+                                              ));
+                                            },
+                                            child: teamWidget(
+                                                controller
+                                                    .sportEventsList[index],
+                                                context,
+                                                index: index)))),
+                              )
+                            : Expanded(
+                                child: AnimationList(
+                                    duration: 1500,
+                                    reBounceDepth: 10.0,
+                                    children: List.generate(
+                                        controller.searchList.length,
+                                        (index) => InkWell(
+                                            onTap: () {
+                                              log('ON TAP');
+                                              Get.to(SportDetailsScreen(
+                                                gameDetails: controller
+                                                    .searchList[index],
+                                                sportKey: controller.sportKey,
+                                                sportId: controller.sportId,
+                                                date: controller.date,
+                                              ));
+                                            },
+                                            child: teamSearchWidget(
+                                                controller.searchList[index],
+                                                context,
+                                                index: index)))),
+                              ),
+                      ],
+                    ),
+                  ),
+        Obx(() =>
+            controller.isLoading.value ? const AppProgress() : const SizedBox())
+      ],
+    );
+  }
+
+  Future getResponse(bool isLoad, GameListingController controller) async {
+    if (controller.sportKey == 'MLB') {
+      return await controller.getGameListingForMLBRes(isLoad,
+          apiKey: controller.apiKey,
+          sportKey: controller.sportKey,
+          date: controller.date,
+          sportId: controller.sportId);
+    } else if (controller.sportKey == 'NFL') {
+      return await controller.getGameListingForNFLGame(isLoad,
+          apiKey: controller.apiKey,
+          sportKey: controller.sportKey,
+          date: controller.date,
+          sportId: controller.sportId);
+    } else {
+      return controller.getGameListingForNCAAGame(isLoad,
+          apiKey: controller.apiKey,
+          sportKey: controller.sportKey,
+          date: controller.date,
+          sportId: controller.sportId);
+    }
+  }
+
+  Center emptyDataWidget(BuildContext context) {
+    return Center(
+        child: Stack(
+      children: [
+        SvgPicture.asset(
+          Assets.imagesNodataImage,
+          width: MediaQuery.of(context).size.width * .349,
+          height: MediaQuery.of(context).size.height * .329,
+          fit: BoxFit.contain,
+        ),
+        Positioned(
+          bottom: MediaQuery.of(context).size.height * .07,
+          left: MediaQuery.of(context).size.height * .08,
+          child: GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height * .032,
+                width: MediaQuery.of(context).size.width * .34,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Theme.of(context).backgroundColor),
+                child: Center(
+                  child: backButton.appCommonText(
+                      color: whiteColor,
+                      size: mobileView.size.shortestSide < 600
+                          ? MediaQuery.of(context).size.height * .012
+                          : MediaQuery.of(context).size.height * .014,
+                      weight: FontWeight.w500),
+                ),
+              )),
+        )
+      ],
+    ));
+  }
+
+  teamWidget(SportEvents competitors, BuildContext context, {int index = 0}) {
+    String date = DateFormat.MMMd()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    String dateTime = DateFormat.jm()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    try {
+      return competitors.status == 'closed' &&
+              gameListingController.sportKey == "NFL"
+          ? const SizedBox()
+          : competitors.status == 'postponed'
+              ? const SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .02,
+                      top: MediaQuery.of(context).size.width * .014,
+                      right: MediaQuery.of(context).size.width * .02),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        border: Border.all(
+                            color: isDark || selectGameController.isDarkMode
+                                ? greyColor
+                                : dividerColor),
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .02)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.height * .006,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * .02),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SvgPicture.asset(
-                                  Assets.imagesSunLight,
-                                  // ignore: deprecated_member_use
-                                  color: isDark || controller.isDarkMode
-                                      ? darkSunColor
-                                      : blackColor,
-                                  width:
-                                      MediaQuery.of(context).size.width * .02,
-                                  height:
-                                      MediaQuery.of(context).size.height * .02,
-                                  fit: BoxFit.contain,
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                      width: Get.height * .044,
+                                      height: Get.height * .044,
+                                      imageUrl: gameListingController
+                                                  .sportEventsList[index]
+                                                  .awayTeam ==
+                                              'North Carolina State Wolfpack'
+                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                          : gameListingController
+                                                      .sportEventsList[index]
+                                                      .awayTeam ==
+                                                  'Louisiana-Lafayette Ragin Cajuns'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                              : gameListingController
+                                                          .sportEventsList[
+                                                              index]
+                                                          .awayTeam ==
+                                                      'Sam Houston State Bearkats'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                  : competitors
+                                                      .gameLogoAwayLink,
+                                    ),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .sportEventsList[index]
+                                                .awayTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      (gameListingController
+                                              .sportEventsList[index].awayScore)
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 0,
+                                      child: Text(
+                                        '  Vs',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 4, child: commonDivider(context)),
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                        width: Get.height * .044,
+                                        height: Get.height * .044,
+                                        imageUrl: gameListingController
+                                                    .sportEventsList[index]
+                                                    .homeTeam ==
+                                                'North Carolina State Wolfpack'
+                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                            : gameListingController
+                                                        .sportEventsList[index]
+                                                        .homeTeam ==
+                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                : gameListingController
+                                                            .sportEventsList[
+                                                                index]
+                                                            .homeTeam ==
+                                                        'Sam Houston State Bearkats'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                    : competitors
+                                                        .gameHomeLogoLink),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .sportEventsList[index]
+                                                .homeTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      gameListingController
+                                          .sportEventsList[index].homeScore
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          PreferenceManager.setIsDarkMod(true);
-                          Get.changeThemeMode(ThemeMode.dark);
-                          controller.isDarkMode = true;
-                          isDark = true;
-                          controller.update();
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * .039,
-                          height: MediaQuery.of(context).size.height * .04,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.horizontal(
-                                  right: Radius.circular(
-                                      MediaQuery.of(context).size.width *
-                                          .005)),
-                              color: isDark || controller.isDarkMode
-                                  ? darkBackGroundColor
-                                  : dividerColor),
+                        Expanded(
+                          flex: 1,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                Assets.imagesMoon,
-                                // ignore: deprecated_member_use
-                                color: isDark || controller.isDarkMode
-                                    ? whiteColor
-                                    : greyDarkColor,
-                                width: MediaQuery.of(context).size.width * .02,
-                                height:
-                                    MediaQuery.of(context).size.height * .02,
-                                fit: BoxFit.contain,
+                              (MediaQuery.of(context).size.height * .005).H(),
+                              Text(
+                                '$date, $dateTime',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.center,
                               ),
+                              competitors.status == 'live'
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .02,
+                                      width: MediaQuery.of(context).size.width *
+                                          .07,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(105),
+                                          color: redColor),
+                                      child: Center(
+                                        child: 'LIVE'.appCommonText(
+                                            color: whiteColor,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .012,
+                                            weight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              getWeatherIcon(
+                                  competitors.venue?.weather ?? 805,
+                                  context,
+                                  MediaQuery.of(context).size.height * .064)
+                              /* getWeatherIcon(
+                                  competitors.venue?.weather ?? 'Sunny',
+                                  context,
+                                  MediaQuery.of(context).size.height * .064),*/
+                              ,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text(
+                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
+                                    style: competitors.venue?.tmpInFahrenheit ==
+                                            0
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .014)
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .displayMedium,
+                                  ),
+                                  Text(
+                                    '°F',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
-                      ),
-                    ],
+                        buildExpandedBoxWidget(context,
+                            bottomText:
+                                competitors.homeSpreadValue.contains('-')
+                                    ? competitors.homeSpreadValue
+                                    : '+${competitors.homeSpreadValue}',
+                            upText: competitors.awaySpreadValue.contains('-')
+                                ? competitors.awaySpreadValue
+                                : '+${competitors.awaySpreadValue}'),
+                        buildExpandedBoxWidget(context,
+                            bottomText: competitors.homeMoneyLineValue,
+                            upText: competitors.awayMoneyLineValue),
+                        Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('o',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.awayOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .02,
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('u',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.homeOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                )
+                              ],
+                            )),
+                      ],
+                    ),
                   ),
-                )
+                );
+    } catch (e) {
+      return const SizedBox();
+    }
+  }
+
+  teamSearchWidget(SportEvents competitors, BuildContext context, {index = 0}) {
+    String date = DateFormat.MMMd()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    String dateTime = DateFormat.jm()
+        .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+    try {
+      return competitors.status == 'closed' &&
+              gameListingController.sportKey == "NFL"
+          ? const SizedBox()
+          : competitors.status == 'postponed'
+              ? const SizedBox()
+              : Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .02,
+                      top: MediaQuery.of(context).size.width * .014,
+                      right: MediaQuery.of(context).size.width * .02),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        border: Border.all(
+                            color: isDark || selectGameController.isDarkMode
+                                ? greyColor
+                                : dividerColor),
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .02)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    MediaQuery.of(context).size.height * .006,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * .02),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                      width: Get.height * .044,
+                                      height: Get.height * .044,
+                                      imageUrl: gameListingController
+                                                  .searchList[index].awayTeam ==
+                                              'North Carolina State Wolfpack'
+                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                          : gameListingController
+                                                      .searchList[index]
+                                                      .awayTeam ==
+                                                  'Louisiana-Lafayette Ragin Cajuns'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                              : gameListingController
+                                                          .searchList[index]
+                                                          .awayTeam ==
+                                                      'Sam Houston State Bearkats'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                  : competitors
+                                                      .gameLogoAwayLink,
+                                    ),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .searchList[index].awayTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      (gameListingController
+                                              .searchList[index].awayScore)
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 0,
+                                      child: Text(
+                                        '  Vs',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 4, child: commonDivider(context)),
+                                  ],
+                                ),
+                                5.H(),
+                                Row(
+                                  children: [
+                                    commonCachedNetworkImage(
+                                        width: Get.height * .044,
+                                        height: Get.height * .044,
+                                        imageUrl: gameListingController
+                                                    .searchList[index]
+                                                    .homeTeam ==
+                                                'North Carolina State Wolfpack'
+                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                            : gameListingController
+                                                        .searchList[index]
+                                                        .homeTeam ==
+                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                : gameListingController
+                                                            .searchList[index]
+                                                            .homeTeam ==
+                                                        'Sam Houston State Bearkats'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                    : competitors
+                                                        .gameHomeLogoLink),
+                                    // 10.W(),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .01,
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        (gameListingController
+                                                .searchList[index].homeTeam)
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    Text(
+                                      gameListingController
+                                          .searchList[index].homeScore
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              (MediaQuery.of(context).size.height * .005).H(),
+                              Text(
+                                '$date, $dateTime',
+                                style: Theme.of(context).textTheme.displaySmall,
+                                textAlign: TextAlign.center,
+                              ),
+                              competitors.status == 'live'
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .02,
+                                      width: MediaQuery.of(context).size.width *
+                                          .07,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(105),
+                                          color: redColor),
+                                      child: Center(
+                                        child: 'LIVE'.appCommonText(
+                                            color: whiteColor,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .012,
+                                            weight: FontWeight.bold),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              getWeatherIcon(
+                                  competitors.venue?.weather ?? 805,
+                                  context,
+                                  MediaQuery.of(context).size.height * .064)
+                              /* getWeatherIcon(
+                                  competitors.venue?.weather ?? 'Sunny',
+                                  context,
+                                  MediaQuery.of(context).size.height * .064),*/
+                              ,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                children: [
+                                  Text(
+                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
+                                    style: competitors.venue?.tmpInFahrenheit ==
+                                            0
+                                        ? Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall!
+                                            .copyWith(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .014)
+                                        : Theme.of(context)
+                                            .textTheme
+                                            .displayMedium,
+                                  ),
+                                  Text(
+                                    '°F',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        buildExpandedBoxWidget(context,
+                            bottomText:
+                                competitors.homeSpreadValue.contains('-')
+                                    ? competitors.homeSpreadValue
+                                    : '+${competitors.homeSpreadValue}',
+                            upText: competitors.awaySpreadValue.contains('-')
+                                ? competitors.awaySpreadValue
+                                : '+${competitors.awaySpreadValue}'),
+                        buildExpandedBoxWidget(context,
+                            bottomText: competitors.homeMoneyLineValue,
+                            upText: competitors.awayMoneyLineValue),
+                        Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('o',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.awayOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .02,
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  // width: MediaQuery.of(context).size.width * .09,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              .008)),
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    verticalDirection: VerticalDirection.up,
+                                    children: [
+                                      Text('u',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                      Text((competitors.homeOUValue).toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ],
+                                  )),
+                                ).paddingSymmetric(
+                                  horizontal: mobileView.size.shortestSide < 600
+                                      ? MediaQuery.of(context).size.height *
+                                          .008
+                                      : MediaQuery.of(context).size.height *
+                                          .015,
+                                )
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                );
+    } catch (e) {
+      return const SizedBox();
+    }
+  }
+
+  PreferredSize commonAppBar(
+      BuildContext context, GameListingController controller) {
+    return PreferredSize(
+        preferredSize: const Size.fromHeight(147.0),
+        child: AnimatedContainer(
+          height: MediaQuery.of(context).size.height * .12,
+          alignment: Alignment.bottomCenter,
+          color: Theme.of(context).secondaryHeaderColor,
+          duration: const Duration(milliseconds: 500),
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * .02,
+                left: MediaQuery.of(context).size.width * .04,
+                right: MediaQuery.of(context).size.width * .04),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                controller.isOpen
+                    ? InkWell(
+                        onTap: () {
+                          controller.isOpen = false;
+                          controller.isOpen1 = false;
+                          controller.sportKey == 'MLB'
+                              ? controller.setIsBack(true)
+                              : controller.setIsBack1(true);
+                          controller.timer = null;
+                          controller.timerNCAA = null;
+                          controller.sportEventsList.clear();
+                          FocusScope.of(context).unfocus();
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: SvgPicture.asset(
+                            Assets.imagesBackArrow,
+                            height: MediaQuery.of(context).size.height * .02,
+                            alignment: Alignment.centerLeft,
+                          ),
+                        ),
+                      )
+                    : transperWidget(context),
+                SvgPicture.asset(Assets.imagesLogo,
+                    height: MediaQuery.of(context).size.height * .025,
+                    fit: BoxFit.fill),
+                controller.isOpen
+                    ? controller.sportKey.appCommonText(
+                        color: whiteColor,
+                        align: TextAlign.end,
+                        weight: FontWeight.w700,
+                        size: Get.height * .024)
+                    : Container(
+                        height: MediaQuery.of(context).size.height * .033,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.width * .005),
+                            border: Border.all(
+                                color: isDark || controller.isDarkMode
+                                    ? blackColor
+                                    : Colors.transparent,
+                                width: 2),
+                            color: isDark || controller.isDarkMode
+                                ? blackColor
+                                : dividerColor),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                PreferenceManager.setIsDarkMod(false);
+                                Get.changeThemeMode(ThemeMode.light);
+                                controller.isDarkMode = false;
+                                isDark = false;
+                                controller.update();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * .002),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * .039,
+                                  height:
+                                      MediaQuery.of(context).size.height * .04,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.horizontal(
+                                          left: Radius.circular(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .005)),
+                                      color: isDark || controller.isDarkMode
+                                          ? blackColor
+                                          : whiteColor),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        Assets.imagesSunLight,
+                                        // ignore: deprecated_member_use
+                                        color: isDark || controller.isDarkMode
+                                            ? darkSunColor
+                                            : blackColor,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .02,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .02,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                PreferenceManager.setIsDarkMod(true);
+                                Get.changeThemeMode(ThemeMode.dark);
+                                controller.isDarkMode = true;
+                                isDark = true;
+                                controller.update();
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * .039,
+                                height:
+                                    MediaQuery.of(context).size.height * .04,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.horizontal(
+                                        right: Radius.circular(
+                                            MediaQuery.of(context).size.width *
+                                                .005)),
+                                    color: isDark || controller.isDarkMode
+                                        ? darkBackGroundColor
+                                        : dividerColor),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      Assets.imagesMoon,
+                                      // ignore: deprecated_member_use
+                                      color: isDark || controller.isDarkMode
+                                          ? whiteColor
+                                          : greyDarkColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .02,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .02,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
               ],
             ),
           ),
@@ -688,5 +1623,56 @@ class SelectGameScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Container tabTitleWidget(BuildContext context) {
+    return Container(
+        height: MediaQuery.of(context).size.height * .05,
+        decoration:
+            BoxDecoration(color: Theme.of(context).secondaryHeaderColor),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 3,
+                child: game.appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .017),
+              ),
+              Expanded(
+                flex: 1,
+                child: time.appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .017),
+              ),
+              Expanded(
+                flex: 1,
+                child: spread.appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .017),
+              ),
+              Expanded(
+                flex: 1,
+                child: moneyLine.appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .017),
+              ),
+              Expanded(
+                flex: 1,
+                child: overUnder.appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .017),
+              ),
+            ],
+          ),
+        ));
   }
 }

@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/extras/constants.dart';
 import 'package:hotlines/generated/assets.dart';
 import 'package:hotlines/model/game_listing.dart';
+import 'package:hotlines/utils/animated_search.dart';
 import 'package:hotlines/utils/utils.dart';
-import 'package:hotlines/view/sports/selectSport/select_game_screen.dart';
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../constant/shred_preference.dart';
@@ -17,6 +19,7 @@ import '../gameDetails/game_details_screen.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
+import '../selectSport/selecte_game_con.dart';
 import 'game_listing_con.dart';
 
 // ignore: must_be_immutable
@@ -39,6 +42,7 @@ class GameListingScreen extends StatefulWidget {
 
 class _GameListingScreenState extends State<GameListingScreen> {
   final GameListingController gameListingController = Get.find();
+
   var client = http.Client();
   @override
   void dispose() {
@@ -58,6 +62,9 @@ class _GameListingScreenState extends State<GameListingScreen> {
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: commonAppBar(context, controller),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: buildAnimSearchBar(controller)
+            .paddingSymmetric(horizontal: Get.width * .03),
         body: WillPopScope(
           onWillPop: () {
             widget.sportKey == 'MLB'
@@ -80,6 +87,35 @@ class _GameListingScreenState extends State<GameListingScreen> {
         ),
       );
     });
+  }
+
+  AnimSearchBar buildAnimSearchBar(GameListingController controller) {
+    return AnimSearchBar(
+      rtl: true,
+      width: Get.width,
+      autoFocus: true,
+      color: isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+      style: defaultTextStyle(
+          size: Get.height * .028,
+          color: isDark || selectGameController.isDarkMode
+              ? greyColor
+              : whiteColor),
+      searchIconColor:
+          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+      textFieldColor:
+          isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+      helpText: 'Search game here...',
+      textFieldIconColor:
+          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+      textController: controller.searchCon,
+      onSuffixTap: () {
+        controller.searchCon.clear();
+      },
+      onSubmitted: (String text) {
+        controller.searchData(text);
+        controller.update();
+      },
+    );
   }
 
   getResponse(bool isLoad) async {
@@ -154,6 +190,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
+                    selectGameController.isOpen = false;
                     widget.sportKey == 'MLB'
                         ? con.setIsBack(true)
                         : con.setIsBack1(true);
@@ -207,7 +244,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                     child: Column(
                       children: [
                         (MediaQuery.of(context).size.height * .01).H(),
-                        commonTextFiled(
+                        /*  commonTextFiled(
                           context,
                           controller: controller.searchCon,
                           ctrl: controller,
@@ -216,7 +253,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           },
                         ).paddingSymmetric(
                             horizontal:
-                                MediaQuery.of(context).size.width * .02),
+                                MediaQuery.of(context).size.width * .02),*/
                         Expanded(
                           child: controller.searchCon.text.isEmpty
                               ? ListView.builder(

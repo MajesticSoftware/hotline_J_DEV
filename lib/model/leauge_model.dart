@@ -29,13 +29,14 @@ final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
   LeagueModel(
-      gameImage: Assets.imagesMlb,
-      gameName: 'MLB',
-      image: Assets.imagesMLB,
+      gameImage: Assets.imagesNfl,
+      gameName: 'NFL',
+      image: Assets.imagesNfl1,
       date: formatted,
-      key: 'MLB',
-      sportId: 'sr:sport:3',
+      // date: '2023-09-08',
+      key: 'NFL',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      sportId: 'sr:sport:16',
       isAvailable: true),
   LeagueModel(
       gameImage: Assets.imagesNcaa,
@@ -48,15 +49,15 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
   LeagueModel(
-      gameImage: Assets.imagesNfl,
-      gameName: 'NFL',
-      image: Assets.imagesNfl1,
+      gameImage: Assets.imagesMlb,
+      gameName: 'MLB',
+      image: Assets.imagesMLB,
       date: formatted,
-      // date: '2023-09-08',
-      key: 'NFL',
+      key: 'MLB',
+      sportId: 'sr:sport:3',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      sportId: 'sr:sport:16',
       isAvailable: true),
+
 /*
   LeagueModel(
       sportId: 'sr:sport:2',

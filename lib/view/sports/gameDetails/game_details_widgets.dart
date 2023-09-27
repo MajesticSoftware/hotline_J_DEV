@@ -17,13 +17,14 @@ import '../../../model/game_listing.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
+import '../gameListing/game_listing_con.dart';
 import '../selectSport/selecte_game_con.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
   return PreferredSize(
       preferredSize: const Size.fromHeight(100.0),
-      child: GetBuilder<SelectGameController>(builder: (con) {
+      child: GetBuilder<GameListingController>(builder: (con) {
         return Container(
           height: Get.height * .098,
           alignment: Alignment.bottomCenter,
@@ -850,7 +851,10 @@ Container playernameWidget(BuildContext context, GameDetailsController con, Spor
                                 .size
                                 .height * .014),
                       ),
-
+                      Container(width: 1, height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * .025, color: backGroundColor,),
                       Expanded(
                         flex: 2,
                         child: (!con.isQuarterBacksTab ? gameDetails.awayPlayerName : gameDetails.homePlayerName).appCommonText(
@@ -1027,11 +1031,11 @@ Row quarterBacksData(
         },
       ),),
       Column(
-        children: List.generate(5, (index) =>
+        children: List.generate(6, (index) =>
             Container(width: 1, height: MediaQuery
                 .of(context)
                 .size
-                .height * .044, color: backGroundColor,),),
+                .height * .046, color: backGroundColor,),),
       ),
       Expanded(child: ListView.separated(
         padding: EdgeInsets.zero,
@@ -4423,7 +4427,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
             .of(context)
             .size
             .height * .02),
-        child: GetBuilder<SelectGameController>(builder: (con) {
+        child: GetBuilder<GameListingController>(builder: (con) {
           String dateTime = DateFormat.jm()
               .format(DateTime.parse(gameDetails.scheduled ?? '').toLocal());
           String date = DateFormat.d()

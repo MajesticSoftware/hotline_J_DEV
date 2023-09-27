@@ -85,7 +85,7 @@ extension AddText on String {
 
 TextStyle defaultTextStyle(
     {Color color = const Color(0XFF9A9A9A),
-    num size = 14,
+    num size = 16,
     FontWeight weight = FontWeight.normal,
     TextDecoration? decoration}) {
   return GoogleFonts.nunitoSans(
@@ -99,7 +99,8 @@ Widget commonTextFiled(BuildContext context,
     {TextEditingController? controller,
     void Function(String)? onChanged,
     required GameListingController ctrl}) {
-  return SizedBox(
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 500),
     height: MediaQuery.of(context).size.height * .05,
     width: Get.width,
     child: TextField(
@@ -131,6 +132,7 @@ Widget commonTextFiled(BuildContext context,
           suffixIcon: InkWell(
             onTap: () {
               ctrl.searchCon.clear();
+              ctrl.isSearch = false;
               ctrl.update();
             },
             child: ctrl.searchCon.text.isNotEmpty
@@ -145,7 +147,7 @@ Widget commonTextFiled(BuildContext context,
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(MediaQuery.of(context).size.width * .01),
+              Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: const BorderSide(
               color: greyColor,
@@ -153,7 +155,7 @@ Widget commonTextFiled(BuildContext context,
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(MediaQuery.of(context).size.width * .01),
+              Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
               color: isDark || selectGameController.isDarkMode
@@ -163,7 +165,7 @@ Widget commonTextFiled(BuildContext context,
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(MediaQuery.of(context).size.width * .01),
+              Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
               color: isDark || selectGameController.isDarkMode
