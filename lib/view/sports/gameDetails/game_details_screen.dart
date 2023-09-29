@@ -34,7 +34,6 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
   final GameDetailsController gameDetailsController = Get.find();
 
   Competitors? homeTeam;
-
   Competitors? awayTeam;
   var client = http.Client();
   @override
@@ -65,6 +64,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             gameDetails: widget.gameDetails,
             sportKey: widget.sportKey,
             date: widget.date,
+            hotLinesDate: widget.gameDetails.scheduled ?? "",
             awayTeam: awayTeam,
             homeTeam: homeTeam,
             sportId: widget.sportId);
@@ -74,6 +74,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
             return await gameDetailsController.getResponse(
                 isLoad: false,
                 gameDetails: widget.gameDetails,
+                hotLinesDate: widget.gameDetails.scheduled ?? "",
                 sportKey: widget.sportKey,
                 date: widget.date,
                 awayTeam: awayTeam,

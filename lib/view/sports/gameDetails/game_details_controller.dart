@@ -3,7 +3,7 @@ import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
-import 'package:hotlines/model/ranking_model.dart';
+
 import 'package:hotlines/utils/utils.dart';
 import 'package:intl/intl.dart';
 
@@ -101,15 +101,13 @@ class GameDetailsController extends GetxController {
     'Rushing Yards/Game',
     'Rushing TDs/Game',
     'Interceptions',
-    "Fumbles",
   ];
   List teamQuarterBacksDefence = [
-    'Passing Yards Allowed/Game (RANK)',
-    'Passing TDs Allowed/Game (RANK)',
-    'Rushing Yards Allowed/Game (RANK)',
-    'Rushing TDs Allowed/Game (RANK)',
-    'Interceptions(RANK)',
-    "Fumbles",
+    'Passing Yards Allowed/Game',
+    'Passing TDs Allowed/Game',
+    'Rushing Yards Allowed/Game',
+    'Rushing TDs Allowed/Game',
+    'Interceptions',
   ];
   bool _isQuarterBacksTab = true;
 
@@ -614,44 +612,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  Future ncaaGameRanking(
-      {String awayTeamId = '',
-      String homeTeamId = '',
-      bool isLoad = false,
-      required SportEvents gameDetails}) async {
-    // isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().ncaaGameRanking();
-    try {
-      if (result.status) {
-        RankingModel response = RankingModel.fromJson(result.data);
-        if (response.rankings != null) {
-          response.rankings?.forEach((player) {
-            if (player.id.toString() == homeTeamId) {
-              gameDetails.homeRank = player.rank.toString();
-            }
-            if (player.id.toString() == awayTeamId) {
-              gameDetails.awayRank = player.rank.toString();
-            }
-          });
-        }
-      } else {
-        isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
-      }
-    } catch (e) {
-      isLoading.value = false;
-      log('ERROR NCAA RANKING-------$e');
-      showAppSnackBar(
-        errorText,
-      );
-    }
-    update();
-  }
-
   ///NFL STATICS
   List<String> nflHomeOffensiveList = [];
   List<String> nflHomeDefensiveList = [];
@@ -718,7 +678,10 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
-                "0"
+                (((offenciveData?.interceptions?.interceptions ?? 0) +
+                            (offenciveData?.fumbles?.lostFumbles ?? 0)) /
+                        totalGame)
+                    .toStringAsFixed(1)
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -758,7 +721,27 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
-                "0",
+                (((defenciveData?.defense?.interceptions ?? 0) +
+                            (defenciveData?.defense?.fumbleRecoveries ?? 0)) /
+                        totalGame)
+                    .toStringAsFixed(1)
+              ];
+              homeDefense = [
+                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(1)),
+                ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(1)),
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                (defenciveData?.defense?.interceptions ?? "0").toString(),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -790,7 +773,7 @@ class GameDetailsController extends GetxController {
                               totalPlay)
                           .toStringAsFixed(2)),
                       (player.passing?.interceptions ?? "0").toString(),
-                      (player.fumbles?.fumbles ?? "0").toString(),
+                      // (player.fumbles?.fumbles ?? "0").toString(),
                     ];
                     gameDetails.homePlayerName =
                         (player.name ?? "0").toString();
@@ -886,7 +869,10 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
-                "0",
+                (((offenciveData?.interceptions?.interceptions ?? 0) +
+                            (offenciveData?.fumbles?.lostFumbles ?? 0)) /
+                        totalGame)
+                    .toStringAsFixed(1)
               ];
               String defensivePoint = ((((int.parse(
                                   defenciveData?.touchdowns?.total.toString() ??
@@ -927,7 +913,27 @@ class GameDetailsController extends GetxController {
                             100)
                         .toString())
                     .toStringAsFixed(1)),
-                "0",
+                (((defenciveData?.defense?.interceptions ?? 0) +
+                            (defenciveData?.defense?.fumbleRecoveries ?? 0)) /
+                        totalGame)
+                    .toStringAsFixed(1)
+              ];
+              awayDefense = [
+                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(1)),
+                ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                        totalGame)
+                    .toStringAsFixed(1)),
+                ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                (defenciveData?.defense?.interceptions ?? "0").toString(),
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -958,23 +964,9 @@ class GameDetailsController extends GetxController {
                               totalPlay)
                           .toStringAsFixed(2)),
                       (player.passing?.interceptions ?? "0").toString(),
-                      (player.fumbles?.fumbles ?? "0").toString(),
+                      // (player.fumbles?.fumbles ?? "0").toString(),
                     ];
-                    /*con.awayDefense=[
-          gameDetails.awayPassingYard,
-          gameDetails.awayPassingTds,
-          gameDetails.awayRushingYard,
-          gameDetails.awayRushingTds,
-          gameDetails.awayInterCaption,
-          gameDetails.awayFumble,
-        ]; con.awayDefense=[
-          gameDetails.awayPassingYard,
-          gameDetails.awayPassingTds,
-          gameDetails.awayRushingYard,
-          gameDetails.awayRushingTds,
-          gameDetails.awayInterCaption,
-          gameDetails.awayFumble,
-        ];*/
+
                     gameDetails.awayPlayerName = (player.name ?? "").toString();
                   }
                 });
@@ -1183,8 +1175,6 @@ class GameDetailsController extends GetxController {
         //   result.message,
         // );
       }
-      isHotlines = false;
-      isLoading.value = false;
     } catch (e) {
       isHotlines = false;
       isLoading.value = false;
@@ -1364,6 +1354,7 @@ class GameDetailsController extends GetxController {
       {required bool isLoad,
       required String sportId,
       required String date,
+      required String hotLinesDate,
       required SportEvents gameDetails,
       required String sportKey,
       Competitors? homeTeam,
@@ -1406,7 +1397,7 @@ class GameDetailsController extends GetxController {
               isLoad: isLoad,
               homeTeamId: homeTeam?.id ?? "")
           .then((value) async {
-        for (int i = 0; i <= 2; i++) {
+        for (int i = 1; i <= 2; i++) {
           log('i====$i');
           await hotlinesDataResponse(
                   awayTeamId: awayTeam?.id ?? "",
@@ -1418,6 +1409,7 @@ class GameDetailsController extends GetxController {
                   homeTeamId: homeTeam?.id ?? "")
               .then((value) {
             isHotlines = false;
+            isLoading.value = false;
           });
           if (hotlinesData.isNotEmpty) {
             isHotlines = false;
@@ -1463,98 +1455,75 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
       hotlinesData.clear();
-      hotlinesDataResponse(
-              awayTeamId: awayTeam?.id ?? "",
-              sportId: sportId,
-              date: date,
-              start: 0,
-              isLoad: isLoad,
-              homeTeamId: homeTeam?.id ?? "")
-          .then((value) async {
-        for (int i = 0; i <= 4; i++) {
-          log('i====$i');
-          await hotlinesDataResponse(
-                  awayTeamId: awayTeam?.id ?? "",
-                  sportId: sportId,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  start: 0,
-                  isLoad: isLoad,
-                  homeTeamId: homeTeam?.id ?? "")
-              .then((value) {
+      for (int i = 0; i <= 15; i += 5) {
+        log('i====$i');
+        hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(hotLinesDate)),
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          Future.delayed(const Duration(seconds: 3), () {
             isHotlines = false;
             isLoading.value = false;
           });
-
-          if (hotlinesData.isNotEmpty) {
-            isHotlines = false;
-            isLoading.value = false;
-            update();
-            break;
-          }
+        });
+        if (hotlinesData.isNotEmpty && i == 15) {
+          isHotlines = false;
+          isLoading.value = false;
+          update();
+          break;
         }
-      });
+      }
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
-
-      ncaaGameRanking(
-              isLoad: false,
-              gameDetails: gameDetails,
-              homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-              awayTeamId: replaceId(awayTeam?.uuids ?? ''))
-          .then((value) {
-        recordsOfNCAAAndNFL(
-            isLoad: false,
-            sportEvent: gameDetails,
-            key: sportKey,
-            awayId: awayTeam?.abbreviation == 'LV'
-                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                : replaceId(awayTeam?.uuids ?? ''),
-            homeId: homeTeam?.abbreviation == 'LV'
-                ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                : replaceId(homeTeam?.uuids ?? ''));
-        nflStaticsAwayTeamResponse(
-            isLoad: false,
-            gameDetails: gameDetails,
-            sportKey: sportKey,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-        nflStaticsHomeTeamResponse(
-            isLoad: false,
-            gameDetails: gameDetails,
-            sportKey: sportKey,
-            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      });
-      hotlinesDataResponse(
-              awayTeamId: awayTeam?.id ?? "",
-              sportId: sportId,
-              date: date,
-              start: 0,
-              isLoad: isLoad,
-              homeTeamId: homeTeam?.id ?? "")
-          .then((value) async {
-        for (int i = 1; i <= 4; i++) {
-          log('i====$i');
-          await hotlinesDataResponse(
-                  awayTeamId: awayTeam?.id ?? "",
-                  sportId: sportId,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  start: 0,
-                  isLoad: isLoad,
-                  homeTeamId: homeTeam?.id ?? "")
-              .then((value) {
+      recordsOfNCAAAndNFL(
+          isLoad: false,
+          sportEvent: gameDetails,
+          key: sportKey,
+          awayId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          homeId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''));
+      nflStaticsAwayTeamResponse(
+          isLoad: false,
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+      nflStaticsHomeTeamResponse(
+          isLoad: false,
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      for (int i = 0; i <= 15; i += 5) {
+        log('i====$i');
+        hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(hotLinesDate)),
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          Future.delayed(const Duration(seconds: 3), () {
             isHotlines = false;
             isLoading.value = false;
           });
-          if (hotlinesData.isNotEmpty) {
-            isHotlines = false;
-            isLoading.value = false;
-            update();
-            break;
-          }
+        });
+        if (hotlinesData.isNotEmpty && i == 15) {
+          isHotlines = false;
+          isLoading.value = false;
+          update();
+          break;
         }
-      });
+      }
     }
     update();
   }

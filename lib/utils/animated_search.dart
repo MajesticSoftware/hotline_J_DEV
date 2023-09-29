@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/app_color.dart';
-import 'layouts.dart';
 
 class AnimSearchBar extends StatefulWidget {
   ///  width - double ,isRequired : Yes
@@ -30,12 +29,14 @@ class AnimSearchBar extends StatefulWidget {
   final Icon? prefixIcon;
   final String helpText;
   final int animationDurationInMilli;
+  // ignore: prefer_typing_uninitialized_variables
   final onSuffixTap;
   final bool rtl;
   final bool autoFocus;
   final TextStyle? style;
   final bool closeSearchOnSuffixTap;
   final Color? color;
+  final Color? helpTextColor;
   final Color? textFieldColor;
   final Color? searchIconColor;
   final Color? textFieldIconColor;
@@ -54,6 +55,7 @@ class AnimSearchBar extends StatefulWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.helpText = "Search...",
+    this.helpTextColor,
 
     /// choose your custom color
     this.color = Colors.white,
@@ -94,6 +96,7 @@ class AnimSearchBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _AnimSearchBarState createState() => _AnimSearchBarState();
 }
 
@@ -133,7 +136,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100.0,
+      height: MediaQuery.of(context).size.height * .100,
 
       ///if the rtl is true, search bar will be from right to left
       alignment:
@@ -142,8 +145,10 @@ class _AnimSearchBarState extends State<AnimSearchBar>
       ///Using Animated container to expand and shrink the widget
       child: AnimatedContainer(
         duration: Duration(milliseconds: widget.animationDurationInMilli),
-        height: 50.0,
-        width: (toggle == 0) ? 48.0 : widget.width,
+        height: MediaQuery.sizeOf(context).height * .045,
+        width: (toggle == 0)
+            ? MediaQuery.sizeOf(context).height * .045
+            : widget.width,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           /// can add custom  color or the color will be white
@@ -163,18 +168,19 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 ],
         ),
         child: Stack(
+          alignment: Alignment.center,
           children: [
             ///Using Animated Positioned widget to expand and shrink the widget
+
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
-              top: 6.0,
               right: 7.0,
               curve: Curves.easeOut,
               child: AnimatedOpacity(
                 opacity: (toggle == 0) ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 200),
                 child: Container(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                     /// can add custom color or the color will be white
                     color: widget.color,
@@ -219,7 +225,6 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                           }
                         } catch (e) {
                           ///print the error if the try block fails
-                          print(e);
                         }
                       },
 
@@ -227,7 +232,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       child: widget.suffixIcon ??
                           Icon(
                             Icons.close,
-                            size: 20.0,
+                            size: MediaQuery.of(context).size.height * .020,
                             color: widget.textFieldIconColor,
                           ),
                     ),
@@ -237,9 +242,10 @@ class _AnimSearchBarState extends State<AnimSearchBar>
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
-              left: (toggle == 0) ? 20.0 : 40.0,
+              left: (toggle == 0)
+                  ? MediaQuery.of(context).size.height * .020
+                  : MediaQuery.of(context).size.height * .06,
               curve: Curves.easeOut,
-              top: 11.0,
 
               ///Using Animated opacity to change the opacity of th textField while expanding
               child: AnimatedOpacity(
@@ -254,9 +260,8 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                     controller: widget.textController,
                     inputFormatters: widget.inputFormatters,
                     focusNode: focusNode,
-                    cursorRadius: const Radius.circular(10.0),
-                    cursorWidth: 2.0,
-                    cursorHeight: MediaQuery.sizeOf(context).height * .022,
+
+                    // cursorHeight: MediaQuery.sizeOf(context).height * .02,
                     onChanged: (value) {
                       textFieldValue = value;
                       widget.onSubmitted(value);
@@ -279,19 +284,15 @@ class _AnimSearchBarState extends State<AnimSearchBar>
 
                     ///style is of type TextStyle, the default is just a color black
                     style: widget.style ?? const TextStyle(color: Colors.black),
-                    cursorColor: isDark || selectGameController.isDarkMode
-                        ? greyColor
-                        : whiteColor,
+                    cursorColor: widget.helpTextColor,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       labelText: widget.helpText,
                       labelStyle: TextStyle(
-                        color: isDark || selectGameController.isDarkMode
-                            ? greyColor
-                            : whiteColor,
-                        fontSize: 17.0,
+                        color: widget.helpTextColor ?? greyColor,
+                        fontSize: MediaQuery.of(context).size.height * .017,
                         fontWeight: FontWeight.w500,
                       ),
                       alignLabelWithHint: true,
@@ -304,65 +305,70 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Material(
+                /// can add custom color or the color will be white
+                /// toggle button color based on toggle state
+                color: toggle == 0 ? widget.color : widget.textFieldColor,
+                borderRadius: BorderRadius.circular(30.0),
+                child: IconButton(
+                  splashRadius: 19.0,
 
-            ///Using material widget here to get the ripple effect on the prefix icon
-            Material(
-              /// can add custom color or the color will be white
-              /// toggle button color based on toggle state
-              color: toggle == 0 ? widget.color : widget.textFieldColor,
-              borderRadius: BorderRadius.circular(30.0),
-              child: IconButton(
-                splashRadius: 19.0,
+                  ///if toggle is 1, which means it's open. so show the back icon, which will close it.
+                  ///if the toggle is 0, which means it's closed, so tapping on it will expand the widget.
+                  ///prefixIcon is of type Icon
+                  icon: widget.prefixIcon != null
+                      ? toggle == 1
+                          ? Icon(
+                              Icons.arrow_back_ios,
+                              color: widget.textFieldIconColor,
+                              size: MediaQuery.of(context).size.height * .020,
+                            )
+                          : widget.prefixIcon!
+                      : Icon(
+                          toggle == 1 ? Icons.arrow_back_ios : Icons.search,
+                          // search icon color when closed
+                          color: toggle == 0
+                              ? widget.searchIconColor
+                              : widget.textFieldIconColor,
+                          size: MediaQuery.of(context).size.height * .020,
+                        ),
+                  onPressed: () {
+                    setState(
+                      () {
+                        ///if the search bar is closed
+                        if (toggle == 0) {
+                          toggle = 1;
+                          setState(() {
+                            ///if the autoFocus is true, the keyboard will pop open, automatically
+                            if (widget.autoFocus) {
+                              FocusScope.of(context).requestFocus(focusNode);
+                            }
+                          });
 
-                ///if toggle is 1, which means it's open. so show the back icon, which will close it.
-                ///if the toggle is 0, which means it's closed, so tapping on it will expand the widget.
-                ///prefixIcon is of type Icon
-                icon: widget.prefixIcon != null
-                    ? toggle == 1
-                        ? Icon(
-                            Icons.arrow_back_ios,
-                            color: widget.textFieldIconColor,
-                          )
-                        : widget.prefixIcon!
-                    : Icon(
-                        toggle == 1 ? Icons.arrow_back_ios : Icons.search,
-                        // search icon color when closed
-                        color: toggle == 0
-                            ? widget.searchIconColor
-                            : widget.textFieldIconColor,
-                        size: 20.0,
-                      ),
-                onPressed: () {
-                  setState(
-                    () {
-                      ///if the search bar is closed
-                      if (toggle == 0) {
-                        toggle = 1;
-                        setState(() {
-                          ///if the autoFocus is true, the keyboard will pop open, automatically
-                          if (widget.autoFocus)
-                            FocusScope.of(context).requestFocus(focusNode);
-                        });
+                          ///forward == expand
+                          _con.forward();
+                        } else {
+                          ///if the search bar is expanded
+                          toggle = 0;
 
-                        ///forward == expand
-                        _con.forward();
-                      } else {
-                        ///if the search bar is expanded
-                        toggle = 0;
+                          ///if the autoFocus is true, the keyboard will close, automatically
+                          setState(() {
+                            if (widget.autoFocus) unfocusKeyboard();
+                          });
 
-                        ///if the autoFocus is true, the keyboard will close, automatically
-                        setState(() {
-                          if (widget.autoFocus) unfocusKeyboard();
-                        });
-
-                        ///reverse == close
-                        _con.reverse();
-                      }
-                    },
-                  );
-                },
+                          ///reverse == close
+                          _con.reverse();
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
             ),
+
+            ///Using material widget here to get the ripple effect on the prefix icon
           ],
         ),
       ),

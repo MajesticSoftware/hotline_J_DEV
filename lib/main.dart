@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hotlines/constant/shred_preference.dart';
@@ -28,13 +29,21 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        initialBinding: BaseBindings(),
-        home: SelectGameScreen());
+    return ScreenUtilInit(
+      designSize: const Size(810, 1080),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // Use builder only if you need to use library outside ScreenUtilInit context
+      builder: (_, child) {
+        return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            initialBinding: BaseBindings(),
+            home: SelectGameScreen());
+      },
+    );
   }
 }
 

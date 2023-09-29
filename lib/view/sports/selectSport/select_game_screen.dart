@@ -4,6 +4,7 @@ import 'package:animation_list/animation_list.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,156 +41,103 @@ class SelectGameScreen extends StatelessWidget {
         builder: (controller) {
           isDark = PreferenceManager.getIsDarkMode() ?? false;
           return Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            appBar: commonAppBar(context, controller),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: controller.isOpen
-                ? buildAnimSearchBar(controller, context)
-                    .paddingSymmetric(horizontal: Get.width * .03)
-                : const SizedBox(),
-            body: controller.isOpen1
-                ? tableDetailWidget(context, controller)
-                : AnimatedContainer(
-                    margin: EdgeInsets.only(top: controller.isOpen ? 800 : 0),
-                    transformAlignment: Alignment.bottomCenter,
-                    duration: const Duration(milliseconds: 500),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * .01,
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Wrap(
-                                runSpacing: 0,
-                                alignment: WrapAlignment.start,
-                                spacing: Get.height * .02,
-                                children: List.generate(
-                                  sportsLeagueList.length,
-                                  (index) => commonImageWidget(
-                                    sportsLeagueList[index].image,
-                                    sportsLeagueList[index].gameImage,
-                                    sportsLeagueList[index].gameName,
-                                    isComingSoon:
-                                        sportsLeagueList[index].isAvailable,
-                                    context,
-                                    onTap: sportsLeagueList[index]
-                                                .isAvailable ==
-                                            true
-                                        ? () {
-                                            controller.isOpen = true;
-                                            controller.sportKey =
-                                                sportsLeagueList[index].key;
-                                            controller.date =
-                                                sportsLeagueList[index].date;
-                                            controller.apiKey =
-                                                sportsLeagueList[index].apiKey;
-                                            controller.sportId =
-                                                sportsLeagueList[index].sportId;
-                                            controller.sportKey == 'MLB'
-                                                ? controller.setIsBack(false)
-                                                : controller.setIsBack1(false);
-                                            getResponse(true, controller).then(
-                                                (value) => Future.delayed(
-                                                        Duration(
-                                                            milliseconds: 500),
-                                                        () {
-                                                      controller.isOpen1 = true;
-                                                    }));
-
-                                            /* Get.to(
-                                      GameListingScreen(
-                                        sportKey: sportsLeagueList[index].key,
-                                        date: sportsLeagueList[index].date,
-                                        keys: sportsLeagueList[index].apiKey,
-                                        sportId:
-                                            sportsLeagueList[index].sportId,
-                                      ),
-                                      transition: Transition.downToUp,
-                                      duration: const Duration(seconds: 1));*/
-                                          }
-                                        : () {},
-                                  ),
-                                )),
-                          ),
-                          SizedBox(
-                            height: Get.height * .01,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              showDataAlert(context);
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * .14,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.height * .01),
-                                  color: Theme.of(context).primaryColor),
-                              child: Center(
-                                child: gambling.appCommonText(
-                                    color: Theme.of(context).cardColor,
-                                    size: Get.height * .025,
-                                    weight: FontWeight.w700,
-                                    align: TextAlign.center),
-                              ),
-                            ),
-                          ).paddingSymmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.height * .02,
-                          ),
-                          /* Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: wantToDownloadTheAppOnYourDevice,
-                            style: TextStyle(
-                                fontSize: Get.height * .022,
-                                color: darkGreyColor,
-                                fontWeight: FontWeight.w400),
-                            children: [
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => launchInBrowser(Uri.parse(
-                                        'https://www.hotlinesmd.com/contact')),
-                                  text: mobileView.size.shortestSide < 600
-                                      ? '\n$contactUs'
-                                      : contactUs,
-                                  style: TextStyle(
-                                      fontSize: Get.height * .022,
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w700))
-                            ]),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: Get.height * .015,
-                ),
-                (mobileView.size.shortestSide < 600 ? mobileMsg : msg)
-                    .appCommonText(
-                        color: Theme.of(context).dividerColor,
-                        size: Get.height * .016,
-                        weight: FontWeight.w300,
-                        fontStyle: FontStyle.italic,
+              resizeToAvoidBottomInset: false,
+              floatingActionButton: InkWell(
+                onTap: () {
+                  showDataAlert(context);
+                },
+                child: Container(
+                  height: 150.w,
+                  width: Get.width,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.r),
+                      color: Theme.of(context).primaryColor),
+                  child: Center(
+                    child: gambling.appCommonText(
+                        color: Theme.of(context).cardColor,
+                        size: 30.sp,
+                        weight: FontWeight.w700,
                         align: TextAlign.center),
-                SizedBox(
-                  height: Get.height * .02,
-                )*/
-                        ],
-                      ),
-                    ),
                   ),
-          );
+                ),
+              ).paddingAll(24.w),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              appBar: commonAppBar(context, controller),
+              body: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                    children: List.generate(
+                  sportsLeagueList.length,
+                  (index) {
+                    return Column(
+                      children: [
+                        commonImageWidget(
+                          sportsLeagueList[index].image,
+                          sportsLeagueList[index].gameImage,
+                          sportsLeagueList[index].gameName,
+                          isComingSoon: sportsLeagueList[index].isAvailable,
+                          context,
+                          onTap: sportsLeagueList[index].isAvailable == true
+                              ? () {
+                                  controller.isOpen = index;
+                                  controller.isOpen1 = !controller.isOpen1;
+                                  toggle = 0;
+                                  controller.sportKey =
+                                      sportsLeagueList[index].key;
+                                  controller.date =
+                                      sportsLeagueList[index].date;
+                                  controller.apiKey =
+                                      sportsLeagueList[index].apiKey;
+                                  controller.sportId =
+                                      sportsLeagueList[index].sportId;
+                                  controller.sportKey == 'MLB'
+                                      ? controller.setIsBack(false)
+                                      : controller.setIsBack1(false);
+                                }
+                              : () {},
+                        ),
+                        Visibility(
+                            visible: controller.isOpen == index &&
+                                controller.isOpen1,
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                AnimatedContainer(
+                                  transformAlignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    color: isDark ||
+                                            selectGameController.isDarkMode
+                                        ? blackColor
+                                        : whiteColor,
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                  curve: Curves.fastLinearToSlowEaseIn,
+                                  height: controller.isOpen == index &&
+                                          controller.isOpen1
+                                      ? MediaQuery.of(context).size.height / 2
+                                      : 0,
+                                  clipBehavior: Clip.antiAlias,
+                                  child: tableDetailWidget(context),
+                                ).paddingSymmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            .03),
+                                buildAnimSearchBar(controller, context)
+                                    .paddingSymmetric(
+                                        horizontal: Get.width * .05),
+                              ],
+                            )),
+                      ],
+                    );
+                  },
+                )).paddingOnly(
+                  bottom: MediaQuery.of(context).size.height * .3,
+                  top: MediaQuery.of(context).size.height * .01,
+                ),
+              ));
         });
   }
 
@@ -198,17 +146,18 @@ class SelectGameScreen extends StatelessWidget {
     return AnimSearchBar(
       rtl: true,
       width: Get.width,
-      color: isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+      color: yellowColor,
       style: defaultTextStyle(
           size: MediaQuery.sizeOf(context).height * .02,
           color: isDark || selectGameController.isDarkMode
               ? greyColor
               : whiteColor),
-      searchIconColor:
-          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+      searchIconColor: appColor,
       textFieldColor:
           isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
-      helpText: 'Search game here...',
+      helpText: 'Search team here...',
+      helpTextColor:
+          isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
       textFieldIconColor:
           isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
       textController: controller.searchCon,
@@ -222,7 +171,7 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  commonImageWidget(
+  Widget commonImageWidget(
       String image, String gameImage, String gameName, BuildContext context,
       {void Function()? onTap, bool isComingSoon = false}) {
     return Stack(
@@ -235,7 +184,7 @@ class SelectGameScreen extends StatelessWidget {
                   width: Get.width,
                   height: Get.height * .14,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Get.width * .02),
+                      borderRadius: BorderRadius.circular(15.r),
                       image: DecorationImage(
                         image: AssetImage(image),
                         fit: BoxFit.cover,
@@ -246,6 +195,9 @@ class SelectGameScreen extends StatelessWidget {
                           flex: 1,
                           child: SvgPicture.asset(
                             gameImage,
+                            height: MediaQuery.of(context).size.height * .1,
+                            width: MediaQuery.of(context).size.height * .1,
+                            fit: BoxFit.contain,
                           )),
                       (MediaQuery.of(context).size.height * .03).W(),
                       Expanded(
@@ -257,8 +209,7 @@ class SelectGameScreen extends StatelessWidget {
                             weight: FontWeight.w700),
                       )
                     ],
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .02),
+                  ).paddingSymmetric(horizontal: 20.w),
                 )
               : ColorFiltered(
                   colorFilter: ColorFilter.mode(
@@ -272,9 +223,7 @@ class SelectGameScreen extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                 ),
-        ).paddingSymmetric(
-            horizontal: MediaQuery.of(context).size.height * .02,
-            vertical: MediaQuery.of(context).size.height * .01),
+        ).paddingSymmetric(horizontal: 20.w, vertical: 10.w),
         isComingSoon
             ? const SizedBox()
             : SvgPicture.asset(
@@ -569,84 +518,101 @@ class SelectGameScreen extends StatelessWidget {
         });
   }
 
-  tableDetailWidget(BuildContext context, GameListingController controller) {
-    return Stack(
-      children: [
-        controller.isLoading.value
-            ? const SizedBox()
-            : controller.sportEventsList.isEmpty && controller.isLoading.value
-                ? emptyDataWidget(context)
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      return await getResponse(false, controller);
-                    },
-                    color: Theme.of(context).disabledColor,
-                    child: Column(
-                      children: [
-                        isDark || selectGameController.isDarkMode
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 1),
-                                child: commonDivider(context),
-                              )
-                            : const SizedBox(),
-                        tabTitleWidget(context),
-                        (MediaQuery.of(context).size.height * .01).H(),
-                        controller.searchCon.text.isEmpty
-                            ? Expanded(
-                                child: AnimationList(
-                                    duration: 1500,
-                                    reBounceDepth: 30,
-                                    primary: false,
-                                    clipBehavior: Clip.hardEdge,
-                                    children: List.generate(
-                                        controller.sportEventsList.length,
-                                        (index) => InkWell(
-                                            onTap: () {
-                                              log('ON TAP---$index');
-                                              Get.to(SportDetailsScreen(
-                                                gameDetails: controller
-                                                    .sportEventsList[index],
-                                                sportKey: controller.sportKey,
-                                                sportId: controller.sportId,
-                                                date: controller.date,
-                                              ));
-                                            },
-                                            child: teamWidget(
-                                                controller
-                                                    .sportEventsList[index],
-                                                context,
-                                                index: index)))),
-                              )
-                            : Expanded(
-                                child: AnimationList(
-                                    duration: 1500,
-                                    reBounceDepth: 10.0,
-                                    children: List.generate(
-                                        controller.searchList.length,
-                                        (index) => InkWell(
-                                            onTap: () {
-                                              log('ON TAP');
-                                              Get.to(SportDetailsScreen(
-                                                gameDetails: controller
-                                                    .searchList[index],
-                                                sportKey: controller.sportKey,
-                                                sportId: controller.sportId,
-                                                date: controller.date,
-                                              ));
-                                            },
-                                            child: teamSearchWidget(
-                                                controller.searchList[index],
-                                                context,
-                                                index: index)))),
-                              ),
-                      ],
+  Widget tableDetailWidget(BuildContext context) {
+    return GetBuilder<GameListingController>(initState: (state) async {
+      await getResponse(true, gameListingController);
+    }, builder: (controller) {
+      return Stack(
+        children: [
+          controller.isLoading.value
+              ? const SizedBox()
+              : controller.sportEventsList.isEmpty && controller.isLoading.value
+                  ? emptyDataWidget(context)
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        return await getResponse(false, controller);
+                      },
+                      color: Theme.of(context).disabledColor,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          tabTitleWidget(context),
+                          (MediaQuery.of(context).size.height * .01).H(),
+                          controller.searchCon.text.isEmpty
+                              ? Expanded(
+                                  child: AnimationList(
+                                      duration: 1500,
+                                      reBounceDepth: 30,
+                                      primary: false,
+                                      physics: const BouncingScrollPhysics(),
+                                      // shrinkWrap: true,
+                                      // clipBehavior: Clip.hardEdge,
+                                      children: List.generate(
+                                          controller.sportEventsList.length,
+                                          (index) => GestureDetector(
+                                              onTap: () {
+                                                log('ON TAP---$index');
+                                                toggle = 0;
+                                                controller.searchCon.clear();
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                Get.to(
+                                                    SportDetailsScreen(
+                                                      gameDetails: controller
+                                                              .sportEventsList[
+                                                          index],
+                                                      sportKey:
+                                                          controller.sportKey,
+                                                      sportId:
+                                                          controller.sportId,
+                                                      date: controller.date,
+                                                    ),
+                                                    transition:
+                                                        Transition.cupertino,
+                                                    duration: const Duration(
+                                                        milliseconds: 500));
+                                              },
+                                              child: teamWidget(
+                                                  controller
+                                                      .sportEventsList[index],
+                                                  context,
+                                                  index: index)))),
+                                )
+                              : Expanded(
+                                  child: AnimationList(
+                                      duration: 1500,
+                                      reBounceDepth: 10.0,
+                                      children: List.generate(
+                                          controller.searchList.length,
+                                          (index) => InkWell(
+                                              onTap: () {
+                                                log('ON TAP');
+                                                toggle = 0;
+                                                controller.searchCon.clear();
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                Get.to(SportDetailsScreen(
+                                                  gameDetails: controller
+                                                      .searchList[index],
+                                                  sportKey: controller.sportKey,
+                                                  sportId: controller.sportId,
+                                                  date: controller.date,
+                                                ));
+                                              },
+                                              child: teamSearchWidget(
+                                                  controller.searchList[index],
+                                                  context,
+                                                  index: index)))),
+                                ),
+                        ],
+                      ),
                     ),
-                  ),
-        Obx(() =>
-            controller.isLoading.value ? const AppProgress() : const SizedBox())
-      ],
-    );
+          Obx(() => controller.isLoading.value
+              ? const AppProgress()
+              : const SizedBox())
+        ],
+      );
+    });
   }
 
   Future getResponse(bool isLoad, GameListingController controller) async {
@@ -1396,167 +1362,116 @@ class SelectGameScreen extends StatelessWidget {
   PreferredSize commonAppBar(
       BuildContext context, GameListingController controller) {
     return PreferredSize(
-        preferredSize: const Size.fromHeight(147.0),
+        preferredSize: Size.fromHeight(125.w),
         child: AnimatedContainer(
-          height: MediaQuery.of(context).size.height * .12,
           alignment: Alignment.bottomCenter,
           color: Theme.of(context).secondaryHeaderColor,
           duration: const Duration(milliseconds: 500),
           child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height * .02,
-                left: MediaQuery.of(context).size.width * .04,
-                right: MediaQuery.of(context).size.width * .04),
+            padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                controller.isOpen
-                    ? InkWell(
+                transperWidget(context),
+                Expanded(
+                  child: SvgPicture.asset(Assets.imagesLogo,
+                      height: 34.w, fit: BoxFit.contain),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                          color: isDark || controller.isDarkMode
+                              ? blackColor
+                              : Colors.transparent,
+                          width: 2),
+                      color: isDark || controller.isDarkMode
+                          ? blackColor
+                          : dividerColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
                         onTap: () {
-                          controller.isOpen = false;
-                          controller.isOpen1 = false;
-                          controller.sportKey == 'MLB'
-                              ? controller.setIsBack(true)
-                              : controller.setIsBack1(true);
-                          controller.timer = null;
-                          controller.timerNCAA = null;
-                          controller.sportEventsList.clear();
-                          FocusScope.of(context).unfocus();
-                          Get.back();
+                          PreferenceManager.setIsDarkMod(false);
+                          Get.changeThemeMode(ThemeMode.light);
+                          controller.isDarkMode = false;
+                          isDark = false;
+                          controller.update();
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: SvgPicture.asset(
-                            Assets.imagesBackArrow,
-                            height: MediaQuery.of(context).size.height * .02,
-                            alignment: Alignment.centerLeft,
-                          ),
-                        ),
-                      )
-                    : transperWidget(context),
-                SvgPicture.asset(Assets.imagesLogo,
-                    height: MediaQuery.of(context).size.height * .025,
-                    fit: BoxFit.fill),
-                controller.isOpen
-                    ? controller.sportKey.appCommonText(
-                        color: whiteColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w700,
-                        size: Get.height * .024)
-                    : Container(
-                        height: MediaQuery.of(context).size.height * .033,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * .005),
-                            border: Border.all(
+                          padding: EdgeInsets.all(2.sp),
+                          child: Container(
+                            width: 40.w,
+                            height: 36.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.horizontal(
+                                    left: Radius.circular(8.r)),
                                 color: isDark || controller.isDarkMode
                                     ? blackColor
-                                    : Colors.transparent,
-                                width: 2),
-                            color: isDark || controller.isDarkMode
-                                ? blackColor
-                                : dividerColor),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                PreferenceManager.setIsDarkMod(false);
-                                Get.changeThemeMode(ThemeMode.light);
-                                controller.isDarkMode = false;
-                                isDark = false;
-                                controller.update();
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * .002),
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * .039,
-                                  height:
-                                      MediaQuery.of(context).size.height * .04,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.horizontal(
-                                          left: Radius.circular(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .005)),
-                                      color: isDark || controller.isDarkMode
-                                          ? blackColor
-                                          : whiteColor),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        Assets.imagesSunLight,
-                                        // ignore: deprecated_member_use
-                                        color: isDark || controller.isDarkMode
-                                            ? darkSunColor
-                                            : blackColor,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .02,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .02,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
-                                  ),
+                                    : whiteColor),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  Assets.imagesSunLight,
+                                  // ignore: deprecated_member_use
+                                  color: isDark || controller.isDarkMode
+                                      ? darkSunColor
+                                      : blackColor,
+                                  width: 24.w,
+                                  height: 24.w,
+                                  fit: BoxFit.contain,
                                 ),
-                              ),
+                              ],
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                PreferenceManager.setIsDarkMod(true);
-                                Get.changeThemeMode(ThemeMode.dark);
-                                controller.isDarkMode = true;
-                                isDark = true;
-                                controller.update();
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * .039,
-                                height:
-                                    MediaQuery.of(context).size.height * .04,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.horizontal(
-                                        right: Radius.circular(
-                                            MediaQuery.of(context).size.width *
-                                                .005)),
-                                    color: isDark || controller.isDarkMode
-                                        ? darkBackGroundColor
-                                        : dividerColor),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      Assets.imagesMoon,
-                                      // ignore: deprecated_member_use
-                                      color: isDark || controller.isDarkMode
-                                          ? whiteColor
-                                          : greyDarkColor,
-                                      width: MediaQuery.of(context).size.width *
-                                          .02,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .02,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      )
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          PreferenceManager.setIsDarkMod(true);
+                          Get.changeThemeMode(ThemeMode.dark);
+                          controller.isDarkMode = true;
+                          isDark = true;
+                          controller.update();
+                        },
+                        child: Container(
+                          width: 40.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.horizontal(
+                                  right: Radius.circular(8.r)),
+                              color: isDark || controller.isDarkMode
+                                  ? darkBackGroundColor
+                                  : dividerColor),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.imagesMoon,
+                                // ignore: deprecated_member_use
+                                color: isDark || controller.isDarkMode
+                                    ? whiteColor
+                                    : greyDarkColor,
+                                width: 24.w,
+                                height: 24.w,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
         ));
   }
 
-  Container transperWidget(BuildContext context) {
+  transperWidget(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * .033,
       decoration: BoxDecoration(
@@ -1627,11 +1542,11 @@ class SelectGameScreen extends StatelessWidget {
 
   Container tabTitleWidget(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * .05,
+        // height: MediaQuery.of(context).size.height * .05,
         decoration:
             BoxDecoration(color: Theme.of(context).secondaryHeaderColor),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

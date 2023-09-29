@@ -9,11 +9,13 @@ import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/ncaa_boxcore_model.dart';
+import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
+import '../../../utils/animated_search.dart';
 import '../../../utils/extension.dart';
 
 class GameListingController extends GetxController {
@@ -31,11 +33,11 @@ class GameListingController extends GetxController {
     update();
   }
 
-  bool _isOpen = false;
+  int _isOpen = -1;
 
-  bool get isOpen => _isOpen;
+  int get isOpen => _isOpen;
 
-  set isOpen(bool value) {
+  set isOpen(int value) {
     _isOpen = value;
     update();
   }
@@ -95,6 +97,19 @@ class GameListingController extends GetxController {
   setIsBack1(bool value) {
     _isBack1 = value;
     update();
+  }
+
+  backScreen(BuildContext context) {
+    isOpen = -1;
+    isOpen1 = false;
+    sportKey == 'MLB' ? setIsBack(true) : setIsBack1(true);
+    timer = null;
+    timerNCAA = null;
+    sportEventsList.clear();
+    toggle = 0;
+    searchCon.clear();
+    FocusScope.of(context).unfocus();
+    Get.back();
   }
 
   searchData(String text) {
@@ -478,6 +493,45 @@ class GameListingController extends GetxController {
     update();
   }
 
+  ///NCAA RANKING
+  Future ncaaGameRanking(
+      {String awayTeamId = '',
+      String homeTeamId = '',
+      bool isLoad = false,
+      required SportEvents gameDetails}) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().ncaaGameRanking();
+    try {
+      if (result.status) {
+        RankingModel response = RankingModel.fromJson(result.data);
+        if (response.rankings != null) {
+          response.rankings?.forEach((player) {
+            if (player.id.toString() == homeTeamId) {
+              gameDetails.homeRank = player.rank.toString();
+            }
+            if (player.id.toString() == awayTeamId) {
+              gameDetails.awayRank = player.rank.toString();
+            }
+          });
+        }
+      } else {
+        isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR NCAA RANKING-------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
   ///GAME LISTING FOR ALL GAME
   Timer? timer;
   Timer? timerNCAA;
@@ -519,6 +573,16 @@ class GameListingController extends GetxController {
                     key: sportKey,
                     gameId: replaceId(sportEventsList[i].uuids ?? ''),
                     index: i);
+                ncaaGameRanking(
+                  isLoad: false,
+                  gameDetails: sportEventsList[i],
+                  homeTeamId: replaceId(
+                          sportEventsList[i].competitors[0].uuids ?? '') ??
+                      "",
+                  awayTeamId: replaceId(
+                          sportEventsList[i].competitors[1].uuids ?? '') ??
+                      "",
+                );
               }
             }
           }
