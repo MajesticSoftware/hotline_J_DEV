@@ -1080,10 +1080,9 @@ Container quarterBacksHeader(BuildContext context, Competitors? awayTeam,
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .01,
                 ),
-                (/*con.isQuarterBacksTab
+                (con.isQuarterBacksTab
                         ? gameDetails.awayPlayerName
-                        : gameDetails.homePlayerName*/
-                        "Offense")
+                        : gameDetails.homePlayerName)
                     .appCommonText(
                   weight: FontWeight.bold,
                   maxLine: 1,

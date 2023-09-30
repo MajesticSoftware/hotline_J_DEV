@@ -36,18 +36,24 @@ class SelectGameScreen extends StatelessWidget {
   bool isDark = false;
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GameListingController>(
-        initState: (state) async {},
-        builder: (controller) {
-          isDark = PreferenceManager.getIsDarkMode() ?? false;
-          return Scaffold(
-              resizeToAvoidBottomInset: false,
-              floatingActionButton: InkWell(
+    return GetBuilder<GameListingController>(initState: (state) async {
+      return await gameListingController.getGameListingForNFLGame(true,
+          apiKey: gameListingController.apiKey,
+          sportKey: gameListingController.sportKey,
+          date: gameListingController.date,
+          sportId: gameListingController.sportId);
+    }, builder: (controller) {
+      isDark = PreferenceManager.getIsDarkMode() ?? false;
+      return Scaffold(
+          // resizeToAvoidBottomInset: false,
+          floatingActionButton: buildAnimSearchBar(controller, context)
+              .paddingSymmetric(horizontal: Get.width * .05),
+          /* InkWell(
                 onTap: () {
                   showDataAlert(context);
                 },
                 child: Container(
-                  height: 150.w,
+                  height: Get.height * .14,
                   width: Get.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.r),
@@ -60,34 +66,33 @@ class SelectGameScreen extends StatelessWidget {
                         align: TextAlign.center),
                   ),
                 ),
-              ).paddingAll(24.w),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: commonAppBar(context, controller),
-              body: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
+              ).paddingAll(24.w),*/
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: commonAppBar(context, controller),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
-                  sportsLeagueList.length,
-                  (index) {
-                    return Column(
-                      children: [
-                        commonImageWidget(
+                      sportsLeagueList.length,
+                      (index) {
+                        return commonImageWidget(
                           sportsLeagueList[index].image,
                           sportsLeagueList[index].gameImage,
                           sportsLeagueList[index].gameName,
                           isComingSoon: sportsLeagueList[index].isAvailable,
                           context,
+                          index,
                           onTap: sportsLeagueList[index].isAvailable == true
                               ? () {
-                                  controller.isOpen = index;
-                                  controller.isOpen1 = !controller.isOpen1;
                                   toggle = 0;
-                                  controller.sportKey =
-                                      sportsLeagueList[index].key;
                                   controller.date =
                                       sportsLeagueList[index].date;
+                                  controller.sportKey =
+                                      sportsLeagueList[index].key;
                                   controller.apiKey =
                                       sportsLeagueList[index].apiKey;
                                   controller.sportId =
@@ -95,56 +100,42 @@ class SelectGameScreen extends StatelessWidget {
                                   controller.sportKey == 'MLB'
                                       ? controller.setIsBack(false)
                                       : controller.setIsBack1(false);
+                                  Future.delayed(const Duration(seconds: 0),
+                                      () {
+                                    gameListingController.getResponse(
+                                        true, sportsLeagueList[index].key);
+                                  });
                                 }
                               : () {},
-                        ),
-                        Visibility(
-                            visible: controller.isOpen == index &&
-                                controller.isOpen1,
-                            child: Stack(
-                              alignment: Alignment.bottomRight,
-                              children: [
-                                AnimatedContainer(
-                                  transformAlignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    color: isDark ||
-                                            selectGameController.isDarkMode
-                                        ? blackColor
-                                        : whiteColor,
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                  curve: Curves.fastLinearToSlowEaseIn,
-                                  height: controller.isOpen == index &&
-                                          controller.isOpen1
-                                      ? MediaQuery.of(context).size.height / 2
-                                      : 0,
-                                  clipBehavior: Clip.antiAlias,
-                                  child: tableDetailWidget(context),
-                                ).paddingSymmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            .03),
-                                buildAnimSearchBar(controller, context)
-                                    .paddingSymmetric(
-                                        horizontal: Get.width * .05),
-                              ],
-                            )),
-                      ],
-                    );
-                  },
-                )).paddingOnly(
-                  bottom: MediaQuery.of(context).size.height * .3,
-                  top: MediaQuery.of(context).size.height * .01,
+                        );
+                      },
+                    )).paddingAll(
+                  20.w,
                 ),
-              ));
-        });
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.r),
+                    color: isDark || selectGameController.isDarkMode
+                        ? blackColor
+                        : whiteColor,
+                  ),
+                  height: MediaQuery.of(context).size.height / 1.78.h,
+                  width: Get.width,
+                  clipBehavior: Clip.antiAlias,
+                  child: tableDetailWidget(context, controller.sportKey),
+                ).paddingSymmetric(
+                    horizontal: MediaQuery.of(context).size.width * .03),
+              ],
+            ),
+          ));
+    });
   }
 
   AnimSearchBar buildAnimSearchBar(
       GameListingController controller, BuildContext context) {
     return AnimSearchBar(
       rtl: true,
+      autoFocus: true,
       width: Get.width,
       color: yellowColor,
       style: defaultTextStyle(
@@ -163,6 +154,7 @@ class SelectGameScreen extends StatelessWidget {
       textController: controller.searchCon,
       onSuffixTap: () {
         controller.searchCon.clear();
+        controller.update();
       },
       onSubmitted: (String text) {
         controller.searchData(text);
@@ -171,67 +163,54 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  Widget commonImageWidget(
-      String image, String gameImage, String gameName, BuildContext context,
+  Widget commonImageWidget(String image, String gameImage, String gameName,
+      BuildContext context, int index,
       {void Function()? onTap, bool isComingSoon = false}) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: isComingSoon
-              ? Container(
-                  width: Get.width,
-                  height: Get.height * .14,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.r),
-                      image: DecorationImage(
-                        image: AssetImage(image),
-                        fit: BoxFit.cover,
-                      )),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: SvgPicture.asset(
-                            gameImage,
-                            height: MediaQuery.of(context).size.height * .1,
-                            width: MediaQuery.of(context).size.height * .1,
-                            fit: BoxFit.contain,
-                          )),
-                      (MediaQuery.of(context).size.height * .03).W(),
-                      Expanded(
-                        flex: 3,
-                        child: gameName.appCommonText(
-                            color: Colors.white,
-                            align: TextAlign.start,
-                            size: MediaQuery.of(context).size.height * .025,
-                            weight: FontWeight.w700),
-                      )
-                    ],
-                  ).paddingSymmetric(horizontal: 20.w),
-                )
-              : ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context)
-                          .scaffoldBackgroundColor
-                          .withOpacity(0.5),
-                      BlendMode.dstATop),
-                  child: Image.asset(
-                    image,
-                    width: Get.width * .29,
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: Get.height * .05,
+          margin: EdgeInsets.only(right: index == 2 ? 0 : 20.w),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.r),
+              image: gameListingController.sportKey == gameName
+                  ? DecorationImage(
+                      image: AssetImage(image),
+                      fit: BoxFit.cover,
+                    )
+                  : DecorationImage(
+                      image: AssetImage(image),
+                      colorFilter: ColorFilter.mode(
+                          Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.6),
+                          BlendMode.dstATop),
+                      fit: BoxFit.cover,
+                    )),
+          child: Row(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: SvgPicture.asset(
+                    gameImage,
+                    height: MediaQuery.of(context).size.height * .14,
+                    width: MediaQuery.of(context).size.height * .14,
                     fit: BoxFit.contain,
-                  ),
-                ),
-        ).paddingSymmetric(horizontal: 20.w, vertical: 10.w),
-        isComingSoon
-            ? const SizedBox()
-            : SvgPicture.asset(
-                Assets.imagesCommingSoon,
-                width: Get.width * .2,
-                fit: BoxFit.contain,
-              ),
-      ],
+                  )),
+              (MediaQuery.of(context).size.height * .01).W(),
+              Expanded(
+                flex: 3,
+                child: gameName.appCommonText(
+                    color: Colors.white,
+                    align: TextAlign.start,
+                    size: MediaQuery.of(context).size.height * .018,
+                    weight: FontWeight.w700),
+              )
+            ],
+          ).paddingSymmetric(horizontal: 20.w),
+        ),
+      ),
     );
   }
 
@@ -518,160 +497,167 @@ class SelectGameScreen extends StatelessWidget {
         });
   }
 
-  Widget tableDetailWidget(BuildContext context) {
-    return GetBuilder<GameListingController>(initState: (state) async {
-      await getResponse(true, gameListingController);
-    }, builder: (controller) {
-      return Stack(
-        children: [
-          controller.isLoading.value
-              ? const SizedBox()
-              : controller.sportEventsList.isEmpty && controller.isLoading.value
-                  ? emptyDataWidget(context)
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        return await getResponse(false, controller);
-                      },
-                      color: Theme.of(context).disabledColor,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          tabTitleWidget(context),
-                          (MediaQuery.of(context).size.height * .01).H(),
-                          controller.searchCon.text.isEmpty
-                              ? Expanded(
-                                  child: AnimationList(
-                                      duration: 1500,
-                                      reBounceDepth: 30,
-                                      primary: false,
-                                      physics: const BouncingScrollPhysics(),
-                                      // shrinkWrap: true,
-                                      // clipBehavior: Clip.hardEdge,
-                                      children: List.generate(
-                                          controller.sportEventsList.length,
-                                          (index) => GestureDetector(
-                                              onTap: () {
-                                                log('ON TAP---$index');
-                                                toggle = 0;
-                                                controller.searchCon.clear();
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                Get.to(
-                                                    SportDetailsScreen(
-                                                      gameDetails: controller
+  Widget tableDetailWidget(BuildContext context, String sportKey) {
+    return GetBuilder<GameListingController>(
+        initState: (state) async {},
+        builder: (controller) {
+          // log('length--${controller.sportEventsList.length}');
+          return Stack(
+            children: [
+              tabTitleWidget(context),
+              controller.isLoading.value
+                  ? const SizedBox()
+                  : controller.sportEventsList.isEmpty &&
+                          !controller.isLoading.value
+                      ? emptyDataWidget(context)
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            gameListingController.getResponse(true, sportKey);
+                          },
+                          color: Theme.of(context).disabledColor,
+                          child: Column(
+                            children: [
+                              80.w.H(),
+                              controller.searchCon.text.isEmpty
+                                  ? Expanded(
+                                      child: AnimationList(
+                                          duration: 1500,
+                                          reBounceDepth: 30,
+                                          primary: false,
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          // shrinkWrap: true,
+                                          // clipBehavior: Clip.hardEdge,
+                                          children: List.generate(
+                                              controller.sportEventsList.length,
+                                              (index) => GestureDetector(
+                                                  onTap: () {
+                                                    log('ON TAP---$index');
+                                                    toggle = 0;
+                                                    controller.searchCon
+                                                        .clear();
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    Get.to(
+                                                        SportDetailsScreen(
+                                                          gameDetails: controller
+                                                                  .sportEventsList[
+                                                              index],
+                                                          sportKey: controller
+                                                              .sportKey,
+                                                          sportId: controller
+                                                              .sportId,
+                                                          date: controller.date,
+                                                        ),
+                                                        transition: Transition
+                                                            .cupertino,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500));
+                                                  },
+                                                  child: teamWidget(
+                                                      controller
                                                               .sportEventsList[
                                                           index],
+                                                      context,
+                                                      index:
+                                                          index)))).paddingOnly(
+                                          top: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01),
+                                    )
+                                  : Expanded(
+                                      child: AnimationList(
+                                          duration: 1500,
+                                          reBounceDepth: 10.0,
+                                          children: List.generate(
+                                              controller.searchList.length,
+                                              (index) => InkWell(
+                                                  onTap: () {
+                                                    log('ON TAP');
+                                                    toggle = 0;
+                                                    controller.searchCon
+                                                        .clear();
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    Get.to(SportDetailsScreen(
+                                                      gameDetails: controller
+                                                          .searchList[index],
                                                       sportKey:
                                                           controller.sportKey,
                                                       sportId:
                                                           controller.sportId,
                                                       date: controller.date,
-                                                    ),
-                                                    transition:
-                                                        Transition.cupertino,
-                                                    duration: const Duration(
-                                                        milliseconds: 500));
-                                              },
-                                              child: teamWidget(
-                                                  controller
-                                                      .sportEventsList[index],
-                                                  context,
-                                                  index: index)))),
-                                )
-                              : Expanded(
-                                  child: AnimationList(
-                                      duration: 1500,
-                                      reBounceDepth: 10.0,
-                                      children: List.generate(
-                                          controller.searchList.length,
-                                          (index) => InkWell(
-                                              onTap: () {
-                                                log('ON TAP');
-                                                toggle = 0;
-                                                controller.searchCon.clear();
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                Get.to(SportDetailsScreen(
-                                                  gameDetails: controller
-                                                      .searchList[index],
-                                                  sportKey: controller.sportKey,
-                                                  sportId: controller.sportId,
-                                                  date: controller.date,
-                                                ));
-                                              },
-                                              child: teamSearchWidget(
-                                                  controller.searchList[index],
-                                                  context,
-                                                  index: index)))),
-                                ),
-                        ],
-                      ),
-                    ),
-          Obx(() => controller.isLoading.value
-              ? const AppProgress()
-              : const SizedBox())
-        ],
-      );
-    });
+                                                    ));
+                                                  },
+                                                  child: teamSearchWidget(
+                                                      controller
+                                                          .searchList[index],
+                                                      context,
+                                                      index:
+                                                          index)))).paddingOnly(
+                                          top: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .01),
+                                    ),
+                            ],
+                          ),
+                        ),
+              Obx(() => controller.isLoading.value
+                  ? const AppProgress()
+                  : const SizedBox())
+            ],
+          );
+        });
   }
 
-  Future getResponse(bool isLoad, GameListingController controller) async {
-    if (controller.sportKey == 'MLB') {
-      return await controller.getGameListingForMLBRes(isLoad,
-          apiKey: controller.apiKey,
-          sportKey: controller.sportKey,
-          date: controller.date,
-          sportId: controller.sportId);
-    } else if (controller.sportKey == 'NFL') {
-      return await controller.getGameListingForNFLGame(isLoad,
-          apiKey: controller.apiKey,
-          sportKey: controller.sportKey,
-          date: controller.date,
-          sportId: controller.sportId);
-    } else {
-      return controller.getGameListingForNCAAGame(isLoad,
-          apiKey: controller.apiKey,
-          sportKey: controller.sportKey,
-          date: controller.date,
-          sportId: controller.sportId);
-    }
-  }
-
-  Center emptyDataWidget(BuildContext context) {
-    return Center(
-        child: Stack(
+  Widget emptyDataWidget(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          Assets.imagesNodataImage,
-          width: MediaQuery.of(context).size.width * .349,
-          height: MediaQuery.of(context).size.height * .329,
-          fit: BoxFit.contain,
-        ),
-        Positioned(
-          bottom: MediaQuery.of(context).size.height * .07,
-          left: MediaQuery.of(context).size.height * .08,
-          child: GestureDetector(
-              onTap: () {
-                Get.back();
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.height * .032,
+        SizedBox(
+          width: Get.width,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                Assets.imagesNodataImage,
+                width: MediaQuery.of(context).size.width * .349,
+                height: MediaQuery.of(context).size.height * .329,
+                fit: BoxFit.fill,
+              ),
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * .07,
                 width: MediaQuery.of(context).size.width * .34,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Theme.of(context).backgroundColor),
-                child: Center(
-                  child: backButton.appCommonText(
-                      color: whiteColor,
-                      size: mobileView.size.shortestSide < 600
-                          ? MediaQuery.of(context).size.height * .012
-                          : MediaQuery.of(context).size.height * .014,
-                      weight: FontWeight.w500),
-                ),
-              )),
-        )
+                child: GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * .032,
+                      width: MediaQuery.of(context).size.width * .34,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Theme.of(context).backgroundColor),
+                      child: Center(
+                        child: backButton.appCommonText(
+                            color: whiteColor,
+                            size: mobileView.size.shortestSide < 600
+                                ? MediaQuery.of(context).size.height * .012
+                                : MediaQuery.of(context).size.height * .014,
+                            weight: FontWeight.w500),
+                      ),
+                    )),
+              )
+            ],
+          ),
+        ),
       ],
-    ));
+    );
   }
 
   teamWidget(SportEvents competitors, BuildContext context, {int index = 0}) {
@@ -715,28 +701,95 @@ class SelectGameScreen extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    commonCachedNetworkImage(
-                                      width: Get.height * .044,
-                                      height: Get.height * .044,
-                                      imageUrl: gameListingController
-                                                  .sportEventsList[index]
-                                                  .awayTeam ==
-                                              'North Carolina State Wolfpack'
-                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                          : gameListingController
+                                    Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        commonCachedNetworkImage(
+                                          width: Get.height * .044,
+                                          height: Get.height * .044,
+                                          imageUrl: gameListingController
                                                       .sportEventsList[index]
                                                       .awayTeam ==
-                                                  'Louisiana-Lafayette Ragin Cajuns'
-                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                  'North Carolina State Wolfpack'
+                                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                               : gameListingController
                                                           .sportEventsList[
                                                               index]
                                                           .awayTeam ==
-                                                      'Sam Houston State Bearkats'
-                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                  : competitors
-                                                      .gameLogoAwayLink,
+                                                      'Louisiana-Lafayette Ragin Cajuns'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                  : gameListingController
+                                                              .sportEventsList[
+                                                                  index]
+                                                              .awayTeam ==
+                                                          'Sam Houston State Bearkats'
+                                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                      : competitors
+                                                          .gameLogoAwayLink,
+                                        ),
+                                        Positioned(
+                                          top: -8.w,
+                                          right: -2.w,
+                                          child: Text(
+                                            gameListingController
+                                                        .sportEventsList[index]
+                                                        .awayRank ==
+                                                    '0'
+                                                ? ''
+                                                : gameListingController
+                                                    .sportEventsList[index]
+                                                    .awayRank,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .018,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 6
+                                                ..color = whiteColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: -6,
+                                          right: -3,
+                                          child: (gameListingController
+                                                          .sportEventsList[
+                                                              index]
+                                                          .awayRank ==
+                                                      '0'
+                                                  ? ''
+                                                  : gameListingController
+                                                      .sportEventsList[index]
+                                                      .awayRank)
+                                              .appCommonText(
+                                                  letterSpacing: 1,
+                                                  color: (num.tryParse(gameListingController
+                                                                  .sportEventsList[
+                                                                      index]
+                                                                  .awayRank) ??
+                                                              0) <=
+                                                          12
+                                                      ? Colors.green
+                                                      : (num.tryParse(gameListingController
+                                                                      .sportEventsList[
+                                                                          index]
+                                                                      .awayRank) ??
+                                                                  0) >=
+                                                              15
+                                                          ? redColor
+                                                          : Colors.amber,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .019,
+                                                  weight: FontWeight.bold),
+                                        )
+                                      ],
                                     ),
+
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
@@ -789,27 +842,93 @@ class SelectGameScreen extends StatelessWidget {
                                 5.H(),
                                 Row(
                                   children: [
-                                    commonCachedNetworkImage(
-                                        width: Get.height * .044,
-                                        height: Get.height * .044,
-                                        imageUrl: gameListingController
-                                                    .sportEventsList[index]
-                                                    .homeTeam ==
-                                                'North Carolina State Wolfpack'
-                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                            : gameListingController
+                                    Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        commonCachedNetworkImage(
+                                            width: Get.height * .044,
+                                            height: Get.height * .044,
+                                            imageUrl: gameListingController
                                                         .sportEventsList[index]
                                                         .homeTeam ==
-                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                    'North Carolina State Wolfpack'
+                                                ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                                 : gameListingController
                                                             .sportEventsList[
                                                                 index]
                                                             .homeTeam ==
-                                                        'Sam Houston State Bearkats'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : competitors
-                                                        .gameHomeLogoLink),
+                                                        'Louisiana-Lafayette Ragin Cajuns'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                    : gameListingController
+                                                                .sportEventsList[
+                                                                    index]
+                                                                .homeTeam ==
+                                                            'Sam Houston State Bearkats'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                        : competitors
+                                                            .gameHomeLogoLink),
+                                        Positioned(
+                                          top: -8,
+                                          right: -2,
+                                          child: Text(
+                                            gameListingController
+                                                        .sportEventsList[index]
+                                                        .homeRank ==
+                                                    '0'
+                                                ? ''
+                                                : gameListingController
+                                                    .sportEventsList[index]
+                                                    .homeRank,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .018,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 6
+                                                ..color = whiteColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: -8,
+                                          right: -3,
+                                          child: (gameListingController
+                                                          .sportEventsList[
+                                                              index]
+                                                          .homeRank ==
+                                                      '0'
+                                                  ? ''
+                                                  : gameListingController
+                                                      .sportEventsList[index]
+                                                      .homeRank)
+                                              .appCommonText(
+                                                  letterSpacing: 1,
+                                                  color: (num.tryParse(gameListingController
+                                                                  .sportEventsList[
+                                                                      index]
+                                                                  .homeRank) ??
+                                                              0) <=
+                                                          12
+                                                      ? Colors.green
+                                                      : (num.tryParse(gameListingController
+                                                                      .sportEventsList[
+                                                                          index]
+                                                                      .homeRank) ??
+                                                                  0) >=
+                                                              15
+                                                          ? redColor
+                                                          : Colors.amber,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .019,
+                                                  weight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
@@ -1060,25 +1179,89 @@ class SelectGameScreen extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    commonCachedNetworkImage(
-                                      width: Get.height * .044,
-                                      height: Get.height * .044,
-                                      imageUrl: gameListingController
-                                                  .searchList[index].awayTeam ==
-                                              'North Carolina State Wolfpack'
-                                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                          : gameListingController
+                                    Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        commonCachedNetworkImage(
+                                          width: Get.height * .044,
+                                          height: Get.height * .044,
+                                          imageUrl: gameListingController
                                                       .searchList[index]
                                                       .awayTeam ==
-                                                  'Louisiana-Lafayette Ragin Cajuns'
-                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                  'North Carolina State Wolfpack'
+                                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                               : gameListingController
                                                           .searchList[index]
                                                           .awayTeam ==
-                                                      'Sam Houston State Bearkats'
-                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                  : competitors
-                                                      .gameLogoAwayLink,
+                                                      'Louisiana-Lafayette Ragin Cajuns'
+                                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                  : gameListingController
+                                                              .searchList[index]
+                                                              .awayTeam ==
+                                                          'Sam Houston State Bearkats'
+                                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                      : competitors
+                                                          .gameLogoAwayLink,
+                                        ),
+                                        Positioned(
+                                          top: -8.w,
+                                          right: -2.w,
+                                          child: Text(
+                                            gameListingController
+                                                        .searchList[index]
+                                                        .awayRank ==
+                                                    '0'
+                                                ? ''
+                                                : gameListingController
+                                                    .searchList[index].awayRank,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .018,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 6
+                                                ..color = whiteColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: -6,
+                                          right: -3,
+                                          child: (gameListingController
+                                                          .searchList[index]
+                                                          .awayRank ==
+                                                      '0'
+                                                  ? ''
+                                                  : gameListingController
+                                                      .searchList[index]
+                                                      .awayRank)
+                                              .appCommonText(
+                                                  letterSpacing: 1,
+                                                  color: (num.tryParse(gameListingController
+                                                                  .searchList[
+                                                                      index]
+                                                                  .awayRank) ??
+                                                              0) <=
+                                                          12
+                                                      ? Colors.green
+                                                      : (num.tryParse(gameListingController
+                                                                      .searchList[
+                                                                          index]
+                                                                      .awayRank) ??
+                                                                  0) >=
+                                                              15
+                                                          ? redColor
+                                                          : Colors.amber,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .019,
+                                                  weight: FontWeight.bold),
+                                        )
+                                      ],
                                     ),
                                     // 10.W(),
                                     SizedBox(
@@ -1131,26 +1314,89 @@ class SelectGameScreen extends StatelessWidget {
                                 5.H(),
                                 Row(
                                   children: [
-                                    commonCachedNetworkImage(
-                                        width: Get.height * .044,
-                                        height: Get.height * .044,
-                                        imageUrl: gameListingController
-                                                    .searchList[index]
-                                                    .homeTeam ==
-                                                'North Carolina State Wolfpack'
-                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                            : gameListingController
+                                    Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        commonCachedNetworkImage(
+                                            width: Get.height * .044,
+                                            height: Get.height * .044,
+                                            imageUrl: gameListingController
                                                         .searchList[index]
                                                         .homeTeam ==
-                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                    'North Carolina State Wolfpack'
+                                                ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                                                 : gameListingController
                                                             .searchList[index]
                                                             .homeTeam ==
-                                                        'Sam Houston State Bearkats'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : competitors
-                                                        .gameHomeLogoLink),
+                                                        'Louisiana-Lafayette Ragin Cajuns'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                    : gameListingController
+                                                                .searchList[
+                                                                    index]
+                                                                .homeTeam ==
+                                                            'Sam Houston State Bearkats'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                        : competitors
+                                                            .gameHomeLogoLink),
+                                        Positioned(
+                                          top: -8,
+                                          right: -2,
+                                          child: Text(
+                                            gameListingController
+                                                        .searchList[index]
+                                                        .homeRank ==
+                                                    '0'
+                                                ? ''
+                                                : gameListingController
+                                                    .searchList[index].homeRank,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .018,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 6
+                                                ..color = whiteColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: -8,
+                                          right: -3,
+                                          child: (gameListingController
+                                                          .searchList[index]
+                                                          .homeRank ==
+                                                      '0'
+                                                  ? ''
+                                                  : gameListingController
+                                                      .searchList[index]
+                                                      .homeRank)
+                                              .appCommonText(
+                                                  letterSpacing: 1,
+                                                  color: (num.tryParse(gameListingController
+                                                                  .searchList[
+                                                                      index]
+                                                                  .homeRank) ??
+                                                              0) <=
+                                                          12
+                                                      ? Colors.green
+                                                      : (num.tryParse(gameListingController
+                                                                      .searchList[
+                                                                          index]
+                                                                      .homeRank) ??
+                                                                  0) >=
+                                                              15
+                                                          ? redColor
+                                                          : Colors.amber,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .019,
+                                                  weight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *

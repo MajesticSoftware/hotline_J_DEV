@@ -19,10 +19,10 @@ import '../../../utils/animated_search.dart';
 import '../../../utils/extension.dart';
 
 class GameListingController extends GetxController {
-  String sportId = '';
-  String sportKey = '';
-  String apiKey = '';
-  String date = '';
+  String sportId = 'sr:sport:16';
+  String sportKey = 'NFL';
+  String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
+  String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   bool _isDarkMode = false;
 
@@ -33,7 +33,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  int _isOpen = -1;
+  int _isOpen = 0;
 
   int get isOpen => _isOpen;
 
@@ -42,7 +42,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  bool _isOpen1 = false;
+  /*bool _isOpen1 = false;
 
   bool get isOpen1 => _isOpen1;
 
@@ -50,7 +50,7 @@ class GameListingController extends GetxController {
     _isOpen1 = value;
     update();
   }
-
+*/
   bool _isSearch = false;
 
   bool get isSearch => _isSearch;
@@ -62,7 +62,15 @@ class GameListingController extends GetxController {
 
   RxBool isLoading = false.obs;
   TextEditingController searchCon = TextEditingController();
-  List<SportEvents> sportEventsList = [];
+  List<SportEvents> _sportEventsList = [];
+
+  List<SportEvents> get sportEventsList => _sportEventsList;
+
+  set sportEventsList(List<SportEvents> value) {
+    _sportEventsList = value;
+    update();
+  }
+
   List<SportEvents> _searchList = [];
 
   List<SportEvents> get searchList => _searchList;
@@ -99,9 +107,22 @@ class GameListingController extends GetxController {
     update();
   }
 
+  Future getResponse(bool isLoad, String sportKey) async {
+    if (sportKey == 'MLB') {
+      return await getGameListingForMLBRes(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == 'NFL') {
+      return await getGameListingForNFLGame(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else {
+      return getGameListingForNCAAGame(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    }
+  }
+
   backScreen(BuildContext context) {
-    isOpen = -1;
-    isOpen1 = false;
+    isOpen = 0;
+    // isOpen1 = false;
     sportKey == 'MLB' ? setIsBack(true) : setIsBack1(true);
     timer = null;
     timerNCAA = null;
@@ -257,12 +278,12 @@ class GameListingController extends GetxController {
   }
 
   ///GET ALL EVENT BY HOME AWAY FILTER
-  getAllEventList(String sportKey) async {
+  getAllEventList() async {
     sportEventsList.clear();
     sportEventsList = todayEventsList + tomorrowEventsList;
     sportEventsList.sort((a, b) => DateTime.parse(a.scheduled ?? "")
         .compareTo(DateTime.parse(b.scheduled ?? "")));
-    isLoading.value = false;
+    isLoading.value = true;
     for (var event in sportEventsList) {
       if (event.competitors.isNotEmpty) {
         if (event.competitors[0].qualifier == 'home') {
@@ -345,6 +366,7 @@ class GameListingController extends GetxController {
         }
       }
     }
+    update();
   }
 
   ///BOX SCORE API
@@ -558,7 +580,7 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
-          getAllEventList(sportKey);
+          getAllEventList();
           if (i == 6) {
             isPagination = false;
           }
@@ -585,9 +607,10 @@ class GameListingController extends GetxController {
                 );
               }
             }
+            gameListingsWithLogoResponse(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: true);
           }
-          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
-              isLoad: true);
         });
       }
       if (todayEventsList.isNotEmpty) {
@@ -640,7 +663,7 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
-          getAllEventList(sportKey);
+          getAllEventList();
           if (i == 6) {
             isPagination = false;
           }
@@ -718,7 +741,7 @@ class GameListingController extends GetxController {
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
             .then((value) {
-          getAllEventList(sportKey);
+          getAllEventList();
           if (sportEventsList.isNotEmpty) {
             for (int i = 0; i < sportEventsList.length; i++) {
               if (sportEventsList[i].uuids != null) {
