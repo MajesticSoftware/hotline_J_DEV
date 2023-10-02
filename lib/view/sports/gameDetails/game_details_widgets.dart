@@ -19,7 +19,6 @@ import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
 import '../gameListing/game_listing_con.dart';
-import '../selectSport/selecte_game_con.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
@@ -814,10 +813,10 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
       ),
       Column(
         children: List.generate(
-          9,
+          10,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .044,
+            height: MediaQuery.of(context).size.height * .043,
             color: backGroundColor,
           ),
         ),
@@ -907,7 +906,7 @@ Row quarterBacksData(
           5,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .046,
+            height: MediaQuery.of(context).size.height * .043,
             color: backGroundColor,
           ),
         ),
@@ -3091,12 +3090,11 @@ Padding mainlinesWidget(BuildContext context, GameDetailsController con,
 Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
     BuildContext context, Competitors? homeTeam) {
   return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Expanded(
         flex: 3,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

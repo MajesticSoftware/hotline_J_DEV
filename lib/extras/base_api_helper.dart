@@ -4,13 +4,13 @@ import 'dart:developer';
 import 'dart:io';
 
 // ignore: depend_on_referenced_packages
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import '../model/response_item.dart';
 import '../utils/utils.dart';
 import 'extras.dart';
 
 class BaseApiHelper {
-  static Future<ResponseItem> postRequest(String requestUrl,
+  /* static Future<ResponseItem> postRequest(String requestUrl,
       Map<String, dynamic> requestData, bool passAuthToken) async {
     printData(tittle: "request", val: requestUrl);
     printData(tittle: "headers:", val: requestHeader().toString());
@@ -21,19 +21,19 @@ class BaseApiHelper {
             body: json.encode(requestData), headers: requestHeader())
         .then((response) => onValue(response))
         .onError((error, stackTrace) => onError(error, requestUrl));
-  }
+  }*/
 
   static Future<ResponseItem> getRequest(
       Uri requestUrl, Map<String, String> headers) async {
     printData(tittle: "request", val: requestUrl);
-    var client = http.Client();
+    var token = http.CancellationToken();
     try {
-      return await client
-          .get(requestUrl, headers: headers)
+      return await http.Client()
+          .get(requestUrl, headers: headers, cancellationToken: token)
           .then((response) => baseOnValue(response))
           .onError((error, stackTrace) => onError(error, requestUrl));
     } finally {
-      client.close();
+      http.Client().close();
     }
   }
 
@@ -52,7 +52,7 @@ class BaseApiHelper {
     return ResponseItem(status: true, message: "Success.", data: data);
   }*/
 
-  static Future<ResponseItem> uploadFile(
+  /*static Future<ResponseItem> uploadFile(
       String requestUrl, Map<String, String> requestData,
       {http.MultipartFile? profileImage}) async {
     var request = http.MultipartRequest(
@@ -97,7 +97,7 @@ class BaseApiHelper {
       return http.Response.fromStream(streamedResponse)
           .then((value) => onValue(value));
     }).onError((error, stackTrace) => onError(error, requestUrl));
-  }
+  }*/
 
   static Future onValue(http.Response response) async {
     ResponseItem result;

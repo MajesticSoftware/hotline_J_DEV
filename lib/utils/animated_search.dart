@@ -175,7 +175,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
 
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
-              right: 7.0,
+              right: 7,
               curve: Curves.easeOut,
               child: AnimatedOpacity(
                 opacity: (toggle == 0) ? 0.0 : 1.0,
@@ -289,10 +289,10 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      labelText: widget.helpText,
-                      labelStyle: TextStyle(
+                      hintText: widget.helpText,
+                      hintStyle: TextStyle(
                         color: widget.helpTextColor ?? greyColor,
-                        fontSize: MediaQuery.of(context).size.height * .017,
+                        fontSize: MediaQuery.of(context).size.height * .018,
                         fontWeight: FontWeight.w500,
                       ),
                       alignLabelWithHint: true,
@@ -325,14 +325,26 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                                 size: MediaQuery.of(context).size.height * .025,
                               ).paddingOnly(left: 10)
                             : widget.prefixIcon!
-                        : Icon(
-                            toggle == 1 ? Icons.arrow_back_ios : Icons.search,
-                            // search icon color when closed
-                            color: toggle == 0
-                                ? widget.searchIconColor
-                                : widget.textFieldIconColor,
-                            size: MediaQuery.of(context).size.height * .025,
-                          ).paddingOnly(left: 10),
+                        : toggle == 0
+                            ? Center(
+                                child: Icon(
+                                  Icons.search,
+                                  // search icon color when closed
+                                  color: widget.searchIconColor,
+                                  size:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                              )
+                            : Icon(
+                                toggle == 1
+                                    ? Icons.arrow_back_ios
+                                    : Icons.search,
+                                // search icon color when closed
+                                color: toggle == 0
+                                    ? widget.searchIconColor
+                                    : widget.textFieldIconColor,
+                                size: MediaQuery.of(context).size.height * .025,
+                              ).paddingOnly(left: 10),
                     onTap: () {
                       setState(
                         () {

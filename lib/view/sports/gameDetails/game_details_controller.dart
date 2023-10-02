@@ -775,8 +775,7 @@ class GameDetailsController extends GetxController {
                       (player.passing?.interceptions ?? "0").toString(),
                       // (player.fumbles?.fumbles ?? "0").toString(),
                     ];
-                    gameDetails.homePlayerName =
-                        (player.name ?? "0").toString();
+                    gameDetails.homePlayerName = (player.name ?? "").toString();
                   }
                 });
               }

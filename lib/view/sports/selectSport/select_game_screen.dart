@@ -1,8 +1,3 @@
-import 'dart:developer';
-
-import 'package:animation_list/animation_list.dart';
-import 'package:expandable/expandable.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,22 +5,22 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:intl/intl.dart';
-
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
 import '../../../utils/app_progress.dart';
+import '../../../utils/utils.dart';
 import '../gameDetails/game_details_screen.dart';
 import '../gameListing/game_listing_con.dart';
-import 'selecte_game_con.dart';
+
 import '../../../generated/assets.dart';
 import '../../../model/game_model.dart';
 import '../../../model/leauge_model.dart';
 import '../../../theme/helper.dart';
 import '../../../theme/theme.dart';
-import '../../../utils/utils.dart';
-import '../gameListing/game_listing_screen.dart';
 
 // ignore: must_be_immutable
 class SelectGameScreen extends StatelessWidget {
@@ -34,6 +29,7 @@ class SelectGameScreen extends StatelessWidget {
   final GameListingController gameListingController =
       Get.put(GameListingController());
   bool isDark = false;
+  var client = http.Client();
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
@@ -47,7 +43,8 @@ class SelectGameScreen extends StatelessWidget {
       return Scaffold(
           // resizeToAvoidBottomInset: false,
           floatingActionButton: buildAnimSearchBar(controller, context)
-              .paddingSymmetric(horizontal: Get.width * .05),
+              .paddingSymmetric(
+                  horizontal: MediaQuery.of(context).size.width * .03),
           /* InkWell(
                 onTap: () {
                   showDataAlert(context);
@@ -73,6 +70,7 @@ class SelectGameScreen extends StatelessWidget {
           appBar: commonAppBar(context, controller),
           body: SingleChildScrollView(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,6 +86,10 @@ class SelectGameScreen extends StatelessWidget {
                           index,
                           onTap: sportsLeagueList[index].isAvailable == true
                               ? () {
+                                  // http.CancellationToken();
+                                  // client.close();
+                                  controller.isSelected =
+                                      sportsLeagueList[index].gameName;
                                   toggle = 0;
                                   controller.date =
                                       sportsLeagueList[index].date;
@@ -119,7 +121,8 @@ class SelectGameScreen extends StatelessWidget {
                         ? blackColor
                         : whiteColor,
                   ),
-                  height: MediaQuery.of(context).size.height / 1.78.h,
+                  height: MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).size.height * .2,
                   width: Get.width,
                   clipBehavior: Clip.antiAlias,
                   child: tableDetailWidget(context, controller.sportKey),
@@ -170,11 +173,11 @@ class SelectGameScreen extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: Get.height * .05,
+          height: MediaQuery.of(context).size.height * .05,
           margin: EdgeInsets.only(right: index == 2 ? 0 : 20.w),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.r),
-              image: gameListingController.sportKey == gameName
+              image: gameListingController.isSelected == gameName
                   ? DecorationImage(
                       image: AssetImage(image),
                       fit: BoxFit.cover,
@@ -184,7 +187,7 @@ class SelectGameScreen extends StatelessWidget {
                       colorFilter: ColorFilter.mode(
                           Theme.of(context)
                               .scaffoldBackgroundColor
-                              .withOpacity(0.6),
+                              .withOpacity(0.5),
                           BlendMode.dstATop),
                       fit: BoxFit.cover,
                     )),
@@ -512,97 +515,110 @@ class SelectGameScreen extends StatelessWidget {
                       ? emptyDataWidget(context)
                       : RefreshIndicator(
                           onRefresh: () async {
-                            gameListingController.getResponse(true, sportKey);
+                            gameListingController.getResponse(false, sportKey);
                           },
                           color: Theme.of(context).disabledColor,
                           child: Column(
                             children: [
-                              80.w.H(),
-                              controller.searchCon.text.isEmpty
-                                  ? Expanded(
-                                      child: AnimationList(
-                                          duration: 1500,
-                                          reBounceDepth: 30,
-                                          primary: false,
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          // shrinkWrap: true,
-                                          // clipBehavior: Clip.hardEdge,
-                                          children: List.generate(
-                                              controller.sportEventsList.length,
-                                              (index) => GestureDetector(
-                                                  onTap: () {
-                                                    log('ON TAP---$index');
-                                                    toggle = 0;
-                                                    controller.searchCon
-                                                        .clear();
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                    Get.to(
-                                                        SportDetailsScreen(
-                                                          gameDetails: controller
-                                                                  .sportEventsList[
-                                                              index],
-                                                          sportKey: controller
-                                                              .sportKey,
-                                                          sportId: controller
-                                                              .sportId,
-                                                          date: controller.date,
+                              (MediaQuery.of(context).size.height * .06).H(),
+                              Expanded(
+                                child: controller.searchCon.text.isEmpty
+                                    ? ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount:
+                                            controller.sportEventsList.length +
+                                                1,
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return index ==
+                                                    controller
+                                                        .sportEventsList.length
+                                                ? !gameListingController
+                                                            .isLoading.value &&
+                                                        gameListingController
+                                                            .isPagination
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Center(
+                                                          child: SizedBox(
+                                                              width: 16,
+                                                              height: 16,
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColor,
+                                                              )),
                                                         ),
-                                                        transition: Transition
-                                                            .cupertino,
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    500));
-                                                  },
-                                                  child: teamWidget(
-                                                      controller
-                                                              .sportEventsList[
-                                                          index],
-                                                      context,
-                                                      index:
-                                                          index)))).paddingOnly(
-                                          top: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01),
-                                    )
-                                  : Expanded(
-                                      child: AnimationList(
-                                          duration: 1500,
-                                          reBounceDepth: 10.0,
-                                          children: List.generate(
-                                              controller.searchList.length,
-                                              (index) => InkWell(
-                                                  onTap: () {
-                                                    log('ON TAP');
-                                                    toggle = 0;
-                                                    controller.searchCon
-                                                        .clear();
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                    Get.to(SportDetailsScreen(
-                                                      gameDetails: controller
-                                                          .searchList[index],
-                                                      sportKey:
-                                                          controller.sportKey,
-                                                      sportId:
-                                                          controller.sportId,
-                                                      date: controller.date,
-                                                    ));
-                                                  },
-                                                  child: teamSearchWidget(
-                                                      controller
-                                                          .searchList[index],
-                                                      context,
-                                                      index:
-                                                          index)))).paddingOnly(
-                                          top: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .01),
-                                    ),
+                                                      )
+                                                    : const SizedBox()
+                                                : GestureDetector(
+                                                    onTap: () {
+                                                      toggle = 0;
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                      controller.searchCon
+                                                          .clear();
+                                                      Get.to(SportDetailsScreen(
+                                                        gameDetails: controller
+                                                                .sportEventsList[
+                                                            index],
+                                                        sportKey:
+                                                            controller.sportKey,
+                                                        sportId:
+                                                            controller.sportId,
+                                                        date: controller.date,
+                                                      ));
+                                                    },
+                                                    child: teamWidget(
+                                                        controller
+                                                                .sportEventsList[
+                                                            index],
+                                                        context,
+                                                        index: index));
+                                          } catch (e) {
+                                            return const SizedBox();
+                                          }
+                                        },
+                                      )
+                                    : ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount: controller.searchList.length,
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          try {
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  toggle = 0;
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  controller.searchCon.clear();
+                                                  Get.to(SportDetailsScreen(
+                                                    gameDetails: controller
+                                                        .searchList[index],
+                                                    sportKey:
+                                                        controller.sportKey,
+                                                    sportId: controller.sportId,
+                                                    date: controller.date,
+                                                  ));
+                                                },
+                                                child: teamSearchWidget(
+                                                    controller
+                                                        .searchList[index],
+                                                    context,
+                                                    index: index));
+                                          } catch (e) {
+                                            return const SizedBox();
+                                          }
+                                        },
+                                      ),
+                              ),
+                              (MediaQuery.of(context).size.height * .01).H(),
                             ],
                           ),
                         ),
@@ -729,30 +745,6 @@ class SelectGameScreen extends StatelessWidget {
                                                           .gameLogoAwayLink,
                                         ),
                                         Positioned(
-                                          top: -8.w,
-                                          right: -2.w,
-                                          child: Text(
-                                            gameListingController
-                                                        .sportEventsList[index]
-                                                        .awayRank ==
-                                                    '0'
-                                                ? ''
-                                                : gameListingController
-                                                    .sportEventsList[index]
-                                                    .awayRank,
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .018,
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 6
-                                                ..color = whiteColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
                                           top: -6,
                                           right: -3,
                                           child: (gameListingController
@@ -765,22 +757,9 @@ class SelectGameScreen extends StatelessWidget {
                                                       .sportEventsList[index]
                                                       .awayRank)
                                               .appCommonText(
-                                                  letterSpacing: 1,
-                                                  color: (num.tryParse(gameListingController
-                                                                  .sportEventsList[
-                                                                      index]
-                                                                  .awayRank) ??
-                                                              0) <=
-                                                          12
-                                                      ? Colors.green
-                                                      : (num.tryParse(gameListingController
-                                                                      .sportEventsList[
-                                                                          index]
-                                                                      .awayRank) ??
-                                                                  0) >=
-                                                              15
-                                                          ? redColor
-                                                          : Colors.amber,
+                                                  color: Theme.of(context)
+                                                      .highlightColor,
+                                                  align: TextAlign.start,
                                                   size: MediaQuery.of(context)
                                                           .size
                                                           .height *
@@ -868,32 +847,8 @@ class SelectGameScreen extends StatelessWidget {
                                                         : competitors
                                                             .gameHomeLogoLink),
                                         Positioned(
-                                          top: -8,
-                                          right: -2,
-                                          child: Text(
-                                            gameListingController
-                                                        .sportEventsList[index]
-                                                        .homeRank ==
-                                                    '0'
-                                                ? ''
-                                                : gameListingController
-                                                    .sportEventsList[index]
-                                                    .homeRank,
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .018,
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 6
-                                                ..color = whiteColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: -8,
-                                          right: -3,
+                                          top: -6,
+                                          right: -1,
                                           child: (gameListingController
                                                           .sportEventsList[
                                                               index]
@@ -904,22 +859,9 @@ class SelectGameScreen extends StatelessWidget {
                                                       .sportEventsList[index]
                                                       .homeRank)
                                               .appCommonText(
-                                                  letterSpacing: 1,
-                                                  color: (num.tryParse(gameListingController
-                                                                  .sportEventsList[
-                                                                      index]
-                                                                  .homeRank) ??
-                                                              0) <=
-                                                          12
-                                                      ? Colors.green
-                                                      : (num.tryParse(gameListingController
-                                                                      .sportEventsList[
-                                                                          index]
-                                                                      .homeRank) ??
-                                                                  0) >=
-                                                              15
-                                                          ? redColor
-                                                          : Colors.amber,
+                                                  color: Theme.of(context)
+                                                      .highlightColor,
+                                                  align: TextAlign.start,
                                                   size: MediaQuery.of(context)
                                                           .size
                                                           .height *
@@ -1205,29 +1147,6 @@ class SelectGameScreen extends StatelessWidget {
                                                           .gameLogoAwayLink,
                                         ),
                                         Positioned(
-                                          top: -8.w,
-                                          right: -2.w,
-                                          child: Text(
-                                            gameListingController
-                                                        .searchList[index]
-                                                        .awayRank ==
-                                                    '0'
-                                                ? ''
-                                                : gameListingController
-                                                    .searchList[index].awayRank,
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .018,
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 6
-                                                ..color = whiteColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
                                           top: -6,
                                           right: -3,
                                           child: (gameListingController
@@ -1240,21 +1159,8 @@ class SelectGameScreen extends StatelessWidget {
                                                       .awayRank)
                                               .appCommonText(
                                                   letterSpacing: 1,
-                                                  color: (num.tryParse(gameListingController
-                                                                  .searchList[
-                                                                      index]
-                                                                  .awayRank) ??
-                                                              0) <=
-                                                          12
-                                                      ? Colors.green
-                                                      : (num.tryParse(gameListingController
-                                                                      .searchList[
-                                                                          index]
-                                                                      .awayRank) ??
-                                                                  0) >=
-                                                              15
-                                                          ? redColor
-                                                          : Colors.amber,
+                                                  color: Theme.of(context)
+                                                      .highlightColor,
                                                   size: MediaQuery.of(context)
                                                           .size
                                                           .height *
@@ -1340,29 +1246,6 @@ class SelectGameScreen extends StatelessWidget {
                                                             .gameHomeLogoLink),
                                         Positioned(
                                           top: -8,
-                                          right: -2,
-                                          child: Text(
-                                            gameListingController
-                                                        .searchList[index]
-                                                        .homeRank ==
-                                                    '0'
-                                                ? ''
-                                                : gameListingController
-                                                    .searchList[index].homeRank,
-                                            style: TextStyle(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .018,
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 6
-                                                ..color = whiteColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: -8,
                                           right: -3,
                                           child: (gameListingController
                                                           .searchList[index]
@@ -1374,21 +1257,8 @@ class SelectGameScreen extends StatelessWidget {
                                                       .homeRank)
                                               .appCommonText(
                                                   letterSpacing: 1,
-                                                  color: (num.tryParse(gameListingController
-                                                                  .searchList[
-                                                                      index]
-                                                                  .homeRank) ??
-                                                              0) <=
-                                                          12
-                                                      ? Colors.green
-                                                      : (num.tryParse(gameListingController
-                                                                      .searchList[
-                                                                          index]
-                                                                      .homeRank) ??
-                                                                  0) >=
-                                                              15
-                                                          ? redColor
-                                                          : Colors.amber,
+                                                  color: Theme.of(context)
+                                                      .highlightColor,
                                                   size: MediaQuery.of(context)
                                                           .size
                                                           .height *

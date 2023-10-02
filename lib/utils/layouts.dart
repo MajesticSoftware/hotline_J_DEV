@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/model/weather_model.dart';
 import 'package:hotlines/utils/extension.dart';
 
 import '../extras/constants.dart';

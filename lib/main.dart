@@ -10,7 +10,6 @@ import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/sports/selectSport/select_game_screen.dart';
-import 'package:hotlines/view/sports/selectSport/select_sport_screen.dart';
 
 import 'view/sports/selectSport/selecte_game_con.dart';
 
