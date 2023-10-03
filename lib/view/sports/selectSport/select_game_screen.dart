@@ -6,13 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
+import '../../main/contact_screen.dart';
 import '../gameDetails/game_details_screen.dart';
 import '../gameListing/game_listing_con.dart';
 
@@ -45,75 +46,16 @@ class SelectGameScreen extends StatelessWidget {
           floatingActionButton: buildAnimSearchBar(controller, context)
               .paddingSymmetric(
                   horizontal: MediaQuery.of(context).size.width * .03),
-          /* InkWell(
-                onTap: () {
-                  showDataAlert(context);
-                },
-                child: Container(
-                  height: Get.height * .14,
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.r),
-                      color: Theme.of(context).primaryColor),
-                  child: Center(
-                    child: gambling.appCommonText(
-                        color: Theme.of(context).cardColor,
-                        size: 30.sp,
-                        weight: FontWeight.w700,
-                        align: TextAlign.center),
-                  ),
-                ),
-              ).paddingAll(24.w),*/
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
           body: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      sportsLeagueList.length,
-                      (index) {
-                        return commonImageWidget(
-                          sportsLeagueList[index].image,
-                          sportsLeagueList[index].gameImage,
-                          sportsLeagueList[index].gameName,
-                          isComingSoon: sportsLeagueList[index].isAvailable,
-                          context,
-                          index,
-                          onTap: sportsLeagueList[index].isAvailable == true
-                              ? () {
-                                  // http.CancellationToken();
-                                  // client.close();
-                                  controller.isSelected =
-                                      sportsLeagueList[index].gameName;
-                                  toggle = 0;
-                                  controller.date =
-                                      sportsLeagueList[index].date;
-                                  controller.sportKey =
-                                      sportsLeagueList[index].key;
-                                  controller.apiKey =
-                                      sportsLeagueList[index].apiKey;
-                                  controller.sportId =
-                                      sportsLeagueList[index].sportId;
-                                  controller.sportKey == 'MLB'
-                                      ? controller.setIsBack(false)
-                                      : controller.setIsBack1(false);
-                                  Future.delayed(const Duration(seconds: 0),
-                                      () {
-                                    gameListingController.getResponse(
-                                        true, sportsLeagueList[index].key);
-                                  });
-                                }
-                              : () {},
-                        );
-                      },
-                    )).paddingAll(
-                  20.w,
-                ),
+                tabBarWidget(context, controller).paddingSymmetric(
+                    vertical: 15.h,
+                    horizontal: MediaQuery.of(context).size.width * .03),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
@@ -132,6 +74,82 @@ class SelectGameScreen extends StatelessWidget {
             ),
           ));
     });
+  }
+
+  SizedBox tabBarWidget(
+      BuildContext context, GameListingController controller) {
+    return SizedBox(
+      width: Get.width,
+      height: MediaQuery.of(context).size.height * .05,
+      child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return index == 3 || index == 4
+                ? InkWell(
+                    onTap: index == 3
+                        ? () {
+                            showDataAlert(context);
+                          }
+                        : () {
+                            Get.to(ContactScreen());
+                          },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * .05,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          color: Theme.of(context).primaryColor),
+                      child: Center(
+                        child: (index == 3 ? gambling : 'Contact')
+                            .appCommonText(
+                                color: Theme.of(context).cardColor,
+                                align: TextAlign.start,
+                                size: MediaQuery.of(context).size.height * .018,
+                                weight: FontWeight.w700)
+                            .paddingSymmetric(horizontal: 20.w),
+                      ),
+                    ),
+                  )
+                : commonImageWidget(
+                    sportsLeagueList[index].image,
+                    sportsLeagueList[index].gameImage,
+                    sportsLeagueList[index].gameName,
+                    isComingSoon: sportsLeagueList[index].isAvailable,
+                    context,
+                    onTap: () {
+                      // client.close();
+                      // controller.sportEventsList.clear();
+                      controller.isSelectedGame =
+                          sportsLeagueList[index].gameName;
+                      toggle = 0;
+                      FocusScope.of(context).unfocus();
+                      controller.searchCon.clear();
+                      controller.date = sportsLeagueList[index].date;
+                      controller.sportKey = sportsLeagueList[index].key;
+                      controller.apiKey = sportsLeagueList[index].apiKey;
+                      controller.sportId = sportsLeagueList[index].sportId;
+                      if (controller.isSelected
+                          .contains(sportsLeagueList[index].gameName)) {
+                      } else {
+                        controller.isSelected
+                            .add(sportsLeagueList[index].gameName);
+                        Future.delayed(const Duration(seconds: 0), () {
+                          gameListingController.isLoading.value = true;
+                          gameListingController.isPagination = true;
+                          gameListingController.getResponse(
+                              true, sportsLeagueList[index].key);
+                        });
+                      }
+
+                      controller.update();
+                    },
+                  );
+          },
+          separatorBuilder: (context, index) {
+            return 20.w.W();
+          },
+          itemCount: 5),
+    );
   }
 
   AnimSearchBar buildAnimSearchBar(
@@ -166,52 +184,47 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  Widget commonImageWidget(String image, String gameImage, String gameName,
-      BuildContext context, int index,
+  Widget commonImageWidget(
+      String image, String gameImage, String gameName, BuildContext context,
       {void Function()? onTap, bool isComingSoon = false}) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: MediaQuery.of(context).size.height * .05,
-          margin: EdgeInsets.only(right: index == 2 ? 0 : 20.w),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.r),
-              image: gameListingController.isSelected == gameName
-                  ? DecorationImage(
-                      image: AssetImage(image),
-                      fit: BoxFit.cover,
-                    )
-                  : DecorationImage(
-                      image: AssetImage(image),
-                      colorFilter: ColorFilter.mode(
-                          Theme.of(context)
-                              .scaffoldBackgroundColor
-                              .withOpacity(0.5),
-                          BlendMode.dstATop),
-                      fit: BoxFit.cover,
-                    )),
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: SvgPicture.asset(
-                    gameImage,
-                    height: MediaQuery.of(context).size.height * .14,
-                    width: MediaQuery.of(context).size.height * .14,
-                    fit: BoxFit.contain,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: MediaQuery.of(context).size.height * .05,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            image: gameListingController.isSelectedGame == gameName
+                ? DecorationImage(
+                    image: AssetImage(image),
+                    fit: BoxFit.cover,
+                  )
+                : DecorationImage(
+                    image: AssetImage(image),
+                    colorFilter: ColorFilter.mode(
+                        Theme.of(context)
+                            .scaffoldBackgroundColor
+                            .withOpacity(0.5),
+                        BlendMode.dstATop),
+                    fit: BoxFit.cover,
                   )),
-              (MediaQuery.of(context).size.height * .01).W(),
-              Expanded(
-                flex: 3,
-                child: gameName.appCommonText(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              gameImage,
+              height: MediaQuery.of(context).size.height * .04,
+              width: MediaQuery.of(context).size.width * .01,
+              fit: BoxFit.contain,
+            ).paddingSymmetric(vertical: 10.w, horizontal: 20.w),
+            gameName
+                .appCommonText(
                     color: Colors.white,
                     align: TextAlign.start,
                     size: MediaQuery.of(context).size.height * .018,
-                    weight: FontWeight.w700),
-              )
-            ],
-          ).paddingSymmetric(horizontal: 20.w),
+                    weight: FontWeight.w700)
+                .paddingOnly(right: 20.w)
+          ],
         ),
       ),
     );
@@ -239,12 +252,14 @@ class SelectGameScreen extends StatelessWidget {
                     },
                     icon: Icon(
                       Icons.clear,
+                      size: MediaQuery.of(context).size.height * .03,
                       color: Theme.of(context).dividerColor,
                     )),
               ),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              contentPadding: const EdgeInsets.only(
-                top: 10.0,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 10.w,
               ),
               title: Text(
                 gambling,
@@ -504,14 +519,19 @@ class SelectGameScreen extends StatelessWidget {
     return GetBuilder<GameListingController>(
         initState: (state) async {},
         builder: (controller) {
-          // log('length--${controller.sportEventsList.length}');
           return Stack(
             children: [
               tabTitleWidget(context),
               controller.isLoading.value
                   ? const SizedBox()
-                  : controller.sportEventsList.isEmpty &&
-                          !controller.isLoading.value
+                  : (controller.sportKey == 'MLB'
+                                  ? controller.mlbSportEventsList
+                                  : controller.sportKey == 'NFL'
+                                      ? controller.nflSportEventsList
+                                      : controller.ncaaSportEventsList)
+                              .isNotEmpty &&
+                          controller.isLoading.value &&
+                          controller.isPagination
                       ? emptyDataWidget(context)
                       : RefreshIndicator(
                           onRefresh: () async {
@@ -525,16 +545,33 @@ class SelectGameScreen extends StatelessWidget {
                                 child: controller.searchCon.text.isEmpty
                                     ? ListView.builder(
                                         padding: EdgeInsets.zero,
-                                        itemCount:
-                                            controller.sportEventsList.length +
-                                                1,
+                                        itemCount: (controller.sportKey == 'MLB'
+                                                    ? controller
+                                                        .mlbSportEventsList
+                                                    : controller.sportKey ==
+                                                            'NFL'
+                                                        ? controller
+                                                            .nflSportEventsList
+                                                        : controller
+                                                            .ncaaSportEventsList)
+                                                .length +
+                                            1,
                                         physics:
                                             const AlwaysScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
                                           try {
                                             return index ==
-                                                    controller
-                                                        .sportEventsList.length
+                                                    (controller.sportKey ==
+                                                                'MLB'
+                                                            ? controller
+                                                                .mlbSportEventsList
+                                                            : controller.sportKey ==
+                                                                    'NFL'
+                                                                ? controller
+                                                                    .nflSportEventsList
+                                                                : controller
+                                                                    .ncaaSportEventsList)
+                                                        .length
                                                 ? !gameListingController
                                                             .isLoading.value &&
                                                         gameListingController
@@ -564,9 +601,17 @@ class SelectGameScreen extends StatelessWidget {
                                                       controller.searchCon
                                                           .clear();
                                                       Get.to(SportDetailsScreen(
-                                                        gameDetails: controller
-                                                                .sportEventsList[
-                                                            index],
+                                                        gameDetails: (controller
+                                                                    .sportKey ==
+                                                                'MLB'
+                                                            ? controller
+                                                                .mlbSportEventsList
+                                                            : controller.sportKey ==
+                                                                    'NFL'
+                                                                ? controller
+                                                                    .nflSportEventsList
+                                                                : controller
+                                                                    .ncaaSportEventsList)[index],
                                                         sportKey:
                                                             controller.sportKey,
                                                         sportId:
@@ -575,9 +620,16 @@ class SelectGameScreen extends StatelessWidget {
                                                       ));
                                                     },
                                                     child: teamWidget(
-                                                        controller
-                                                                .sportEventsList[
-                                                            index],
+                                                        (controller.sportKey ==
+                                                                'MLB'
+                                                            ? controller
+                                                                .mlbSportEventsList
+                                                            : controller.sportKey ==
+                                                                    'NFL'
+                                                                ? controller
+                                                                    .nflSportEventsList
+                                                                : controller
+                                                                    .ncaaSportEventsList)[index],
                                                         context,
                                                         index: index));
                                           } catch (e) {
@@ -704,7 +756,7 @@ class SelectGameScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 3,
+                          flex: mobileView.size.shortestSide < 600 ? 2 : 3,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical:
@@ -724,40 +776,88 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                           width: Get.height * .044,
                                           height: Get.height * .044,
-                                          imageUrl: gameListingController
-                                                      .sportEventsList[index]
+                                          imageUrl: (gameListingController
+                                                                      .sportKey ==
+                                                                  'MLB'
+                                                              ? gameListingController
+                                                                  .mlbSportEventsList
+                                                              : gameListingController
+                                                                          .sportKey ==
+                                                                      'NFL'
+                                                                  ? gameListingController
+                                                                      .nflSportEventsList
+                                                                  : gameListingController
+                                                                      .ncaaSportEventsList)[
+                                                          index]
                                                       .awayTeam ==
                                                   'North Carolina State Wolfpack'
                                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                              : gameListingController
-                                                          .sportEventsList[
+                                              : (gameListingController.sportKey ==
+                                                                      'MLB'
+                                                                  ? gameListingController
+                                                                      .mlbSportEventsList
+                                                                  : gameListingController
+                                                                              .sportKey ==
+                                                                          'NFL'
+                                                                      ? gameListingController
+                                                                          .nflSportEventsList
+                                                                      : gameListingController
+                                                                          .ncaaSportEventsList)[
                                                               index]
                                                           .awayTeam ==
                                                       'Louisiana-Lafayette Ragin Cajuns'
                                                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                  : gameListingController
-                                                              .sportEventsList[
-                                                                  index]
+                                                  : (gameListingController.sportKey ==
+                                                                      'MLB'
+                                                                  ? gameListingController
+                                                                      .mlbSportEventsList
+                                                                  : gameListingController
+                                                                              .sportKey ==
+                                                                          'NFL'
+                                                                      ? gameListingController
+                                                                          .nflSportEventsList
+                                                                      : gameListingController
+                                                                          .ncaaSportEventsList)[index]
                                                               .awayTeam ==
                                                           'Sam Houston State Bearkats'
                                                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                      : competitors
-                                                          .gameLogoAwayLink,
+                                                      : competitors.gameLogoAwayLink,
                                         ),
                                         Positioned(
                                           top: -6,
                                           right: -3,
-                                          child: (gameListingController
-                                                          .sportEventsList[
+                                          child: ((gameListingController
+                                                                          .sportKey ==
+                                                                      'MLB'
+                                                                  ? gameListingController
+                                                                      .mlbSportEventsList
+                                                                  : gameListingController.sportKey ==
+                                                                          'NFL'
+                                                                      ? gameListingController
+                                                                          .nflSportEventsList
+                                                                      : gameListingController
+                                                                          .ncaaSportEventsList)[
                                                               index]
                                                           .awayRank ==
                                                       '0'
                                                   ? ''
-                                                  : gameListingController
-                                                      .sportEventsList[index]
+                                                  : (gameListingController
+                                                                      .sportKey ==
+                                                                  'MLB'
+                                                              ? gameListingController
+                                                                  .mlbSportEventsList
+                                                              : gameListingController
+                                                                          .sportKey ==
+                                                                      'NFL'
+                                                                  ? gameListingController
+                                                                      .nflSportEventsList
+                                                                  : gameListingController
+                                                                      .ncaaSportEventsList)[
+                                                          index]
                                                       .awayRank)
                                               .appCommonText(
-                                                  color: Theme.of(context)
+                                                  color: Theme
+                                                          .of(context)
                                                       .highlightColor,
                                                   align: TextAlign.start,
                                                   size: MediaQuery.of(context)
@@ -772,14 +872,41 @@ class SelectGameScreen extends StatelessWidget {
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          .01,
+                                          .02,
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: mobileView.size.shortestSide < 600
+                                          ? 1
+                                          : 2,
                                       child: Text(
-                                        (gameListingController
-                                                .sportEventsList[index]
-                                                .awayTeam)
+                                        (mobileView.size.shortestSide < 600
+                                                ? (gameListingController
+                                                                    .sportKey ==
+                                                                'MLB'
+                                                            ? gameListingController
+                                                                .mlbSportEventsList
+                                                            : gameListingController
+                                                                        .sportKey ==
+                                                                    'NFL'
+                                                                ? gameListingController
+                                                                    .nflSportEventsList
+                                                                : gameListingController
+                                                                    .ncaaSportEventsList)[
+                                                        index]
+                                                    .awayTeamAbb
+                                                : (gameListingController
+                                                                .sportKey ==
+                                                            'MLB'
+                                                        ? gameListingController
+                                                            .mlbSportEventsList
+                                                        : gameListingController
+                                                                    .sportKey ==
+                                                                'NFL'
+                                                            ? gameListingController
+                                                                .nflSportEventsList
+                                                            : gameListingController
+                                                                .ncaaSportEventsList)[index]
+                                                    .awayTeam)
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
@@ -789,8 +916,17 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      (gameListingController
-                                              .sportEventsList[index].awayScore)
+                                      ((gameListingController.sportKey == 'MLB'
+                                                  ? gameListingController
+                                                      .mlbSportEventsList
+                                                  : gameListingController
+                                                              .sportKey ==
+                                                          'NFL'
+                                                      ? gameListingController
+                                                          .nflSportEventsList
+                                                      : gameListingController
+                                                          .ncaaSportEventsList)[index]
+                                              .awayScore)
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme
@@ -815,7 +951,10 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Expanded(
-                                        flex: 4, child: commonDivider(context)),
+                                        flex: mobileView.size.shortestSide < 600
+                                            ? 1
+                                            : 4,
+                                        child: commonDivider(context)),
                                   ],
                                 ),
                                 5.H(),
@@ -827,39 +966,80 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                             width: Get.height * .044,
                                             height: Get.height * .044,
-                                            imageUrl: gameListingController
-                                                        .sportEventsList[index]
+                                            imageUrl: (gameListingController
+                                                                        .sportKey ==
+                                                                    'MLB'
+                                                                ? gameListingController
+                                                                    .mlbSportEventsList
+                                                                : gameListingController
+                                                                            .sportKey ==
+                                                                        'NFL'
+                                                                    ? gameListingController
+                                                                        .nflSportEventsList
+                                                                    : gameListingController
+                                                                        .ncaaSportEventsList)[
+                                                            index]
                                                         .homeTeam ==
                                                     'North Carolina State Wolfpack'
                                                 ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                                : gameListingController
-                                                            .sportEventsList[
-                                                                index]
+                                                : (gameListingController.sportKey ==
+                                                                    'MLB'
+                                                                ? gameListingController
+                                                                    .mlbSportEventsList
+                                                                : gameListingController
+                                                                            .sportKey ==
+                                                                        'NFL'
+                                                                    ? gameListingController
+                                                                        .nflSportEventsList
+                                                                    : gameListingController
+                                                                        .ncaaSportEventsList)[index]
                                                             .homeTeam ==
                                                         'Louisiana-Lafayette Ragin Cajuns'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                    : gameListingController
-                                                                .sportEventsList[
-                                                                    index]
+                                                    : (gameListingController.sportKey == 'MLB'
+                                                                    ? gameListingController.mlbSportEventsList
+                                                                    : gameListingController.sportKey == 'NFL'
+                                                                        ? gameListingController.nflSportEventsList
+                                                                        : gameListingController.ncaaSportEventsList)[index]
                                                                 .homeTeam ==
                                                             'Sam Houston State Bearkats'
                                                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                        : competitors
-                                                            .gameHomeLogoLink),
+                                                        : competitors.gameHomeLogoLink),
                                         Positioned(
                                           top: -6,
                                           right: -1,
-                                          child: (gameListingController
-                                                          .sportEventsList[
+                                          child: ((gameListingController
+                                                                          .sportKey ==
+                                                                      'MLB'
+                                                                  ? gameListingController
+                                                                      .mlbSportEventsList
+                                                                  : gameListingController.sportKey ==
+                                                                          'NFL'
+                                                                      ? gameListingController
+                                                                          .nflSportEventsList
+                                                                      : gameListingController
+                                                                          .ncaaSportEventsList)[
                                                               index]
                                                           .homeRank ==
                                                       '0'
                                                   ? ''
-                                                  : gameListingController
-                                                      .sportEventsList[index]
+                                                  : (gameListingController
+                                                                      .sportKey ==
+                                                                  'MLB'
+                                                              ? gameListingController
+                                                                  .mlbSportEventsList
+                                                              : gameListingController
+                                                                          .sportKey ==
+                                                                      'NFL'
+                                                                  ? gameListingController
+                                                                      .nflSportEventsList
+                                                                  : gameListingController
+                                                                      .ncaaSportEventsList)[
+                                                          index]
                                                       .homeRank)
                                               .appCommonText(
-                                                  color: Theme.of(context)
+                                                  color: Theme
+                                                          .of(context)
                                                       .highlightColor,
                                                   align: TextAlign.start,
                                                   size: MediaQuery.of(context)
@@ -874,14 +1054,41 @@ class SelectGameScreen extends StatelessWidget {
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          .01,
+                                          .02,
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: mobileView.size.shortestSide < 600
+                                          ? 1
+                                          : 2,
                                       child: Text(
-                                        (gameListingController
-                                                .sportEventsList[index]
-                                                .homeTeam)
+                                        (mobileView.size.shortestSide < 600
+                                                ? (gameListingController
+                                                                    .sportKey ==
+                                                                'MLB'
+                                                            ? gameListingController
+                                                                .mlbSportEventsList
+                                                            : gameListingController
+                                                                        .sportKey ==
+                                                                    'NFL'
+                                                                ? gameListingController
+                                                                    .nflSportEventsList
+                                                                : gameListingController
+                                                                    .ncaaSportEventsList)[
+                                                        index]
+                                                    .homeTeamAbb
+                                                : (gameListingController
+                                                                .sportKey ==
+                                                            'MLB'
+                                                        ? gameListingController
+                                                            .mlbSportEventsList
+                                                        : gameListingController
+                                                                    .sportKey ==
+                                                                'NFL'
+                                                            ? gameListingController
+                                                                .nflSportEventsList
+                                                            : gameListingController
+                                                                .ncaaSportEventsList)[index]
+                                                    .homeTeam)
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
@@ -891,8 +1098,18 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      gameListingController
-                                          .sportEventsList[index].homeScore
+                                      (gameListingController.sportKey == 'MLB'
+                                                  ? gameListingController
+                                                      .mlbSportEventsList
+                                                  : gameListingController
+                                                              .sportKey ==
+                                                          'NFL'
+                                                      ? gameListingController
+                                                          .nflSportEventsList
+                                                      : gameListingController
+                                                          .ncaaSportEventsList)[
+                                              index]
+                                          .homeScore
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme
@@ -906,6 +1123,7 @@ class SelectGameScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        10.w.W(),
                         Expanded(
                           flex: 1,
                           child: Column(
@@ -940,10 +1158,11 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     )
                                   : const SizedBox(),
+                              5.w.H(),
                               getWeatherIcon(
                                   competitors.venue?.weather ?? 805,
                                   context,
-                                  MediaQuery.of(context).size.height * .064)
+                                  MediaQuery.of(context).size.height * .055)
                               /* getWeatherIcon(
                                   competitors.venue?.weather ?? 'Sunny',
                                   context,
@@ -982,6 +1201,7 @@ class SelectGameScreen extends StatelessWidget {
                             ],
                           ),
                         ),
+                        10.w.W(),
                         buildExpandedBoxWidget(context,
                             bottomText:
                                 competitors.homeSpreadValue.contains('-')
@@ -1108,7 +1328,7 @@ class SelectGameScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 3,
+                          flex: mobileView.size.shortestSide < 600 ? 2 : 3,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical:
@@ -1172,13 +1392,17 @@ class SelectGameScreen extends StatelessWidget {
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          .01,
+                                          .02,
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 1,
                                       child: Text(
-                                        (gameListingController
-                                                .searchList[index].awayTeam)
+                                        (mobileView.size.shortestSide < 600
+                                                ? gameListingController
+                                                    .searchList[index]
+                                                    .awayTeamAbb
+                                                : gameListingController
+                                                    .searchList[index].awayTeam)
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
@@ -1270,13 +1494,17 @@ class SelectGameScreen extends StatelessWidget {
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          .01,
+                                          .02,
                                     ),
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                        (gameListingController
-                                                .searchList[index].homeTeam)
+                                        (mobileView.size.shortestSide < 600
+                                                ? gameListingController
+                                                    .searchList[index]
+                                                    .homeTeamAbb
+                                                : gameListingController
+                                                    .searchList[index].homeTeam)
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
@@ -1335,10 +1563,11 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     )
                                   : const SizedBox(),
+                              10.w.H(),
                               getWeatherIcon(
                                   competitors.venue?.weather ?? 805,
                                   context,
-                                  MediaQuery.of(context).size.height * .064)
+                                  MediaQuery.of(context).size.height * .06)
                               /* getWeatherIcon(
                                   competitors.venue?.weather ?? 'Sunny',
                                   context,
@@ -1668,15 +1897,15 @@ class SelectGameScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                flex: 3,
-                child: game.appCommonText(
+                flex: mobileView.size.shortestSide < 600 ? 2 : 3,
+                child: ''.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
                     size: MediaQuery.of(context).size.height * .017),
               ),
               Expanded(
                 flex: 1,
-                child: time.appCommonText(
+                child: ''.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
                     size: MediaQuery.of(context).size.height * .017),

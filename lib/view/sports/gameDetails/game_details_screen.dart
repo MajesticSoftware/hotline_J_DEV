@@ -30,8 +30,15 @@ class SportDetailsScreen extends StatefulWidget {
   State<SportDetailsScreen> createState() => _SportDetailsScreenState();
 }
 
-class _SportDetailsScreenState extends State<SportDetailsScreen> {
+class _SportDetailsScreenState extends State<SportDetailsScreen>
+    with SingleTickerProviderStateMixin {
   final GameDetailsController gameDetailsController = Get.find();
+  TabController? _tabController;
+  @override
+  void initState() {
+    _tabController = TabController(length: 4, vsync: this);
+    super.initState();
+  }
 
   Competitors? homeTeam;
   Competitors? awayTeam;
@@ -98,7 +105,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         mainlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam),
                         hotlinesWidget(context, con, widget.gameDetails,
-                            awayTeam, homeTeam),
+                            awayTeam, homeTeam, _tabController!),
                         widget.sportKey == 'MLB'
                             ? teamReportWidget(context, widget.sportKey,
                                 widget.gameDetails, awayTeam, homeTeam)
@@ -118,7 +125,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen> {
                         widget.sportKey == 'NCAA'
                             ? const SizedBox()
                             : injuryReportWidget(context, widget.gameDetails,
-                                widget.sportKey, awayTeam, homeTeam),
+                                widget.sportKey, awayTeam, homeTeam, con),
                         40.H(),
                       ],
                     ),

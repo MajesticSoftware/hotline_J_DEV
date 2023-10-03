@@ -53,7 +53,9 @@ class _GameListingScreenState extends State<GameListingScreen> {
     return GetBuilder<GameListingController>(initState: (state) async {
       widget.sportKey == 'MLB'
           ? gameListingController.setIsBack(false)
-          : gameListingController.setIsBack1(false);
+          : widget.sportKey == 'NFL'
+              ? gameListingController.setIsBackNFL(false)
+              : gameListingController.setIsBackNCAA(false);
       return getResponse(true);
     }, builder: (controller) {
       return Scaffold(
@@ -65,8 +67,10 @@ class _GameListingScreenState extends State<GameListingScreen> {
         body: WillPopScope(
           onWillPop: () {
             widget.sportKey == 'MLB'
-                ? gameListingController.setIsBack(true)
-                : gameListingController.setIsBack1(true);
+                ? gameListingController.setIsBack(false)
+                : widget.sportKey == 'NFL'
+                    ? gameListingController.setIsBackNFL(false)
+                    : gameListingController.setIsBackNCAA(false);
             gameListingController.timer = null;
             gameListingController.timerNCAA = null;
             FocusScope.of(context).unfocus();
@@ -187,10 +191,12 @@ class _GameListingScreenState extends State<GameListingScreen> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    selectGameController.isOpen = false;
+                    // selectGameController.isOpen = false;
                     widget.sportKey == 'MLB'
-                        ? con.setIsBack(true)
-                        : con.setIsBack1(true);
+                        ? gameListingController.setIsBack(false)
+                        : widget.sportKey == 'NFL'
+                            ? gameListingController.setIsBackNFL(false)
+                            : gameListingController.setIsBackNCAA(false);
                     con.timer = null;
                     con.timerNCAA = null;
                     FocusScope.of(context).unfocus();
@@ -231,7 +237,13 @@ class _GameListingScreenState extends State<GameListingScreen> {
       builder: (controller) {
         return controller.isLoading.value
             ? const SizedBox()
-            : controller.sportEventsList.isEmpty && !controller.isPagination
+            : (controller.sportKey == 'MLB'
+                            ? controller.mlbSportEventsList
+                            : controller.sportKey == 'NFL'
+                                ? controller.nflSportEventsList
+                                : controller.ncaaSportEventsList)
+                        .isEmpty &&
+                    !controller.isPagination
                 ? emptyDataWidget(context)
                 : RefreshIndicator(
                     onRefresh: () async {
@@ -255,14 +267,30 @@ class _GameListingScreenState extends State<GameListingScreen> {
                           child: controller.searchCon.text.isEmpty
                               ? ListView.builder(
                                   padding: EdgeInsets.zero,
-                                  itemCount:
-                                      controller.sportEventsList.length + 1,
+                                  itemCount: (controller.sportKey == 'MLB'
+                                              ? controller.mlbSportEventsList
+                                              : controller.sportKey == 'NFL'
+                                                  ? controller
+                                                      .nflSportEventsList
+                                                  : controller
+                                                      .ncaaSportEventsList)
+                                          .length +
+                                      1,
                                   physics:
                                       const AlwaysScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     try {
                                       return index ==
-                                              controller.sportEventsList.length
+                                              (controller.sportKey == 'MLB'
+                                                      ? controller
+                                                          .mlbSportEventsList
+                                                      : controller.sportKey ==
+                                                              'NFL'
+                                                          ? controller
+                                                              .nflSportEventsList
+                                                          : controller
+                                                              .ncaaSportEventsList)
+                                                  .length
                                           ? !gameListingController
                                                       .isLoading.value &&
                                                   gameListingController
@@ -286,16 +314,32 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                           : GestureDetector(
                                               onTap: () {
                                                 Get.to(SportDetailsScreen(
-                                                  gameDetails: controller
-                                                      .sportEventsList[index],
+                                                  gameDetails: (controller
+                                                              .sportKey ==
+                                                          'MLB'
+                                                      ? controller
+                                                          .mlbSportEventsList
+                                                      : controller.sportKey ==
+                                                              'NFL'
+                                                          ? controller
+                                                              .nflSportEventsList
+                                                          : controller
+                                                              .ncaaSportEventsList)[index],
                                                   sportKey: widget.sportKey,
                                                   sportId: widget.sportId,
                                                   date: widget.date,
                                                 ));
                                               },
                                               child: teamWidget(
-                                                  controller
-                                                      .sportEventsList[index],
+                                                  (controller.sportKey == 'MLB'
+                                                      ? controller
+                                                          .mlbSportEventsList
+                                                      : controller.sportKey ==
+                                                              'NFL'
+                                                          ? controller
+                                                              .nflSportEventsList
+                                                          : controller
+                                                              .ncaaSportEventsList)[index],
                                                   context,
                                                   index: index));
                                     } catch (e) {
@@ -417,24 +461,52 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     commonCachedNetworkImage(
                                       width: Get.height * .044,
                                       height: Get.height * .044,
-                                      imageUrl: gameListingController
-                                                  .sportEventsList[index]
+                                      imageUrl: (gameListingController
+                                                                  .sportKey ==
+                                                              'MLB'
+                                                          ? gameListingController
+                                                              .mlbSportEventsList
+                                                          : gameListingController
+                                                                      .sportKey ==
+                                                                  'NFL'
+                                                              ? gameListingController
+                                                                  .nflSportEventsList
+                                                              : gameListingController
+                                                                  .ncaaSportEventsList)[
+                                                      index]
                                                   .awayTeam ==
                                               'North Carolina State Wolfpack'
                                           ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                          : gameListingController
-                                                      .sportEventsList[index]
+                                          : (gameListingController.sportKey ==
+                                                                  'MLB'
+                                                              ? gameListingController
+                                                                  .mlbSportEventsList
+                                                              : gameListingController
+                                                                          .sportKey ==
+                                                                      'NFL'
+                                                                  ? gameListingController
+                                                                      .nflSportEventsList
+                                                                  : gameListingController
+                                                                      .ncaaSportEventsList)[
+                                                          index]
                                                       .awayTeam ==
                                                   'Louisiana-Lafayette Ragin Cajuns'
                                               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                              : gameListingController
-                                                          .sportEventsList[
-                                                              index]
+                                              : (gameListingController.sportKey ==
+                                                                  'MLB'
+                                                              ? gameListingController
+                                                                  .mlbSportEventsList
+                                                              : gameListingController
+                                                                          .sportKey ==
+                                                                      'NFL'
+                                                                  ? gameListingController
+                                                                      .nflSportEventsList
+                                                                  : gameListingController
+                                                                      .ncaaSportEventsList)[index]
                                                           .awayTeam ==
                                                       'Sam Houston State Bearkats'
                                                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                  : competitors
-                                                      .gameLogoAwayLink,
+                                                  : competitors.gameLogoAwayLink,
                                     ),
                                     // 10.W(),
                                     SizedBox(
@@ -444,8 +516,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                        (gameListingController
-                                                .sportEventsList[index]
+                                        ((gameListingController.sportKey ==
+                                                        'MLB'
+                                                    ? gameListingController
+                                                        .mlbSportEventsList
+                                                    : gameListingController
+                                                                .sportKey ==
+                                                            'NFL'
+                                                        ? gameListingController
+                                                            .nflSportEventsList
+                                                        : gameListingController
+                                                            .ncaaSportEventsList)[index]
                                                 .awayTeam)
                                             .toString(),
                                         style: Theme.of(context)
@@ -456,8 +537,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                       ),
                                     ),
                                     Text(
-                                      (gameListingController
-                                              .sportEventsList[index].awayScore)
+                                      ((gameListingController.sportKey == 'MLB'
+                                                  ? gameListingController
+                                                      .mlbSportEventsList
+                                                  : gameListingController
+                                                              .sportKey ==
+                                                          'NFL'
+                                                      ? gameListingController
+                                                          .nflSportEventsList
+                                                      : gameListingController
+                                                          .ncaaSportEventsList)[index]
+                                              .awayScore)
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme
@@ -491,24 +581,52 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     commonCachedNetworkImage(
                                         width: Get.height * .044,
                                         height: Get.height * .044,
-                                        imageUrl: gameListingController
-                                                    .sportEventsList[index]
+                                        imageUrl: (gameListingController
+                                                                    .sportKey ==
+                                                                'MLB'
+                                                            ? gameListingController
+                                                                .mlbSportEventsList
+                                                            : gameListingController
+                                                                        .sportKey ==
+                                                                    'NFL'
+                                                                ? gameListingController
+                                                                    .nflSportEventsList
+                                                                : gameListingController
+                                                                    .ncaaSportEventsList)[
+                                                        index]
                                                     .homeTeam ==
                                                 'North Carolina State Wolfpack'
                                             ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                            : gameListingController
-                                                        .sportEventsList[index]
+                                            : (gameListingController.sportKey ==
+                                                                    'MLB'
+                                                                ? gameListingController
+                                                                    .mlbSportEventsList
+                                                                : gameListingController
+                                                                            .sportKey ==
+                                                                        'NFL'
+                                                                    ? gameListingController
+                                                                        .nflSportEventsList
+                                                                    : gameListingController
+                                                                        .ncaaSportEventsList)[
+                                                            index]
                                                         .homeTeam ==
                                                     'Louisiana-Lafayette Ragin Cajuns'
                                                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                : gameListingController
-                                                            .sportEventsList[
-                                                                index]
+                                                : (gameListingController.sportKey ==
+                                                                    'MLB'
+                                                                ? gameListingController
+                                                                    .mlbSportEventsList
+                                                                : gameListingController
+                                                                            .sportKey ==
+                                                                        'NFL'
+                                                                    ? gameListingController
+                                                                        .nflSportEventsList
+                                                                    : gameListingController
+                                                                        .ncaaSportEventsList)[index]
                                                             .homeTeam ==
                                                         'Sam Houston State Bearkats'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : competitors
-                                                        .gameHomeLogoLink),
+                                                    : competitors.gameHomeLogoLink),
                                     // 10.W(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
@@ -517,8 +635,17 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                        (gameListingController
-                                                .sportEventsList[index]
+                                        ((gameListingController.sportKey ==
+                                                        'MLB'
+                                                    ? gameListingController
+                                                        .mlbSportEventsList
+                                                    : gameListingController
+                                                                .sportKey ==
+                                                            'NFL'
+                                                        ? gameListingController
+                                                            .nflSportEventsList
+                                                        : gameListingController
+                                                            .ncaaSportEventsList)[index]
                                                 .homeTeam)
                                             .toString(),
                                         style: Theme.of(context)
@@ -529,8 +656,18 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                       ),
                                     ),
                                     Text(
-                                      gameListingController
-                                          .sportEventsList[index].homeScore
+                                      (gameListingController.sportKey == 'MLB'
+                                                  ? gameListingController
+                                                      .mlbSportEventsList
+                                                  : gameListingController
+                                                              .sportKey ==
+                                                          'NFL'
+                                                      ? gameListingController
+                                                          .nflSportEventsList
+                                                      : gameListingController
+                                                          .ncaaSportEventsList)[
+                                              index]
+                                          .homeScore
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme

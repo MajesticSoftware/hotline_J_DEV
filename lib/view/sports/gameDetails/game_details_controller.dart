@@ -118,6 +118,15 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  bool _isInjuriesTab = true;
+
+  bool get isInjuriesTab => _isInjuriesTab;
+
+  set isInjuriesTab(bool value) {
+    _isInjuriesTab = value;
+    update();
+  }
+
   bool _isTab = true;
 
   bool get isTab => _isTab;
@@ -1002,6 +1011,15 @@ class GameDetailsController extends GetxController {
 
   set hotlinesFData(List<HotlinesModel> value) {
     _hotlinesFData = value;
+    update();
+  }
+
+  int _hotlinesIndex = 0;
+
+  int get hotlinesIndex => _hotlinesIndex;
+
+  set hotlinesIndex(int value) {
+    _hotlinesIndex = value;
     update();
   }
 

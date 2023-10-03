@@ -72,7 +72,9 @@ class SportEvents {
   String? homeGameLogo;
   String? awayGameLogo;
   String awayTeam = '';
+  String awayTeamAbb = '';
   String homeTeam = '';
+  String homeTeamAbb = '';
   String homeMoneyLine = '00';
   String homeSpread = '00';
   String homeOU = '00';
@@ -131,7 +133,9 @@ class SportEvents {
     this.uuids,
     this.currentTime = "",
     this.awayTeam = '',
+    this.awayTeamAbb = '',
     this.homeTeam = '',
+    this.homeTeamAbb = '',
     this.homeGameLogo = '',
     this.awayGameLogo = '',
     this.homeMoneyLine = '0',

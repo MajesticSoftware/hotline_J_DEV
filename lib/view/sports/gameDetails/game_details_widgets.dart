@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -2767,8 +2769,13 @@ Container rankingCommonWidget(
   );
 }
 
-injuryReportWidget(BuildContext context, SportEvents gameDetails,
-    String sportKey, Competitors? awayTeam, Competitors? homeTeam) {
+injuryReportWidget(
+    BuildContext context,
+    SportEvents gameDetails,
+    String sportKey,
+    Competitors? awayTeam,
+    Competitors? homeTeam,
+    GameDetailsController con) {
   try {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -2783,11 +2790,7 @@ injuryReportWidget(BuildContext context, SportEvents gameDetails,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            headerTitleWidget(context, injuryReport,
-                isInjury: true,
-                gameDetails: gameDetails,
-                homeTeam: homeTeam,
-                awayTeam: awayTeam),
+            injuriesTab(context, con, gameDetails, awayTeam, homeTeam),
             GetBuilder<GameDetailsController>(builder: (controller) {
               return controller.isLoading.value
                   ? SizedBox(
@@ -2810,7 +2813,19 @@ injuryReportWidget(BuildContext context, SportEvents gameDetails,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return Row(
+                            return (con.isInjuriesTab
+                                    ? '${gameDetails.awayTeamInjuredPlayer[index]}'
+                                    : '${gameDetails.homeTeamInjuredPlayer[index]}')
+                                .toString()
+                                .appCommonText(
+                                    color: Theme.of(context).highlightColor,
+                                    weight: FontWeight.w700,
+                                    align: TextAlign.center,
+                                    size: MediaQuery.of(context).size.height *
+                                        .016)
+                                .paddingSymmetric(
+                                    horizontal: 20.w, vertical: 8.w);
+                            /*Row(
                               children: [
                                 gameDetails.awayTeamInjuredPlayer.length - 1 >=
                                         index
@@ -2870,15 +2885,19 @@ injuryReportWidget(BuildContext context, SportEvents gameDetails,
                                     : const Expanded(
                                         flex: 2, child: SizedBox()),
                               ],
-                            );
+                            )*/
+                            ;
                           },
                           separatorBuilder: (context, index) {
                             return commonDivider(context);
                           },
-                          itemCount: gameDetails.awayTeamInjuredPlayer.length >=
+                          itemCount: /*gameDetails.awayTeamInjuredPlayer.length >=
                                   gameDetails.homeTeamInjuredPlayer.length
                               ? gameDetails.awayTeamInjuredPlayer.length
-                              : gameDetails.homeTeamInjuredPlayer.length);
+                              : gameDetails.homeTeamInjuredPlayer.length*/
+                              con.isInjuriesTab
+                                  ? gameDetails.awayTeamInjuredPlayer.length
+                                  : gameDetails.homeTeamInjuredPlayer.length);
             }),
           ],
         ),
@@ -2887,6 +2906,151 @@ injuryReportWidget(BuildContext context, SportEvents gameDetails,
   } catch (e) {
     return const SizedBox();
   }
+}
+
+Container injuriesTab(BuildContext context, GameDetailsController con,
+    SportEvents gameDetails, Competitors? awayTeam, Competitors? homeTeam) {
+  return Container(
+      height: MediaQuery.of(context).size.height * .044,
+      width: Get.width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(MediaQuery.of(context).size.width * .01)),
+          color: Theme.of(context).disabledColor),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .004,
+            width: Get.width,
+          ),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 2,
+                child: InkWell(
+                  onTap: () {
+                    con.isInjuriesTab = true;
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: (mobileView.size.shortestSide < 600
+                                  ? (awayTeam?.abbreviation ?? '')
+                                  : (awayTeam?.name ?? ''))
+                              .appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            align: TextAlign.end,
+                            size: MediaQuery.of(context).size.height * .016,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .01,
+                      ),
+                      commonCachedNetworkImage(
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: awayTeam?.abbreviation == 'NCST'
+                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                              : awayTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : awayTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameLogoAwayLink),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: injuryReport.appCommonText(
+                  weight: FontWeight.bold,
+                  align: TextAlign.center,
+                  size: MediaQuery.of(context).size.height * .018,
+                  color: Theme.of(context).cardColor,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: InkWell(
+                  onTap: () {
+                    con.isInjuriesTab = false;
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      commonCachedNetworkImage(
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: homeTeam?.abbreviation == 'NCST'
+                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                              : homeTeam?.abbreviation == 'ULL'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                  : homeTeam?.abbreviation == 'SHS'
+                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                      : gameDetails.gameHomeLogoLink),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .01,
+                      ),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: (mobileView.size.shortestSide < 600
+                                  ? (homeTeam?.abbreviation ?? '')
+                                  : (homeTeam?.name ?? ''))
+                              .appCommonText(
+                            weight: FontWeight.w600,
+                            maxLine: 1,
+                            align: TextAlign.start,
+                            size: MediaQuery.of(context).size.height * .016,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ).paddingSymmetric(
+              horizontal: MediaQuery.sizeOf(context).width * .015),
+          const Spacer(),
+          con.isInjuriesTab
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .004,
+                        width: Get.width,
+                        color: yellowColor,
+                      ),
+                    ),
+                    const Expanded(child: SizedBox()),
+                  ],
+                )
+              : Row(
+                  children: [
+                    const Expanded(child: SizedBox()),
+                    Expanded(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .004,
+                        width: Get.width,
+                        color: yellowColor,
+                      ),
+                    ),
+                  ],
+                ),
+        ],
+      ));
 }
 
 Container headerTitleWidget(BuildContext context, String title,
@@ -3010,13 +3174,17 @@ Container headerTitleWidget(BuildContext context, String title,
       ));
 }
 
-Padding hotlinesWidget(BuildContext context, GameDetailsController con,
-    SportEvents gameDetails, Competitors? awayTeam, Competitors? homeTeam) {
+Padding hotlinesWidget(
+    BuildContext context,
+    GameDetailsController con,
+    SportEvents gameDetails,
+    Competitors? awayTeam,
+    Competitors? homeTeam,
+    TabController tabController) {
   return Padding(
     padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.height * .02),
     child: Container(
-      // height: MediaQuery.of(context).size.height * .245,
       decoration: BoxDecoration(
           borderRadius:
               BorderRadius.circular(MediaQuery.of(context).size.width * .01),
@@ -3024,6 +3192,7 @@ Padding hotlinesWidget(BuildContext context, GameDetailsController con,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
               height: MediaQuery.of(context).size.height * .032,
@@ -3044,15 +3213,48 @@ Padding hotlinesWidget(BuildContext context, GameDetailsController con,
                       size: Get.height * .018),
                 ],
               )),
+          Container(
+            height: MediaQuery.of(context).size.height * .032,
+            color: Theme.of(context).splashColor,
+            child: TabBar(
+              controller: tabController,
+              onTap: (value) {
+                con.hotlinesIndex = value;
+                // log('INDEX===$value');
+              },
+              indicatorPadding: EdgeInsets.zero,
+              indicatorColor: yellowColor,
+              tabs: [
+                'All'.appCommonText(
+                    weight: FontWeight.bold,
+                    color: Theme.of(context).highlightColor,
+                    size: MediaQuery.of(context).size.height * .014),
+                'DraftKings'.appCommonText(
+                    weight: FontWeight.bold,
+                    color: Theme.of(context).highlightColor,
+                    size: MediaQuery.of(context).size.height * .013),
+                'FanDuel'.appCommonText(
+                    weight: FontWeight.bold,
+                    color: Theme.of(context).highlightColor,
+                    size: MediaQuery.of(context).size.height * .014),
+                'MGM'.appCommonText(
+                    weight: FontWeight.bold,
+                    color: Theme.of(context).highlightColor,
+                    size: MediaQuery.of(context).size.height * .014),
+              ],
+            ),
+          ),
           con.isHotlines
               ? circularWidget(context)
                   .paddingAll(MediaQuery.of(context).size.height * .038)
               : con.hotlinesData.isEmpty && !con.isHotlines
                   ? emptyListWidget(
                       context,
+                      isAll: true,
                       gameDetails,
                     )
-                  : hotlinesCard(con, gameDetails, awayTeam, homeTeam),
+                  : hotlinesCard(con, gameDetails, awayTeam, homeTeam,
+                      tabController, context),
         ],
       ),
     ),
@@ -3117,7 +3319,10 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                 Expanded(
                   flex: 2,
                   child: Text(
-                    (awayTeam?.name).toString(),
+                    (mobileView.size.shortestSide < 600
+                            ? awayTeam?.abbreviation
+                            : awayTeam?.name)
+                        .toString(),
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.start,
                     maxLines: 2,
@@ -3147,7 +3352,10 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                 Expanded(
                   flex: 2,
                   child: Text(
-                    (homeTeam?.name).toString(),
+                    (mobileView.size.shortestSide < 600
+                            ? homeTeam?.abbreviation
+                            : homeTeam?.name)
+                        .toString(),
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.start,
                     maxLines: 2,
@@ -3278,55 +3486,111 @@ Container mainLinesHeader(BuildContext context) {
       ).paddingSymmetric(horizontal: MediaQuery.of(context).size.height * .01));
 }
 
-ListView hotlinesCard(GameDetailsController con, SportEvents gameDetails,
-    Competitors? awayTeam, Competitors? homeTeam) {
-  return ListView.separated(
-    shrinkWrap: true,
-    itemCount: con.hotlinesData.length >= 6 ? 6 : con.hotlinesData.length,
-    padding: EdgeInsets.zero,
-    physics: const NeverScrollableScrollPhysics(),
-    itemBuilder: (context, index) {
-      return SizedBox(
-        // height:
-        //     MediaQuery.of(context).size.height * .038,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * .016),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.network(
-                homeTeam?.id == con.hotlinesData[index].teamId
-                    ? homeTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : homeTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : homeTeam?.abbreviation == 'SHS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                : gameDetails.gameHomeLogoLink
-                    : awayTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : awayTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : awayTeam?.abbreviation == 'SHS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                : gameDetails.gameLogoAwayLink,
-                height: MediaQuery.of(context).size.height * .03,
-                width: MediaQuery.of(context).size.width * .04,
-                fit: BoxFit.contain,
-              ).paddingOnly(right: MediaQuery.of(context).size.width * .01),
-              Expanded(
-                flex: mobileView.size.shortestSide < 600 ? 7 : 4,
-                child: (con.hotlinesData[index].teamName).appCommonText(
-                    color: Theme.of(context).highlightColor,
-                    weight: FontWeight.bold,
-                    align: TextAlign.start,
-                    size: mobileView.size.shortestSide < 600
-                        ? MediaQuery.of(context).size.height * .014
-                        : MediaQuery.of(context).size.height * .016),
-              ),
-              /* Flexible(
+Widget hotlinesCard(
+    GameDetailsController con,
+    SportEvents gameDetails,
+    Competitors? awayTeam,
+    Competitors? homeTeam,
+    TabController tabController,
+    BuildContext context) {
+  return (con.hotlinesIndex == 1 && con.hotlinesDData.isEmpty)
+      ? emptyListWidget(
+          context,
+          gameDetails,
+        )
+      : (con.hotlinesIndex == 2 && con.hotlinesFData.isEmpty)
+          ? emptyListWidget(
+              context,
+              gameDetails,
+            )
+          : (con.hotlinesMData.isEmpty && con.hotlinesIndex == 2)
+              ? emptyListWidget(
+                  context,
+                  gameDetails,
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: con.hotlinesIndex == 0
+                      ? con.hotlinesData.length >= 6
+                          ? 6
+                          : con.hotlinesData.length
+                      : con.hotlinesIndex == 1
+                          ? con.hotlinesDData.length >= 6
+                              ? 6
+                              : con.hotlinesDData.length
+                          : con.hotlinesIndex == 2
+                              ? con.hotlinesFData.length >= 6
+                                  ? 6
+                                  : con.hotlinesFData.length
+                              : con.hotlinesMData.length >= 6
+                                  ? 6
+                                  : con.hotlinesMData.length,
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return SizedBox(
+                      // height:
+                      //     MediaQuery.of(context).size.height * .038,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * .016),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Image.network(
+                              homeTeam?.id ==
+                                      (con.hotlinesIndex == 0
+                                          ? con.hotlinesData[index].teamId
+                                          : con.hotlinesIndex == 1
+                                              ? con.hotlinesDData[index].teamId
+                                              : con.hotlinesIndex == 2
+                                                  ? con.hotlinesFData[index]
+                                                      .teamId
+                                                  : con.hotlinesMData[index]
+                                                      .teamId)
+                                  ? homeTeam?.abbreviation == 'NCST'
+                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                      : homeTeam?.abbreviation == 'ULL'
+                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                          : homeTeam?.abbreviation == 'SHS'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                              : gameDetails.gameHomeLogoLink
+                                  : awayTeam?.abbreviation == 'NCST'
+                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                      : awayTeam?.abbreviation == 'ULL'
+                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                          : awayTeam?.abbreviation == 'SHS'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                              : gameDetails.gameLogoAwayLink,
+                              height: MediaQuery.of(context).size.height * .03,
+                              width: MediaQuery.of(context).size.width * .04,
+                              fit: BoxFit.contain,
+                            ).paddingOnly(
+                                right: MediaQuery.of(context).size.width * .01),
+                            Expanded(
+                              flex: mobileView.size.shortestSide < 600 ? 7 : 4,
+                              child: (con.hotlinesIndex == 0
+                                      ? con.hotlinesData[index].teamName
+                                      : con.hotlinesIndex == 1
+                                          ? con.hotlinesDData[index].teamName
+                                          : con.hotlinesIndex == 2
+                                              ? con
+                                                  .hotlinesFData[index].teamName
+                                              : con.hotlinesMData[index]
+                                                  .teamName)
+                                  .appCommonText(
+                                      color: Theme.of(context).highlightColor,
+                                      weight: FontWeight.bold,
+                                      align: TextAlign.start,
+                                      size: mobileView.size.shortestSide < 600
+                                          ? MediaQuery.of(context).size.height *
+                                              .014
+                                          : MediaQuery.of(context).size.height *
+                                              .016),
+                            ),
+                            /* Flexible(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: (gameDetails.venue != null
@@ -3340,74 +3604,123 @@ ListView hotlinesCard(GameDetailsController con, SportEvents gameDetails,
                       weight: FontWeight.w600),
                 ),
               ),*/
-              Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(0)),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Center(
-                      child: con.hotlinesData[index].value
-                          .appCommonText(
-                              color: Theme.of(context).cardColor,
-                              size: MediaQuery.of(context).size.height * .014,
-                              weight: FontWeight.w600)
-                          .paddingSymmetric(
-                              vertical:
-                                  MediaQuery.sizeOf(context).height * .008),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .02,
-              ),
-              Expanded(
-                  child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .04,
-                  width: MediaQuery.of(context).size.width * .052,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          con.hotlinesData[index].bookId == 'sr:book:18186'
-                              ? Assets.imagesFanduel
-                              : con.hotlinesData[index].bookId ==
-                                      'sr:book:17324'
-                                  ? Assets.imagesMgm
-                                  : Assets.imagesDraftkings,
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(0)),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Center(
+                                    child: (con.hotlinesIndex == 0
+                                            ? con.hotlinesData[index].value
+                                            : con.hotlinesIndex == 1
+                                                ? con.hotlinesDData[index].value
+                                                : con.hotlinesIndex == 2
+                                                    ? con.hotlinesFData[index]
+                                                        .value
+                                                    : con.hotlinesMData[index]
+                                                        .value)
+                                        .appCommonText(
+                                            color: Theme.of(context).cardColor,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .014,
+                                            weight: FontWeight.w600)
+                                        .paddingSymmetric(
+                                            vertical: MediaQuery.sizeOf(context)
+                                                    .height *
+                                                .008),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * .02,
+                            ),
+                            Expanded(
+                                child: Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * .04,
+                                width: MediaQuery.of(context).size.width * .052,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        (con.hotlinesIndex == 0
+                                                    ? con.hotlinesData[index]
+                                                        .bookId
+                                                    : con.hotlinesIndex == 1
+                                                        ? con
+                                                            .hotlinesDData[
+                                                                index]
+                                                            .bookId
+                                                        : con.hotlinesIndex == 2
+                                                            ? con
+                                                                .hotlinesFData[
+                                                                    index]
+                                                                .bookId
+                                                            : con
+                                                                .hotlinesMData[
+                                                                    index]
+                                                                .bookId) ==
+                                                'sr:book:18186'
+                                            ? Assets.imagesFanduel
+                                            : (con.hotlinesIndex == 0
+                                                        ? con
+                                                            .hotlinesData[index]
+                                                            .bookId
+                                                        : con.hotlinesIndex == 1
+                                                            ? con
+                                                                .hotlinesDData[
+                                                                    index]
+                                                                .bookId
+                                                            : con.hotlinesIndex ==
+                                                                    2
+                                                                ? con
+                                                                    .hotlinesFData[
+                                                                        index]
+                                                                    .bookId
+                                                                : con
+                                                                    .hotlinesMData[
+                                                                        index]
+                                                                    .bookId) ==
+                                                    'sr:book:17324'
+                                                ? Assets.imagesMgm
+                                                : Assets.imagesDraftkings,
+                                      ),
+                                      fit: BoxFit.contain,
+                                    )),
+                              ),
+                            )),
+                          ],
                         ),
-                        fit: BoxFit.contain,
-                      )),
-                ),
-              )),
-            ],
-          ),
-        ),
-      );
-    },
-    separatorBuilder: (BuildContext context, int index) {
-      return commonDivider(context);
-    },
-  );
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return commonDivider(context);
+                  },
+                );
 }
 
-SizedBox emptyListWidget(
-  BuildContext context,
-  SportEvents gameDetails,
-) {
+SizedBox emptyListWidget(BuildContext context, SportEvents gameDetails,
+    {bool isAll = false}) {
   return SizedBox(
-    height: MediaQuery.of(context).size.height * .038,
+    height: MediaQuery.of(context).size.height * .1,
     child: Center(
-        child: (gameDetails.status == 'live' || gameDetails.status == 'closed'
-                ? 'Bets not available'
-                : 'Bets available closer to game time')
+        child: (isAll
+                ? (gameDetails.status == 'live' ||
+                        gameDetails.status == 'closed'
+                    ? 'Bets not available'
+                    : 'Bets available closer to game time')
+                : 'Bets not available')
             .appCommonText(
-                weight: FontWeight.w400,
+                weight: FontWeight.bold,
                 size: Get.height * .014,
                 color: Theme.of(context).highlightColor)),
   );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../extras/constants.dart';
 import '../view/sports/selectSport/selecte_game_con.dart';
@@ -185,7 +186,7 @@ Widget commonBoxWidget(BuildContext context, {String title = ''}) {
   );
 }
 
-SelectGameController selectGameController = Get.find();
+GameListingController selectGameController = Get.find();
 bool isDark = false;
 Container commonDivider(BuildContext context) {
   return Container(
