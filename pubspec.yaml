@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^4.0.4
   #Getx
   get: ^4.6.5
+  http: ^1.1.0
   #svg image
   flutter_svg: ^2.0.1
   intl: ^0.18.1
@@ -53,7 +54,7 @@ dependencies:
   collection:
 #  animation_list: ^2.2.1
   flutter_screenutil: ^5.9.0
-  cancellation_token_http: ^2.0.0
+#  cancellation_token_http: ^2.0.0
   webview_flutter: ^4.4.1
 
 dev_dependencies:

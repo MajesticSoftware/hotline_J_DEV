@@ -6,14 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:intl/intl.dart';
 // ignore: depend_on_referenced_packages
-import 'package:cancellation_token_http/http.dart' as http;
+
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
-import '../../main/contact_screen.dart';
 import '../gameDetails/game_details_screen.dart';
 import '../gameListing/game_listing_con.dart';
 
@@ -30,7 +30,7 @@ class SelectGameScreen extends StatelessWidget {
   final GameListingController gameListingController =
       Get.put(GameListingController());
   bool isDark = false;
-  var client = http.Client();
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
@@ -43,8 +43,10 @@ class SelectGameScreen extends StatelessWidget {
       isDark = PreferenceManager.getIsDarkMode() ?? false;
       return Scaffold(
           // resizeToAvoidBottomInset: false,
-          floatingActionButton: buildAnimSearchBar(controller, context)
-              .paddingSymmetric(
+          floatingActionButton: controller.isSelectedGame == 'Gambling 101' ||
+                  controller.isSelectedGame == 'Contact'
+              ? const SizedBox()
+              : buildAnimSearchBar(controller, context).paddingSymmetric(
                   horizontal: MediaQuery.of(context).size.width * .03),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
@@ -67,13 +69,313 @@ class SelectGameScreen extends StatelessWidget {
                       MediaQuery.of(context).size.height * .2,
                   width: Get.width,
                   clipBehavior: Clip.antiAlias,
-                  child: tableDetailWidget(context, controller.sportKey),
+                  child: controller.isSelectedGame == 'Gambling 101'
+                      ? gamblingWidget(context)
+                      : controller.isSelectedGame == 'Contact'
+                          ? contactWidget(controller, context)
+                          : tableDetailWidget(context),
                 ).paddingSymmetric(
                     horizontal: MediaQuery.of(context).size.width * .03),
               ],
             ),
           ));
     });
+  }
+
+  Stack contactWidget(GameListingController controller, BuildContext context) {
+    return Stack(
+      children: [
+        WebViewWidget(controller: controller.webController),
+        Container(
+            width: Get.width,
+            // height: MediaQuery.of(context).size.height * .05,
+            decoration:
+                BoxDecoration(color: Theme.of(context).secondaryHeaderColor),
+            child: 'Contact'
+                .appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.bold,
+                    size: MediaQuery.of(context).size.height * .018)
+                .paddingSymmetric(vertical: 20.w)),
+      ],
+    );
+  }
+
+  Stack gamblingWidget(BuildContext context) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              90.w.H(),
+              Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                      gamblingList.length,
+                      (index) => Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * .03,
+                                vertical:
+                                    MediaQuery.of(context).size.height * .002),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: Image.asset(
+                                    Assets.imagesFire,
+                                    alignment: Alignment.centerLeft,
+                                    height: MediaQuery.of(context).size.height *
+                                        .028,
+                                    width: MediaQuery.of(context).size.width *
+                                        .028,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .02,
+                                ),
+                                Expanded(
+                                  child: RichText(
+                                    text: index == 11
+                                        ? TextSpan(
+                                            text: 'Juice (also known as ',
+                                            style: GoogleFonts.nunitoSans(
+                                              color: Theme.of(context)
+                                                  .highlightColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .016,
+                                            ),
+                                            children: [
+                                                linkTextWidget(context,
+                                                    text: 'vigorish',
+                                                    link:
+                                                        'https://www.forbes.com/betting/sports-betting/what-is-the-vig-in-betting/'),
+                                                TextSpan(
+                                                  text: ' or “vig”)',
+                                                  style: GoogleFonts.nunitoSans(
+                                                    color: Theme.of(context)
+                                                        .highlightColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .016,
+                                                  ),
+                                                ),
+                                                textSpanCommonWidget(context,
+                                                    title: ':'),
+                                                textSpanUnBoldText(
+                                                    index, context,
+                                                    text:
+                                                        ' The amount charged by sportsbooks for taking a bet. If a bet is offered at -110, bettors would need to wager \$110 to win \$100. The \$10 on the \$110 bet is the juice. This can also be called the rake.'),
+                                              ])
+                                        : TextSpan(
+                                            text: '${gamblingList[index]}'
+                                                .toString()
+                                                .split(':')
+                                                .first
+                                                .toString(),
+                                            style: GoogleFonts.nunitoSans(
+                                              color: Theme.of(context)
+                                                  .highlightColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .016,
+                                            ),
+                                            children: index == 6
+                                                ? [
+                                                    textSpanCommonWidget(
+                                                        context,
+                                                        title: ':'),
+                                                    textSpanUnBoldText(
+                                                        index, context,
+                                                        text:
+                                                            'The expected straight-up winner of any game or event. Favorites are priced with a '),
+                                                    linkTextWidget(context,
+                                                        text: 'negative number',
+                                                        link:
+                                                            'https://www.forbes.com/betting/guide/plus-minus-odds/'),
+                                                    textSpanUnBoldText(
+                                                        index, context,
+                                                        text:
+                                                            ' and are considered to be “giving points” on the spread.'),
+                                                  ]
+                                                : index == 7
+                                                    ? [
+                                                        textSpanCommonWidget(
+                                                            context,
+                                                            title: ':'),
+                                                        textSpanUnBoldText(
+                                                            index, context,
+                                                            text:
+                                                                ' A wager on something that will take place longer-term than a wager on an individual game or event. Examples include '),
+                                                        linkTextWidget(context,
+                                                            text:
+                                                                'preseason bets',
+                                                            link:
+                                                                'https://www.forbes.com/betting/nfl/futures-odds/'),
+                                                        textSpanUnBoldText(
+                                                            index, context,
+                                                            text:
+                                                                ' on whether a team will win a championship or which player will win awards, such as MVP.'),
+                                                      ]
+                                                    : index == 8
+                                                        ? [
+                                                            textSpanCommonWidget(
+                                                                context,
+                                                                title: ':'),
+                                                            textSpanUnBoldText(
+                                                                index, context,
+                                                                text:
+                                                                    ' Making a bet on the opposite side of an original wager to minimize risk and guarantee at least some return. An example would be making a large futures wager on a football team to win the '),
+                                                            linkTextWidget(
+                                                                context,
+                                                                text:
+                                                                    'Super Bowl',
+                                                                link:
+                                                                    'https://www.forbes.com/betting/nfl/how-to-bet-on-the-super-bowl/'),
+                                                            textSpanUnBoldText(
+                                                                index, context,
+                                                                text:
+                                                                    ', then betting against that team in the Super Bowl itself.'),
+                                                          ]
+                                                        : index == 10
+                                                            ? [
+                                                                textSpanCommonWidget(
+                                                                    context,
+                                                                    title: ':'),
+                                                                textSpanUnBoldText(
+                                                                    index,
+                                                                    context,
+                                                                    text:
+                                                                        ' A bet made on an event after it has started. This is also called a '),
+                                                                linkTextWidget(
+                                                                    context,
+                                                                    text:
+                                                                        'live bet.',
+                                                                    link:
+                                                                        'https://www.forbes.com/betting/guide/in-game/'),
+                                                              ]
+                                                            : index == 15
+                                                                ? [
+                                                                    textSpanCommonWidget(
+                                                                        context,
+                                                                        title:
+                                                                            ':'),
+                                                                    textSpanUnBoldText(
+                                                                        index,
+                                                                        context,
+                                                                        text:
+                                                                            ' A '),
+                                                                    linkTextWidget(
+                                                                        context,
+                                                                        text:
+                                                                            'straight bet',
+                                                                        link:
+                                                                            'https://www.forbes.com/betting/guide/moneyline/'),
+                                                                    textSpanUnBoldText(
+                                                                        index,
+                                                                        context,
+                                                                        text:
+                                                                            ' made simply on a contest’s outcome with no point spread involved. Favorites have negative odds, while underdogs are listed with positive odds.'),
+                                                                  ]
+                                                                : index == 16
+                                                                    ? [
+                                                                        textSpanCommonWidget(
+                                                                            context,
+                                                                            title:
+                                                                                ':'),
+                                                                        textSpanUnBoldText(
+                                                                            index,
+                                                                            context,
+                                                                            text:
+                                                                                ' The measure of '),
+                                                                        linkTextWidget(
+                                                                            context,
+                                                                            text:
+                                                                                'how much a bettor can win',
+                                                                            link:
+                                                                                'https://www.forbes.com/betting/sports-betting/how-sports-betting-odds-work/#:~:text=First%2C%20sports%20betting%20odds%20outline%20a%20particular%20game,small%20cut%20on%20both%20sides%20of%20a%20line.'),
+                                                                        textSpanUnBoldText(
+                                                                            index,
+                                                                            context,
+                                                                            text:
+                                                                                ' on a specific wager, per \$100 in American odds. For example, a bettor will win \$124 with a \$100 bet at +124 odds but must wager \$124 to win \$100 if the odds are -124.'),
+                                                                      ]
+                                                                    : index ==
+                                                                            17
+                                                                        ? [
+                                                                            textSpanCommonWidget(context,
+                                                                                title: ':'),
+                                                                            textSpanUnBoldText(index,
+                                                                                context,
+                                                                                text: '  This can be a number posted on how many scoring units will be scored in a game or match, as well as how many games a team will win during a season. If a football game’s '),
+                                                                            linkTextWidget(context,
+                                                                                text: 'over/under',
+                                                                                link: 'https://www.forbes.com/betting/sports-betting/what-is-over-under-betting/'),
+                                                                            textSpanUnBoldText(index,
+                                                                                context,
+                                                                                text: ' is 43.5 and the two teams combine to score 44 points, bets on the over are paid out. If a baseball team’s preseason win total over/under is 82.5, and it wins 81 games, futures bets on the under are paid out.'),
+                                                                          ]
+                                                                        : index ==
+                                                                                18
+                                                                            ? [
+                                                                                textSpanCommonWidget(context, title: ':'),
+                                                                                textSpanUnBoldText(index, context, text: ' A single wager that involves the bettor making multiple bets and '),
+                                                                                linkTextWidget(context, text: 'tying them into one.', link: 'https://www.forbes.com/betting/sports-betting/what-is-a-parlay-bet/'),
+                                                                                textSpanUnBoldText(index, context, text: ' The payouts of parlays are typically larger than a wager on a single game because each individual bet must win in order for a parlay to pay out.'),
+                                                                              ]
+                                                                            : index == 21
+                                                                                ? [
+                                                                                    textSpanCommonWidget(context, title: ':'),
+                                                                                    textSpanUnBoldText(index, context, text: ' A bet made on something that may occur during a game that isn’t necessarily tied to the game’s outcome. These bets are often closely tied to the game itself, like a wager on whether or not an individual player will '),
+                                                                                    linkTextWidget(context, text: 'score a touchdown.', link: 'https://www.forbes.com/betting/sports-betting/what-is-a-prop-bet/'),
+                                                                                    textSpanUnBoldText(index, context, text: ' There are also props that are only loosely connected to the game, like wagers on a football game’s opening '),
+                                                                                    linkTextWidget(context, text: 'coin toss.', link: 'https://www.forbes.com/betting/nfl/coin-toss/'),
+                                                                                  ]
+                                                                                : index == 24
+                                                                                    ? [
+                                                                                        textSpanCommonWidget(context, title: ':'),
+                                                                                        textSpanUnBoldText(index, context, text: ' A '),
+                                                                                        linkTextWidget(context, text: 'specific parlay type', link: 'https://www.forbes.com/betting/sports-betting/what-is-same-game-parlay/'),
+                                                                                        textSpanUnBoldText(index, context, text: ' that combines multiple wagers from the same sporting event into one bet. Like traditional parlays, SGPs are usually difficult to win.'),
+                                                                                      ]
+                                                                                    : [
+                                                                                        textSpanCommonWidget(context, title: ':'),
+                                                                                        textSpanUnBoldText(index, context, text: gamblingList[index].toString().split(':').last.toString()),
+                                                                                      ],
+                                          ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ))),
+            ],
+          ),
+        ),
+        Container(
+            width: Get.width,
+            // height: MediaQuery.of(context).size.height * .05,
+            decoration:
+                BoxDecoration(color: Theme.of(context).secondaryHeaderColor),
+            child: gambling
+                .appCommonText(
+                    color: whiteColor,
+                    weight: FontWeight.bold,
+                    size: MediaQuery.of(context).size.height * .018)
+                .paddingSymmetric(vertical: 20.w)),
+      ],
+    );
   }
 
   SizedBox tabBarWidget(
@@ -89,10 +391,14 @@ class SelectGameScreen extends StatelessWidget {
                 ? InkWell(
                     onTap: index == 3
                         ? () {
-                            showDataAlert(context);
+                            controller.isSelectedGame = 'Gambling 101';
+                            controller.update();
+                            // showDataAlert(context);
                           }
                         : () {
-                            Get.to(ContactScreen());
+                            controller.isSelectedGame = 'Contact';
+                            controller.update();
+                            // Get.to(ContactScreen());
                           },
                     child: Container(
                       height: MediaQuery.of(context).size.height * .05,
@@ -116,6 +422,7 @@ class SelectGameScreen extends StatelessWidget {
                     sportsLeagueList[index].gameName,
                     isComingSoon: sportsLeagueList[index].isAvailable,
                     context,
+                    controller,
                     onTap: () {
                       // client.close();
                       // controller.sportEventsList.clear();
@@ -135,12 +442,11 @@ class SelectGameScreen extends StatelessWidget {
                             .add(sportsLeagueList[index].gameName);
                         Future.delayed(const Duration(seconds: 0), () {
                           gameListingController.isLoading.value = true;
-                          gameListingController.isPagination = true;
-                          gameListingController.getResponse(
+                          controller.isPagination = true;
+                          controller.getResponse(
                               true, sportsLeagueList[index].key);
                         });
                       }
-
                       controller.update();
                     },
                   );
@@ -184,8 +490,8 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  Widget commonImageWidget(
-      String image, String gameImage, String gameName, BuildContext context,
+  Widget commonImageWidget(String image, String gameImage, String gameName,
+      BuildContext context, GameListingController controller,
       {void Function()? onTap, bool isComingSoon = false}) {
     return GestureDetector(
       onTap: onTap,
@@ -193,7 +499,7 @@ class SelectGameScreen extends StatelessWidget {
         height: MediaQuery.of(context).size.height * .05,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
-            image: gameListingController.isSelectedGame == gameName
+            image: controller.isSelectedGame == gameName
                 ? DecorationImage(
                     image: AssetImage(image),
                     fit: BoxFit.cover,
@@ -216,14 +522,16 @@ class SelectGameScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height * .04,
               width: MediaQuery.of(context).size.width * .01,
               fit: BoxFit.contain,
-            ).paddingSymmetric(vertical: 10.w, horizontal: 20.w),
+            ).paddingSymmetric(
+                vertical: MediaQuery.of(context).size.height * .010,
+                horizontal: MediaQuery.of(context).size.height * .010),
             gameName
                 .appCommonText(
                     color: Colors.white,
                     align: TextAlign.start,
                     size: MediaQuery.of(context).size.height * .018,
                     weight: FontWeight.w700)
-                .paddingOnly(right: 20.w)
+                .paddingOnly(right: MediaQuery.of(context).size.height * .020)
           ],
         ),
       ),
@@ -515,7 +823,7 @@ class SelectGameScreen extends StatelessWidget {
         });
   }
 
-  Widget tableDetailWidget(BuildContext context, String sportKey) {
+  Widget tableDetailWidget(BuildContext context) {
     return GetBuilder<GameListingController>(
         initState: (state) async {},
         builder: (controller) {
@@ -535,7 +843,8 @@ class SelectGameScreen extends StatelessWidget {
                       ? emptyDataWidget(context)
                       : RefreshIndicator(
                           onRefresh: () async {
-                            gameListingController.getResponse(false, sportKey);
+                            await controller.getResponse(
+                                false, controller.sportKey);
                           },
                           color: Theme.of(context).disabledColor,
                           child: Column(
@@ -572,10 +881,8 @@ class SelectGameScreen extends StatelessWidget {
                                                                 : controller
                                                                     .ncaaSportEventsList)
                                                         .length
-                                                ? !gameListingController
-                                                            .isLoading.value &&
-                                                        gameListingController
-                                                            .isPagination
+                                                ? !controller.isLoading.value &&
+                                                        controller.isPagination
                                                     ? Padding(
                                                         padding:
                                                             const EdgeInsets
@@ -631,6 +938,7 @@ class SelectGameScreen extends StatelessWidget {
                                                                 : controller
                                                                     .ncaaSportEventsList)[index],
                                                         context,
+                                                        controller,
                                                         index: index));
                                           } catch (e) {
                                             return const SizedBox();
@@ -663,6 +971,7 @@ class SelectGameScreen extends StatelessWidget {
                                                     controller
                                                         .searchList[index],
                                                     context,
+                                                    controller,
                                                     index: index));
                                           } catch (e) {
                                             return const SizedBox();
@@ -728,14 +1037,15 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  teamWidget(SportEvents competitors, BuildContext context, {int index = 0}) {
+  teamWidget(SportEvents competitors, BuildContext context,
+      GameListingController controller,
+      {int index = 0}) {
     String date = DateFormat.MMMd()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     String dateTime = DateFormat.jm()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     try {
-      return competitors.status == 'closed' &&
-              gameListingController.sportKey == "NFL"
+      return competitors.status == 'closed' && controller.sportKey == "NFL"
           ? const SizedBox()
           : competitors.status == 'postponed'
               ? const SizedBox()
@@ -776,47 +1086,42 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                           width: Get.height * .044,
                                           height: Get.height * .044,
-                                          imageUrl: (gameListingController
-                                                                      .sportKey ==
+                                          imageUrl: (controller.sportKey ==
                                                                   'MLB'
-                                                              ? gameListingController
+                                                              ? controller
                                                                   .mlbSportEventsList
-                                                              : gameListingController
-                                                                          .sportKey ==
+                                                              : controller.sportKey ==
                                                                       'NFL'
-                                                                  ? gameListingController
+                                                                  ? controller
                                                                       .nflSportEventsList
-                                                                  : gameListingController
+                                                                  : controller
                                                                       .ncaaSportEventsList)[
                                                           index]
                                                       .awayTeam ==
                                                   'North Carolina State Wolfpack'
                                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                              : (gameListingController.sportKey ==
-                                                                      'MLB'
-                                                                  ? gameListingController
+                                              : (controller.sportKey == 'MLB'
+                                                                  ? controller
                                                                       .mlbSportEventsList
-                                                                  : gameListingController
-                                                                              .sportKey ==
+                                                                  : controller.sportKey ==
                                                                           'NFL'
-                                                                      ? gameListingController
+                                                                      ? controller
                                                                           .nflSportEventsList
-                                                                      : gameListingController
+                                                                      : controller
                                                                           .ncaaSportEventsList)[
                                                               index]
                                                           .awayTeam ==
                                                       'Louisiana-Lafayette Ragin Cajuns'
                                                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                  : (gameListingController.sportKey ==
+                                                  : (controller.sportKey ==
                                                                       'MLB'
-                                                                  ? gameListingController
+                                                                  ? controller
                                                                       .mlbSportEventsList
-                                                                  : gameListingController
-                                                                              .sportKey ==
+                                                                  : controller.sportKey ==
                                                                           'NFL'
-                                                                      ? gameListingController
+                                                                      ? controller
                                                                           .nflSportEventsList
-                                                                      : gameListingController
+                                                                      : controller
                                                                           .ncaaSportEventsList)[index]
                                                               .awayTeam ==
                                                           'Sam Houston State Bearkats'
@@ -826,38 +1131,33 @@ class SelectGameScreen extends StatelessWidget {
                                         Positioned(
                                           top: -6,
                                           right: -3,
-                                          child: ((gameListingController
-                                                                          .sportKey ==
-                                                                      'MLB'
-                                                                  ? gameListingController
+                                          child: ((controller.sportKey == 'MLB'
+                                                                  ? controller
                                                                       .mlbSportEventsList
-                                                                  : gameListingController.sportKey ==
+                                                                  : controller.sportKey ==
                                                                           'NFL'
-                                                                      ? gameListingController
+                                                                      ? controller
                                                                           .nflSportEventsList
-                                                                      : gameListingController
+                                                                      : controller
                                                                           .ncaaSportEventsList)[
                                                               index]
                                                           .awayRank ==
                                                       '0'
                                                   ? ''
-                                                  : (gameListingController
-                                                                      .sportKey ==
+                                                  : (controller.sportKey ==
                                                                   'MLB'
-                                                              ? gameListingController
+                                                              ? controller
                                                                   .mlbSportEventsList
-                                                              : gameListingController
-                                                                          .sportKey ==
+                                                              : controller.sportKey ==
                                                                       'NFL'
-                                                                  ? gameListingController
+                                                                  ? controller
                                                                       .nflSportEventsList
-                                                                  : gameListingController
+                                                                  : controller
                                                                       .ncaaSportEventsList)[
                                                           index]
                                                       .awayRank)
                                               .appCommonText(
-                                                  color: Theme
-                                                          .of(context)
+                                                  color: Theme.of(context)
                                                       .highlightColor,
                                                   align: TextAlign.start,
                                                   size: MediaQuery.of(context)
@@ -880,31 +1180,25 @@ class SelectGameScreen extends StatelessWidget {
                                           : 2,
                                       child: Text(
                                         (mobileView.size.shortestSide < 600
-                                                ? (gameListingController
-                                                                    .sportKey ==
-                                                                'MLB'
-                                                            ? gameListingController
+                                                ? (controller.sportKey == 'MLB'
+                                                            ? controller
                                                                 .mlbSportEventsList
-                                                            : gameListingController
-                                                                        .sportKey ==
+                                                            : controller.sportKey ==
                                                                     'NFL'
-                                                                ? gameListingController
+                                                                ? controller
                                                                     .nflSportEventsList
-                                                                : gameListingController
+                                                                : controller
                                                                     .ncaaSportEventsList)[
                                                         index]
                                                     .awayTeamAbb
-                                                : (gameListingController
-                                                                .sportKey ==
-                                                            'MLB'
-                                                        ? gameListingController
+                                                : (controller.sportKey == 'MLB'
+                                                        ? controller
                                                             .mlbSportEventsList
-                                                        : gameListingController
-                                                                    .sportKey ==
+                                                        : controller.sportKey ==
                                                                 'NFL'
-                                                            ? gameListingController
+                                                            ? controller
                                                                 .nflSportEventsList
-                                                            : gameListingController
+                                                            : controller
                                                                 .ncaaSportEventsList)[index]
                                                     .awayTeam)
                                             .toString(),
@@ -916,15 +1210,13 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      ((gameListingController.sportKey == 'MLB'
-                                                  ? gameListingController
+                                      ((controller.sportKey == 'MLB'
+                                                  ? controller
                                                       .mlbSportEventsList
-                                                  : gameListingController
-                                                              .sportKey ==
-                                                          'NFL'
-                                                      ? gameListingController
+                                                  : controller.sportKey == 'NFL'
+                                                      ? controller
                                                           .nflSportEventsList
-                                                      : gameListingController
+                                                      : controller
                                                           .ncaaSportEventsList)[index]
                                               .awayScore)
                                           .toString(),
@@ -966,41 +1258,43 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                             width: Get.height * .044,
                                             height: Get.height * .044,
-                                            imageUrl: (gameListingController
-                                                                        .sportKey ==
+                                            imageUrl: (controller.sportKey ==
                                                                     'MLB'
-                                                                ? gameListingController
+                                                                ? controller
                                                                     .mlbSportEventsList
-                                                                : gameListingController
-                                                                            .sportKey ==
+                                                                : controller.sportKey ==
                                                                         'NFL'
-                                                                    ? gameListingController
+                                                                    ? controller
                                                                         .nflSportEventsList
-                                                                    : gameListingController
+                                                                    : controller
                                                                         .ncaaSportEventsList)[
                                                             index]
                                                         .homeTeam ==
                                                     'North Carolina State Wolfpack'
                                                 ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                                : (gameListingController.sportKey ==
-                                                                    'MLB'
-                                                                ? gameListingController
-                                                                    .mlbSportEventsList
-                                                                : gameListingController
-                                                                            .sportKey ==
-                                                                        'NFL'
-                                                                    ? gameListingController
-                                                                        .nflSportEventsList
-                                                                    : gameListingController
-                                                                        .ncaaSportEventsList)[index]
+                                                : (controller.sportKey == 'MLB'
+                                                                    ? controller
+                                                                        .mlbSportEventsList
+                                                                    : controller.sportKey ==
+                                                                            'NFL'
+                                                                        ? controller
+                                                                            .nflSportEventsList
+                                                                        : controller
+                                                                            .ncaaSportEventsList)[
+                                                                index]
                                                             .homeTeam ==
                                                         'Louisiana-Lafayette Ragin Cajuns'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                    : (gameListingController.sportKey == 'MLB'
-                                                                    ? gameListingController.mlbSportEventsList
-                                                                    : gameListingController.sportKey == 'NFL'
-                                                                        ? gameListingController.nflSportEventsList
-                                                                        : gameListingController.ncaaSportEventsList)[index]
+                                                    : (controller.sportKey ==
+                                                                        'MLB'
+                                                                    ? controller
+                                                                        .mlbSportEventsList
+                                                                    : controller.sportKey ==
+                                                                            'NFL'
+                                                                        ? controller
+                                                                            .nflSportEventsList
+                                                                        : controller
+                                                                            .ncaaSportEventsList)[index]
                                                                 .homeTeam ==
                                                             'Sam Houston State Bearkats'
                                                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
@@ -1008,38 +1302,33 @@ class SelectGameScreen extends StatelessWidget {
                                         Positioned(
                                           top: -6,
                                           right: -1,
-                                          child: ((gameListingController
-                                                                          .sportKey ==
-                                                                      'MLB'
-                                                                  ? gameListingController
+                                          child: ((controller.sportKey == 'MLB'
+                                                                  ? controller
                                                                       .mlbSportEventsList
-                                                                  : gameListingController.sportKey ==
+                                                                  : controller.sportKey ==
                                                                           'NFL'
-                                                                      ? gameListingController
+                                                                      ? controller
                                                                           .nflSportEventsList
-                                                                      : gameListingController
+                                                                      : controller
                                                                           .ncaaSportEventsList)[
                                                               index]
                                                           .homeRank ==
                                                       '0'
                                                   ? ''
-                                                  : (gameListingController
-                                                                      .sportKey ==
+                                                  : (controller.sportKey ==
                                                                   'MLB'
-                                                              ? gameListingController
+                                                              ? controller
                                                                   .mlbSportEventsList
-                                                              : gameListingController
-                                                                          .sportKey ==
+                                                              : controller.sportKey ==
                                                                       'NFL'
-                                                                  ? gameListingController
+                                                                  ? controller
                                                                       .nflSportEventsList
-                                                                  : gameListingController
+                                                                  : controller
                                                                       .ncaaSportEventsList)[
                                                           index]
                                                       .homeRank)
                                               .appCommonText(
-                                                  color: Theme
-                                                          .of(context)
+                                                  color: Theme.of(context)
                                                       .highlightColor,
                                                   align: TextAlign.start,
                                                   size: MediaQuery.of(context)
@@ -1062,31 +1351,25 @@ class SelectGameScreen extends StatelessWidget {
                                           : 2,
                                       child: Text(
                                         (mobileView.size.shortestSide < 600
-                                                ? (gameListingController
-                                                                    .sportKey ==
-                                                                'MLB'
-                                                            ? gameListingController
+                                                ? (controller.sportKey == 'MLB'
+                                                            ? controller
                                                                 .mlbSportEventsList
-                                                            : gameListingController
-                                                                        .sportKey ==
+                                                            : controller.sportKey ==
                                                                     'NFL'
-                                                                ? gameListingController
+                                                                ? controller
                                                                     .nflSportEventsList
-                                                                : gameListingController
+                                                                : controller
                                                                     .ncaaSportEventsList)[
                                                         index]
                                                     .homeTeamAbb
-                                                : (gameListingController
-                                                                .sportKey ==
-                                                            'MLB'
-                                                        ? gameListingController
+                                                : (controller.sportKey == 'MLB'
+                                                        ? controller
                                                             .mlbSportEventsList
-                                                        : gameListingController
-                                                                    .sportKey ==
+                                                        : controller.sportKey ==
                                                                 'NFL'
-                                                            ? gameListingController
+                                                            ? controller
                                                                 .nflSportEventsList
-                                                            : gameListingController
+                                                            : controller
                                                                 .ncaaSportEventsList)[index]
                                                     .homeTeam)
                                             .toString(),
@@ -1098,15 +1381,12 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      (gameListingController.sportKey == 'MLB'
-                                                  ? gameListingController
-                                                      .mlbSportEventsList
-                                                  : gameListingController
-                                                              .sportKey ==
-                                                          'NFL'
-                                                      ? gameListingController
+                                      (controller.sportKey == 'MLB'
+                                                  ? controller.mlbSportEventsList
+                                                  : controller.sportKey == 'NFL'
+                                                      ? controller
                                                           .nflSportEventsList
-                                                      : gameListingController
+                                                      : controller
                                                           .ncaaSportEventsList)[
                                               index]
                                           .homeScore
@@ -1159,15 +1439,8 @@ class SelectGameScreen extends StatelessWidget {
                                     )
                                   : const SizedBox(),
                               5.w.H(),
-                              getWeatherIcon(
-                                  competitors.venue?.weather ?? 805,
-                                  context,
-                                  MediaQuery.of(context).size.height * .055)
-                              /* getWeatherIcon(
-                                  competitors.venue?.weather ?? 'Sunny',
-                                  context,
-                                  MediaQuery.of(context).size.height * .064),*/
-                              ,
+                              getWeatherIcon(competitors.weather, context,
+                                  MediaQuery.of(context).size.height * .035),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -1175,9 +1448,13 @@ class SelectGameScreen extends StatelessWidget {
                                 verticalDirection: VerticalDirection.up,
                                 children: [
                                   Text(
-                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
-                                    style: competitors.venue?.tmpInFahrenheit ==
-                                            0
+                                    competitors.tmpInFahrenheit == 32
+                                        ? "TBD"
+                                        : competitors.tmpInFahrenheit
+                                            .toString()
+                                            .split('.')
+                                            .first,
+                                    style: competitors.tmpInFahrenheit == 32
                                         ? Theme.of(context)
                                             .textTheme
                                             .headlineSmall!
@@ -1300,14 +1577,15 @@ class SelectGameScreen extends StatelessWidget {
     }
   }
 
-  teamSearchWidget(SportEvents competitors, BuildContext context, {index = 0}) {
+  teamSearchWidget(SportEvents competitors, BuildContext context,
+      GameListingController controller,
+      {index = 0}) {
     String date = DateFormat.MMMd()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     String dateTime = DateFormat.jm()
         .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
     try {
-      return competitors.status == 'closed' &&
-              gameListingController.sportKey == "NFL"
+      return competitors.status == 'closed' && controller.sportKey == "NFL"
           ? const SizedBox()
           : competitors.status == 'postponed'
               ? const SizedBox()
@@ -1348,18 +1626,15 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                           width: Get.height * .044,
                                           height: Get.height * .044,
-                                          imageUrl: gameListingController
-                                                      .searchList[index]
+                                          imageUrl: controller.searchList[index]
                                                       .awayTeam ==
                                                   'North Carolina State Wolfpack'
                                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                              : gameListingController
-                                                          .searchList[index]
+                                              : controller.searchList[index]
                                                           .awayTeam ==
                                                       'Louisiana-Lafayette Ragin Cajuns'
                                                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                  : gameListingController
-                                                              .searchList[index]
+                                                  : controller.searchList[index]
                                                               .awayTeam ==
                                                           'Sam Houston State Bearkats'
                                                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
@@ -1369,13 +1644,11 @@ class SelectGameScreen extends StatelessWidget {
                                         Positioned(
                                           top: -6,
                                           right: -3,
-                                          child: (gameListingController
-                                                          .searchList[index]
+                                          child: (controller.searchList[index]
                                                           .awayRank ==
                                                       '0'
                                                   ? ''
-                                                  : gameListingController
-                                                      .searchList[index]
+                                                  : controller.searchList[index]
                                                       .awayRank)
                                               .appCommonText(
                                                   letterSpacing: 1,
@@ -1398,10 +1671,9 @@ class SelectGameScreen extends StatelessWidget {
                                       flex: 1,
                                       child: Text(
                                         (mobileView.size.shortestSide < 600
-                                                ? gameListingController
-                                                    .searchList[index]
+                                                ? controller.searchList[index]
                                                     .awayTeamAbb
-                                                : gameListingController
+                                                : controller
                                                     .searchList[index].awayTeam)
                                             .toString(),
                                         style: Theme.of(context)
@@ -1412,8 +1684,7 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      (gameListingController
-                                              .searchList[index].awayScore)
+                                      (controller.searchList[index].awayScore)
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme
@@ -1450,17 +1721,16 @@ class SelectGameScreen extends StatelessWidget {
                                         commonCachedNetworkImage(
                                             width: Get.height * .044,
                                             height: Get.height * .044,
-                                            imageUrl: gameListingController
+                                            imageUrl: controller
                                                         .searchList[index]
                                                         .homeTeam ==
                                                     'North Carolina State Wolfpack'
                                                 ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                                : gameListingController
-                                                            .searchList[index]
+                                                : controller.searchList[index]
                                                             .homeTeam ==
                                                         'Louisiana-Lafayette Ragin Cajuns'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                    : gameListingController
+                                                    : controller
                                                                 .searchList[
                                                                     index]
                                                                 .homeTeam ==
@@ -1471,13 +1741,11 @@ class SelectGameScreen extends StatelessWidget {
                                         Positioned(
                                           top: -8,
                                           right: -3,
-                                          child: (gameListingController
-                                                          .searchList[index]
+                                          child: (controller.searchList[index]
                                                           .homeRank ==
                                                       '0'
                                                   ? ''
-                                                  : gameListingController
-                                                      .searchList[index]
+                                                  : controller.searchList[index]
                                                       .homeRank)
                                               .appCommonText(
                                                   letterSpacing: 1,
@@ -1500,10 +1768,9 @@ class SelectGameScreen extends StatelessWidget {
                                       flex: 2,
                                       child: Text(
                                         (mobileView.size.shortestSide < 600
-                                                ? gameListingController
-                                                    .searchList[index]
+                                                ? controller.searchList[index]
                                                     .homeTeamAbb
-                                                : gameListingController
+                                                : controller
                                                     .searchList[index].homeTeam)
                                             .toString(),
                                         style: Theme.of(context)
@@ -1514,8 +1781,7 @@ class SelectGameScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      gameListingController
-                                          .searchList[index].homeScore
+                                      controller.searchList[index].homeScore
                                           .toString(),
                                       style: Theme.of(context)
                                           .textTheme
@@ -1564,15 +1830,8 @@ class SelectGameScreen extends StatelessWidget {
                                     )
                                   : const SizedBox(),
                               10.w.H(),
-                              getWeatherIcon(
-                                  competitors.venue?.weather ?? 805,
-                                  context,
-                                  MediaQuery.of(context).size.height * .06)
-                              /* getWeatherIcon(
-                                  competitors.venue?.weather ?? 'Sunny',
-                                  context,
-                                  MediaQuery.of(context).size.height * .064),*/
-                              ,
+                              getWeatherIcon(competitors.weather, context,
+                                  MediaQuery.of(context).size.height * .035),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -1580,9 +1839,13 @@ class SelectGameScreen extends StatelessWidget {
                                 verticalDirection: VerticalDirection.up,
                                 children: [
                                   Text(
-                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
-                                    style: competitors.venue?.tmpInFahrenheit ==
-                                            0
+                                    competitors.tmpInFahrenheit == 32
+                                        ? "TBD"
+                                        : competitors.tmpInFahrenheit
+                                            .toString()
+                                            .split('.')
+                                            .first,
+                                    style: competitors.tmpInFahrenheit == 32
                                         ? Theme.of(context)
                                             .textTheme
                                             .headlineSmall!

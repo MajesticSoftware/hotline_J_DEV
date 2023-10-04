@@ -715,9 +715,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                       ),
                                     )
                                   : const SizedBox(),
-                              getWeatherIcon(
-                                  competitors.venue?.weather ?? 805,
-                                  context,
+                              getWeatherIcon(competitors.weather, context,
                                   MediaQuery.of(context).size.height * .064)
                               /* getWeatherIcon(
                                   competitors.venue?.weather ?? 'Sunny',
@@ -731,9 +729,13 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 verticalDirection: VerticalDirection.up,
                                 children: [
                                   Text(
-                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
-                                    style: competitors.venue?.tmpInFahrenheit ==
-                                            0
+                                    competitors.tmpInFahrenheit == 0
+                                        ? "TBD"
+                                        : competitors.tmpInFahrenheit
+                                            .toString()
+                                            .split('.')
+                                            .first,
+                                    style: competitors.tmpInFahrenheit == 0
                                         ? Theme.of(context)
                                             .textTheme
                                             .headlineSmall!
@@ -1055,9 +1057,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                       ),
                                     )
                                   : const SizedBox(),
-                              getWeatherIcon(
-                                  competitors.venue?.weather ?? 805,
-                                  context,
+                              getWeatherIcon(competitors.weather, context,
                                   MediaQuery.of(context).size.height * .064)
                               /* getWeatherIcon(
                                   competitors.venue?.weather ?? 'Sunny',
@@ -1071,9 +1071,13 @@ class _GameListingScreenState extends State<GameListingScreen> {
                                 verticalDirection: VerticalDirection.up,
                                 children: [
                                   Text(
-                                    '${competitors.venue?.tmpInFahrenheit == 0 ? "TBD" : competitors.venue?.tmpInFahrenheit.toString().split('.').first ?? 0}',
-                                    style: competitors.venue?.tmpInFahrenheit ==
-                                            0
+                                    competitors.tmpInFahrenheit == 0
+                                        ? "TBD"
+                                        : competitors.tmpInFahrenheit
+                                            .toString()
+                                            .split('.')
+                                            .first,
+                                    style: competitors.tmpInFahrenheit == 0
                                         ? Theme.of(context)
                                             .textTheme
                                             .headlineSmall!

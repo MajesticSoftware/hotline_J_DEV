@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/utils/app_progress.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../generated/assets.dart';
 
 class ContactScreen extends StatefulWidget {
-  ContactScreen({Key? key}) : super(key: key);
+  const ContactScreen({Key? key}) : super(key: key);
 
   @override
   State<ContactScreen> createState() => _ContactScreenState();
@@ -23,6 +22,14 @@ class _ContactScreenState extends State<ContactScreen> {
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (url) async {
+          controller.runJavaScript(
+              "document.getElementsByTagName('header')[0].style.display='none'");
+          controller.runJavaScript(
+              "document.getElementsByTagName('footer')[0].style.display='none'");
+        },
+      ))
       ..loadRequest(Uri.parse('https://www.hotlinesmd.com/contact'));
   }
 
@@ -51,10 +58,10 @@ class _ContactScreenState extends State<ContactScreen> {
                   },
                   child: SvgPicture.asset(
                     Assets.imagesBackArrow,
-                    height: 30.w,
+                    height: 40.w,
                     alignment: Alignment.centerLeft,
                   ),
-                ),
+                ).paddingOnly(left: 10.w),
                 SvgPicture.asset(Assets.imagesLogo,
                     height: 34.w, fit: BoxFit.contain),
                 SvgPicture.asset(

@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 // ignore: depend_on_referenced_packages
-import 'package:cancellation_token_http/http.dart' as http;
+import 'package:http/http.dart' as http;
 import '../model/response_item.dart';
 import '../utils/utils.dart';
 import 'extras.dart';
@@ -26,10 +26,13 @@ class BaseApiHelper {
   static Future<ResponseItem> getRequest(
       Uri requestUrl, Map<String, String> headers) async {
     printData(tittle: "request", val: requestUrl);
-    var token = http.CancellationToken();
+    // var token = http.CancellationToken();
     try {
-      return await http.Client()
-          .get(requestUrl, headers: headers, cancellationToken: token)
+      return await http
+          .get(
+            requestUrl,
+            headers: headers,
+          )
           .then((response) => baseOnValue(response))
           .onError((error, stackTrace) => onError(error, requestUrl));
     } finally {
@@ -151,9 +154,7 @@ class BaseApiHelper {
 
   static Future baseOnValue(http.Response response) async {
     ResponseItem result;
-    log('response.body---${response.body.toString()}');
     var responseData = jsonDecode(response.body.toString());
-    log('responseData---${responseData.runtimeType}');
     bool status = false;
     String message;
     var data = responseData;

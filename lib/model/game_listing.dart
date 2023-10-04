@@ -117,6 +117,8 @@ class SportEvents {
   List<Players> awayRunningBackPlayer = [];
   List<Players> homeRunningBackPlayer = [];
   List homeTeamInjuredPlayer = [];
+  num temp = 273.15;
+  int weather = 805;
   SportEvents({
     this.id,
     this.scheduled,
@@ -170,6 +172,8 @@ class SportEvents {
     this.homePlayerId = '',
     this.awayRank = '',
     this.homeRank = '',
+    this.temp = 273.15,
+    this.weather = 805,
     this.homeTeamInjuredPlayer = const [],
     this.awayTeamInjuredPlayer = const [],
     this.awayReceiversPlayer = const [],
@@ -177,6 +181,9 @@ class SportEvents {
     this.awayRunningBackPlayer = const [],
     this.homeRunningBackPlayer = const [],
   });
+  num get tmpInFahrenheit {
+    return ((((temp) - 273.15) * (9 / 5))) + 32;
+  }
 
   String get gameHomeLogoLink {
     return homeGameLogo ?? '';
@@ -444,15 +451,6 @@ class Venue {
   String? mapCoordinates;
   String? countryCode;
   String? uuids;
-  num? temp;
-  int? weather;
-
-  num get tmpInFahrenheit {
-    if (temp != null) {
-      return ((((temp!) - 273.15) * (9 / 5))) + 32;
-    }
-    return 0;
-  }
 
   Venue(
       {this.id,
@@ -462,8 +460,6 @@ class Venue {
       this.countryName,
       this.mapCoordinates,
       this.countryCode,
-      this.temp = 0,
-      this.weather,
       this.uuids});
 
   Venue.fromJson(Map<String, dynamic> json) {

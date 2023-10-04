@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -520,6 +518,7 @@ Padding wrPlayersWidget(
                 headerOfWRPlayers(context),
                 commonDivider(context),
                 ListView.separated(
+                  padding: EdgeInsets.zero,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, i) {
@@ -1230,6 +1229,7 @@ SizedBox receivingHomePlayerCard(
 ListView hitterPlayerDetailCard(GameDetailsController con) {
   return ListView.separated(
     shrinkWrap: true,
+    padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
       con.hitterAwayPlayerMainList.sort(
@@ -1327,6 +1327,7 @@ ListView runningBacksCard(
 ) {
   return ListView.separated(
     shrinkWrap: true,
+    padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
       num totalPlay = con.isTab
@@ -2811,6 +2812,7 @@ injuryReportWidget(
                         )
                       : ListView.separated(
                           shrinkWrap: true,
+                          padding: EdgeInsets.zero,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             return (con.isInjuriesTab
@@ -2886,7 +2888,6 @@ injuryReportWidget(
                                         flex: 2, child: SizedBox()),
                               ],
                             )*/
-                            ;
                           },
                           separatorBuilder: (context, index) {
                             return commonDivider(context);
@@ -3247,7 +3248,14 @@ Padding hotlinesWidget(
           con.isHotlines
               ? circularWidget(context)
                   .paddingAll(MediaQuery.of(context).size.height * .038)
-              : con.hotlinesData.isEmpty && !con.isHotlines
+              : (con.hotlinesIndex == 0
+                          ? con.hotlinesData.isEmpty
+                          : con.hotlinesIndex == 1
+                              ? con.hotlinesDData.isEmpty
+                              : con.hotlinesIndex == 2
+                                  ? con.hotlinesFData.isEmpty
+                                  : con.hotlinesMData.isEmpty) &&
+                      !con.isHotlines
                   ? emptyListWidget(
                       context,
                       isAll: true,
@@ -3319,9 +3327,7 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                 Expanded(
                   flex: 2,
                   child: Text(
-                    (mobileView.size.shortestSide < 600
-                            ? awayTeam?.abbreviation
-                            : awayTeam?.name)
+                    ('${awayTeam?.abbreviation} ${awayTeam?.name?.split(' ').last}')
                         .toString(),
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.start,
@@ -3352,9 +3358,7 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                 Expanded(
                   flex: 2,
                   child: Text(
-                    (mobileView.size.shortestSide < 600
-                            ? homeTeam?.abbreviation
-                            : homeTeam?.name)
+                    ('${homeTeam?.abbreviation} ${homeTeam?.name?.split(' ').last}')
                         .toString(),
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.start,
@@ -3493,104 +3497,81 @@ Widget hotlinesCard(
     Competitors? homeTeam,
     TabController tabController,
     BuildContext context) {
-  return (con.hotlinesIndex == 1 && con.hotlinesDData.isEmpty)
-      ? emptyListWidget(
-          context,
-          gameDetails,
-        )
-      : (con.hotlinesIndex == 2 && con.hotlinesFData.isEmpty)
-          ? emptyListWidget(
-              context,
-              gameDetails,
-            )
-          : (con.hotlinesMData.isEmpty && con.hotlinesIndex == 2)
-              ? emptyListWidget(
-                  context,
-                  gameDetails,
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: con.hotlinesIndex == 0
-                      ? con.hotlinesData.length >= 6
-                          ? 6
-                          : con.hotlinesData.length
-                      : con.hotlinesIndex == 1
-                          ? con.hotlinesDData.length >= 6
-                              ? 6
-                              : con.hotlinesDData.length
-                          : con.hotlinesIndex == 2
-                              ? con.hotlinesFData.length >= 6
-                                  ? 6
-                                  : con.hotlinesFData.length
-                              : con.hotlinesMData.length >= 6
-                                  ? 6
-                                  : con.hotlinesMData.length,
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      // height:
-                      //     MediaQuery.of(context).size.height * .038,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * .016),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.network(
-                              homeTeam?.id ==
-                                      (con.hotlinesIndex == 0
-                                          ? con.hotlinesData[index].teamId
-                                          : con.hotlinesIndex == 1
-                                              ? con.hotlinesDData[index].teamId
-                                              : con.hotlinesIndex == 2
-                                                  ? con.hotlinesFData[index]
-                                                      .teamId
-                                                  : con.hotlinesMData[index]
-                                                      .teamId)
-                                  ? homeTeam?.abbreviation == 'NCST'
-                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                      : homeTeam?.abbreviation == 'ULL'
-                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                          : homeTeam?.abbreviation == 'SHS'
-                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                              : gameDetails.gameHomeLogoLink
-                                  : awayTeam?.abbreviation == 'NCST'
-                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                      : awayTeam?.abbreviation == 'ULL'
-                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                          : awayTeam?.abbreviation == 'SHS'
-                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                              : gameDetails.gameLogoAwayLink,
-                              height: MediaQuery.of(context).size.height * .03,
-                              width: MediaQuery.of(context).size.width * .04,
-                              fit: BoxFit.contain,
-                            ).paddingOnly(
-                                right: MediaQuery.of(context).size.width * .01),
-                            Expanded(
-                              flex: mobileView.size.shortestSide < 600 ? 7 : 4,
-                              child: (con.hotlinesIndex == 0
-                                      ? con.hotlinesData[index].teamName
-                                      : con.hotlinesIndex == 1
-                                          ? con.hotlinesDData[index].teamName
-                                          : con.hotlinesIndex == 2
-                                              ? con
-                                                  .hotlinesFData[index].teamName
-                                              : con.hotlinesMData[index]
-                                                  .teamName)
-                                  .appCommonText(
-                                      color: Theme.of(context).highlightColor,
-                                      weight: FontWeight.bold,
-                                      align: TextAlign.start,
-                                      size: mobileView.size.shortestSide < 600
-                                          ? MediaQuery.of(context).size.height *
-                                              .014
-                                          : MediaQuery.of(context).size.height *
-                                              .016),
-                            ),
-                            /* Flexible(
+  return ListView.separated(
+    padding: EdgeInsets.zero,
+    shrinkWrap: true,
+    itemCount: con.hotlinesIndex == 0
+        ? con.hotlinesData.length >= 6
+            ? 6
+            : con.hotlinesData.length
+        : con.hotlinesIndex == 1
+            ? con.hotlinesDData.length >= 6
+                ? 6
+                : con.hotlinesDData.length
+            : con.hotlinesIndex == 2
+                ? con.hotlinesFData.length >= 6
+                    ? 6
+                    : con.hotlinesFData.length
+                : con.hotlinesMData.length >= 6
+                    ? 6
+                    : con.hotlinesMData.length,
+    physics: const NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) {
+      return SizedBox(
+        // height:
+        //     MediaQuery.of(context).size.height * .038,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * .016),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.network(
+                (homeTeam?.id ==
+                        (con.hotlinesIndex == 0
+                            ? con.hotlinesData[index].teamId
+                            : con.hotlinesIndex == 1
+                                ? con.hotlinesDData[index].teamId
+                                : con.hotlinesIndex == 2
+                                    ? con.hotlinesFData[index].teamId
+                                    : con.hotlinesMData[index].teamId))
+                    ? (homeTeam?.abbreviation == 'NCST'
+                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                        : homeTeam?.abbreviation == 'ULL'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                            : homeTeam?.abbreviation == 'SHS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                : gameDetails.gameHomeLogoLink)
+                    : (awayTeam?.abbreviation == 'NCST'
+                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                        : awayTeam?.abbreviation == 'ULL'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                            : awayTeam?.abbreviation == 'SHS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                : gameDetails.gameLogoAwayLink),
+                height: MediaQuery.of(context).size.height * .03,
+                width: MediaQuery.of(context).size.width * .04,
+                fit: BoxFit.contain,
+              ).paddingOnly(right: MediaQuery.of(context).size.width * .01),
+              Expanded(
+                flex: mobileView.size.shortestSide < 600 ? 7 : 4,
+                child: (con.hotlinesIndex == 0
+                        ? con.hotlinesData[index].teamName
+                        : con.hotlinesIndex == 1
+                            ? con.hotlinesDData[index].teamName
+                            : con.hotlinesIndex == 2
+                                ? con.hotlinesFData[index].teamName
+                                : con.hotlinesMData[index].teamName)
+                    .appCommonText(
+                        color: Theme.of(context).highlightColor,
+                        weight: FontWeight.bold,
+                        align: TextAlign.start,
+                        size: mobileView.size.shortestSide < 600
+                            ? MediaQuery.of(context).size.height * .014
+                            : MediaQuery.of(context).size.height * .016),
+              ),
+              /* Flexible(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: (gameDetails.venue != null
@@ -3604,108 +3585,82 @@ Widget hotlinesCard(
                       weight: FontWeight.w600),
                 ),
               ),*/
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: BorderRadius.circular(0)),
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Center(
-                                    child: (con.hotlinesIndex == 0
-                                            ? con.hotlinesData[index].value
-                                            : con.hotlinesIndex == 1
-                                                ? con.hotlinesDData[index].value
-                                                : con.hotlinesIndex == 2
-                                                    ? con.hotlinesFData[index]
-                                                        .value
-                                                    : con.hotlinesMData[index]
-                                                        .value)
-                                        .appCommonText(
-                                            color: Theme.of(context).cardColor,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .014,
-                                            weight: FontWeight.w600)
-                                        .paddingSymmetric(
-                                            vertical: MediaQuery.sizeOf(context)
-                                                    .height *
-                                                .008),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * .02,
-                            ),
-                            Expanded(
-                                child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * .04,
-                                width: MediaQuery.of(context).size.width * .052,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        (con.hotlinesIndex == 0
-                                                    ? con.hotlinesData[index]
-                                                        .bookId
-                                                    : con.hotlinesIndex == 1
-                                                        ? con
-                                                            .hotlinesDData[
-                                                                index]
-                                                            .bookId
-                                                        : con.hotlinesIndex == 2
-                                                            ? con
-                                                                .hotlinesFData[
-                                                                    index]
-                                                                .bookId
-                                                            : con
-                                                                .hotlinesMData[
-                                                                    index]
-                                                                .bookId) ==
-                                                'sr:book:18186'
-                                            ? Assets.imagesFanduel
-                                            : (con.hotlinesIndex == 0
-                                                        ? con
-                                                            .hotlinesData[index]
-                                                            .bookId
-                                                        : con.hotlinesIndex == 1
-                                                            ? con
-                                                                .hotlinesDData[
-                                                                    index]
-                                                                .bookId
-                                                            : con.hotlinesIndex ==
-                                                                    2
-                                                                ? con
-                                                                    .hotlinesFData[
-                                                                        index]
-                                                                    .bookId
-                                                                : con
-                                                                    .hotlinesMData[
-                                                                        index]
-                                                                    .bookId) ==
-                                                    'sr:book:17324'
-                                                ? Assets.imagesMgm
-                                                : Assets.imagesDraftkings,
-                                      ),
-                                      fit: BoxFit.contain,
-                                    )),
-                              ),
-                            )),
-                          ],
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(0)),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Center(
+                      child: (con.hotlinesIndex == 0
+                              ? con.hotlinesData[index].value
+                              : con.hotlinesIndex == 1
+                                  ? con.hotlinesDData[index].value
+                                  : con.hotlinesIndex == 2
+                                      ? con.hotlinesFData[index].value
+                                      : con.hotlinesMData[index].value)
+                          .appCommonText(
+                              color: Theme.of(context).cardColor,
+                              size: MediaQuery.of(context).size.height * .014,
+                              weight: FontWeight.w600)
+                          .paddingSymmetric(
+                              vertical:
+                                  MediaQuery.sizeOf(context).height * .008),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .02,
+              ),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .04,
+                  width: MediaQuery.of(context).size.width * .052,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage(
+                          ((con.hotlinesIndex == 0
+                                      ? con.hotlinesData[index].bookId
+                                      : con.hotlinesIndex == 1
+                                          ? con.hotlinesDData[index].bookId
+                                          : con.hotlinesIndex == 2
+                                              ? con.hotlinesFData[index].bookId
+                                              : con.hotlinesMData[index]
+                                                  .bookId) ==
+                                  'sr:book:18186')
+                              ? Assets.imagesFanduel
+                              : ((con.hotlinesIndex == 0
+                                          ? con.hotlinesData[index].bookId
+                                          : con.hotlinesIndex == 1
+                                              ? con.hotlinesDData[index].bookId
+                                              : con.hotlinesIndex == 2
+                                                  ? con.hotlinesFData[index]
+                                                      .bookId
+                                                  : con.hotlinesMData[index]
+                                                      .bookId) ==
+                                      'sr:book:17324')
+                                  ? Assets.imagesMgm
+                                  : Assets.imagesDraftkings,
                         ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return commonDivider(context);
-                  },
-                );
+                        fit: BoxFit.contain,
+                      )),
+                ),
+              )),
+            ],
+          ),
+        ),
+      );
+    },
+    separatorBuilder: (BuildContext context, int index) {
+      return commonDivider(context);
+    },
+  );
 }
 
 SizedBox emptyListWidget(BuildContext context, SportEvents gameDetails,
@@ -3713,12 +3668,9 @@ SizedBox emptyListWidget(BuildContext context, SportEvents gameDetails,
   return SizedBox(
     height: MediaQuery.of(context).size.height * .1,
     child: Center(
-        child: (isAll
-                ? (gameDetails.status == 'live' ||
-                        gameDetails.status == 'closed'
-                    ? 'Bets not available'
-                    : 'Bets available closer to game time')
-                : 'Bets not available')
+        child: (gameDetails.status == 'live' || gameDetails.status == 'closed'
+                ? 'Bets not available'
+                : 'Bets available closer to game time')
             .appCommonText(
                 weight: FontWeight.bold,
                 size: Get.height * .014,
@@ -4034,17 +3986,12 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                               weight: FontWeight.w600),
                                     ),
                                   ),
-                                  (gameDetails.venue != null
-                                          ? gameDetails
-                                                      .venue?.tmpInFahrenheit ==
-                                                  0
-                                              ? "TBD"
-                                              : gameDetails
-                                                  .venue?.tmpInFahrenheit
-                                                  .toString()
-                                                  .split('.')
-                                                  .first
-                                          : 00)
+                                  (gameDetails.tmpInFahrenheit == 32
+                                          ? "TBD"
+                                          : gameDetails.tmpInFahrenheit
+                                              .toString()
+                                              .split('.')
+                                              .first)
                                       .toString()
                                       .appCommonText(
                                           size: MediaQuery.of(context)
@@ -4060,7 +4007,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                     color: whiteColor,
                                   ),
                                   getWeatherIcon(
-                                      gameDetails.venue?.weather ?? 805,
+                                      gameDetails.weather ?? 805,
                                       context,
                                       MediaQuery.of(context).size.height * .02)
                                   /*   getWeatherIcon(
