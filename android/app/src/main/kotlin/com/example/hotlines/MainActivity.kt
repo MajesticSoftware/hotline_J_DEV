@@ -1,4 +1,4 @@
-package com.example.hotlines
+package com.fa.app.hotlines
 
 import io.flutter.embedding.android.FlutterActivity
 

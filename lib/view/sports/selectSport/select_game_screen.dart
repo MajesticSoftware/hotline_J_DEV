@@ -473,7 +473,7 @@ class SelectGameScreen extends StatelessWidget {
       searchIconColor: appColor,
       textFieldColor:
           isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
-      helpText: 'Search team here...',
+      helpText: 'Search by team abbreviation',
       helpTextColor:
           isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
       textFieldIconColor:
@@ -484,7 +484,7 @@ class SelectGameScreen extends StatelessWidget {
         controller.update();
       },
       onSubmitted: (String text) {
-        controller.searchData(text);
+        controller.searchData(text, controller.sportKey);
         controller.update();
       },
     );
@@ -1465,7 +1465,12 @@ class SelectGameScreen extends StatelessWidget {
                                                     .014)
                                         : Theme.of(context)
                                             .textTheme
-                                            .displayMedium,
+                                            .displayMedium!
+                                            .copyWith(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .024),
                                   ),
                                   Text(
                                     '°F',

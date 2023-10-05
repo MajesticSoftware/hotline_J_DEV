@@ -113,7 +113,7 @@ class _GameListingScreenState extends State<GameListingScreen> {
         controller.searchCon.clear();
       },
       onSubmitted: (String text) {
-        controller.searchData(text);
+        controller.searchData(text, widget.sportKey);
         controller.update();
       },
     );

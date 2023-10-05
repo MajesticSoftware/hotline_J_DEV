@@ -166,7 +166,7 @@ class GameListingController extends GetxController {
     }
   }
 
-  searchData(String text) {
+  searchData(String text, String sportKey) {
     searchList.clear();
     if (text.isNotEmpty) {
       for (var element in (sportKey == 'MLB'
@@ -767,7 +767,7 @@ class GameListingController extends GetxController {
           } else {
             down = down;
           }
-          if (sportKey == 'NFL') {
+          if (key == 'NFL') {
             nflSportEventsList[index].inning = (game.quarter ?? "0").toString();
             nflSportEventsList[index].inningHalf = "Q";
             if (game.situation != null) {
@@ -885,13 +885,12 @@ class GameListingController extends GetxController {
           if (i == 6) {
             isPagination = false;
           }
+        }).then((value) {
           if (ncaaSportEventsList.isNotEmpty) {
             for (int i = 0; i < ncaaSportEventsList.length; i++) {
               if (ncaaSportEventsList[i].uuids != null) {
-                getWeather(
-                  ncaaSportEventsList[i].venue?.cityName ?? "",
-                  index: i,
-                );
+                getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
+                    index: i, sportKey: sportKey);
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
@@ -1070,10 +1069,8 @@ class GameListingController extends GetxController {
           if (nflSportEventsList.isNotEmpty) {
             for (int i = 0; i < nflSportEventsList.length; i++) {
               if (nflSportEventsList[i].uuids != null) {
-                getWeather(
-                  nflSportEventsList[i].venue?.cityName ?? "",
-                  index: i,
-                );
+                getWeather(nflSportEventsList[i].venue?.cityName ?? "",
+                    index: i, sportKey: sportKey);
                 boxScoreResponseNCAA(
                     key: sportKey,
                     gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
@@ -1227,10 +1224,8 @@ class GameListingController extends GetxController {
           getAllEventList(isLoad, sportKey);
           if (mlbSportEventsList.isNotEmpty) {
             for (int i = 0; i < mlbSportEventsList.length; i++) {
-              getWeather(
-                mlbSportEventsList[i].venue?.cityName ?? "",
-                index: i,
-              );
+              getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
+                  index: i, sportKey: sportKey);
               if (mlbSportEventsList[i].uuids != null) {
                 boxScoreResponse(
                     homeTeamId: replaceId(
@@ -1459,7 +1454,7 @@ class GameListingController extends GetxController {
   }
 
   Future getWeather(String cityName,
-      {bool isLoad = false, int index = 0}) async {
+      {bool isLoad = false, int index = 0, required String sportKey}) async {
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().getWeather(cityName.split(',').first);

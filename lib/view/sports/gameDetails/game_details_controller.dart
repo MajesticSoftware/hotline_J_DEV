@@ -750,7 +750,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
-                (defenciveData?.defense?.interceptions ?? "0").toString(),
+                (offenciveData?.defense?.interceptions ?? "0").toString(),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -941,7 +941,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
-                (defenciveData?.defense?.interceptions ?? "0").toString(),
+                (offenciveData?.defense?.interceptions ?? "0").toString(),
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -1144,10 +1144,40 @@ class GameDetailsController extends GetxController {
               });
             }
           }
+
+          List<HotlinesModel> hotlinesFinalData = [];
+          hotlinesFinalData = hotlinesDData + hotlinesFData + hotlinesMData;
           hotlinesData.clear();
-          if (hotlinesDData.isNotEmpty) {
+          hotlinesFinalData
+              .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
+          if (hotlinesFinalData.isNotEmpty) {
+            hotlinesData.add(hotlinesFinalData[0]);
+            for (int i = 1; i < hotlinesFinalData.length; i++) {
+              if (!(hotlinesData.indexWhere((element) =>
+                      element.teamName == hotlinesFinalData[i].teamName) >=
+                  0)) {
+                if (hotlinesData
+                        .where((element) =>
+                            element.bookId == hotlinesFinalData[i].bookId)
+                        .toList()
+                        .length <
+                    2) {
+                  if (hotlinesData
+                          .where((element) =>
+                              element.teamId == hotlinesFinalData[i].teamId)
+                          .toList()
+                          .length <
+                      3) {
+                    hotlinesData.add(hotlinesFinalData[i]);
+                  }
+                }
+              }
+            }
+          }
+          /*  if (hotlinesDData.isNotEmpty) {
             hotlinesDData.sort(
                 (a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
+
             for (int i = 0; i < 2; i++) {
               hotlinesData.add(hotlinesDData[i]);
             }
@@ -1181,7 +1211,7 @@ class GameDetailsController extends GetxController {
                 }
               }
             }
-          }
+          }*/
           hotlinesData
               .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
           update();
