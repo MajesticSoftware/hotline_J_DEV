@@ -1,53 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../extras/constants.dart';
 import '../generated/assets.dart';
 import '../theme/app_color.dart';
-
-commonImageWidget(String image, BuildContext context,
-    {void Function()? onTap, bool isComingSoon = false}) {
-  return Stack(
-    alignment: Alignment.center,
-    children: [
-      GestureDetector(
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * .01),
-          child: isComingSoon
-              ? Image.asset(
-                  image,
-                  width: Get.width * .29,
-                  fit: BoxFit.contain,
-                )
-              : ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context)
-                          .scaffoldBackgroundColor
-                          .withOpacity(0.5),
-                      BlendMode.dstATop),
-                  child: Image.asset(
-                    image,
-                    width: Get.width * .29,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-        ),
-      ),
-      isComingSoon
-          ? const SizedBox()
-          : SvgPicture.asset(
-              Assets.imagesCommingSoon,
-              width: Get.width * .2,
-              fit: BoxFit.contain,
-            ),
-    ],
-  );
-}
 
 getWeatherIconOld(String condition, BuildContext context, double height) {
   // int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();
@@ -160,29 +118,6 @@ Expanded buildExpandedBoxWidget(BuildContext context,
           )
         ],
       ));
-}
-
-Widget commonBoxWidget(BuildContext context, {String title = ''}) {
-  return Container(
-    height: MediaQuery.of(context).size.height * .032,
-    // width: MediaQuery.of(context).size.width * .09,
-    decoration: BoxDecoration(
-        color: whiteColor,
-        border: Border.all(color: greyDarkColor, width: 1),
-        borderRadius:
-            BorderRadius.circular(MediaQuery.of(context).size.width * .012)),
-    child: Center(
-        child: title.appCommonText(
-            color: blackColor,
-            weight: FontWeight.w700,
-            maxLine: 1,
-            size: mobileView.size.shortestSide < 600
-                ? MediaQuery.of(context).size.height * .010
-                : MediaQuery.of(context).size.height * .014,
-            align: TextAlign.center)),
-  ).paddingSymmetric(
-    horizontal: MediaQuery.of(context).size.height * .012,
-  );
 }
 
 GameListingController selectGameController = Get.find();

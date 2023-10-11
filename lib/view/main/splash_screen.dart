@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/view/sports/selectSport/select_game_screen.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 
 import '../../extras/constants.dart';
 import '../../generated/assets.dart';

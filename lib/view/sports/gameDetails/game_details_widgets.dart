@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:intl/intl.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -18,7 +19,6 @@ import '../../../model/game_listing.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
-import '../gameListing/game_listing_con.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
@@ -3320,8 +3320,14 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   width: Get.height * .035,
                   height: Get.height * .035,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox(),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: Get.height * .035,
+                    height: Get.height * .035,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: greyColor.withOpacity(0.2),
+                    ),
+                  ),
                 ),
                 (MediaQuery.of(context).size.height * .01).W(),
                 Expanded(
@@ -3351,8 +3357,14 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   width: Get.height * .035,
                   height: Get.height * .035,
                   fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox(),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: Get.height * .035,
+                    height: Get.height * .035,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: greyColor.withOpacity(0.2),
+                    ),
+                  ),
                 ),
                 (MediaQuery.of(context).size.height * .01).W(),
                 Expanded(
@@ -3884,7 +3896,14 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                           height: Get.height * .048,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) =>
-                              const SizedBox(),
+                              Container(
+                            width: Get.height * .035,
+                            height: Get.height * .035,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: greyColor.withOpacity(0.2),
+                            ),
+                          ),
                         ),
                         gameDetails.awayRank != "0"
                             ? RichText(
@@ -4032,7 +4051,14 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                       children: [
                         Image.network(
                           errorBuilder: (context, error, stackTrace) =>
-                              const SizedBox(),
+                              Container(
+                            width: Get.height * .035,
+                            height: Get.height * .035,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: greyColor.withOpacity(0.2),
+                            ),
+                          ),
                           homeTeam?.abbreviation == 'NCST'
                               ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                               : homeTeam?.abbreviation == 'ULL'

@@ -17,3 +17,22 @@ class AppProgress extends StatelessWidget {
                 color: Theme.of(context).primaryColor)));
   }
 }
+
+class PaginationProgress extends StatelessWidget {
+  const PaginationProgress({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            )),
+      ),
+    );
+  }
+}
