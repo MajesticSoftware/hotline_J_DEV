@@ -146,9 +146,9 @@ class _AnimSearchBarState extends State<AnimSearchBar>
       ///Using Animated container to expand and shrink the widget
       child: AnimatedContainer(
         duration: Duration(milliseconds: widget.animationDurationInMilli),
-        height: MediaQuery.sizeOf(context).height * .05,
+        height: MediaQuery.sizeOf(context).height * .045,
         width: (toggle == 0)
-            ? MediaQuery.sizeOf(context).height * .05
+            ? MediaQuery.sizeOf(context).height * .045
             : widget.width,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
@@ -351,6 +351,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                           ///if the search bar is closed
                           if (toggle == 0) {
                             toggle = 1;
+
                             setState(() {
                               ///if the autoFocus is true, the keyboard will pop open, automatically
                               if (widget.autoFocus) {

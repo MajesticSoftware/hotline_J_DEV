@@ -946,108 +946,120 @@ PreferredSize commonAppBar(
     BuildContext context, GameListingController controller) {
   return PreferredSize(
       preferredSize: Size.fromHeight(125.w),
-      child: AnimatedContainer(
+      child: Container(
         alignment: Alignment.bottomCenter,
         color: Theme.of(context).secondaryHeaderColor,
-        duration: const Duration(milliseconds: 500),
         child: Padding(
           padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              const TransperCard(),
-              Expanded(
-                child: SvgPicture.asset(Assets.imagesLogo,
-                    height: 34.w, fit: BoxFit.contain),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                            color: isDark || controller.isDarkMode
+                                ? blackColor
+                                : Colors.transparent,
+                            width: 2),
                         color: isDark || controller.isDarkMode
                             ? blackColor
-                            : Colors.transparent,
-                        width: 2),
-                    color: isDark || controller.isDarkMode
-                        ? blackColor
-                        : dividerColor),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        PreferenceManager.setIsDarkMod(false);
-                        Get.changeThemeMode(ThemeMode.light);
-                        controller.isDarkMode = false;
-                        isDark = false;
-                        controller.update();
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(2.sp),
-                        child: Container(
-                          width: 40.w,
-                          height: 36.w,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.horizontal(
-                                  left: Radius.circular(8.r)),
-                              color: isDark || controller.isDarkMode
-                                  ? blackColor
-                                  : whiteColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                Assets.imagesSunLight,
-                                // ignore: deprecated_member_use
-                                color: isDark || controller.isDarkMode
-                                    ? darkSunColor
-                                    : blackColor,
-                                width: 24.w,
-                                height: 24.w,
-                                fit: BoxFit.contain,
+                            : dividerColor),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            PreferenceManager.setIsDarkMod(false);
+                            Get.changeThemeMode(ThemeMode.light);
+                            controller.isDarkMode = false;
+                            isDark = false;
+                            controller.update();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(2.sp),
+                            child: Container(
+                              width: 40.w,
+                              height: 36.w,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.horizontal(
+                                      left: Radius.circular(8.r)),
+                                  color: isDark || controller.isDarkMode
+                                      ? blackColor
+                                      : whiteColor),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    Assets.imagesSunLight,
+                                    // ignore: deprecated_member_use
+                                    color: isDark || controller.isDarkMode
+                                        ? darkSunColor
+                                        : blackColor,
+                                    width: 24.w,
+                                    height: 24.w,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        PreferenceManager.setIsDarkMod(true);
-                        Get.changeThemeMode(ThemeMode.dark);
-                        controller.isDarkMode = true;
-                        isDark = true;
-                        controller.update();
-                      },
-                      child: Container(
-                        width: 40.w,
-                        height: 36.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.horizontal(
-                                right: Radius.circular(8.r)),
-                            color: isDark || controller.isDarkMode
-                                ? darkBackGroundColor
-                                : dividerColor),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              Assets.imagesMoon,
-                              // ignore: deprecated_member_use
-                              color: isDark || controller.isDarkMode
-                                  ? whiteColor
-                                  : greyDarkColor,
-                              width: 24.w,
-                              height: 24.w,
-                              fit: BoxFit.contain,
+                        GestureDetector(
+                          onTap: () {
+                            PreferenceManager.setIsDarkMod(true);
+                            Get.changeThemeMode(ThemeMode.dark);
+                            controller.isDarkMode = true;
+                            isDark = true;
+                            controller.update();
+                          },
+                          child: Container(
+                            width: 40.w,
+                            height: 36.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.horizontal(
+                                    right: Radius.circular(8.r)),
+                                color: isDark || controller.isDarkMode
+                                    ? darkBackGroundColor
+                                    : dividerColor),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  Assets.imagesMoon,
+                                  // ignore: deprecated_member_use
+                                  color: isDark || controller.isDarkMode
+                                      ? whiteColor
+                                      : greyDarkColor,
+                                  width: 24.w,
+                                  height: 24.w,
+                                  fit: BoxFit.contain,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              )
+                  ),
+                  Expanded(
+                    child: SvgPicture.asset(Assets.imagesLogo,
+                        height: 34.w, fit: BoxFit.contain),
+                  ),
+                  const TransperCard(),
+                ],
+              ),
+              controller.isSelectedGame == 'Gambling 101' ||
+                      controller.isSelectedGame == 'Contact'
+                  ? const SizedBox()
+                  : Positioned(
+                      top: -45.w,
+                      right: 0,
+                      left: -9.w,
+                      child: buildAnimSearchBar(controller, context)),
             ],
           ),
         ),
@@ -1068,7 +1080,8 @@ AnimSearchBar buildAnimSearchBar(
     searchIconColor: appColor,
     textFieldColor:
         isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
-    helpText: 'Search by team abbreviation',
+    helpText:
+        'Search by team ${mobileView.size.shortestSide < 600 ? 'abbreviation' : 'name'}',
     helpTextColor:
         isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
     textFieldIconColor:

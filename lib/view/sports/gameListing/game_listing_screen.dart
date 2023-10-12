@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
+import '../../../utils/animated_search.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
 import '../../../theme/theme.dart';
@@ -32,13 +33,6 @@ class SelectGameScreen extends StatelessWidget {
     }, builder: (controller) {
       isDark = PreferenceManager.getIsDarkMode() ?? false;
       return Scaffold(
-          floatingActionButton: controller.isSelectedGame == 'Gambling 101' ||
-                  controller.isSelectedGame == 'Contact'
-              ? const SizedBox()
-              : buildAnimSearchBar(controller, context).paddingSymmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
           body: SingleChildScrollView(
@@ -46,10 +40,12 @@ class SelectGameScreen extends StatelessWidget {
               children: [
                 GameTabCard(
                   onTapContact: () {
+                    toggle = 0;
                     controller.isSelectedGame = 'Contact';
                     controller.update();
                   },
                   onTapGambling: () {
+                    toggle = 0;
                     controller.isSelectedGame = 'Gambling 101';
                     controller.update();
                     // showDataAlert(context);
@@ -99,54 +95,69 @@ class SelectGameScreen extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
-                      itemCount: spotList(controller).length + 1,
+                      itemCount: spotList(controller).length,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         try {
-                          SportEvents competitors = spotList(controller)[index];
-                          String date = DateFormat.MMMd().format(
-                              DateTime.parse(competitors.scheduled ?? '')
-                                  .toLocal());
+                          // SportEvents competitors = spotList(controller)[index];
+                          String date = DateFormat.MMMd().format(DateTime.parse(
+                                  spotList(controller)[index].scheduled ?? '')
+                              .toLocal());
                           String dateTime = DateFormat.jm().format(
-                              DateTime.parse(competitors.scheduled ?? '')
+                              DateTime.parse(
+                                      spotList(controller)[index].scheduled ??
+                                          '')
                                   .toLocal());
-                          return spotList(controller).length == index
-                              ? controller.isPagination
-                                  ? const PaginationProgress()
-                                  : const SizedBox()
+                          return (spotList(controller).length == index + 1 &&
+                                  controller.isPagination)
+                              ? const PaginationProgress()
                               : spotList(controller).isEmpty &&
                                       !controller.isLoading.value &&
                                       !controller.isPagination
                                   ? const NoGameWidget()
                                   : Visibility(
-                                      visible: (competitors.status !=
+                                      visible: (spotList(controller)[index]
+                                                      .status !=
                                                   'closed' &&
                                               controller.sportKey != "NFL") ||
-                                          (competitors.status != 'postponed'),
+                                          (spotList(controller)[index].status !=
+                                              'postponed'),
                                       child: GameWidget(
                                         onTap: () {
                                           controller.gameOnClick(
                                               context, index);
                                         },
                                         awayTeamMoneyLine:
-                                            competitors.awayMoneyLineValue,
+                                            spotList(controller)[index]
+                                                .awayMoneyLineValue,
                                         homeTeamMoneyLine:
-                                            competitors.homeMoneyLineValue,
-                                        awayTeamOU: competitors.awayOUValue,
-                                        homeTeamOU: competitors.homeOUValue,
-                                        weather: competitors.weather,
-                                        homeTeamSpread: competitors
+                                            spotList(controller)[index]
+                                                .homeMoneyLineValue,
+                                        awayTeamOU: spotList(controller)[index]
+                                            .awayOUValue,
+                                        homeTeamOU: spotList(controller)[index]
+                                            .homeOUValue,
+                                        weather:
+                                            spotList(controller)[index].weather,
+                                        homeTeamSpread: spotList(
+                                                    controller)[index]
                                                 .homeSpreadValue
                                                 .contains('-')
-                                            ? competitors.homeSpreadValue
-                                            : '+${competitors.homeSpreadValue}',
-                                        awayTeamSpread: competitors
+                                            ? spotList(controller)[index]
+                                                .homeSpreadValue
+                                            : '+${spotList(controller)[index].homeSpreadValue}',
+                                        awayTeamSpread: spotList(
+                                                    controller)[index]
                                                 .awaySpreadValue
                                                 .contains('-')
-                                            ? competitors.awaySpreadValue
-                                            : '+${competitors.awaySpreadValue}',
-                                        temp: competitors.tmpInFahrenheit,
-                                        isLive: competitors.status == 'live',
+                                            ? spotList(controller)[index]
+                                                .awaySpreadValue
+                                            : '+${spotList(controller)[index].awaySpreadValue}',
+                                        temp: spotList(controller)[index]
+                                            .tmpInFahrenheit,
+                                        isLive: spotList(controller)[index]
+                                                .status ==
+                                            'live',
                                         dateTime: '$date, $dateTime',
                                         awayTeamImageUrl: spotList(
                                                         controller)[index]
@@ -161,7 +172,8 @@ class SelectGameScreen extends StatelessWidget {
                                                             .awayTeam ==
                                                         'Sam Houston State Bearkats'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : competitors
+                                                    : spotList(
+                                                            controller)[index]
                                                         .gameLogoAwayLink,
                                         awayTeamRank:
                                             (spotList(controller)[index]
@@ -192,7 +204,8 @@ class SelectGameScreen extends StatelessWidget {
                                                             .homeTeam ==
                                                         'Sam Houston State Bearkats'
                                                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : competitors
+                                                    : spotList(
+                                                            controller)[index]
                                                         .gameHomeLogoLink,
                                         homeTeamRank:
                                             (spotList(controller)[index]
@@ -257,46 +270,40 @@ class SelectGameScreen extends StatelessWidget {
                               temp: competitors.tmpInFahrenheit,
                               isLive: competitors.status == 'live',
                               dateTime: '$date, $dateTime',
-                              awayTeamImageUrl: spotList(controller)[index]
-                                          .awayTeam ==
+                              awayTeamImageUrl: competitors.awayTeam ==
                                       'North Carolina State Wolfpack'
                                   ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                  : spotList(controller)[index].awayTeam ==
+                                  : competitors.awayTeam ==
                                           'Louisiana-Lafayette Ragin Cajuns'
                                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                      : spotList(controller)[index].awayTeam ==
+                                      : competitors.awayTeam ==
                                               'Sam Houston State Bearkats'
                                           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
                                           : competitors.gameLogoAwayLink,
-                              awayTeamRank:
-                                  (spotList(controller)[index].awayRank == '0'
-                                      ? ''
-                                      : spotList(controller)[index].awayRank),
+                              awayTeamRank: (competitors.awayRank == '0'
+                                  ? ''
+                                  : competitors.awayRank),
                               awayTeamAbb: (mobileView.size.shortestSide < 600
-                                  ? spotList(controller)[index].awayTeamAbb
-                                  : spotList(controller)[index].awayTeam),
-                              awayTeamScore:
-                                  (spotList(controller)[index].awayScore),
-                              homeTeamImageUrl: spotList(controller)[index]
-                                          .homeTeam ==
+                                  ? competitors.awayTeamAbb
+                                  : competitors.awayTeam),
+                              awayTeamScore: (competitors.awayScore),
+                              homeTeamImageUrl: competitors.homeTeam ==
                                       'North Carolina State Wolfpack'
                                   ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                  : spotList(controller)[index].homeTeam ==
+                                  : competitors.homeTeam ==
                                           'Louisiana-Lafayette Ragin Cajuns'
                                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                      : spotList(controller)[index].homeTeam ==
+                                      : competitors.homeTeam ==
                                               'Sam Houston State Bearkats'
                                           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
                                           : competitors.gameHomeLogoLink,
-                              homeTeamRank:
-                                  (spotList(controller)[index].homeRank == '0'
-                                      ? ''
-                                      : spotList(controller)[index].homeRank),
+                              homeTeamRank: (competitors.homeRank == '0'
+                                  ? ''
+                                  : competitors.homeRank),
                               homeTeamAbb: (mobileView.size.shortestSide < 600
-                                  ? spotList(controller)[index].homeTeamAbb
-                                  : spotList(controller)[index].homeTeam),
-                              homeTeamScore:
-                                  spotList(controller)[index].homeScore,
+                                  ? competitors.homeTeamAbb
+                                  : competitors.homeTeam),
+                              homeTeamScore: competitors.homeScore,
                             ),
                           );
                         } catch (e) {
