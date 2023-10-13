@@ -19,7 +19,6 @@ import '../../../model/response_item.dart';
 import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
-import '../gameListing/game_listing_con.dart';
 
 class GameDetailsController extends GetxController {
   List<String> awayQb = [];

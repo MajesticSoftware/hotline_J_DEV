@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:math' as m;
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -1116,7 +1115,6 @@ class GameListingController extends GetxController {
                         ?.forEach((consensus) {
                       if (consensus.name == 'moneyline_current') {
                         consensus.outcomes?.forEach((lines) {
-                          print("object");
                           if (lines.type == 'home') {
                             ncaaSportEventsList[newIndex].homeMoneyLine =
                                 lines.odds.toString();

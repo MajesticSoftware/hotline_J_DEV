@@ -3952,9 +3952,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                     weight: FontWeight.w300,
                                     color: whiteColor,
                                   ),
-                                  getWeatherIcon(
-                                      gameDetails.weather ?? 805,
-                                      context,
+                                  getWeatherIcon(gameDetails.weather, context,
                                       MediaQuery.of(context).size.height * .02)
                                   /*   getWeatherIcon(
                                       (gameDetails.venue != null
