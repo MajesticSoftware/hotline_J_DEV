@@ -23,6 +23,23 @@ extension AddSpace on num {
   }
 }
 
+String dateWidget(String down) {
+  if ((down) == '1') {
+    return '${down}st';
+  } else if ((down).toString().endsWith('1') &&
+      !(down).toString().startsWith('1')) {
+    return '${down}st';
+  } else if ((down).toString().endsWith('2') &&
+      !(down).toString().startsWith('1')) {
+    return '${down}nd';
+  } else if ((down).toString().endsWith('3') &&
+      !(down).toString().startsWith('1')) {
+    return '${down}rd';
+  } else {
+    return '${down}th';
+  }
+}
+
 replaceId(String id) {
   String fistId = id.split(',').first;
   String secondId = id.split(',').last;

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../theme/app_color.dart';
@@ -137,7 +138,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * .100,
+      // height: MediaQuery.of(context).size.height * .05,
 
       ///if the rtl is true, search bar will be from right to left
       alignment:
@@ -146,9 +147,9 @@ class _AnimSearchBarState extends State<AnimSearchBar>
       ///Using Animated container to expand and shrink the widget
       child: AnimatedContainer(
         duration: Duration(milliseconds: widget.animationDurationInMilli),
-        height: MediaQuery.sizeOf(context).height * .045,
+        height: MediaQuery.sizeOf(context).height * .035,
         width: (toggle == 0)
-            ? MediaQuery.sizeOf(context).height * .045
+            ? MediaQuery.sizeOf(context).height * .035
             : widget.width,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
@@ -175,7 +176,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
 
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
-              right: 7,
+              right: 4,
               curve: Curves.easeOut,
               child: AnimatedOpacity(
                 opacity: (toggle == 0) ? 0.0 : 1.0,
@@ -232,7 +233,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       child: widget.suffixIcon ??
                           Icon(
                             Icons.close,
-                            size: MediaQuery.of(context).size.height * .028,
+                            size: MediaQuery.of(context).size.height * .02,
                             color: widget.textFieldIconColor,
                           ),
                     ),
@@ -292,7 +293,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       hintText: widget.helpText,
                       hintStyle: TextStyle(
                         color: widget.helpTextColor ?? greyColor,
-                        fontSize: MediaQuery.of(context).size.height * .018,
+                        fontSize: MediaQuery.of(context).size.height * .016,
                         fontWeight: FontWeight.w500,
                       ),
                       alignLabelWithHint: true,
@@ -332,7 +333,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                                   // search icon color when closed
                                   color: widget.searchIconColor,
                                   size:
-                                      MediaQuery.of(context).size.height * .025,
+                                      MediaQuery.of(context).size.height * .02,
                                 ),
                               )
                             : Icon(
@@ -343,7 +344,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                                 color: toggle == 0
                                     ? widget.searchIconColor
                                     : widget.textFieldIconColor,
-                                size: MediaQuery.of(context).size.height * .025,
+                                size: MediaQuery.of(context).size.height * .02,
                               ).paddingOnly(left: 10),
                     onTap: () {
                       setState(

@@ -953,6 +953,7 @@ PreferredSize commonAppBar(
           padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
           child: Stack(
             clipBehavior: Clip.none,
+            alignment: Alignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1056,9 +1057,8 @@ PreferredSize commonAppBar(
                       controller.isSelectedGame == 'Contact'
                   ? const SizedBox()
                   : Positioned(
-                      top: -45.w,
                       right: 0,
-                      left: -9.w,
+                      left: -9.h,
                       child: buildAnimSearchBar(controller, context)),
             ],
           ),

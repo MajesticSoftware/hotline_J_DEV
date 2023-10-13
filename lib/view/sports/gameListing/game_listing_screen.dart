@@ -25,11 +25,17 @@ class SelectGameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
-      return await gameListingController.getGameListingForNFLGame(true,
-          apiKey: gameListingController.apiKey,
-          sportKey: gameListingController.sportKey,
-          date: gameListingController.date,
-          sportId: gameListingController.sportId);
+      Future.delayed(
+        Duration.zero,
+        () async {
+          await gameListingController.getGameListingForNFLGame(true,
+              apiKey: gameListingController.apiKey,
+              sportKey: gameListingController.sportKey,
+              date: gameListingController.date,
+              sportId: gameListingController.sportId);
+          gameListingController.update();
+        },
+      );
     }, builder: (controller) {
       isDark = PreferenceManager.getIsDarkMode() ?? false;
       return Scaffold(

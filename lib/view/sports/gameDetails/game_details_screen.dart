@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../../../constant/shred_preference.dart';
 
@@ -33,6 +34,7 @@ class SportDetailsScreen extends StatefulWidget {
 class _SportDetailsScreenState extends State<SportDetailsScreen>
     with SingleTickerProviderStateMixin {
   final GameDetailsController gameDetailsController = Get.find();
+
   TabController? _tabController;
   @override
   void initState() {
@@ -102,8 +104,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                       children: [
                         headerWidget(context, widget.gameDetails, awayTeam,
                             homeTeam, widget.sportKey),
-                        mainlinesWidget(context, con, widget.gameDetails,
-                            awayTeam, homeTeam),
+                        mainlinesWidget(
+                            context, widget.gameDetails, awayTeam, homeTeam),
                         hotlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam, _tabController!),
                         widget.sportKey == 'MLB'
