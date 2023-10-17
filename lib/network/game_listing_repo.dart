@@ -149,6 +149,24 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> nflRosterRepo(
+      {String gameId = '', String sportKey = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(sportKey == "NFL"
+        ? '${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NFL_APIKEY}'
+        : '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NCAA_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///PLAYER PROPS API(HOTLINES)
   Future<ResponseItem> hotlinesDataRepo(
       {String sportId = '', String date = '', int start = 0}) async {

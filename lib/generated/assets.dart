@@ -18,12 +18,15 @@ class Assets {
   static const String imagesBackArrow = 'assets/images/back_arrow.svg';
   static const String imagesBackDark = 'assets/images/backDark.png';
   static const String imagesBackLight = 'assets/images/backLight.png';
+  static const String imagesBall = 'assets/images/ball.png';
+  static const String imagesBook = 'assets/images/book.png';
   static const String imagesCommingSoon = 'assets/images/commingSoon.svg';
   static const String imagesDotes = 'assets/images/dotes.svg';
   static const String imagesDraftkings = 'assets/images/Draftkings.png';
   static const String imagesFanduel = 'assets/images/Fanduel.jpeg';
   static const String imagesFire = 'assets/images/fire.png';
   static const String imagesGOLF = 'assets/images/GOLF.png';
+  static const String imagesHeart = 'assets/images/heart.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
   static const String imagesLogo = 'assets/images/logo.svg';
   static const String imagesMLB = 'assets/images/MLB.png';
@@ -41,6 +44,7 @@ class Assets {
   static const String imagesNoSportImage = 'assets/images/no_sport_image.png';
   static const String imagesNodataImage = 'assets/images/nodataImage.svg';
   static const String imagesPITT = 'assets/images/PITT.png';
+  static const String imagesPopcorn = 'assets/images/popcorn.png';
   static const String imagesSOCCER = 'assets/images/SOCCER.png';
   static const String imagesSplashImage = 'assets/images/splash_image.svg';
   static const String imagesSportDetail = 'assets/images/sport_detail.png';

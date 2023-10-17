@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -366,14 +368,22 @@ class GameTabCard extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return index == 3 || index == 4
                       ? InkWell(
-                          onTap: index == 3 ? onTapGambling : onTapContact,
+                          onTap: Platform.isIOS && index == 3
+                              ? onTapContact
+                              : index == 3
+                                  ? onTapGambling
+                                  : onTapContact,
                           child: Container(
                             height: MediaQuery.of(context).size.height * .05,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
                                 color: Theme.of(context).primaryColor),
                             child: Center(
-                              child: (index == 3 ? gambling : 'Contact')
+                              child: (Platform.isIOS && index == 3
+                                      ? 'Contact'
+                                      : index == 3
+                                          ? gambling
+                                          : 'Contact')
                                   .appCommonText(
                                       color: Theme.of(context).cardColor,
                                       align: TextAlign.start,
@@ -448,11 +458,91 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: 5))
+                itemCount: Platform.isIOS ? 4 : 5))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
   }
+}
+
+Future showDialogIfFirstLoaded(BuildContext context) async {
+  if (PreferenceManager.getIsFirstLoaded() != null) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("Getting Started:"),
+          titleTextStyle:
+              defaultTextStyle(color: blackColor, weight: FontWeight.w700),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              dialogCard(
+                  image:
+                      'https://a.slack-edge.com/production-standard-emoji-assets/14.0/apple-medium/1f3c8.png',
+                  title:
+                      'Pick a Sport - SEC football fan? Jump to NCAAF. Baltimore Ravens fan? Jump to NFL to see their next game.'),
+              dialogCard(
+                  image:
+                      'https://a.slack-edge.com/production-standard-emoji-assets/14.0/apple-medium/1f37f.png',
+                  title:
+                      'Pick a Game - Have a favorite team? Click into their next game to see how they stack up against the competition.'),
+              dialogCard(
+                  image:
+                      'https://a.slack-edge.com/production-standard-emoji-assets/14.0/apple-medium/1f4da.png',
+                  title:
+                      'Learn - We provide you with head to head matchups and analysis to give you insights on trends.'),
+              dialogCard(
+                  image:
+                      'https://a.slack-edge.com/production-standard-emoji-assets/14.0/apple-medium/2665-fe0f.png',
+                  title: 'Share - Love HotlinesCB? Share with your friends!'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return appColor;
+                  },
+                ),
+              ),
+              child: 'OK'
+                  .appCommonText(weight: FontWeight.w700, color: whiteColor),
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+                PreferenceManager.setIsFirstLoaded(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+Widget dialogCard({required String image, required String title}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Image.asset(
+        image,
+        height: MediaQuery.of(Get.context!).size.width * .055,
+        fit: BoxFit.contain,
+      ),
+      20.w.W(),
+      Expanded(
+        child: title.appCommonText(
+            size: MediaQuery.of(Get.context!).size.height * .022,
+            align: TextAlign.start,
+            color: whiteColor,
+            weight: FontWeight.w600),
+      )
+    ],
+  ).paddingOnly(bottom: 10);
 }
 
 class ContactView extends StatelessWidget {

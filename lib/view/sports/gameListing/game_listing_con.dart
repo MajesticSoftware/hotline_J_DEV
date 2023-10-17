@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
+import 'package:hotlines/view/widgets/game_widget.dart';
 
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../constant/constant.dart';
 import '../../../extras/constants.dart';
@@ -36,6 +39,7 @@ class GameListingController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+
     webController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
@@ -141,6 +145,15 @@ class GameListingController extends GetxController {
   set isSearch(bool value) {
     _isSearch = value;
     update();
+  }
+
+  void launchEmailSubmission() async {
+    final Uri params = Uri(
+        scheme: 'mailto',
+        path: 'casey@hotlinesmd.com',
+        queryParameters: {'subject': '', 'body': ''});
+    String url = params.toString();
+    launchInBrowser(Uri.parse(url));
   }
 
   RxBool isLoading = false.obs;

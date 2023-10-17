@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
@@ -45,7 +49,11 @@ class SelectGameScreen extends StatelessWidget {
                 GameTabCard(
                   onTapContact: () {
                     toggle = 0;
-                    controller.isSelectedGame = 'Contact';
+                    if (Platform.isIOS) {
+                      controller.launchEmailSubmission();
+                    } else {
+                      controller.isSelectedGame = 'Contact';
+                    }
                     controller.update();
                   },
                   onTapGambling: () {

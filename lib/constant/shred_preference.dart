@@ -11,5 +11,13 @@ class PreferenceManager {
     return getStorage.read("isDarkMode");
   }
 
+  static Future setIsFirstLoaded(bool isFirstLoaded) async {
+    await getStorage.write("isFirstLoaded", isFirstLoaded);
+  }
+
+  static getIsFirstLoaded() {
+    return getStorage.read("isFirstLoaded");
+  }
+
   static clearData() async => GetStorage().erase();
 }
