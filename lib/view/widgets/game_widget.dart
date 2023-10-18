@@ -75,7 +75,7 @@ class GameWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: Theme.of(context).canvasColor,
               border: Border.all(
-                  color: PreferenceManager.getIsDarkMode()
+                  color: PreferenceManager.getIsDarkMode() ?? false
                       ? greyColor
                       : dividerColor),
               borderRadius: BorderRadius.circular(
@@ -1052,11 +1052,11 @@ PreferredSize commonAppBar(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                            color: PreferenceManager.getIsDarkMode()
+                            color: PreferenceManager.getIsDarkMode() ?? false
                                 ? blackColor
                                 : Colors.transparent,
                             width: 2),
-                        color: PreferenceManager.getIsDarkMode()
+                        color: PreferenceManager.getIsDarkMode() ?? false
                             ? blackColor
                             : dividerColor),
                     child: Row(
@@ -1078,16 +1078,18 @@ PreferredSize commonAppBar(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.horizontal(
                                       left: Radius.circular(8.r)),
-                                  color: PreferenceManager.getIsDarkMode()
-                                      ? blackColor
-                                      : whiteColor),
+                                  color:
+                                      PreferenceManager.getIsDarkMode() ?? false
+                                          ? blackColor
+                                          : whiteColor),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SvgPicture.asset(
                                     Assets.imagesSunLight,
                                     // ignore: deprecated_member_use
-                                    color: PreferenceManager.getIsDarkMode()
+                                    color: PreferenceManager.getIsDarkMode() ??
+                                            false
                                         ? darkSunColor
                                         : blackColor,
                                     width: 24.w,
@@ -1113,18 +1115,20 @@ PreferredSize commonAppBar(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.horizontal(
                                     right: Radius.circular(8.r)),
-                                color: PreferenceManager.getIsDarkMode()
-                                    ? darkBackGroundColor
-                                    : dividerColor),
+                                color:
+                                    PreferenceManager.getIsDarkMode() ?? false
+                                        ? darkBackGroundColor
+                                        : dividerColor),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SvgPicture.asset(
                                   Assets.imagesMoon,
                                   // ignore: deprecated_member_use
-                                  color: PreferenceManager.getIsDarkMode()
-                                      ? whiteColor
-                                      : greyDarkColor,
+                                  color:
+                                      PreferenceManager.getIsDarkMode() ?? false
+                                          ? whiteColor
+                                          : greyDarkColor,
                                   width: 24.w,
                                   height: 24.w,
                                   fit: BoxFit.contain,
@@ -1165,14 +1169,18 @@ AnimSearchBar buildAnimSearchBar(
     color: yellowColor,
     style: defaultTextStyle(
         size: MediaQuery.sizeOf(context).height * .02,
-        color: PreferenceManager.getIsDarkMode() ? greyColor : whiteColor),
+        color: PreferenceManager.getIsDarkMode() ?? false
+            ? greyColor
+            : whiteColor),
     searchIconColor: appColor,
-    textFieldColor: PreferenceManager.getIsDarkMode() ? whiteColor : boxColor,
+    textFieldColor:
+        PreferenceManager.getIsDarkMode() ?? false ? whiteColor : boxColor,
     helpText:
         'Search by team ${mobileView.size.shortestSide < 600 ? 'abbreviation' : 'name'}',
-    helpTextColor: PreferenceManager.getIsDarkMode() ? greyColor : whiteColor,
+    helpTextColor:
+        PreferenceManager.getIsDarkMode() ?? false ? greyColor : whiteColor,
     textFieldIconColor:
-        PreferenceManager.getIsDarkMode() ? greyColor : whiteColor,
+        PreferenceManager.getIsDarkMode() ?? false ? greyColor : whiteColor,
     textController: controller.searchCon,
     onSuffixTap: () {
       controller.searchCon.clear();

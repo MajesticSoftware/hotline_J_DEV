@@ -24,7 +24,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return GetBuilder<SelectGameController>(builder: (controller) {
-//       isDark = PreferenceManager.getIsDarkMode() ?? false;
+//       isDark = PreferenceManager.getIsDarkMode()??false ?? false;
 //       return Scaffold(
 //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 //         appBar: commonAppBar(context, controller),
@@ -450,11 +450,11 @@
 //                       borderRadius: BorderRadius.circular(
 //                           MediaQuery.of(context).size.width * .005),
 //                       border: Border.all(
-//                           color: PreferenceManager.getIsDarkMode()
+//                           color: PreferenceManager.getIsDarkMode()??false
 //                               ? blackColor
 //                               : Colors.transparent,
 //                           width: 2),
-//                       color: PreferenceManager.getIsDarkMode()
+//                       color: PreferenceManager.getIsDarkMode()??false
 //                           ? blackColor
 //                           : dividerColor),
 //                   child: Row(
@@ -479,7 +479,7 @@
 //                                     left: Radius.circular(
 //                                         MediaQuery.of(context).size.width *
 //                                             .005)),
-//                                 color: PreferenceManager.getIsDarkMode()
+//                                 color: PreferenceManager.getIsDarkMode()??false
 //                                     ? blackColor
 //                                     : whiteColor),
 //                             child: Column(
@@ -488,7 +488,7 @@
 //                                 SvgPicture.asset(
 //                                   Assets.imagesSunLight,
 //                                   // ignore: deprecated_member_use
-//                                   color: PreferenceManager.getIsDarkMode()
+//                                   color: PreferenceManager.getIsDarkMode()??false
 //                                       ? darkSunColor
 //                                       : blackColor,
 //                                   width:
@@ -518,7 +518,7 @@
 //                                   right: Radius.circular(
 //                                       MediaQuery.of(context).size.width *
 //                                           .005)),
-//                               color: PreferenceManager.getIsDarkMode()
+//                               color: PreferenceManager.getIsDarkMode()??false
 //                                   ? darkBackGroundColor
 //                                   : dividerColor),
 //                           child: Column(
@@ -527,7 +527,7 @@
 //                               SvgPicture.asset(
 //                                 Assets.imagesMoon,
 //                                 // ignore: deprecated_member_use
-//                                 color: PreferenceManager.getIsDarkMode()
+//                                 color: PreferenceManager.getIsDarkMode()??false
 //                                     ? whiteColor
 //                                     : greyDarkColor,
 //                                 width: MediaQuery.of(context).size.width * .02,

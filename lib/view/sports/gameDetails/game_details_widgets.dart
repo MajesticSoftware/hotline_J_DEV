@@ -3771,7 +3771,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                 borderRadius: BorderRadius.circular(
                     MediaQuery.of(context).size.width * .01),
                 image: DecorationImage(
-                    image: AssetImage(PreferenceManager.getIsDarkMode()
+                    image: AssetImage(PreferenceManager.getIsDarkMode() ?? false
                         ? Assets.imagesBackDark
                         : Assets.imagesBackLight),
                     fit: BoxFit.fill)),

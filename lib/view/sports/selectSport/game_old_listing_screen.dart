@@ -49,7 +49,7 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     isDark = PreferenceManager.getIsDarkMode() ?? false;
+//     isDark = PreferenceManager.getIsDarkMode()??false ?? false;
 //     return GetBuilder<GameListingController>(initState: (state) async {
 //       widget.sportKey == 'MLB'
 //           ? gameListingController.setIsBack(false)

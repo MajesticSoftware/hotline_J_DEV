@@ -125,7 +125,8 @@ Widget commonTextFiled(BuildContext context,
         onChanged: onChanged,
         controller: controller,
         textAlign: TextAlign.start,
-        cursorColor: PreferenceManager.getIsDarkMode() ? whiteColor : boxColor,
+        cursorColor:
+            PreferenceManager.getIsDarkMode() ?? false ? whiteColor : boxColor,
         style: defaultTextStyle(
             size: MediaQuery.of(context).size.height * .016,
             color: Theme.of(context).highlightColor),
@@ -135,14 +136,16 @@ Widget commonTextFiled(BuildContext context,
           contentPadding: EdgeInsets.zero,
           hintStyle: hintTextStyle(
               size: MediaQuery.of(context).size.height * .018,
-              color: PreferenceManager.getIsDarkMode()
+              color: PreferenceManager.getIsDarkMode() ?? false
                   ? greyColor
                   : greyColor.withOpacity(0.5)),
           hintText: 'Search game here...',
           prefixIcon: Icon(
             Icons.search,
             size: MediaQuery.of(context).size.height * .028,
-            color: PreferenceManager.getIsDarkMode() ? greyColor : boxColor,
+            color: PreferenceManager.getIsDarkMode() ?? false
+                ? greyColor
+                : boxColor,
           ),
           suffixIcon: InkWell(
             onTap: () {
@@ -154,7 +157,7 @@ Widget commonTextFiled(BuildContext context,
                 ? Icon(
                     Icons.close,
                     size: MediaQuery.of(context).size.height * .028,
-                    color: PreferenceManager.getIsDarkMode()
+                    color: PreferenceManager.getIsDarkMode() ?? false
                         ? greyColor
                         : boxColor,
                   )
@@ -173,7 +176,9 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
-              color: PreferenceManager.getIsDarkMode() ? greyColor : boxColor,
+              color: PreferenceManager.getIsDarkMode() ?? false
+                  ? greyColor
+                  : boxColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
@@ -181,8 +186,9 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
-              color:
-                  PreferenceManager.getIsDarkMode() ? greyColor : dividerColor,
+              color: PreferenceManager.getIsDarkMode() ?? false
+                  ? greyColor
+                  : dividerColor,
             ),
           ),
           border: OutlineInputBorder(
@@ -190,8 +196,9 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .01),
             ),
             borderSide: BorderSide(
-              color:
-                  PreferenceManager.getIsDarkMode() ? greyColor : dividerColor,
+              color: PreferenceManager.getIsDarkMode() ?? false
+                  ? greyColor
+                  : dividerColor,
             ),
           ),
         )),

@@ -34,11 +34,10 @@ class SelectGameScreen extends StatelessWidget {
               sportKey: gameListingController.sportKey,
               date: gameListingController.date,
               sportId: gameListingController.sportId);
-          gameListingController.update();
         },
       );
     }, builder: (controller) {
-      // isDark = PreferenceManager.getIsDarkMode() ?? false;
+      // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
@@ -66,7 +65,7 @@ class SelectGameScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
-                    color: PreferenceManager.getIsDarkMode()
+                    color: PreferenceManager.getIsDarkMode() ?? false
                         ? blackColor
                         : whiteColor,
                   ),
