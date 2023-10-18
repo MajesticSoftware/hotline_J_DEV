@@ -22,7 +22,6 @@ class SelectGameScreen extends StatelessWidget {
 
   final GameListingController gameListingController =
       Get.put(GameListingController());
-  bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,7 @@ class SelectGameScreen extends StatelessWidget {
         },
       );
     }, builder: (controller) {
-      isDark = PreferenceManager.getIsDarkMode() ?? false;
+      // isDark = PreferenceManager.getIsDarkMode() ?? false;
       return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
@@ -67,7 +66,7 @@ class SelectGameScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
-                    color: isDark || selectGameController.isDarkMode
+                    color: PreferenceManager.getIsDarkMode()
                         ? blackColor
                         : whiteColor,
                   ),

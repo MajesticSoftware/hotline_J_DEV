@@ -129,14 +129,14 @@ class GameListingController extends GetxController {
   String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<String> isSelected = ['NFL'];
   String isSelectedGame = 'NFL';
-  bool _isDarkMode = false;
-
-  bool get isDarkMode => _isDarkMode;
-
-  set isDarkMode(bool value) {
-    _isDarkMode = value;
-    update();
-  }
+  // bool _isDarkMode = false;
+  //
+  // bool get isDarkMode => _isDarkMode;
+  //
+  // set isDarkMode(bool value) {
+  //   _isDarkMode = value;
+  //   update();
+  // }
 
   bool _isSearch = false;
 

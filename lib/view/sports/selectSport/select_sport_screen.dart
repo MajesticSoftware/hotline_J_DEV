@@ -450,11 +450,11 @@
 //                       borderRadius: BorderRadius.circular(
 //                           MediaQuery.of(context).size.width * .005),
 //                       border: Border.all(
-//                           color: isDark || controller.isDarkMode
+//                           color: PreferenceManager.getIsDarkMode()
 //                               ? blackColor
 //                               : Colors.transparent,
 //                           width: 2),
-//                       color: isDark || controller.isDarkMode
+//                       color: PreferenceManager.getIsDarkMode()
 //                           ? blackColor
 //                           : dividerColor),
 //                   child: Row(
@@ -479,7 +479,7 @@
 //                                     left: Radius.circular(
 //                                         MediaQuery.of(context).size.width *
 //                                             .005)),
-//                                 color: isDark || controller.isDarkMode
+//                                 color: PreferenceManager.getIsDarkMode()
 //                                     ? blackColor
 //                                     : whiteColor),
 //                             child: Column(
@@ -488,7 +488,7 @@
 //                                 SvgPicture.asset(
 //                                   Assets.imagesSunLight,
 //                                   // ignore: deprecated_member_use
-//                                   color: isDark || controller.isDarkMode
+//                                   color: PreferenceManager.getIsDarkMode()
 //                                       ? darkSunColor
 //                                       : blackColor,
 //                                   width:
@@ -518,7 +518,7 @@
 //                                   right: Radius.circular(
 //                                       MediaQuery.of(context).size.width *
 //                                           .005)),
-//                               color: isDark || controller.isDarkMode
+//                               color: PreferenceManager.getIsDarkMode()
 //                                   ? darkBackGroundColor
 //                                   : dividerColor),
 //                           child: Column(
@@ -527,7 +527,7 @@
 //                               SvgPicture.asset(
 //                                 Assets.imagesMoon,
 //                                 // ignore: deprecated_member_use
-//                                 color: isDark || controller.isDarkMode
+//                                 color: PreferenceManager.getIsDarkMode()
 //                                     ? whiteColor
 //                                     : greyDarkColor,
 //                                 width: MediaQuery.of(context).size.width * .02,

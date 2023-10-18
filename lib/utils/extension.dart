@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
+import '../constant/shred_preference.dart';
 import '../theme/theme.dart';
 import 'layouts.dart';
 
@@ -124,8 +125,7 @@ Widget commonTextFiled(BuildContext context,
         onChanged: onChanged,
         controller: controller,
         textAlign: TextAlign.start,
-        cursorColor:
-            isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+        cursorColor: PreferenceManager.getIsDarkMode() ? whiteColor : boxColor,
         style: defaultTextStyle(
             size: MediaQuery.of(context).size.height * .016,
             color: Theme.of(context).highlightColor),
@@ -135,16 +135,14 @@ Widget commonTextFiled(BuildContext context,
           contentPadding: EdgeInsets.zero,
           hintStyle: hintTextStyle(
               size: MediaQuery.of(context).size.height * .018,
-              color: isDark || selectGameController.isDarkMode
+              color: PreferenceManager.getIsDarkMode()
                   ? greyColor
                   : greyColor.withOpacity(0.5)),
           hintText: 'Search game here...',
           prefixIcon: Icon(
             Icons.search,
             size: MediaQuery.of(context).size.height * .028,
-            color: isDark || selectGameController.isDarkMode
-                ? greyColor
-                : boxColor,
+            color: PreferenceManager.getIsDarkMode() ? greyColor : boxColor,
           ),
           suffixIcon: InkWell(
             onTap: () {
@@ -156,7 +154,7 @@ Widget commonTextFiled(BuildContext context,
                 ? Icon(
                     Icons.close,
                     size: MediaQuery.of(context).size.height * .028,
-                    color: isDark || selectGameController.isDarkMode
+                    color: PreferenceManager.getIsDarkMode()
                         ? greyColor
                         : boxColor,
                   )
@@ -175,9 +173,7 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
-              color: isDark || selectGameController.isDarkMode
-                  ? greyColor
-                  : boxColor,
+              color: PreferenceManager.getIsDarkMode() ? greyColor : boxColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
@@ -185,9 +181,8 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .1),
             ),
             borderSide: BorderSide(
-              color: isDark || selectGameController.isDarkMode
-                  ? greyColor
-                  : dividerColor,
+              color:
+                  PreferenceManager.getIsDarkMode() ? greyColor : dividerColor,
             ),
           ),
           border: OutlineInputBorder(
@@ -195,9 +190,8 @@ Widget commonTextFiled(BuildContext context,
               Radius.circular(MediaQuery.of(context).size.width * .01),
             ),
             borderSide: BorderSide(
-              color: isDark || selectGameController.isDarkMode
-                  ? greyColor
-                  : dividerColor,
+              color:
+                  PreferenceManager.getIsDarkMode() ? greyColor : dividerColor,
             ),
           ),
         )),

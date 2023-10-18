@@ -75,7 +75,7 @@ class GameWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: Theme.of(context).canvasColor,
               border: Border.all(
-                  color: isDark || selectGameController.isDarkMode
+                  color: PreferenceManager.getIsDarkMode()
                       ? greyColor
                       : dividerColor),
               borderRadius: BorderRadius.circular(
@@ -1052,11 +1052,11 @@ PreferredSize commonAppBar(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                            color: isDark || controller.isDarkMode
+                            color: PreferenceManager.getIsDarkMode()
                                 ? blackColor
                                 : Colors.transparent,
                             width: 2),
-                        color: isDark || controller.isDarkMode
+                        color: PreferenceManager.getIsDarkMode()
                             ? blackColor
                             : dividerColor),
                     child: Row(
@@ -1066,8 +1066,8 @@ PreferredSize commonAppBar(
                           onTap: () {
                             PreferenceManager.setIsDarkMod(false);
                             Get.changeThemeMode(ThemeMode.light);
-                            controller.isDarkMode = false;
-                            isDark = false;
+                            // controller.isDarkMode = false;
+                            // isDark = false;
                             controller.update();
                           },
                           child: Padding(
@@ -1078,7 +1078,7 @@ PreferredSize commonAppBar(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.horizontal(
                                       left: Radius.circular(8.r)),
-                                  color: isDark || controller.isDarkMode
+                                  color: PreferenceManager.getIsDarkMode()
                                       ? blackColor
                                       : whiteColor),
                               child: Column(
@@ -1087,7 +1087,7 @@ PreferredSize commonAppBar(
                                   SvgPicture.asset(
                                     Assets.imagesSunLight,
                                     // ignore: deprecated_member_use
-                                    color: isDark || controller.isDarkMode
+                                    color: PreferenceManager.getIsDarkMode()
                                         ? darkSunColor
                                         : blackColor,
                                     width: 24.w,
@@ -1103,8 +1103,8 @@ PreferredSize commonAppBar(
                           onTap: () {
                             PreferenceManager.setIsDarkMod(true);
                             Get.changeThemeMode(ThemeMode.dark);
-                            controller.isDarkMode = true;
-                            isDark = true;
+                            // controller.isDarkMode = true;
+                            // isDark = true;
                             controller.update();
                           },
                           child: Container(
@@ -1113,7 +1113,7 @@ PreferredSize commonAppBar(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.horizontal(
                                     right: Radius.circular(8.r)),
-                                color: isDark || controller.isDarkMode
+                                color: PreferenceManager.getIsDarkMode()
                                     ? darkBackGroundColor
                                     : dividerColor),
                             child: Column(
@@ -1122,7 +1122,7 @@ PreferredSize commonAppBar(
                                 SvgPicture.asset(
                                   Assets.imagesMoon,
                                   // ignore: deprecated_member_use
-                                  color: isDark || controller.isDarkMode
+                                  color: PreferenceManager.getIsDarkMode()
                                       ? whiteColor
                                       : greyDarkColor,
                                   width: 24.w,
@@ -1165,17 +1165,14 @@ AnimSearchBar buildAnimSearchBar(
     color: yellowColor,
     style: defaultTextStyle(
         size: MediaQuery.sizeOf(context).height * .02,
-        color:
-            isDark || selectGameController.isDarkMode ? greyColor : whiteColor),
+        color: PreferenceManager.getIsDarkMode() ? greyColor : whiteColor),
     searchIconColor: appColor,
-    textFieldColor:
-        isDark || selectGameController.isDarkMode ? whiteColor : boxColor,
+    textFieldColor: PreferenceManager.getIsDarkMode() ? whiteColor : boxColor,
     helpText:
         'Search by team ${mobileView.size.shortestSide < 600 ? 'abbreviation' : 'name'}',
-    helpTextColor:
-        isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+    helpTextColor: PreferenceManager.getIsDarkMode() ? greyColor : whiteColor,
     textFieldIconColor:
-        isDark || selectGameController.isDarkMode ? greyColor : whiteColor,
+        PreferenceManager.getIsDarkMode() ? greyColor : whiteColor,
     textController: controller.searchCon,
     onSuffixTap: () {
       controller.searchCon.clear();

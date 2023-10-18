@@ -3730,7 +3730,6 @@ Container tabTitleWidget(BuildContext context) {
 
 headerWidget(BuildContext context, SportEvents gameDetails,
     Competitors? awayTeam, Competitors? homeTeam, String sportKey) {
-  isDark = PreferenceManager.getIsDarkMode() ?? false;
   return Stack(
     fit: StackFit.loose,
     alignment: Alignment.topCenter,
@@ -3772,7 +3771,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                 borderRadius: BorderRadius.circular(
                     MediaQuery.of(context).size.width * .01),
                 image: DecorationImage(
-                    image: AssetImage(isDark || con.isDarkMode
+                    image: AssetImage(PreferenceManager.getIsDarkMode()
                         ? Assets.imagesBackDark
                         : Assets.imagesBackLight),
                     fit: BoxFit.fill)),

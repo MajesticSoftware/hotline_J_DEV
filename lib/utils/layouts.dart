@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
+import '../constant/shred_preference.dart';
 import '../extras/constants.dart';
 import '../generated/assets.dart';
 import '../theme/app_color.dart';
@@ -120,11 +121,11 @@ Expanded buildExpandedBoxWidget(BuildContext context,
       ));
 }
 
-GameListingController selectGameController = Get.find();
-bool isDark = false;
+// GameListingController selectGameController = Get.find();
+// bool isDark = false;
 Container commonDivider(BuildContext context) {
   return Container(
-    height: isDark || selectGameController.isDarkMode
+    height: PreferenceManager.getIsDarkMode()
         ? MediaQuery.of(context).size.height * .00018
         : MediaQuery.of(context).size.height * .001,
     color: backGroundColor,
