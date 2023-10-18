@@ -99,7 +99,7 @@ class AppStartScreen extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: 'NFL to see their next game.',
+                          text: 'to see their next game.',
                           style: GoogleFonts.nunitoSans(
                             color: whiteColor,
                             fontWeight: FontWeight.w400,

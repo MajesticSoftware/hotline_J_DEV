@@ -3607,13 +3607,15 @@ SizedBox emptyListWidget(BuildContext context, SportEvents gameDetails,
   return SizedBox(
     height: MediaQuery.of(context).size.height * .1,
     child: Center(
-        child: (gameDetails.status == 'live' || gameDetails.status == 'closed'
-                ? 'Bets not available'
-                : 'Bets available closer to game time')
-            .appCommonText(
-                weight: FontWeight.bold,
-                size: Get.height * .014,
-                color: Theme.of(context).highlightColor)),
+        child:
+            (/*gameDetails.status == 'live' || gameDetails.status == 'closed'
+                ? 'Not available'
+                :*/
+                    'Available closer to game time')
+                .appCommonText(
+                    weight: FontWeight.bold,
+                    size: Get.height * .014,
+                    color: Theme.of(context).highlightColor)),
   );
 }
 
