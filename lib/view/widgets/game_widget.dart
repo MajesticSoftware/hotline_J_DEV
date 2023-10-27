@@ -345,7 +345,7 @@ class GameWidget extends StatelessWidget {
 }
 
 class GameTabCard extends StatelessWidget {
-  const GameTabCard(
+  GameTabCard(
       {Key? key,
       this.onTap,
       this.onTapGambling,
@@ -356,7 +356,16 @@ class GameTabCard extends StatelessWidget {
   final void Function()? onTapGambling;
   final void Function()? onTapContact;
   final GameListingController controller;
-
+  List<Color> sportSelectedColor = [
+    const Color(0xff0C4981),
+    const Color(0xff1A8B47),
+    const Color(0xffEABB42),
+  ];
+  List<Color> sportColor = [
+    const Color(0xff0C4981).withOpacity(.4),
+    const Color(0xff1A8B47).withOpacity(.4),
+    const Color(0xffEABB42).withOpacity(.4),
+  ];
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -366,31 +375,34 @@ class GameTabCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return index == 3 || index == 4
+                  return index == 3 /*|| index == 4*/
                       ? InkWell(
-                          onTap: Platform.isIOS && index == 3
+                          onTap: /* Platform.isIOS && index == 3
                               ? onTapContact
                               : index == 3
-                                  ? onTapGambling
-                                  : onTapContact,
+                                  ?*/
+                              onTapGambling /*  : onTapContact*/,
                           child: Container(
                             height: MediaQuery.of(context).size.height * .05,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
                                 color: Theme.of(context).primaryColor),
                             child: Center(
-                              child: (Platform.isIOS && index == 3
+                              child:
+                                  (/*Platform.isIOS && index == 3
                                       ? 'Contact'
                                       : index == 3
-                                          ? gambling
-                                          : 'Contact')
-                                  .appCommonText(
-                                      color: Theme.of(context).cardColor,
-                                      align: TextAlign.start,
-                                      size: MediaQuery.of(context).size.height *
-                                          .018,
-                                      weight: FontWeight.w700)
-                                  .paddingSymmetric(horizontal: 20.w),
+                                          ?*/
+                                          gambling /*: 'Contact'*/)
+                                      .appCommonText(
+                                          color: Theme.of(context).cardColor,
+                                          align: TextAlign.start,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .018,
+                                          weight: FontWeight.w700)
+                                      .paddingSymmetric(horizontal: 20.w),
                             ),
                           ),
                         )
@@ -402,7 +414,11 @@ class GameTabCard extends StatelessWidget {
                             height: MediaQuery.of(context).size.height * .05,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
-                                image: controller.isSelectedGame ==
+                                color: controller.isSelectedGame ==
+                                        sportsLeagueList[index].gameName
+                                    ? sportSelectedColor[index]
+                                    : sportColor[index]
+                                /*image: controller.isSelectedGame ==
                                         sportsLeagueList[index].gameName
                                     ? DecorationImage(
                                         image: AssetImage(
@@ -418,7 +434,8 @@ class GameTabCard extends StatelessWidget {
                                                 .withOpacity(0.5),
                                             BlendMode.dstATop),
                                         fit: BoxFit.cover,
-                                      )),
+                                      )*/
+                                ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -458,7 +475,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: Platform.isIOS ? 4 : 5))
+                itemCount: /* Platform.isIOS ? */ 4 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);

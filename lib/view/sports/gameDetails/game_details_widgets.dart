@@ -639,20 +639,20 @@ Padding teamReportNFL(
               BorderRadius.circular(MediaQuery.of(context).size.width * .01),
           color: Theme.of(context).canvasColor),
       child: StickyHeader(
-          header: TabCard(
-              title: 'Team Stats',
-              awayTeam: awayTeam,
-              isSelected: con.isTeamReportTab,
-              gameDetails: gameDetails,
-              homeTeam: homeTeam,
-              awayOnTap: () {
-                con.isTeamReportTab = true;
-              },
-              homeOnTap: () {
-                con.isTeamReportTab = false;
-              }),
-          content: Column(
+          header: Column(
             children: [
+              TabCard(
+                  title: 'Team Stats',
+                  awayTeam: awayTeam,
+                  isSelected: con.isTeamReportTab,
+                  gameDetails: gameDetails,
+                  homeTeam: homeTeam,
+                  awayOnTap: () {
+                    con.isTeamReportTab = true;
+                  },
+                  homeOnTap: () {
+                    con.isTeamReportTab = false;
+                  }),
               HeaderTab(
                 isSelected: con.isTeamReportTab,
                 gameDetails: gameDetails,
@@ -661,6 +661,10 @@ Padding teamReportNFL(
                 homeTeam: homeTeam,
                 awayTeam: awayTeam,
               ),
+            ],
+          ),
+          content: Column(
+            children: [
               commonDivider(context),
               nflOffenseDefenseData(con, context)
             ],
@@ -685,20 +689,20 @@ Padding quarterBacks(
               BorderRadius.circular(MediaQuery.of(context).size.width * .01),
           color: Theme.of(context).canvasColor),
       child: StickyHeader(
-          header: TabCard(
-              title: 'QBs',
-              awayTeam: awayTeam,
-              isSelected: con.isQuarterBacksTab,
-              gameDetails: gameDetails,
-              homeTeam: homeTeam,
-              awayOnTap: () {
-                con.isQuarterBacksTab = true;
-              },
-              homeOnTap: () {
-                con.isQuarterBacksTab = false;
-              }),
-          content: Column(
+          header: Column(
             children: [
+              TabCard(
+                  title: 'QBs',
+                  awayTeam: awayTeam,
+                  isSelected: con.isQuarterBacksTab,
+                  gameDetails: gameDetails,
+                  homeTeam: homeTeam,
+                  awayOnTap: () {
+                    con.isQuarterBacksTab = true;
+                  },
+                  homeOnTap: () {
+                    con.isQuarterBacksTab = false;
+                  }),
               HeaderTab(
                 isSelected: con.isQuarterBacksTab,
                 gameDetails: gameDetails,
@@ -709,6 +713,10 @@ Padding quarterBacks(
                 homeTeam: homeTeam,
                 awayTeam: awayTeam,
               ),
+            ],
+          ),
+          content: Column(
+            children: [
               // playernameWidget(context, con, gameDetails),
               commonDivider(context),
               quarterBacksData(con, context, gameDetails)
@@ -895,7 +903,7 @@ Row quarterBacksData(
       ),
       Column(
         children: List.generate(
-          5,
+          4,
           (index) => Container(
             width: 1,
             height: MediaQuery.of(context).size.height * .043,
@@ -948,7 +956,8 @@ class HeaderTab extends StatelessWidget {
       required this.homeText,
       this.awayTeam,
       this.homeTeam,
-      required this.gameDetails})
+      required this.gameDetails,
+      this.color})
       : super(key: key);
   final bool isSelected;
   final String awayText;
@@ -956,6 +965,7 @@ class HeaderTab extends StatelessWidget {
   final Competitors? awayTeam;
   final Competitors? homeTeam;
   final SportEvents gameDetails;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     return Container(

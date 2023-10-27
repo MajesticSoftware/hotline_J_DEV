@@ -75,11 +75,12 @@ class SelectGameScreen extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: controller.isSelectedGame == 'Gambling 101'
                       ? const GamblingCard()
-                      : controller.isSelectedGame == 'Contact'
+                      : /*controller.isSelectedGame == 'Contact'
                           ? ContactView(
                               webController: controller.webController,
                             )
-                          : tableDetailWidget(context, controller),
+                          :*/
+                      tableDetailWidget(context, controller),
                 ).paddingSymmetric(
                     horizontal: MediaQuery.of(context).size.width * .03),
               ],
@@ -96,6 +97,21 @@ class SelectGameScreen extends StatelessWidget {
         Column(
           children: [
             (MediaQuery.of(context).size.height * .06).H(),
+            (controller.sportKey == 'MLB' &&
+                    !(controller.mlbSportEventsList.indexWhere((element) =>
+                            DateTime.parse(element.scheduled.toString())
+                                .toLocal()
+                                .day ==
+                            DateTime.now().toLocal().day) >=
+                        0) &&
+                    !controller.isLoading.value)
+                ? Text(
+                    '\nNo games today',
+                    style: Theme.of(context).textTheme.labelLarge,
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
+                  ).paddingOnly(bottom: 15.w)
+                : const SizedBox(),
             controller.searchCon.text.isEmpty
                 ? Expanded(
                     child: RefreshIndicator(
