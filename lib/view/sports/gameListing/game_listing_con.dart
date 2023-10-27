@@ -22,8 +22,6 @@ import '../../../utils/extension.dart';
 import '../gameDetails/game_details_screen.dart';
 
 class GameListingController extends GetxController {
-  // late final WebViewController webController;
-
   @override
   void dispose() {
     timer = null;
@@ -35,19 +33,6 @@ class GameListingController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
-    // webController = WebViewController()
-    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    //   ..setBackgroundColor(const Color(0x00000000))
-    //   ..setNavigationDelegate(NavigationDelegate(
-    //     onPageFinished: (url) async {
-    //       webController.runJavaScript(
-    //           "document.getElementsByTagName('header')[0].style.display='none'");
-    //       webController.runJavaScript(
-    //           "document.getElementsByTagName('footer')[0].style.display='none'");
-    //     },
-    //   ))
-    //   ..loadRequest(Uri.parse('https://www.hotlinesmd.com/contact'));
   }
 
   @override

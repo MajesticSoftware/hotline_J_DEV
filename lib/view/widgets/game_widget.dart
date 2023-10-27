@@ -12,7 +12,6 @@ import 'package:hotlines/utils/animated_search.dart';
 
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
@@ -563,14 +562,12 @@ Widget dialogCard({required String image, required String title}) {
 class ContactView extends StatelessWidget {
   const ContactView({
     Key? key,
-    /*required this.webController*/
   }) : super(key: key);
-  // final WebViewController webController;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // WebViewWidget(controller: webController),
         Container(
             width: Get.width,
             // height: MediaQuery.of(context).size.height * .05,

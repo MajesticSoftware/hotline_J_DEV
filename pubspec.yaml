@@ -53,7 +53,7 @@ dependencies:
   anim_search_bar: ^2.0.3
   collection:
   flutter_screenutil: ^5.9.0
-#  webview_flutter: ^4.4.1
+
 
 dev_dependencies:
   flutter_test:

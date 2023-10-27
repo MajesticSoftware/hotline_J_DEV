@@ -34,12 +34,7 @@
 	<string>Main</string>
 	<key>UIStatusBarStyle</key>
 	<string></string>
-	<key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>sms</string>
-      <string>tel</string>
-      <string>mailto</string>
-    </array>
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
