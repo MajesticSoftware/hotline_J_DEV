@@ -6,7 +6,6 @@ import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../constant/shred_preference.dart';
 import '../theme/theme.dart';
-import 'layouts.dart';
 
 extension MediaQueryValues on BuildContext {
   double get width => MediaQuery.of(this).size.width;

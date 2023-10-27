@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,7 +12,7 @@ import 'package:hotlines/utils/animated_search.dart';
 
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
@@ -356,12 +354,12 @@ class GameTabCard extends StatelessWidget {
   final void Function()? onTapGambling;
   final void Function()? onTapContact;
   final GameListingController controller;
-  List<Color> sportSelectedColor = [
+  final List<Color> sportSelectedColor = [
     const Color(0xff0C4981),
     const Color(0xff1A8B47),
     const Color(0xffEABB42),
   ];
-  List<Color> sportColor = [
+  final List<Color> sportColor = [
     const Color(0xff0C4981).withOpacity(.4),
     const Color(0xff1A8B47).withOpacity(.4),
     const Color(0xffEABB42).withOpacity(.4),
@@ -489,7 +487,7 @@ Future showDialogIfFirstLoaded(BuildContext context) async {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Text("Getting Started:"),
+          title: const Text("Getting Started:"),
           titleTextStyle:
               defaultTextStyle(color: blackColor, weight: FontWeight.w700),
           content: Column(
@@ -563,13 +561,16 @@ Widget dialogCard({required String image, required String title}) {
 }
 
 class ContactView extends StatelessWidget {
-  const ContactView({Key? key, required this.webController}) : super(key: key);
-  final WebViewController webController;
+  const ContactView({
+    Key? key,
+    /*required this.webController*/
+  }) : super(key: key);
+  // final WebViewController webController;
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        WebViewWidget(controller: webController),
+        // WebViewWidget(controller: webController),
         Container(
             width: Get.width,
             // height: MediaQuery.of(context).size.height * .05,
@@ -703,7 +704,7 @@ class GamblingCard extends StatelessWidget {
         SingleChildScrollView(
           child: Column(
             children: [
-              90.w.H(),
+              100.w.H(),
               Column(
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(

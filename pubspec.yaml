@@ -52,10 +52,8 @@ dependencies:
   expandable: ^5.0.1
   anim_search_bar: ^2.0.3
   collection:
-#  animation_list: ^2.2.1
   flutter_screenutil: ^5.9.0
-#  cancellation_token_http: ^2.0.0
-  webview_flutter: ^4.4.1
+#  webview_flutter: ^4.4.1
 
 dev_dependencies:
   flutter_test:

@@ -1,17 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
-import 'package:hotlines/view/widgets/game_widget.dart';
 
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../../../constant/constant.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
@@ -26,7 +22,7 @@ import '../../../utils/extension.dart';
 import '../gameDetails/game_details_screen.dart';
 
 class GameListingController extends GetxController {
-  late final WebViewController webController;
+  // late final WebViewController webController;
 
   @override
   void dispose() {
@@ -40,18 +36,18 @@ class GameListingController extends GetxController {
     // TODO: implement onInit
     super.onInit();
 
-    webController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageFinished: (url) async {
-          webController.runJavaScript(
-              "document.getElementsByTagName('header')[0].style.display='none'");
-          webController.runJavaScript(
-              "document.getElementsByTagName('footer')[0].style.display='none'");
-        },
-      ))
-      ..loadRequest(Uri.parse('https://www.hotlinesmd.com/contact'));
+    // webController = WebViewController()
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setBackgroundColor(const Color(0x00000000))
+    //   ..setNavigationDelegate(NavigationDelegate(
+    //     onPageFinished: (url) async {
+    //       webController.runJavaScript(
+    //           "document.getElementsByTagName('header')[0].style.display='none'");
+    //       webController.runJavaScript(
+    //           "document.getElementsByTagName('footer')[0].style.display='none'");
+    //     },
+    //   ))
+    //   ..loadRequest(Uri.parse('https://www.hotlinesmd.com/contact'));
   }
 
   @override
