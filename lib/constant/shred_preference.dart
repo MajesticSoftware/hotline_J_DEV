@@ -19,5 +19,13 @@ class PreferenceManager {
     return getStorage.read("isFirstLoaded");
   }
 
+  static Future setIsLogin(bool isLogin) async {
+    await getStorage.write("isLogin", isLogin);
+  }
+
+  static getIsLogin() {
+    return getStorage.read("isLogin");
+  }
+
   static clearData() async => GetStorage().erase();
 }

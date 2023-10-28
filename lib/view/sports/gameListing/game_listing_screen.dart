@@ -37,8 +37,11 @@ class SelectGameScreen extends StatelessWidget {
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Scaffold(
+          key: scaffoldKey,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
+          drawer: AppDrawer(),
+          drawerEnableOpenDragGesture: false,
           body: SingleChildScrollView(
             child: Column(
               children: [

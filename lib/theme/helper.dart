@@ -92,6 +92,7 @@ SizedBox commonCachedNetworkImage(
                   width: width,
                   decoration: BoxDecoration(
                     color: backGroundColor,
+                    shape: BoxShape.circle,
                     image: DecorationImage(
                       image: imageProvider,
                       fit: BoxFit.contain,

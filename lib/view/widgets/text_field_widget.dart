@@ -14,15 +14,18 @@ class CommonTextField extends StatelessWidget {
       this.onChange,
       this.inputFormatters,
       this.keyboardType,
-      this.suffixIcon})
+      this.suffixIcon,
+      this.height,
+      this.hintTextSize,
+      this.obscureText})
       : super(key: key);
   final TextEditingController? controller;
   final String hintText;
   final bool isPasswordField = false;
-  final bool obscureText = false;
+  final bool? obscureText;
   final int maxLine = 1;
-  final num hintTextSize = 16;
-  final double height = 50;
+  final num? hintTextSize;
+  final double? height;
   final Color fillColor = whiteColor;
   final String? Function(String?)? validation;
   final void Function(String)? onChange;
@@ -33,7 +36,7 @@ class CommonTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
+      height: height ?? MediaQuery.sizeOf(context).height * .05,
       child: TextFormField(
         readOnly: readOnly,
         onChanged: onChange,
@@ -42,51 +45,53 @@ class CommonTextField extends StatelessWidget {
         maxLines: maxLine,
         autofocus: false,
         style: GoogleFonts.nunitoSans(
-          fontSize: 16,
+          fontSize: MediaQuery.of(context).size.height * .018,
           color: appColor,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w700,
         ),
         inputFormatters: inputFormatters,
-        obscureText: obscureText,
+        obscureText: obscureText ?? false,
         textInputAction: TextInputAction.done,
         keyboardType: keyboardType,
         decoration: InputDecoration(
           hintText: hintText,
           enabled: true,
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           hintStyle: hintTextStyle(
-              size: hintTextSize, weight: FontWeight.w500, color: greyColor),
+              size: hintTextSize ?? MediaQuery.of(context).size.height * .018,
+              weight: FontWeight.w500,
+              color: appColor),
           suffixIcon: isPasswordField
               ? suffixIcon ?? const SizedBox()
               : const SizedBox(),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: whiteColor,
-              width: 1,
+              width: 0,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: appColor,
-              width: 2,
+              width: 0,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.red,
-              width: 1,
+              width: 0,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: whiteColor,
-              width: 1,
+              width: 0,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
           filled: true,
           fillColor: fillColor,

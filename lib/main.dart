@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hotlines/constant/shred_preference.dart';
+import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:hotlines/view/auth/register_module/register_screen.dart';
 import 'package:hotlines/view/main/app_starting_screen.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
@@ -43,7 +44,9 @@ class MyApp extends StatelessWidget {
             initialBinding: BaseBindings(),
             home: PreferenceManager.getIsFirstLoaded() == null
                 ? const AppStartScreen()
-                : RegisterScreen());
+                : PreferenceManager.getIsLogin() == null
+                    ? LogInScreen()
+                    : SelectGameScreen());
       },
     );
   }

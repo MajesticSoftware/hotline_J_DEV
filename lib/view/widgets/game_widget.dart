@@ -16,6 +16,7 @@ import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
 import '../../model/leauge_model.dart';
+import '../auth/log_in_module/log_in_screen.dart';
 
 class GameWidget extends StatelessWidget {
   const GameWidget(
@@ -477,6 +478,249 @@ class GameTabCard extends StatelessWidget {
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
   }
+}
+
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // NFL
+    // NCAAF
+    // MLB
+    // Gambling 101
+    // Profile
+    // Logout
+    // Light/Dark Toggle
+    return Drawer(
+      width: MediaQuery.of(context).size.height * .35,
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
+      child: GetBuilder<GameListingController>(builder: (controller) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            90.h.H(),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  commonCachedNetworkImage(
+                      imageUrl: '',
+                      height: MediaQuery.of(Get.context!).size.height * .1,
+                      width: MediaQuery.of(Get.context!).size.width * .18),
+                  10.h.H(),
+                  'Name'.appCommonText(
+                      color: whiteColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .02),
+                  'Name@gmail.com'.appCommonText(
+                      color: whiteColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w700,
+                      size: MediaQuery.of(context).size.height * .022),
+                ],
+              ),
+            ),
+            20.h.H(),
+            commonDivider(context),
+            30.h.H(),
+            drawerCard(
+              icon: Assets.imagesNfl,
+              title: 'NFL',
+              context: context,
+              onTap: () {},
+            ),
+            drawerCard(
+              icon: Assets.imagesNcaa,
+              title: 'NCAAF',
+              context: context,
+              onTap: () {},
+            ),
+            drawerCard(
+              icon: Assets.imagesMlb,
+              title: 'MLB',
+              context: context,
+              onTap: () {},
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.local_fire_department_outlined,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .06,
+              ),
+              title: 'Gambling 101',
+              context: context,
+              onTap: () {},
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.person_outline_rounded,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .06,
+              ),
+              title: 'Profile',
+              context: context,
+              onTap: () {},
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.logout,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Logout',
+              context: context,
+              onTap: () {
+                PreferenceManager.setIsLogin(false);
+                Get.offAll(LogInScreen());
+              },
+            ),
+            20.h.H(),
+            /*     Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                'Theme'.appCommonText(
+                    color: whiteColor,
+                    align: TextAlign.start,
+                    weight: FontWeight.w700,
+                    size: MediaQuery.of(context).size.height * .025),
+                20.h.W(),
+                Container(
+                  width: 100.w,
+                  height: 50.w,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                          color: PreferenceManager.getIsDarkMode() ?? false
+                              ? blackColor
+                              : Colors.transparent,
+                          width: 2),
+                      color: PreferenceManager.getIsDarkMode() ?? false
+                          ? blackColor
+                          : dividerColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          PreferenceManager.setIsDarkMod(false);
+                          Get.changeThemeMode(ThemeMode.light);
+                          // controller.isDarkMode = false;
+                          // isDark = false;
+                          controller.update();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(2.sp),
+                          child: Container(
+                            width: 40.w,
+                            height: 36.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.horizontal(
+                                    left: Radius.circular(8.r)),
+                                color:
+                                    PreferenceManager.getIsDarkMode() ?? false
+                                        ? blackColor
+                                        : whiteColor),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  Assets.imagesSunLight,
+                                  // ignore: deprecated_member_use
+                                  color:
+                                      PreferenceManager.getIsDarkMode() ?? false
+                                          ? darkSunColor
+                                          : blackColor,
+                                  width: 24.w,
+                                  height: 24.w,
+                                  fit: BoxFit.contain,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          PreferenceManager.setIsDarkMod(true);
+                          Get.changeThemeMode(ThemeMode.dark);
+                          // controller.isDarkMode = true;
+                          // isDark = true;
+                          controller.update();
+                        },
+                        child: Container(
+                          width: 40.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.horizontal(
+                                  right: Radius.circular(8.r)),
+                              color: PreferenceManager.getIsDarkMode() ?? false
+                                  ? darkBackGroundColor
+                                  : dividerColor),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.imagesMoon,
+                                // ignore: deprecated_member_use
+                                color:
+                                    PreferenceManager.getIsDarkMode() ?? false
+                                        ? whiteColor
+                                        : greyDarkColor,
+                                width: 24.w,
+                                height: 24.w,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),*/
+          ],
+        );
+      }),
+    );
+  }
+}
+
+drawerCard(
+    {String title = '',
+    Function()? onTap,
+    required BuildContext context,
+    String? icon,
+    Widget? widget}) {
+  return InkWell(
+    onTap: onTap,
+    child: Row(
+      children: [
+        CircleAvatar(
+          radius: 34.r,
+          backgroundColor: whiteColor.withOpacity(.2),
+          child: icon != null
+              ? SvgPicture.asset(
+                  icon,
+                  height: MediaQuery.of(context).size.height * .026,
+                  width: MediaQuery.of(context).size.width * .01,
+                  fit: BoxFit.contain,
+                )
+              : widget ?? const SizedBox(),
+        ),
+        20.h.W(),
+        title.appCommonText(
+            color: whiteColor,
+            align: TextAlign.start,
+            weight: FontWeight.w700,
+            size: MediaQuery.of(context).size.height * .025),
+      ],
+    ).paddingOnly(bottom: MediaQuery.of(Get.context!).size.width * .04),
+  ).paddingSymmetric(horizontal: MediaQuery.of(Get.context!).size.width * .05);
 }
 
 Future showDialogIfFirstLoaded(BuildContext context) async {
@@ -1047,6 +1291,7 @@ class TransperCard extends StatelessWidget {
   }
 }
 
+var scaffoldKey = GlobalKey<ScaffoldState>();
 PreferredSize commonAppBar(
     BuildContext context, GameListingController controller) {
   return PreferredSize(
@@ -1063,103 +1308,17 @@ PreferredSize commonAppBar(
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                            color: PreferenceManager.getIsDarkMode() ?? false
-                                ? blackColor
-                                : Colors.transparent,
-                            width: 2),
-                        color: PreferenceManager.getIsDarkMode() ?? false
-                            ? blackColor
-                            : dividerColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            PreferenceManager.setIsDarkMod(false);
-                            Get.changeThemeMode(ThemeMode.light);
-                            // controller.isDarkMode = false;
-                            // isDark = false;
-                            controller.update();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.all(2.sp),
-                            child: Container(
-                              width: 40.w,
-                              height: 36.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(8.r)),
-                                  color:
-                                      PreferenceManager.getIsDarkMode() ?? false
-                                          ? blackColor
-                                          : whiteColor),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    Assets.imagesSunLight,
-                                    // ignore: deprecated_member_use
-                                    color: PreferenceManager.getIsDarkMode() ??
-                                            false
-                                        ? darkSunColor
-                                        : blackColor,
-                                    width: 24.w,
-                                    height: 24.w,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            PreferenceManager.setIsDarkMod(true);
-                            Get.changeThemeMode(ThemeMode.dark);
-                            // controller.isDarkMode = true;
-                            // isDark = true;
-                            controller.update();
-                          },
-                          child: Container(
-                            width: 40.w,
-                            height: 36.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.horizontal(
-                                    right: Radius.circular(8.r)),
-                                color:
-                                    PreferenceManager.getIsDarkMode() ?? false
-                                        ? darkBackGroundColor
-                                        : dividerColor),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  Assets.imagesMoon,
-                                  // ignore: deprecated_member_use
-                                  color:
-                                      PreferenceManager.getIsDarkMode() ?? false
-                                          ? whiteColor
-                                          : greyDarkColor,
-                                  width: 24.w,
-                                  height: 24.w,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  InkWell(
+                      onTap: () {
+                        scaffoldKey.currentState!.openDrawer();
+                      },
+                      child: const Icon(Icons.menu, color: yellowColor)),
                   Expanded(
                     child: SvgPicture.asset(Assets.imagesLogo,
                         height: 34.w, fit: BoxFit.contain),
                   ),
-                  const TransperCard(),
+                  // const TransperCard(),
+                  const Icon(Icons.menu, color: Colors.transparent)
                 ],
               ),
               controller.isSelectedGame == 'Gambling 101' ||
