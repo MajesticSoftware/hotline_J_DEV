@@ -1,3 +1,15 @@
+const String cameraText = "Camera";
+const String selectImageText = "Select Image";
+const String photoLibraryText = "Photo library";
+const String settingsText = "Settings";
+const logOutText = 'Log Out';
+const logOutDialogText = 'Do you want to logout this application?';
+const noText = 'No';
+const yesText = 'Yes';
+const String withoutPermissonAppCanErroText =
+    "You don’t give contact permission. Please allow contact permission from the setting to get the contact list.";
+const String toAccessThisFeturePleaseErrorText =
+    "To access this feature please grant permission from settings.";
 const String selectGame = 'Select a Sport';
 const String game = 'Game';
 const String time = 'Time';

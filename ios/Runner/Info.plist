@@ -34,7 +34,10 @@
 	<string>Main</string>
 	<key>UIStatusBarStyle</key>
 	<string></string>
-
+    <key>NSCameraUsageDescription</key>
+	<string>Hotlines use camera to take picture</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Hotlines use camera to take picture</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

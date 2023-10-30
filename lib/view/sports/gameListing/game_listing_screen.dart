@@ -40,7 +40,7 @@ class SelectGameScreen extends StatelessWidget {
           key: scaffoldKey,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: commonAppBar(context, controller),
-          drawer: AppDrawer(),
+          drawer: const AppDrawer(),
           drawerEnableOpenDragGesture: false,
           body: SingleChildScrollView(
             child: Column(

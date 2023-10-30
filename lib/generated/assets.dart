@@ -20,7 +20,9 @@ class Assets {
   static const String imagesBackLight = 'assets/images/backLight.png';
   static const String imagesBall = 'assets/images/ball.png';
   static const String imagesBook = 'assets/images/book.png';
+  static const String imagesCamera = 'assets/images/camera.svg';
   static const String imagesCommingSoon = 'assets/images/commingSoon.svg';
+  static const String imagesConatctPro = 'assets/images/conatctPro.png';
   static const String imagesDotes = 'assets/images/dotes.svg';
   static const String imagesDraftkings = 'assets/images/Draftkings.png';
   static const String imagesFanduel = 'assets/images/Fanduel.jpeg';

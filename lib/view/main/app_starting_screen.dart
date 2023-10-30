@@ -9,6 +9,7 @@ import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 
 import '../../constant/shred_preference.dart';
+import '../auth/log_in_module/log_in_screen.dart';
 import '../sports/gameListing/game_listing_screen.dart';
 
 class AppStartScreen extends StatelessWidget {
@@ -30,7 +31,10 @@ class AppStartScreen extends StatelessWidget {
               weight: FontWeight.w700, color: appColor, size: 18),
           onTap: () {
             PreferenceManager.setIsFirstLoaded(true);
-            Get.to(SelectGameScreen());
+            PreferenceManager.getIsLogin() == null ||
+                    PreferenceManager.getIsLogin() == false
+                ? Get.offAll(LogInScreen())
+                : Get.offAll(SelectGameScreen());
           },
         ).paddingSymmetric(vertical: 10),
       ).paddingSymmetric(horizontal: MediaQuery.of(context).size.width * .03),

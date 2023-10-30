@@ -14,9 +14,11 @@ import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../../constant/app_strings.dart';
+import '../../extras/request_constants.dart';
 import '../../generated/assets.dart';
 import '../../model/leauge_model.dart';
 import '../auth/log_in_module/log_in_screen.dart';
+import 'common_dialog.dart';
 
 class GameWidget extends StatelessWidget {
   const GameWidget(
@@ -407,6 +409,7 @@ class GameTabCard extends StatelessWidget {
                       : GestureDetector(
                           onTap: () {
                             controller.tabClick(context, index);
+                            controller.update();
                           },
                           child: Container(
                             height: MediaQuery.of(context).size.height * .05,
@@ -496,180 +499,156 @@ class AppDrawer extends StatelessWidget {
       width: MediaQuery.of(context).size.height * .35,
       backgroundColor: Theme.of(context).secondaryHeaderColor,
       child: GetBuilder<GameListingController>(builder: (controller) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+        return Stack(
           children: [
-            90.h.H(),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  commonCachedNetworkImage(
-                      imageUrl: '',
-                      height: MediaQuery.of(Get.context!).size.height * .1,
-                      width: MediaQuery.of(Get.context!).size.width * .18),
-                  10.h.H(),
-                  'Name'.appCommonText(
-                      color: whiteColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w700,
-                      size: MediaQuery.of(context).size.height * .02),
-                  'Name@gmail.com'.appCommonText(
-                      color: whiteColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w700,
-                      size: MediaQuery.of(context).size.height * .022),
-                ],
-              ),
-            ),
-            20.h.H(),
-            commonDivider(context),
-            30.h.H(),
-            drawerCard(
-              icon: Assets.imagesNfl,
-              title: 'NFL',
-              context: context,
-              onTap: () {},
-            ),
-            drawerCard(
-              icon: Assets.imagesNcaa,
-              title: 'NCAAF',
-              context: context,
-              onTap: () {},
-            ),
-            drawerCard(
-              icon: Assets.imagesMlb,
-              title: 'MLB',
-              context: context,
-              onTap: () {},
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.local_fire_department_outlined,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
-              ),
-              title: 'Gambling 101',
-              context: context,
-              onTap: () {},
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.person_outline_rounded,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
-              ),
-              title: 'Profile',
-              context: context,
-              onTap: () {},
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.logout,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
-              ),
-              title: 'Logout',
-              context: context,
-              onTap: () {
-                PreferenceManager.setIsLogin(false);
-                Get.offAll(LogInScreen());
-              },
-            ),
-            20.h.H(),
-            /*     Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                'Theme'.appCommonText(
-                    color: whiteColor,
-                    align: TextAlign.start,
-                    weight: FontWeight.w700,
-                    size: MediaQuery.of(context).size.height * .025),
-                20.h.W(),
-                Container(
-                  width: 100.w,
-                  height: 50.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(
-                          color: PreferenceManager.getIsDarkMode() ?? false
-                              ? blackColor
-                              : Colors.transparent,
-                          width: 2),
-                      color: PreferenceManager.getIsDarkMode() ?? false
-                          ? blackColor
-                          : dividerColor),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                110.h.H(),
+                Align(
+                  alignment: Alignment.center,
+                  child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          PreferenceManager.setIsDarkMod(false);
-                          Get.changeThemeMode(ThemeMode.light);
-                          // controller.isDarkMode = false;
-                          // isDark = false;
-                          controller.update();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(2.sp),
-                          child: Container(
-                            width: 40.w,
-                            height: 36.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.horizontal(
-                                    left: Radius.circular(8.r)),
-                                color:
-                                    PreferenceManager.getIsDarkMode() ?? false
-                                        ? blackColor
-                                        : whiteColor),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  Assets.imagesSunLight,
-                                  // ignore: deprecated_member_use
-                                  color:
-                                      PreferenceManager.getIsDarkMode() ?? false
-                                          ? darkSunColor
-                                          : blackColor,
-                                  width: 24.w,
-                                  height: 24.w,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      commonCachedNetworkImage(
+                        imageUrl:
+                            ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile()}'),
+                        height: MediaQuery.of(context).size.height * .12,
+                        width: MediaQuery.of(context).size.height * .12,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          PreferenceManager.setIsDarkMod(true);
-                          Get.changeThemeMode(ThemeMode.dark);
-                          // controller.isDarkMode = true;
-                          // isDark = true;
-                          controller.update();
-                        },
+                      10.h.H(),
+                      (PreferenceManager.getUserName())
+                          .toString()
+                          .appCommonText(
+                              color: yellowColor,
+                              align: TextAlign.start,
+                              weight: FontWeight.w700,
+                              size: MediaQuery.of(context).size.height * .02),
+                      (PreferenceManager.getUserEmail())
+                          .toString()
+                          .appCommonText(
+                              color: yellowColor,
+                              align: TextAlign.start,
+                              weight: FontWeight.w700,
+                              size: MediaQuery.of(context).size.height * .022),
+                    ],
+                  ),
+                ),
+                20.h.H(),
+                commonDivider(context),
+                30.h.H(),
+                drawerCard(
+                  icon: Assets.imagesNfl,
+                  title: 'NFL',
+                  context: context,
+                  onTap: () {},
+                ),
+                drawerCard(
+                  icon: Assets.imagesNcaa,
+                  title: 'NCAAF',
+                  context: context,
+                  onTap: () {},
+                ),
+                drawerCard(
+                  icon: Assets.imagesMlb,
+                  title: 'MLB',
+                  context: context,
+                  onTap: () {},
+                ),
+                drawerCard(
+                  widget: Icon(
+                    Icons.local_fire_department_outlined,
+                    color: whiteColor,
+                    size: MediaQuery.of(context).size.width * .06,
+                  ),
+                  title: 'Gambling 101',
+                  context: context,
+                  onTap: () {},
+                ),
+                drawerCard(
+                  widget: Icon(
+                    Icons.person_outline_rounded,
+                    color: whiteColor,
+                    size: MediaQuery.of(context).size.width * .06,
+                  ),
+                  title: 'Profile',
+                  context: context,
+                  onTap: () {},
+                ),
+                drawerCard(
+                  widget: Icon(
+                    Icons.logout,
+                    color: whiteColor,
+                    size: MediaQuery.of(context).size.width * .05,
+                  ),
+                  title: 'Logout',
+                  context: context,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return exitApp(
+                          context,
+                          onTap: () {
+                            PreferenceManager.setIsLogin(false);
+                            Get.offAll(LogInScreen());
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+                20.h.H(),
+              ],
+            ),
+            Positioned(
+              top: 80.h,
+              right: 20.h,
+              child: Container(
+                width: 100.w,
+                height: 50.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.r),
+                    border: Border.all(
+                        color: PreferenceManager.getIsDarkMode() ?? false
+                            ? blackColor
+                            : Colors.transparent,
+                        width: 2),
+                    color: PreferenceManager.getIsDarkMode() ?? false
+                        ? blackColor
+                        : dividerColor),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        PreferenceManager.setIsDarkMod(false);
+                        Get.changeThemeMode(ThemeMode.light);
+                        // controller.isDarkMode = false;
+                        // isDark = false;
+                        controller.update();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(2.sp),
                         child: Container(
                           width: 40.w,
                           height: 36.w,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.horizontal(
-                                  right: Radius.circular(8.r)),
+                                  left: Radius.circular(100.r)),
                               color: PreferenceManager.getIsDarkMode() ?? false
-                                  ? darkBackGroundColor
-                                  : dividerColor),
+                                  ? blackColor
+                                  : whiteColor),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
-                                Assets.imagesMoon,
+                                Assets.imagesSunLight,
                                 // ignore: deprecated_member_use
                                 color:
                                     PreferenceManager.getIsDarkMode() ?? false
-                                        ? whiteColor
-                                        : greyDarkColor,
+                                        ? darkSunColor
+                                        : blackColor,
                                 width: 24.w,
                                 height: 24.w,
                                 fit: BoxFit.contain,
@@ -678,11 +657,45 @@ class AppDrawer extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        PreferenceManager.setIsDarkMod(true);
+                        Get.changeThemeMode(ThemeMode.dark);
+                        // controller.isDarkMode = true;
+                        // isDark = true;
+                        controller.update();
+                      },
+                      child: Container(
+                        width: 40.w,
+                        height: 36.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(100.r)),
+                            color: PreferenceManager.getIsDarkMode() ?? false
+                                ? darkBackGroundColor
+                                : dividerColor),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              Assets.imagesMoon,
+                              // ignore: deprecated_member_use
+                              color: PreferenceManager.getIsDarkMode() ?? false
+                                  ? whiteColor
+                                  : greyDarkColor,
+                              width: 24.w,
+                              height: 24.w,
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),*/
+              ),
+            ),
           ],
         );
       }),
@@ -696,7 +709,7 @@ drawerCard(
     required BuildContext context,
     String? icon,
     Widget? widget}) {
-  return InkWell(
+  return GestureDetector(
     onTap: onTap,
     child: Row(
       children: [
@@ -717,7 +730,7 @@ drawerCard(
             color: whiteColor,
             align: TextAlign.start,
             weight: FontWeight.w700,
-            size: MediaQuery.of(context).size.height * .025),
+            size: MediaQuery.of(context).size.height * .024),
       ],
     ).paddingOnly(bottom: MediaQuery.of(Get.context!).size.width * .04),
   ).paddingSymmetric(horizontal: MediaQuery.of(Get.context!).size.width * .05);

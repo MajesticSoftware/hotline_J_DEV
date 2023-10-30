@@ -9,6 +9,7 @@ import 'package:hotlines/utils/animated_search.dart';
 
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
+import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/ncaa_boxcore_model.dart';
@@ -33,6 +34,11 @@ class GameListingController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    // sportId = (PreferenceManager.getFavoriteSport() == 'MLB'
+    //     ? 'sr:sport:3'
+    //     : 'sr:sport:16');
+    // sportKey = PreferenceManager.getFavoriteSport();
+    // isSelectedGame = PreferenceManager.getFavoriteSport();
   }
 
   @override

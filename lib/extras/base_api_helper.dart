@@ -10,18 +10,20 @@ import '../utils/utils.dart';
 import 'extras.dart';
 
 class BaseApiHelper {
-  /* static Future<ResponseItem> postRequest(String requestUrl,
+  static Future<ResponseItem> postRequest(String requestUrl,
       Map<String, dynamic> requestData, bool passAuthToken) async {
     printData(tittle: "request", val: requestUrl);
-    printData(tittle: "headers:", val: requestHeader().toString());
+    printData(
+        tittle: "headers:", val: requestAuthHeader(passAuthToken).toString());
     printData(tittle: "body:", val: json.encode(requestData));
 
     return await http
         .post(Uri.parse(requestUrl),
-            body: json.encode(requestData), headers: requestHeader())
+            body: json.encode(requestData),
+            headers: requestAuthHeader(passAuthToken))
         .then((response) => onValue(response))
         .onError((error, stackTrace) => onError(error, requestUrl));
-  }*/
+  }
 
   static Future<ResponseItem> getRequest(
       Uri requestUrl, Map<String, String> headers) async {
@@ -40,22 +42,7 @@ class BaseApiHelper {
     }
   }
 
-  /*static Future<ResponseItem> jasonRequest() async {
-    final String response =
-        await rootBundle.loadString('assets/games_reponse.json');
-    final data = await json.decode(response);
-    return ResponseItem(status: true, message: "Sucsess.", data: data);
-  }
-
-  static Future<ResponseItem> jasonRequestNew(String sportKey) async {
-    final String response = sportKey == 'MLB'
-        ? await rootBundle.loadString('assets/games_reponse_new.json')
-        : await rootBundle.loadString('assets/nfl_res.json');
-    final data = await json.decode(response);
-    return ResponseItem(status: true, message: "Success.", data: data);
-  }*/
-
-  /*static Future<ResponseItem> uploadFile(
+  static Future<ResponseItem> uploadFile(
       String requestUrl, Map<String, String> requestData,
       {http.MultipartFile? profileImage}) async {
     var request = http.MultipartRequest(
@@ -65,7 +52,7 @@ class BaseApiHelper {
 
     if (profileImage != null) request.files.add(profileImage);
 
-    request.headers.addAll(requestHeader());
+    request.headers.addAll(requestAuthHeader(true));
     request.fields.addAll(requestData);
 
     printData(tittle: "REQUEST", val: request.toString());
@@ -100,7 +87,7 @@ class BaseApiHelper {
       return http.Response.fromStream(streamedResponse)
           .then((value) => onValue(value));
     }).onError((error, stackTrace) => onError(error, requestUrl));
-  }*/
+  }
 
   static Future onValue(http.Response response) async {
     ResponseItem result;

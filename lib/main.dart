@@ -44,7 +44,8 @@ class MyApp extends StatelessWidget {
             initialBinding: BaseBindings(),
             home: PreferenceManager.getIsFirstLoaded() == null
                 ? const AppStartScreen()
-                : PreferenceManager.getIsLogin() == null
+                : PreferenceManager.getIsLogin() == null ||
+                        PreferenceManager.getIsLogin() == false
                     ? LogInScreen()
                     : SelectGameScreen());
       },

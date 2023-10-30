@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/model/game_model.dart';
 import 'package:hotlines/theme/helper.dart';
+import 'package:hotlines/utils/extension.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
+import '../../theme/app_color.dart';
 
 class DialogWidget {
   showDataAlert(BuildContext context) {
@@ -293,4 +295,63 @@ class DialogWidget {
               ));
         });
   }
+}
+
+Widget exitApp(BuildContext context, {void Function()? onTap}) {
+  return AlertDialog(
+    title: logOutText.appCommonText(
+        color: blackColor, weight: FontWeight.bold, size: 24),
+    content: logOutDialogText.appCommonText(
+        color: blackColor.withOpacity(0.8), weight: FontWeight.w600, size: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    actions: <Widget>[
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).secondaryHeaderColor),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: noText.appCommonText(
+                            color: whiteColor,
+                            weight: FontWeight.w700,
+                            size: 18),
+                      )),
+                ),
+              ),
+              10.W(),
+              Expanded(
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).secondaryHeaderColor),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: yesText.appCommonText(
+                            color: whiteColor,
+                            weight: FontWeight.w700,
+                            size: 18),
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
 }
