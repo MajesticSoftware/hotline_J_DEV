@@ -18,6 +18,7 @@ import '../../extras/request_constants.dart';
 import '../../generated/assets.dart';
 import '../../model/leauge_model.dart';
 import '../auth/log_in_module/log_in_screen.dart';
+import '../profile_module/profile_screen.dart';
 import 'common_dialog.dart';
 
 class GameWidget extends StatelessWidget {
@@ -377,6 +378,7 @@ class GameTabCard extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return index == 3 /*|| index == 4*/
                       ? InkWell(
+                          highlightColor: Colors.transparent,
                           onTap: /* Platform.isIOS && index == 3
                               ? onTapContact
                               : index == 3
@@ -488,214 +490,262 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // NFL
-    // NCAAF
-    // MLB
-    // Gambling 101
-    // Profile
-    // Logout
-    // Light/Dark Toggle
     return Drawer(
       width: MediaQuery.of(context).size.height * .35,
       backgroundColor: Theme.of(context).secondaryHeaderColor,
       child: GetBuilder<GameListingController>(builder: (controller) {
-        return Stack(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                110.h.H(),
-                Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      commonCachedNetworkImage(
-                        imageUrl:
-                            ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile()}'),
-                        height: MediaQuery.of(context).size.height * .12,
-                        width: MediaQuery.of(context).size.height * .12,
-                      ),
-                      10.h.H(),
-                      (PreferenceManager.getUserName())
-                          .toString()
-                          .appCommonText(
-                              color: yellowColor,
-                              align: TextAlign.start,
-                              weight: FontWeight.w700,
-                              size: MediaQuery.of(context).size.height * .02),
-                      (PreferenceManager.getUserEmail())
-                          .toString()
-                          .appCommonText(
-                              color: yellowColor,
-                              align: TextAlign.start,
-                              weight: FontWeight.w700,
-                              size: MediaQuery.of(context).size.height * .022),
-                    ],
+            110.h.H(),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  commonCachedNetworkImage(
+                    imageUrl:
+                        ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile()}'),
+                    height: MediaQuery.of(context).size.height * .12,
+                    width: MediaQuery.of(context).size.height * .12,
                   ),
+                  10.h.H(),
+                  (PreferenceManager.getUserName() ?? "Name")
+                      .toString()
+                      .appCommonText(
+                          color: yellowColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w700,
+                          size: MediaQuery.of(context).size.height * .02),
+                  (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
+                      .toString()
+                      .appCommonText(
+                          color: yellowColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w700,
+                          size: MediaQuery.of(context).size.height * .022),
+                ],
+              ),
+            ),
+            20.h.H(),
+            commonDivider(context),
+            30.h.H(),
+            drawerCard(
+              icon: Assets.imagesNfl,
+              title: 'NFL',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.isSelectedGame = sportsLeagueList[0].gameName;
+                controller.date = sportsLeagueList[0].date;
+                controller.sportKey = sportsLeagueList[0].key;
+                controller.apiKey = sportsLeagueList[0].apiKey;
+                controller.sportId = sportsLeagueList[0].sportId;
+                if (controller.isSelected
+                    .contains(sportsLeagueList[0].gameName)) {
+                } else {
+                  controller.isSelected.add(sportsLeagueList[0].gameName);
+                  Future.delayed(const Duration(seconds: 0), () {
+                    controller.isLoading.value = true;
+                    controller.isPagination = true;
+                    controller.getResponse(true, sportsLeagueList[0].key);
+                  });
+                }
+                controller.update();
+              },
+            ),
+            drawerCard(
+              icon: Assets.imagesNcaa,
+              title: 'NCAAF',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.isSelectedGame = sportsLeagueList[1].gameName;
+                controller.date = sportsLeagueList[1].date;
+                controller.sportKey = sportsLeagueList[1].key;
+                controller.apiKey = sportsLeagueList[1].apiKey;
+                controller.sportId = sportsLeagueList[1].sportId;
+                if (controller.isSelected
+                    .contains(sportsLeagueList[1].gameName)) {
+                } else {
+                  controller.isSelected.add(sportsLeagueList[1].gameName);
+                  Future.delayed(const Duration(seconds: 0), () {
+                    controller.isLoading.value = true;
+                    controller.isPagination = true;
+                    controller.getResponse(true, sportsLeagueList[1].key);
+                  });
+                }
+                controller.update();
+              },
+            ),
+            drawerCard(
+              icon: Assets.imagesMlb,
+              title: 'MLB',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.isSelectedGame = sportsLeagueList[2].gameName;
+                controller.date = sportsLeagueList[2].date;
+                controller.sportKey = sportsLeagueList[2].key;
+                controller.apiKey = sportsLeagueList[2].apiKey;
+                controller.sportId = sportsLeagueList[2].sportId;
+                if (controller.isSelected
+                    .contains(sportsLeagueList[2].gameName)) {
+                } else {
+                  controller.isSelected.add(sportsLeagueList[2].gameName);
+                  Future.delayed(const Duration(seconds: 0), () {
+                    controller.isLoading.value = true;
+                    controller.isPagination = true;
+                    controller.getResponse(true, sportsLeagueList[2].key);
+                  });
+                }
+                controller.update();
+              },
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.local_fire_department_outlined,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .06,
+              ),
+              title: 'Gambling 101',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                toggle = 0;
+                controller.isSelectedGame = 'Gambling 101';
+              },
+            ),
+            Visibility(
+              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              child: drawerCard(
+                widget: Icon(
+                  Icons.person_outline_rounded,
+                  color: whiteColor,
+                  size: MediaQuery.of(context).size.width * .06,
                 ),
-                20.h.H(),
-                commonDivider(context),
-                30.h.H(),
-                drawerCard(
-                  icon: Assets.imagesNfl,
-                  title: 'NFL',
+                title: 'Profile',
+                context: context,
+                onTap: () {
+                  scaffoldKey.currentState!.closeDrawer();
+                  Get.to(ProfileScreen());
+                },
+              ),
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.logout,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Logout',
+              context: context,
+              onTap: () {
+                showDialog(
                   context: context,
-                  onTap: () {},
-                ),
-                drawerCard(
-                  icon: Assets.imagesNcaa,
-                  title: 'NCAAF',
-                  context: context,
-                  onTap: () {},
-                ),
-                drawerCard(
-                  icon: Assets.imagesMlb,
-                  title: 'MLB',
-                  context: context,
-                  onTap: () {},
-                ),
-                drawerCard(
-                  widget: Icon(
-                    Icons.local_fire_department_outlined,
-                    color: whiteColor,
-                    size: MediaQuery.of(context).size.width * .06,
-                  ),
-                  title: 'Gambling 101',
-                  context: context,
-                  onTap: () {},
-                ),
-                drawerCard(
-                  widget: Icon(
-                    Icons.person_outline_rounded,
-                    color: whiteColor,
-                    size: MediaQuery.of(context).size.width * .06,
-                  ),
-                  title: 'Profile',
-                  context: context,
-                  onTap: () {},
-                ),
-                drawerCard(
-                  widget: Icon(
-                    Icons.logout,
-                    color: whiteColor,
-                    size: MediaQuery.of(context).size.width * .05,
-                  ),
-                  title: 'Logout',
-                  context: context,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return exitApp(
-                          context,
-                          onTap: () {
-                            PreferenceManager.setIsLogin(false);
-                            Get.offAll(LogInScreen());
-                          },
-                        );
+                  builder: (context) {
+                    return exitApp(
+                      context,
+                      onTap: () {
+                        controller.logOut();
                       },
                     );
                   },
-                ),
-                20.h.H(),
-              ],
+                );
+              },
             ),
-            Positioned(
-              top: 80.h,
-              right: 20.h,
-              child: Container(
-                width: 100.w,
-                height: 50.w,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.r),
-                    border: Border.all(
-                        color: PreferenceManager.getIsDarkMode() ?? false
-                            ? blackColor
-                            : Colors.transparent,
-                        width: 2),
-                    color: PreferenceManager.getIsDarkMode() ?? false
-                        ? blackColor
-                        : dividerColor),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        PreferenceManager.setIsDarkMod(false);
-                        Get.changeThemeMode(ThemeMode.light);
-                        // controller.isDarkMode = false;
-                        // isDark = false;
-                        controller.update();
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(2.sp),
-                        child: Container(
-                          width: 40.w,
-                          height: 36.w,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.horizontal(
-                                  left: Radius.circular(100.r)),
-                              color: PreferenceManager.getIsDarkMode() ?? false
-                                  ? blackColor
-                                  : whiteColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                Assets.imagesSunLight,
-                                // ignore: deprecated_member_use
-                                color:
-                                    PreferenceManager.getIsDarkMode() ?? false
-                                        ? darkSunColor
-                                        : blackColor,
-                                width: 24.w,
-                                height: 24.w,
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        PreferenceManager.setIsDarkMod(true);
-                        Get.changeThemeMode(ThemeMode.dark);
-                        // controller.isDarkMode = true;
-                        // isDark = true;
-                        controller.update();
-                      },
+            20.h.H(),
+            Container(
+              width: 160.w,
+              height: 70.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100.r),
+                  border: Border.all(
+                      color: PreferenceManager.getIsDarkMode() ?? false
+                          ? blackColor
+                          : Colors.transparent,
+                      width: 2),
+                  color: PreferenceManager.getIsDarkMode() ?? false
+                      ? blackColor
+                      : dividerColor),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      PreferenceManager.setIsDarkMod(false);
+                      Get.changeThemeMode(ThemeMode.light);
+                      // controller.isDarkMode = false;
+                      // isDark = false;
+                      controller.update();
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(2.sp),
                       child: Container(
-                        width: 40.w,
-                        height: 36.w,
+                        width: 60.w,
+                        height: 50.w,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.horizontal(
-                                right: Radius.circular(100.r)),
+                                left: Radius.circular(100.r)),
                             color: PreferenceManager.getIsDarkMode() ?? false
-                                ? darkBackGroundColor
-                                : dividerColor),
+                                ? blackColor
+                                : whiteColor),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              Assets.imagesMoon,
+                              Assets.imagesSunLight,
                               // ignore: deprecated_member_use
                               color: PreferenceManager.getIsDarkMode() ?? false
-                                  ? whiteColor
-                                  : greyDarkColor,
-                              width: 24.w,
-                              height: 24.w,
+                                  ? darkSunColor
+                                  : blackColor,
+                              width: 35.w,
+                              height: 35.w,
                               fit: BoxFit.contain,
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      PreferenceManager.setIsDarkMod(true);
+                      Get.changeThemeMode(ThemeMode.dark);
+                      // controller.isDarkMode = true;
+                      // isDark = true;
+                      controller.update();
+                    },
+                    child: Container(
+                      width: 60.w,
+                      height: 50.w,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.horizontal(
+                              right: Radius.circular(100.r)),
+                          color: PreferenceManager.getIsDarkMode() ?? false
+                              ? darkBackGroundColor
+                              : dividerColor),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            Assets.imagesMoon,
+                            // ignore: deprecated_member_use
+                            color: PreferenceManager.getIsDarkMode() ?? false
+                                ? whiteColor
+                                : greyDarkColor,
+                            width: 35.w,
+                            height: 35.w,
+                            fit: BoxFit.contain,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+            ).paddingSymmetric(
+                horizontal: MediaQuery.of(Get.context!).size.width * .05),
           ],
         );
       }),
@@ -703,7 +753,7 @@ class AppDrawer extends StatelessWidget {
   }
 }
 
-drawerCard(
+Widget drawerCard(
     {String title = '',
     Function()? onTap,
     required BuildContext context,
@@ -1322,6 +1372,7 @@ PreferredSize commonAppBar(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
+                      highlightColor: Colors.transparent,
                       onTap: () {
                         scaffoldKey.currentState!.openDrawer();
                       },

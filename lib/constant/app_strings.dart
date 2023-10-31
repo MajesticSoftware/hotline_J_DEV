@@ -2,8 +2,8 @@ const String cameraText = "Camera";
 const String selectImageText = "Select Image";
 const String photoLibraryText = "Photo library";
 const String settingsText = "Settings";
-const logOutText = 'Log Out';
-const logOutDialogText = 'Do you want to logout this application?';
+const logOutText = 'Logout';
+const logOutDialogText = 'Are you sure you want to logout?';
 const noText = 'No';
 const yesText = 'Yes';
 const String withoutPermissonAppCanErroText =
@@ -36,3 +36,23 @@ const String mobileMsg =
     '**Gambling involves financial risk and can be addictive. \n  Please play responsibly.**';
 const String msg =
     '**Gambling involves financial risk and can be addictive. Please play responsibly.**';
+const String oldPassword = 'Old Password';
+const String enterOldPassword = 'Enter Old Password';
+const String newPassword = 'New Password';
+const String enterNewPassword = 'Enter New Password';
+const String confPassword = 'Confirm Password';
+const String enterConfPassword = 'Re-enter Password';
+const String change = 'Change';
+const String confirmPassword = 'Confirm Password';
+const String forgotText = 'Enter your email & reset password';
+const String rememberPassword = 'Remember Password? ';
+const String request = 'Request';
+const enterYourVerificationCodeAndResetPasswordText =
+    "Enter your verification code & reset password";
+const reSetPasswordScreenText = "Reset Password";
+const verificationCodeText = "Verification Code";
+const enterVerificationCodeText = "Enter Verification Code";
+const newPasswordText = "New Password";
+const enterNewPasswordText = "Enter new password";
+const resetPasswordText = "Reset Password";
+const resentCodeText = "Resent code?";

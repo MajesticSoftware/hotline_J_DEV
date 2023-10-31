@@ -42,12 +42,16 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             initialBinding: BaseBindings(),
-            home: PreferenceManager.getIsFirstLoaded() == null
-                ? const AppStartScreen()
+            home: PreferenceManager.getSkipLogin() == true
+                ? PreferenceManager.getIsFirstLoaded() == null
+                    ? const AppStartScreen()
+                    : SelectGameScreen()
                 : PreferenceManager.getIsLogin() == null ||
                         PreferenceManager.getIsLogin() == false
                     ? LogInScreen()
-                    : SelectGameScreen());
+                    : PreferenceManager.getIsFirstLoaded() == null
+                        ? const AppStartScreen()
+                        : SelectGameScreen());
       },
     );
   }

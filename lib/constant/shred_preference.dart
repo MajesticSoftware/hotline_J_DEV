@@ -127,6 +127,15 @@ class PreferenceManager {
     return getStorage.read("favoriteSport");
   }
 
+  ///userId
+  static Future setSkipLogin(bool skipLogin) async {
+    await getStorage.write("skipLogin", skipLogin);
+  }
+
+  static getSkipLogin() {
+    return getStorage.read("skipLogin");
+  }
+
   static setUserData(UserData response) {
     setUserName(response.userName ?? "");
     setUserEmail(response.userEmail ?? "");

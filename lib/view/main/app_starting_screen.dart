@@ -18,7 +18,7 @@ class AppStartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColor,
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
         width: Get.width,
@@ -31,10 +31,7 @@ class AppStartScreen extends StatelessWidget {
               weight: FontWeight.w700, color: appColor, size: 18),
           onTap: () {
             PreferenceManager.setIsFirstLoaded(true);
-            PreferenceManager.getIsLogin() == null ||
-                    PreferenceManager.getIsLogin() == false
-                ? Get.offAll(LogInScreen())
-                : Get.offAll(SelectGameScreen());
+            Get.offAll(SelectGameScreen());
           },
         ).paddingSymmetric(vertical: 10),
       ).paddingSymmetric(horizontal: MediaQuery.of(context).size.width * .03),

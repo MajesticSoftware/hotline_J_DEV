@@ -20,6 +20,7 @@ import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
 import '../../../utils/extension.dart';
+import '../../auth/log_in_module/log_in_screen.dart';
 import '../gameDetails/game_details_screen.dart';
 
 class GameListingController extends GetxController {
@@ -31,17 +32,6 @@ class GameListingController extends GetxController {
   }
 
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    // sportId = (PreferenceManager.getFavoriteSport() == 'MLB'
-    //     ? 'sr:sport:3'
-    //     : 'sr:sport:16');
-    // sportKey = PreferenceManager.getFavoriteSport();
-    // isSelectedGame = PreferenceManager.getFavoriteSport();
-  }
-
-  @override
   void onClose() {
     timer = null;
     timerNCAA = null;
@@ -49,8 +39,13 @@ class GameListingController extends GetxController {
     log('I am closed');
   }
 
-  String sportId = 'sr:sport:16';
-  String _sportKey = 'NFL';
+  String sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
+      ? 'sr:sport:3'
+      : 'sr:sport:16');
+  String _sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
+          ? "NCAA"
+          : PreferenceManager.getFavoriteSport()) ??
+      "NFL";
 
   String get sportKey => _sportKey;
 
@@ -59,12 +54,28 @@ class GameListingController extends GetxController {
     update();
   }
 
+  favoriteGameCall() {
+    sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
+        ? 'sr:sport:3'
+        : 'sr:sport:16');
+    sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
+            ? "NCAA"
+            : PreferenceManager.getFavoriteSport()) ??
+        "NFL";
+    isSelected.add(PreferenceManager.getFavoriteSport() ?? "NFL");
+    isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NFL";
+    Future.delayed(
+      Duration.zero,
+      () async {
+        await getResponse(true, sportKey);
+      },
+    );
+  }
+
   tabClick(BuildContext context, int index) {
-    isSelectedGame = sportsLeagueList[index].gameName;
-    // toggle = 0;
-    // FocusScope.of(context).unfocus();
     searchCon.clear();
     searchList.clear();
+    isSelectedGame = sportsLeagueList[index].gameName;
     date = sportsLeagueList[index].date;
     sportKey = sportsLeagueList[index].key;
     apiKey = sportsLeagueList[index].apiKey;
@@ -114,16 +125,23 @@ class GameListingController extends GetxController {
 
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
   String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  List<String> isSelected = ['NFL'];
-  String isSelectedGame = 'NFL';
-  // bool _isDarkMode = false;
-  //
-  // bool get isDarkMode => _isDarkMode;
-  //
-  // set isDarkMode(bool value) {
-  //   _isDarkMode = value;
-  //   update();
-  // }
+  List<String> _isSelected = [PreferenceManager.getFavoriteSport() ?? "NFL"];
+
+  List<String> get isSelected => _isSelected;
+
+  set isSelected(List<String> value) {
+    _isSelected = value;
+    update();
+  }
+
+  String _isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NFL";
+
+  String get isSelectedGame => _isSelectedGame;
+
+  set isSelectedGame(String value) {
+    _isSelectedGame = value;
+    update();
+  }
 
   bool _isSearch = false;
 
@@ -132,6 +150,12 @@ class GameListingController extends GetxController {
   set isSearch(bool value) {
     _isSearch = value;
     update();
+  }
+
+  logOut() {
+    PreferenceManager.setIsLogin(false);
+    PreferenceManager.clearData();
+    Get.offAll(LogInScreen());
   }
 
   void launchEmailSubmission() async {

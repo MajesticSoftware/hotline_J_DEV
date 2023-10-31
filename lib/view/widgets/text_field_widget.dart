@@ -17,11 +17,13 @@ class CommonTextField extends StatelessWidget {
       this.suffixIcon,
       this.height,
       this.hintTextSize,
-      this.obscureText})
+      this.obscureText,
+      this.readOnly,
+      this.isPasswordField})
       : super(key: key);
   final TextEditingController? controller;
   final String hintText;
-  final bool isPasswordField = false;
+  final bool? isPasswordField;
   final bool? obscureText;
   final int maxLine = 1;
   final num? hintTextSize;
@@ -31,14 +33,14 @@ class CommonTextField extends StatelessWidget {
   final void Function(String)? onChange;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
-  final bool readOnly = false;
+  final bool? readOnly;
   final Widget? suffixIcon;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height ?? MediaQuery.sizeOf(context).height * .05,
       child: TextFormField(
-        readOnly: readOnly,
+        readOnly: readOnly ?? false,
         onChanged: onChange,
         validator: validation,
         controller: controller ?? TextEditingController(),
@@ -62,7 +64,7 @@ class CommonTextField extends StatelessWidget {
               size: hintTextSize ?? MediaQuery.of(context).size.height * .018,
               weight: FontWeight.w500,
               color: appColor),
-          suffixIcon: isPasswordField
+          suffixIcon: isPasswordField ?? false
               ? suffixIcon ?? const SizedBox()
               : const SizedBox(),
           enabledBorder: OutlineInputBorder(

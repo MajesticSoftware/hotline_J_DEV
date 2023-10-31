@@ -5,36 +5,58 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/theme/app_color.dart';
-import 'package:hotlines/theme/helper.dart';
-import 'package:hotlines/utils/app_progress.dart';
 import 'package:hotlines/utils/extension.dart';
-import 'package:hotlines/utils/layouts.dart';
-import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
-import 'package:hotlines/view/auth/register_module/register_controller.dart';
+import 'package:hotlines/view/profile_module/profile_controller.dart';
 
-import '../../../extras/request_constants.dart';
-import '../../../generated/assets.dart';
-import '../../../utils/file_picker_utils.dart';
-import '../../main/app_starting_screen.dart';
-import '../../widgets/common_widget.dart';
-import '../../widgets/text_field_widget.dart';
+import '../../extras/request_constants.dart';
+import '../../generated/assets.dart';
+import '../../theme/helper.dart';
+import '../../utils/app_progress.dart';
+import '../../utils/file_picker_utils.dart';
+import '../widgets/common_widget.dart';
+import '../widgets/text_field_widget.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({Key? key}) : super(key: key);
-  final RegisterCon registerCon = Get.put(RegisterCon());
+class ProfileScreen extends StatelessWidget {
+  ProfileScreen({Key? key}) : super(key: key);
+  final ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).secondaryHeaderColor,
+      /*appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).secondaryHeaderColor,
+        leading: InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(Icons.arrow_back_ios, size: 28.h)),
+        title:
+            'Profile'.appCommonText(color: whiteColor, weight: FontWeight.w700),
+      ),*/
       body: Stack(
         children: [
-          GetBuilder<RegisterCon>(builder: (ctrl) {
+          GetBuilder<ProfileController>(builder: (ctrl) {
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  60.h.H(),
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: InkWell(
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 28.h,
+                            color: whiteColor,
+                          )),
+                    ),
+                  ).paddingSymmetric(horizontal: 20.h, vertical: 20.h),
+                  40.h.H(),
                   SvgPicture.asset(
                     Assets.imagesLogo,
                     fit: BoxFit.contain,
@@ -46,11 +68,14 @@ class RegisterScreen extends StatelessWidget {
                     children: [
                       ctrl.imageFile == null && ctrl.profileImage.isEmpty
                           ? Container(
-                              height: MediaQuery.of(context).size.height * .13,
-                              width: MediaQuery.of(context).size.height * .13,
-                              decoration: const BoxDecoration(
+                              height: MediaQuery.of(context).size.height * .15,
+                              width: MediaQuery.of(context).size.height * .15,
+                              decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: DecorationImage(
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor),
+                                  image: const DecorationImage(
                                       image:
                                           AssetImage(Assets.imagesConatctPro),
                                       fit: BoxFit.fill)))
@@ -62,10 +87,10 @@ class RegisterScreen extends StatelessWidget {
                                           '${AppUrls.imageUrl}${ctrl.profileImage}',
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .13,
+                                              .15,
                                       width:
                                           MediaQuery.of(context).size.height *
-                                              .13),
+                                              .15),
                                 )
                               : IgnorePointer(
                                   ignoring: false,
@@ -74,12 +99,15 @@ class RegisterScreen extends StatelessWidget {
                                     child: Container(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                .13,
+                                                .15,
                                         width:
                                             MediaQuery.of(context).size.height *
-                                                .13,
-                                        decoration: const BoxDecoration(
+                                                .15,
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .secondaryHeaderColor),
                                         ),
                                         child: Image.file(
                                           ctrl.imageFile!,
@@ -90,11 +118,11 @@ class RegisterScreen extends StatelessWidget {
                                                 height: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .13,
+                                                    .15,
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .13,
+                                                    .15,
                                                 decoration: const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     image: DecorationImage(
@@ -106,7 +134,7 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                                 ),
                       Positioned(
-                          bottom: -15.w,
+                          bottom: -10.w,
                           right: 0,
                           child: AbsorbPointer(
                             absorbing: false,
@@ -131,7 +159,7 @@ class RegisterScreen extends StatelessWidget {
                           ))
                     ],
                   ),
-                  40.h.H(),
+                  60.h.H(),
                   CommonTextField(
                     controller: ctrl.nameCon,
                     hintText: 'Name',
@@ -139,29 +167,10 @@ class RegisterScreen extends StatelessWidget {
                       horizontal: MediaQuery.of(context).size.height * .06),
                   25.w.H(),
                   CommonTextField(
+                    readOnly: true,
                     controller: ctrl.emailCon,
                     hintText: 'Email',
                     keyboardType: TextInputType.emailAddress,
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
-                  25.w.H(),
-                  CommonTextField(
-                    obscureText: ctrl.isShowPass,
-                    isPasswordField: true,
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        ctrl.isShowPass = !ctrl.isShowPass;
-                        ctrl.update();
-                      },
-                      child: Icon(
-                          ctrl.isShowPass
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility,
-                          color: Theme.of(context).secondaryHeaderColor,
-                          size: 28.h),
-                    ),
-                    controller: ctrl.passCon,
-                    hintText: 'Password',
                   ).paddingSymmetric(
                       horizontal: MediaQuery.of(context).size.height * .06),
                   25.w.H(),
@@ -207,87 +216,21 @@ class RegisterScreen extends StatelessWidget {
                       horizontal: MediaQuery.of(context).size.height * .06),
                   50.h.H(),
                   CommonAppButton(
-                    title: 'Register',
-                    radius: 5,
+                    title: 'Update Profile',
+                    radius: 100,
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      ctrl.registration();
+                      ctrl.updateUserProfile();
                     },
                   ).paddingSymmetric(
                       horizontal: MediaQuery.of(context).size.height * .06),
                   10.h.H(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      'Already have an account?  '.appCommonText(
-                          color: whiteColor,
-                          weight: FontWeight.w500,
-                          size: MediaQuery.of(context).size.height * .02),
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(LogInScreen());
-                        },
-                        child: 'LogIn'.appCommonText(
-                            color: whiteColor,
-                            weight: FontWeight.w800,
-                            size: MediaQuery.of(context).size.height * .02,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ],
-                  ),
-                  (Platform.isIOS ? 70 : 0).h.H(),
-                  Visibility(
-                    visible: Platform.isIOS,
-                    child: CommonAppButton(
-                      title: Platform.isIOS
-                          ? ' Sign in with Apple'
-                          : 'Sign in with Google',
-                      textColor: whiteColor,
-                      buttonColor: Colors.black,
-                      icon: Icon(
-                          Platform.isIOS ? Icons.apple : Icons.g_mobiledata,
-                          color: whiteColor,
-                          size: Platform.isIOS
-                              ? MediaQuery.of(context).size.height * .025
-                              : MediaQuery.of(context).size.height * .04),
-                      radius: 100.r,
-                      onTap: () {},
-                    ).paddingSymmetric(
-                        horizontal: MediaQuery.of(context).size.height * .06),
-                  ),
-                  20.h.H(),
-                  Row(
-                    children: [
-                      Expanded(child: commonDivider(context)),
-                      15.h.W(),
-                      'or'.appCommonText(
-                        color: whiteColor,
-                        weight: FontWeight.w800,
-                        size: MediaQuery.of(context).size.height * .02,
-                      ),
-                      15.h.W(),
-                      Expanded(child: commonDivider(context)),
-                    ],
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .07),
-                  20.h.H(),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(const AppStartScreen());
-                    },
-                    child: 'Skip for now'.appCommonText(
-                        color: whiteColor,
-                        weight: FontWeight.w800,
-                        size: MediaQuery.of(context).size.height * .02,
-                        decoration: TextDecoration.underline),
-                  ),
                 ],
               ),
             );
           }),
           Obx(
-            () => registerCon.isLoading.value
+            () => profileController.isLoading.value
                 ? const AppProgress()
                 : const SizedBox(),
           )

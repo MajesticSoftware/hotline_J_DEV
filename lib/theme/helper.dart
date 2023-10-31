@@ -13,7 +13,7 @@ showAppSnackBar(String tittle, {bool status = false}) {
     // message: tittle,
     messageText: tittle.appCommonText(
         size: 14,
-        color: whiteColor,
+        color: Theme.of(Get.context!).secondaryHeaderColor,
         align: TextAlign.start,
         weight: FontWeight.w600),
     // messageText: tittle.wallyText(fontSize: 24, fontWeight: wallyLightWeight, color: color),
@@ -23,9 +23,9 @@ showAppSnackBar(String tittle, {bool status = false}) {
     shouldIconPulse: false,
     icon: Icon(
       status ? Icons.check_circle_outline_rounded : Icons.error_outline,
-      color: whiteColor,
+      color: Theme.of(Get.context!).secondaryHeaderColor,
     ),
-    backgroundColor: greyColor,
+    backgroundColor: whiteColor,
     duration: const Duration(seconds: 3),
   ));
 }

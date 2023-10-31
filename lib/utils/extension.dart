@@ -155,6 +155,7 @@ Widget commonTextFiled(BuildContext context,
                 : boxColor,
           ),
           suffixIcon: InkWell(
+            highlightColor: Colors.transparent,
             onTap: () {
               ctrl.searchCon.clear();
               ctrl.isSearch = false;

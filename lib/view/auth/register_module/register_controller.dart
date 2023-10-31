@@ -11,6 +11,7 @@ import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../model/response_item.dart';
 import '../../../theme/helper.dart';
+import '../../main/app_starting_screen.dart';
 import '../../sports/gameListing/game_listing_screen.dart';
 
 class RegisterCon extends GetxController {
@@ -33,6 +34,7 @@ class RegisterCon extends GetxController {
   }
 
   RxBool isLoading = false.obs;
+  bool isShowPass = true;
   String profileImage = '';
   Future<void> registration() async {
     try {
@@ -73,7 +75,9 @@ class RegisterCon extends GetxController {
             if (response.data != null) {
               profileImage = response.data?.userProfilePic ?? "";
               PreferenceManager.setUserData(response.data!);
-              Get.offAll(SelectGameScreen());
+              PreferenceManager.getIsFirstLoaded() == null
+                  ? Get.offAll(const AppStartScreen())
+                  : Get.offAll(SelectGameScreen());
               clearData();
             }
             isLoading.value = false;

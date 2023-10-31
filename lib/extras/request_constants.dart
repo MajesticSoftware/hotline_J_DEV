@@ -43,6 +43,10 @@ class MethodNames {
   static const userRegistration = "userRegistration";
   static const checkSocialLogin = "checkSocialLogin";
   static const login = "userLogin";
+  static const updateUserDetails = "updateUserDetails";
+  static const changePassword = "changePassword";
+  static const forgotPassword = "forgotPassword";
+  static const changePasswordWithVerifyCode = "changePasswordWithVerifyCode";
 }
 
 class RequestHeaderKey {
