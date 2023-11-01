@@ -46,6 +46,8 @@ class MethodNames {
   static const updateUserDetails = "updateUserDetails";
   static const changePassword = "changePassword";
   static const forgotPassword = "forgotPassword";
+  static const logout = "logout";
+  static const deleteAccount = "deleteAccount";
   static const changePasswordWithVerifyCode = "changePasswordWithVerifyCode";
 }
 

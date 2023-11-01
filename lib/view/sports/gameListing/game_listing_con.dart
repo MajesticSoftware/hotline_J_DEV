@@ -11,11 +11,13 @@ import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
+import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 
+import '../../../network/auth_repo.dart';
 import '../../../network/game_listing_repo.dart';
 
 import '../../../theme/helper.dart';
@@ -152,10 +154,56 @@ class GameListingController extends GetxController {
     update();
   }
 
-  logOut() {
-    PreferenceManager.setIsLogin(false);
-    PreferenceManager.clearData();
-    Get.offAll(LogInScreen());
+  void logOut(BuildContext context) async {
+    isLoading.value = true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await UserStartupRepo().logOutApp();
+    try {
+      if (result.status) {
+        log('RESPONSE--${result.status}');
+        ForgotPasswordResModel response =
+            ForgotPasswordResModel.fromJson(result.toJson());
+        PreferenceManager.clearData();
+        PreferenceManager.setIsLogin(false);
+        Get.offAll(LogInScreen());
+        showAppSnackBar(response.msg, status: true);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(result.message);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(errorText);
+    }
+    update();
+  }
+
+  void deleteAc(BuildContext context) async {
+    isLoading.value = true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await UserStartupRepo().deleteAc();
+    try {
+      if (result.status) {
+        log('RESPONSE--${result.status}');
+        ForgotPasswordResModel response =
+            ForgotPasswordResModel.fromJson(result.toJson());
+        PreferenceManager.clearData();
+        PreferenceManager.setIsLogin(false);
+        Get.offAll(LogInScreen());
+        showAppSnackBar(response.msg, status: true);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(result.message);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(errorText);
+    }
+    update();
   }
 
   void launchEmailSubmission() async {

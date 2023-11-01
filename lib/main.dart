@@ -17,13 +17,14 @@ import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
   await GetStorage.init();
-  runApp(MyApp());
+  await PreferenceManager().putAppDeviceInfo();
+  runApp(const MyApp());
 }
 
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  bool isDarkMode = PreferenceManager.getIsDarkMode() ?? false;
+  const MyApp({super.key});
+  // bool isDarkMode = PreferenceManager.getIsDarkMode() ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,9 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: PreferenceManager.getIsDarkMode() ?? false
+                ? ThemeMode.dark
+                : ThemeMode.light,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             initialBinding: BaseBindings(),

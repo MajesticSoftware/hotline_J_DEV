@@ -228,7 +228,7 @@ class RegisterScreen extends StatelessWidget {
                         onTap: () {
                           Get.to(LogInScreen());
                         },
-                        child: 'LogIn'.appCommonText(
+                        child: 'Login'.appCommonText(
                             color: whiteColor,
                             weight: FontWeight.w800,
                             size: MediaQuery.of(context).size.height * .02,

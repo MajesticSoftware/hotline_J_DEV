@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/auth/register_module/register_screen.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 
 import '../../../generated/assets.dart';
 import '../../../theme/app_color.dart';
@@ -88,7 +89,7 @@ class LogInScreen extends StatelessWidget {
                   ),
                   100.h.H(),
                   CommonAppButton(
-                    title: 'LogIn',
+                    title: 'Login',
                     radius: 5,
                     onTap: () {
                       FocusScope.of(context).unfocus();
@@ -134,7 +135,7 @@ class LogInScreen extends StatelessWidget {
                               : MediaQuery.of(context).size.height * .04),
                       radius: 100.r,
                       onTap: () {
-                        // ctrl.appleLogin();
+                        ctrl.appleLogin();
                       },
                     ).paddingSymmetric(
                         horizontal: MediaQuery.of(context).size.height * .07),
@@ -158,7 +159,9 @@ class LogInScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       PreferenceManager.setSkipLogin(true);
-                      Get.to(const AppStartScreen());
+                      PreferenceManager.getIsFirstLoaded() == null
+                          ? Get.offAll(const AppStartScreen())
+                          : Get.offAll(SelectGameScreen());
                     },
                     child: 'Skip for now'.appCommonText(
                         color: whiteColor,

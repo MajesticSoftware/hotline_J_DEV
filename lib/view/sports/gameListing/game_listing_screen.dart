@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,8 +21,10 @@ import '../../../utils/animated_search.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
 import '../../../theme/theme.dart';
+import '../../auth/log_in_module/log_in_screen.dart';
 import '../../change_password/change_pass_screen.dart';
 import '../../profile_module/profile_screen.dart';
+import '../../term_of_service/ter_service_screen.dart';
 import '../../widgets/common_dialog.dart';
 
 // ignore: must_be_immutable
@@ -67,9 +70,7 @@ class SelectGameScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
-                    color: PreferenceManager.getIsDarkMode() ?? false
-                        ? blackColor
-                        : whiteColor,
+                    color: Theme.of(context).cardColor,
                   ),
                   height: MediaQuery.of(context).size.height -
                       MediaQuery.of(context).size.height * .2,
@@ -91,194 +92,288 @@ class SelectGameScreen extends StatelessWidget {
     });
   }
 
-  ProfileController profileController = Get.put(ProfileController());
   Drawer buildDrawer(BuildContext context, GameListingController controller) {
     return Drawer(
       width: MediaQuery.of(context).size.height * .35,
       backgroundColor: Theme.of(context).secondaryHeaderColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          110.h.H(),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                commonCachedNetworkImage(
-                  imageUrl:
-                      ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile()}'),
-                  height: MediaQuery.of(context).size.height * .12,
-                  width: MediaQuery.of(context).size.height * .12,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            (PreferenceManager.getIsLogin() ?? false)
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        commonCachedNetworkImage(
+                          imageUrl:
+                              ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile() ?? ""}'),
+                          height: MediaQuery.of(context).size.height * .12,
+                          width: MediaQuery.of(context).size.height * .12,
+                        ),
+                        10.h.H(),
+                        (PreferenceManager.getUserName() ?? "Name")
+                            .toString()
+                            .appCommonText(
+                                color: yellowColor,
+                                align: TextAlign.start,
+                                weight: FontWeight.w700,
+                                size: MediaQuery.of(context).size.height * .02),
+                        (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
+                            .toString()
+                            .appCommonText(
+                                color: yellowColor,
+                                align: TextAlign.start,
+                                weight: FontWeight.w700,
+                                size:
+                                    MediaQuery.of(context).size.height * .022),
+                      ],
+                    ),
+                  ).paddingOnly(bottom: 20.h, top: 110.h)
+                : const SizedBox(),
+            Visibility(
+              visible: (PreferenceManager.getIsLogin() ?? false) == false ||
+                  PreferenceManager.getIsLogin() == null,
+              child: SvgPicture.asset(
+                Assets.imagesLogo,
+                fit: BoxFit.contain,
+              ).paddingOnly(
+                  right: MediaQuery.of(context).size.height * .05,
+                  left: MediaQuery.of(context).size.height * .05,
+                  top: 50.h),
+            ),
+            Visibility(
+                visible: (PreferenceManager.getIsLogin() ?? false) == true,
+                child: commonDivider(context)),
+            drawerCard(
+              icon: Assets.imagesNfl,
+              title: 'NFL',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.tabClick(context, 0);
+                controller.update();
+              },
+            ).paddingOnly(top: 30.h),
+            drawerCard(
+              icon: Assets.imagesNcaa,
+              title: 'NCAAF',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.tabClick(context, 1);
+                controller.update();
+              },
+            ),
+            drawerCard(
+              icon: Assets.imagesMlb,
+              title: 'MLB',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.tabClick(context, 2);
+                controller.update();
+              },
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.local_fire_department_outlined,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .06,
+              ),
+              title: 'Gambling 101',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                toggle = 0;
+                controller.isSelectedGame = 'Gambling 101';
+              },
+            ),
+            Visibility(
+              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              child: drawerCard(
+                widget: Icon(
+                  Icons.person_outline_rounded,
+                  color: whiteColor,
+                  size: MediaQuery.of(context).size.width * .06,
                 ),
-                10.h.H(),
-                GetBuilder<ProfileController>(builder: (con) {
-                  return (con.userName.isNotEmpty
-                          ? con.userName
-                          : PreferenceManager.getUserName() ?? "Name")
-                      .toString()
-                      .appCommonText(
-                          color: yellowColor,
-                          align: TextAlign.start,
-                          weight: FontWeight.w700,
-                          size: MediaQuery.of(context).size.height * .02);
-                }),
-                (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
-                    .toString()
-                    .appCommonText(
-                        color: yellowColor,
-                        align: TextAlign.start,
-                        weight: FontWeight.w700,
-                        size: MediaQuery.of(context).size.height * .022),
-              ],
-            ),
-          ),
-          20.h.H(),
-          commonDivider(context),
-          30.h.H(),
-          drawerCard(
-            icon: Assets.imagesNfl,
-            title: 'NFL',
-            context: context,
-            onTap: () {
-              scaffoldKey.currentState!.closeDrawer();
-              controller.tabClick(context, 0);
-              controller.update();
-            },
-          ),
-          drawerCard(
-            icon: Assets.imagesNcaa,
-            title: 'NCAAF',
-            context: context,
-            onTap: () {
-              scaffoldKey.currentState!.closeDrawer();
-              controller.tabClick(context, 1);
-              controller.update();
-            },
-          ),
-          drawerCard(
-            icon: Assets.imagesMlb,
-            title: 'MLB',
-            context: context,
-            onTap: () {
-              scaffoldKey.currentState!.closeDrawer();
-              controller.tabClick(context, 2);
-              controller.update();
-            },
-          ),
-          drawerCard(
-            widget: Icon(
-              Icons.local_fire_department_outlined,
-              color: whiteColor,
-              size: MediaQuery.of(context).size.width * .06,
-            ),
-            title: 'Gambling 101',
-            context: context,
-            onTap: () {
-              scaffoldKey.currentState!.closeDrawer();
-              toggle = 0;
-              controller.isSelectedGame = 'Gambling 101';
-            },
-          ),
-          Visibility(
-            visible: (PreferenceManager.getIsLogin() ?? false) == true,
-            child: drawerCard(
-              widget: Icon(
-                Icons.person_outline_rounded,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
-              ),
-              title: 'Profile',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                Get.to(ProfileScreen());
-              },
-            ),
-          ),
-          Visibility(
-            visible: (PreferenceManager.getIsLogin() ?? false) == true,
-            child: drawerCard(
-              widget: Icon(
-                Icons.lock_reset_rounded,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
-              ),
-              title: 'Reset Password',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                Get.to(ChangePassScreen());
-              },
-            ),
-          ),
-          drawerCard(
-            widget: Icon(
-              Icons.logout,
-              color: whiteColor,
-              size: MediaQuery.of(context).size.width * .05,
-            ),
-            title: 'Logout',
-            context: context,
-            onTap: () {
-              showDialog(
+                title: 'Profile',
                 context: context,
-                builder: (context) {
-                  return exitApp(
-                    context,
-                    onTap: () {
-                      controller.logOut();
+                onTap: () {
+                  scaffoldKey.currentState!.closeDrawer();
+                  Get.to(ProfileScreen());
+                },
+              ),
+            ),
+            Visibility(
+              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              child: drawerCard(
+                widget: Icon(
+                  Icons.lock_reset_rounded,
+                  color: whiteColor,
+                  size: MediaQuery.of(context).size.width * .06,
+                ),
+                title: 'Reset Password',
+                context: context,
+                onTap: () {
+                  scaffoldKey.currentState!.closeDrawer();
+                  Get.to(ChangePassScreen());
+                },
+              ),
+            ),
+            Visibility(
+              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              child: drawerCard(
+                widget: Icon(
+                  Icons.delete,
+                  color: whiteColor,
+                  size: MediaQuery.of(context).size.width * .05,
+                ),
+                title: 'Delete Account',
+                context: context,
+                onTap: () {
+                  // scaffoldKey.currentState!.closeDrawer();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return exitApp(
+                        context,
+                        title: deleteText,
+                        subtitle: deleteDialogText,
+                        onTap: () {
+                          controller.deleteAc(context);
+                        },
+                      );
                     },
                   );
                 },
-              );
-            },
-          ),
-          20.h.H(),
-          Container(
-            width: 160.w,
-            height: 70.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.r),
-                border: Border.all(
-                    color: PreferenceManager.getIsDarkMode() ?? false
-                        ? blackColor
-                        : Colors.transparent,
-                    width: 2),
-                color: PreferenceManager.getIsDarkMode() ?? false
-                    ? blackColor
-                    : dividerColor),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    PreferenceManager.setIsDarkMod(false);
-                    Get.changeThemeMode(ThemeMode.light);
-                    // controller.isDarkMode = false;
-                    // isDark = false;
-                    controller.update();
+              ),
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.logout,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Logout',
+              context: context,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return exitApp(
+                      context,
+                      title: logOutText,
+                      subtitle: logOutDialogText,
+                      onTap: () {
+                        if (PreferenceManager.getSkipLogin() == true) {
+                          PreferenceManager.clearData();
+                          PreferenceManager.setIsLogin(false);
+                          Get.offAll(LogInScreen());
+                          showAppSnackBar('Successfully logged out.',
+                              status: true);
+                        } else {
+                          controller.logOut(context);
+                        }
+                      },
+                    );
                   },
-                  child: Padding(
-                    padding: EdgeInsets.all(2.sp),
+                );
+              },
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.logout,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Terms of Service',
+              context: context,
+              onTap: () {
+                Get.to(TermOfServiceScreen());
+              },
+            ),
+            20.h.H(),
+            Container(
+              width: 160.w,
+              height: 70.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100.r),
+                  border: Border.all(
+                      color: PreferenceManager.getIsDarkMode() ?? false
+                          ? blackColor
+                          : Colors.transparent,
+                      width: 2),
+                  color: PreferenceManager.getIsDarkMode() ?? false
+                      ? blackColor
+                      : dividerColor),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      PreferenceManager.setIsDarkMod(false);
+                      Get.changeThemeMode(ThemeMode.light);
+                      // controller.isDarkMode = false;
+                      // isDark = false;
+                      controller.update();
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(2.sp),
+                      child: Container(
+                        width: 60.w,
+                        height: 50.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(100.r)),
+                            color: PreferenceManager.getIsDarkMode() ?? false
+                                ? blackColor
+                                : whiteColor),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              Assets.imagesSunLight,
+                              // ignore: deprecated_member_use
+                              color: PreferenceManager.getIsDarkMode() ?? false
+                                  ? darkSunColor
+                                  : blackColor,
+                              width: 35.w,
+                              height: 35.w,
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      PreferenceManager.setIsDarkMod(true);
+                      Get.changeThemeMode(ThemeMode.dark);
+                      // controller.isDarkMode = true;
+                      // isDark = true;
+                      controller.update();
+                    },
                     child: Container(
                       width: 60.w,
                       height: 50.w,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.horizontal(
-                              left: Radius.circular(100.r)),
+                              right: Radius.circular(100.r)),
                           color: PreferenceManager.getIsDarkMode() ?? false
-                              ? blackColor
-                              : whiteColor),
+                              ? darkBackGroundColor
+                              : dividerColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
-                            Assets.imagesSunLight,
+                            Assets.imagesMoon,
                             // ignore: deprecated_member_use
                             color: PreferenceManager.getIsDarkMode() ?? false
-                                ? darkSunColor
-                                : blackColor,
+                                ? whiteColor
+                                : greyDarkColor,
                             width: 35.w,
                             height: 35.w,
                             fit: BoxFit.contain,
@@ -287,46 +382,13 @@ class SelectGameScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    PreferenceManager.setIsDarkMod(true);
-                    Get.changeThemeMode(ThemeMode.dark);
-                    // controller.isDarkMode = true;
-                    // isDark = true;
-                    controller.update();
-                  },
-                  child: Container(
-                    width: 60.w,
-                    height: 50.w,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.horizontal(
-                            right: Radius.circular(100.r)),
-                        color: PreferenceManager.getIsDarkMode() ?? false
-                            ? darkBackGroundColor
-                            : dividerColor),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          Assets.imagesMoon,
-                          // ignore: deprecated_member_use
-                          color: PreferenceManager.getIsDarkMode() ?? false
-                              ? whiteColor
-                              : greyDarkColor,
-                          width: 35.w,
-                          height: 35.w,
-                          fit: BoxFit.contain,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ).paddingSymmetric(
-              horizontal: MediaQuery.of(Get.context!).size.width * .05),
-        ],
+                ],
+              ),
+            ).paddingSymmetric(
+                horizontal: MediaQuery.of(Get.context!).size.width * .05),
+            40.h.H(),
+          ],
+        ),
       ),
     );
   }

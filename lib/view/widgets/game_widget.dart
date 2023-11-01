@@ -647,7 +647,7 @@ class AppDrawer extends StatelessWidget {
                     return exitApp(
                       context,
                       onTap: () {
-                        controller.logOut();
+                        controller.logOut(context);
                       },
                     );
                   },
@@ -660,14 +660,7 @@ class AppDrawer extends StatelessWidget {
               height: 70.w,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                      color: PreferenceManager.getIsDarkMode() ?? false
-                          ? blackColor
-                          : Colors.transparent,
-                      width: 2),
-                  color: PreferenceManager.getIsDarkMode() ?? false
-                      ? blackColor
-                      : dividerColor),
+                  color: Theme.of(context).bottomAppBarColor),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -687,18 +680,14 @@ class AppDrawer extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.horizontal(
                                 left: Radius.circular(100.r)),
-                            color: PreferenceManager.getIsDarkMode() ?? false
-                                ? blackColor
-                                : whiteColor),
+                            color: Theme.of(context).cardColor),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
                               Assets.imagesSunLight,
                               // ignore: deprecated_member_use
-                              color: PreferenceManager.getIsDarkMode() ?? false
-                                  ? darkSunColor
-                                  : blackColor,
+                              color: Theme.of(context).hintColor,
                               width: 35.w,
                               height: 35.w,
                               fit: BoxFit.contain,
@@ -722,9 +711,7 @@ class AppDrawer extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.horizontal(
                               right: Radius.circular(100.r)),
-                          color: PreferenceManager.getIsDarkMode() ?? false
-                              ? darkBackGroundColor
-                              : dividerColor),
+                          color: Theme.of(context).bottomAppBarColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

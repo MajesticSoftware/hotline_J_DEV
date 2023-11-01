@@ -7,9 +7,11 @@ import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/model/user_model.dart';
 import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../constant/app_strings.dart';
+import '../../../model/forgot_pass_model.dart';
 import '../../../model/response_item.dart';
 import '../../../network/auth_repo.dart';
 import '../../main/app_starting_screen.dart';
@@ -76,26 +78,29 @@ class LogInController extends GetxController {
           ],
         );
         log("credential : $credential");
+        log("credential :---- ${credential.authorizationCode}");
         socialLogin(
-            credential.email.toString(),
-            credential.userIdentifier.toString(),
-            credential.familyName ?? "",
-            credential.givenName ?? "",
-            credential.givenName ?? "Apple");
+            fullName: credential.givenName ?? "",
+            userEmail: credential.email ?? "",
+            authorizationCode: credential.authorizationCode,
+            socialId: credential.userIdentifier ?? "");
       } catch (e) {
         log('$e');
       }
     } else {}
   }
 
-  void socialLogin(String? userEmail, String socialId, String firstName,
-      String lastName, String fullName,
-      [bool isFacebook = false, bool isApple = false]) async {
+  void socialLogin(
+      {String userEmail = "",
+      String socialId = '',
+      String authorizationCode = '',
+      String fullName = ''}) async {
     // try {
     isLoading.value = true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText, status: false);
     result = await UserStartupRepo().socialUserLogin(
+      authorizationCode: authorizationCode,
       socialId: socialId,
     );
     isLoading.value = true;
@@ -106,16 +111,17 @@ class LogInController extends GetxController {
         if (user.data != null) {
           PreferenceManager.setUserData(user.data!);
           PreferenceManager.setIsLogin(true);
-
           Get.offAll(SelectGameScreen());
         }
-
         isLoading.value = false;
       }
     } else if (result.status) {
-      if (userEmail!.isNotEmpty) {
-        socialRegistration(firstName, lastName, userEmail, socialId, fullName,
-            isFacebook ? true : false, isApple ? true : false);
+      if (userEmail.isNotEmpty) {
+        socialRegistration(
+            authorizationCode: authorizationCode,
+            fullName: fullName,
+            socialId: socialId,
+            userEmail: userEmail);
       } else {
         isLoading.value = false;
         showAppSnackBar(result.message);
@@ -127,21 +133,19 @@ class LogInController extends GetxController {
     isLoading.value = false;
   }
 
-  void socialRegistration(String firstName, String lastName, String email,
-      String socialId, String fullName,
-      [bool isFacebook = false, bool isApple = false]) async {
+  void socialRegistration(
+      {String userEmail = '',
+      String socialId = '',
+      String authorizationCode = '',
+      String fullName = ''}) async {
     log('LOGIN SOCIAL');
 
     ResponseItem result =
         ResponseItem(data: null, message: errorText, status: false);
     result = await UserStartupRepo().socialUserRegistration(
-        password: '123456',
-        loginType: isFacebook
-            ? 'facebook'
-            : isApple
-                ? 'apple'
-                : 'google',
-        email: email,
+        authorizationCode: authorizationCode,
+        loginType: 'apple',
+        email: userEmail,
         socialId: socialId,
         fullName: fullName);
     isLoading.value = true;

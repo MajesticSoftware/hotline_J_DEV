@@ -75,6 +75,7 @@ class RegisterCon extends GetxController {
             if (response.data != null) {
               profileImage = response.data?.userProfilePic ?? "";
               PreferenceManager.setUserData(response.data!);
+              PreferenceManager.setIsLogin(true);
               PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())
                   : Get.offAll(SelectGameScreen());
@@ -85,6 +86,9 @@ class RegisterCon extends GetxController {
             isLoading.value = false;
             showAppSnackBar(result.message);
           }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(result.message);
         }
       }
     } catch (e) {

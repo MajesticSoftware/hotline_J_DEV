@@ -297,11 +297,12 @@ class DialogWidget {
   }
 }
 
-Widget exitApp(BuildContext context, {void Function()? onTap}) {
+Widget exitApp(BuildContext context,
+    {void Function()? onTap, String subtitle = '', String title = ''}) {
   return AlertDialog(
-    title: logOutText.appCommonText(
+    title: title.appCommonText(
         color: blackColor, weight: FontWeight.bold, size: 24),
-    content: logOutDialogText.appCommonText(
+    content: subtitle.appCommonText(
         color: blackColor.withOpacity(0.8), weight: FontWeight.w600, size: 16),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     actions: <Widget>[

@@ -88,7 +88,7 @@ class ForgotPassScreen extends StatelessWidget {
                               onTap: () {
                                 Get.to(LogInScreen());
                               },
-                              child: 'LogIn'.appCommonText(
+                              child: 'Login'.appCommonText(
                                   size: 20.h,
                                   weight: FontWeight.w700,
                                   color: whiteColor,

@@ -24,6 +24,7 @@ class UserStartupRepo {
       "user_password": password,
       "favourite_sport": favouriteSport,
       "user_name": fullName,
+      "login_type": 'email',
     };
     http.MultipartFile image;
 
@@ -40,11 +41,12 @@ class UserStartupRepo {
       String queryString = Uri(queryParameters: queryParameters).query;
       String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
       result = await BaseApiHelper.uploadFile(
-          requestUrl, profileImage: image, params);
+          requestUrl, profileImage: image, params, passAuthToken: false);
     } else {
       String queryString = Uri(queryParameters: queryParameters).query;
       String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
-      result = await BaseApiHelper.uploadFile(requestUrl, params);
+      result = await BaseApiHelper.uploadFile(requestUrl, params,
+          passAuthToken: false);
     }
 
     status = result.status;
@@ -125,6 +127,26 @@ class UserStartupRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> deleteAc() async {
+    bool status = false;
+    ResponseItem result;
+    dynamic data;
+
+    String message = "";
+
+    var queryParameters = {RequestParam.service: MethodNames.deleteAccount};
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.postRequest(requestUrl, {}, true);
+
+    status = result.status;
+
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   Future<ResponseItem> changePassword(
       String oldPassword, String newPassword) async {
     ResponseItem result;
@@ -157,10 +179,10 @@ class UserStartupRepo {
 
   Future<ResponseItem> socialUserRegistration({
     required String email,
-    required String password,
     required String socialId,
     required String loginType,
     required String fullName,
+    required String authorizationCode,
   }) async {
     bool status = false;
     ResponseItem result;
@@ -169,17 +191,18 @@ class UserStartupRepo {
     String message = "";
 
     Map<String, String> params = {
-      "email": email,
-      "login_type": loginType,
-      "password": password,
-      "full_name": fullName,
-      "social_id": socialId,
+      "user_email": email,
+      "login_type": 'apple',
+      "user_name": fullName,
+      "apple_social_id": socialId,
+      "authorizationCode": authorizationCode
     };
 
     var queryParameters = {RequestParam.service: MethodNames.userRegistration};
     String queryString = Uri(queryParameters: queryParameters).query;
-    String requestUrl = AppUrls.BASE_URL + queryString;
-    result = await BaseApiHelper.postRequest(requestUrl, params, false);
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.uploadFile(requestUrl, params,
+        passAuthToken: false);
 
     status = result.status;
 
@@ -191,6 +214,7 @@ class UserStartupRepo {
 
   Future<ResponseItem> socialUserLogin({
     required String socialId,
+    required String authorizationCode,
   }) async {
     bool status = false;
     ResponseItem result;
@@ -199,13 +223,14 @@ class UserStartupRepo {
     String message = "";
 
     Map<String, String> params = {
-      "social_id": socialId,
-      "authorization_code": ""
+      "apple_social_id": socialId,
+      "login_type": "apple",
+      "authorization_code": authorizationCode
     };
 
     var queryParameters = {RequestParam.service: MethodNames.checkSocialLogin};
     String queryString = Uri(queryParameters: queryParameters).query;
-    String requestUrl = AppUrls.BASE_URL + queryString;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, params, false);
 
     status = result.status;
@@ -273,6 +298,32 @@ class UserStartupRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> logOutApp() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+
+    String message = "";
+    String refreshToken;
+
+    var queryParameters = {
+      RequestParam.service: MethodNames.logout,
+    };
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+
+    result = await BaseApiHelper.postRequest(requestUrl, {}, true);
+    status = result.status;
+    data = result.data;
+    message = result.message;
+    refreshToken = result.refreshToken ?? '';
+
+    return ResponseItem(
+        data: data,
+        message: message,
+        status: status,
+        refreshToken: refreshToken);
+  }
 /*  Future<ResponseItem> updateDevicePushToken(
       String pushToken,
       ) async {

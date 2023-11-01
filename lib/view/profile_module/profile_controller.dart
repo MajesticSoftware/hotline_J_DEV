@@ -54,7 +54,10 @@ class ProfileController extends GetxController {
             if (response.data != null) {
               profileImage = response.data?.userProfilePic ?? "";
               userName = response.data?.userName ?? "";
-              PreferenceManager.setUserData(response.data!);
+              // PreferenceManager.setUserData(response.data!);
+              PreferenceManager.setUserProfile(
+                  response.data?.userProfilePic ?? "");
+              PreferenceManager.setUserName(response.data?.userName ?? "");
               Get.back();
               showAppSnackBar('${response.msg}', status: true);
             }

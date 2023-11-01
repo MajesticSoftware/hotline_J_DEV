@@ -44,7 +44,7 @@ class BaseApiHelper {
 
   static Future<ResponseItem> uploadFile(
       String requestUrl, Map<String, String> requestData,
-      {http.MultipartFile? profileImage}) async {
+      {http.MultipartFile? profileImage, bool passAuthToken = true}) async {
     var request = http.MultipartRequest(
       "POST",
       Uri.parse(requestUrl),
@@ -52,7 +52,7 @@ class BaseApiHelper {
 
     if (profileImage != null) request.files.add(profileImage);
 
-    request.headers.addAll(requestAuthHeader(true));
+    request.headers.addAll(requestAuthHeader(passAuthToken));
     request.fields.addAll(requestData);
 
     printData(tittle: "REQUEST", val: request.toString());
