@@ -87,7 +87,69 @@ class LogInScreen extends StatelessWidget {
                     ).paddingSymmetric(
                         horizontal: MediaQuery.of(context).size.height * .07),
                   ),
-                  100.h.H(),
+                  40.h.H(),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20.h,
+                        height: 20.h,
+                        child: Checkbox(
+                          hoverColor: whiteColor,
+                          checkColor: Theme.of(context).secondaryHeaderColor,
+                          activeColor: whiteColor,
+                          onChanged: (value) {
+                            ctrl.isCheck = !ctrl.isCheck;
+                            ctrl.update();
+                          },
+                          value: ctrl.isCheck,
+                        ),
+                      ),
+                      20.0.h.W(),
+                      Expanded(
+                          child: Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                            text: 'By logging, I agree to the ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02),
+                          ),
+                          TextSpan(
+                            text: 'privacy policy ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02,
+                                decoration: TextDecoration.underline),
+                          ),
+                          TextSpan(
+                            text: 'and ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02),
+                          ),
+                          TextSpan(
+                            text: 'terms of service.',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02,
+                                decoration: TextDecoration.underline),
+                          ),
+                        ]),
+                        maxLines: 2,
+                        // overflow: TextOverflow.ellipsis,
+                      )),
+                    ],
+                  ).paddingSymmetric(
+                      horizontal: MediaQuery.of(context).size.height * .07),
+                  20.h.H(),
                   CommonAppButton(
                     title: 'Login',
                     radius: 5,

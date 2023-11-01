@@ -33,6 +33,7 @@ class RegisterCon extends GetxController {
     imageFile = null;
   }
 
+  bool isCheck = false;
   RxBool isLoading = false.obs;
   bool isShowPass = true;
   String profileImage = '';
@@ -50,6 +51,8 @@ class RegisterCon extends GetxController {
         showAppSnackBar('Password must be at least six character');
       } else if (selectedSpot.isEmpty) {
         showAppSnackBar('Please selecte your favorite spots');
+      } else if (!isCheck) {
+        showAppSnackBar('Please accept term and conditions.');
       } else {
         ResponseItem result =
             ResponseItem(data: null, message: errorText.tr, status: false);

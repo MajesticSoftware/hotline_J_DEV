@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
@@ -102,8 +103,10 @@ extension AddText on String {
     return Text(
       this,
       style: defaultTextStyle(
-          color: color, size: size, weight: weight, decoration: decoration),
-      textAlign: TextAlign.center,
+        color: greyColor,
+        size: 18.h,
+      ),
+      textAlign: TextAlign.start,
     );
   }
 }

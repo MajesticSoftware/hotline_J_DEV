@@ -206,6 +206,68 @@ class RegisterScreen extends StatelessWidget {
                   ).paddingSymmetric(
                       horizontal: MediaQuery.of(context).size.height * .06),
                   50.h.H(),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20.h,
+                        height: 20.h,
+                        child: Checkbox(
+                          hoverColor: whiteColor,
+                          checkColor: Theme.of(context).secondaryHeaderColor,
+                          activeColor: whiteColor,
+                          onChanged: (value) {
+                            ctrl.isCheck = !ctrl.isCheck;
+                            ctrl.update();
+                          },
+                          value: ctrl.isCheck,
+                        ),
+                      ),
+                      20.0.h.W(),
+                      Expanded(
+                          child: Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                            text: 'By registering, I agree to the ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02),
+                          ),
+                          TextSpan(
+                            text: 'privacy policy ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02,
+                                decoration: TextDecoration.underline),
+                          ),
+                          TextSpan(
+                            text: 'and ',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02),
+                          ),
+                          TextSpan(
+                            text: 'terms of service.',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontWeight: FontWeight.w800,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .02,
+                                decoration: TextDecoration.underline),
+                          ),
+                        ]),
+                        maxLines: 2,
+                        // overflow: TextOverflow.ellipsis,
+                      )),
+                    ],
+                  ).paddingSymmetric(
+                      horizontal: MediaQuery.of(context).size.height * .06),
+                  20.h.H(),
                   CommonAppButton(
                     title: 'Register',
                     radius: 5,

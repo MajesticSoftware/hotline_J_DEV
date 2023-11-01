@@ -24,7 +24,8 @@ import '../../../theme/theme.dart';
 import '../../auth/log_in_module/log_in_screen.dart';
 import '../../change_password/change_pass_screen.dart';
 import '../../profile_module/profile_screen.dart';
-import '../../term_of_service/ter_service_screen.dart';
+import '../../term_of_service/privacy_policy.dart';
+import '../../term_of_service/term_service_screen.dart';
 import '../../widgets/common_dialog.dart';
 
 // ignore: must_be_immutable
@@ -252,6 +253,32 @@ class SelectGameScreen extends StatelessWidget {
             ),
             drawerCard(
               widget: Icon(
+                Icons.event_note_outlined,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Terms of Service',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                Get.to(const TermOfServiceScreen());
+              },
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.privacy_tip_outlined,
+                color: whiteColor,
+                size: MediaQuery.of(context).size.width * .05,
+              ),
+              title: 'Privacy Policy',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                Get.to(const PrivacyPolicyScreen());
+              },
+            ),
+            drawerCard(
+              widget: Icon(
                 Icons.logout,
                 color: whiteColor,
                 size: MediaQuery.of(context).size.width * .05,
@@ -267,31 +294,19 @@ class SelectGameScreen extends StatelessWidget {
                       title: logOutText,
                       subtitle: logOutDialogText,
                       onTap: () {
-                        if (PreferenceManager.getSkipLogin() == true) {
-                          PreferenceManager.clearData();
-                          PreferenceManager.setIsLogin(false);
-                          Get.offAll(LogInScreen());
-                          showAppSnackBar('Successfully logged out.',
-                              status: true);
-                        } else {
-                          controller.logOut(context);
-                        }
+                        // if (PreferenceManager.getSkipLogin() == true) {
+                        PreferenceManager.clearData();
+                        PreferenceManager.setIsLogin(false);
+                        Get.offAll(LogInScreen());
+                        showAppSnackBar('Successfully logged out.',
+                            status: true);
+                        // } else {
+                        //   controller.logOut(context);
+                        // }
                       },
                     );
                   },
                 );
-              },
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.logout,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
-              ),
-              title: 'Terms of Service',
-              context: context,
-              onTap: () {
-                Get.to(TermOfServiceScreen());
               },
             ),
             20.h.H(),

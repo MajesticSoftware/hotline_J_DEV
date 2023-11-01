@@ -19,6 +19,7 @@ import '../../sports/gameListing/game_listing_screen.dart';
 
 class LogInController extends GetxController {
   bool isShowPass = true;
+  bool isCheck = false;
   TextEditingController emailCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
   RxBool isLoading = false.obs;
@@ -31,6 +32,8 @@ class LogInController extends GetxController {
       showAppSnackBar('Please enter password');
     } else if (passCon.text.length < 6) {
       showAppSnackBar('Password must be at least six character');
+    } else if (!isCheck) {
+      showAppSnackBar('Please accept term and conditions.');
     } else {
       isLoading.value = true;
       ResponseItem result =
