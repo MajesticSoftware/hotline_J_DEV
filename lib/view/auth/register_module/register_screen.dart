@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,8 +10,11 @@ import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/app_progress.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/utils/layouts.dart';
+import 'package:hotlines/view/auth/log_in_module/log_in_controller.dart';
 import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:hotlines/view/auth/register_module/register_controller.dart';
+import 'package:hotlines/view/term_of_service/privacy_policy.dart';
+import 'package:hotlines/view/term_of_service/term_service_screen.dart';
 
 import '../../../extras/request_constants.dart';
 import '../../../generated/assets.dart';
@@ -34,13 +38,13 @@ class RegisterScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  60.h.H(),
+                  50.h.H(),
                   SvgPicture.asset(
                     Assets.imagesLogo,
                     fit: BoxFit.contain,
                   ).paddingSymmetric(
                       horizontal: MediaQuery.of(context).size.height * .13),
-                  20.h.H(),
+                  10.h.H(),
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -135,15 +139,13 @@ class RegisterScreen extends StatelessWidget {
                   CommonTextField(
                     controller: ctrl.nameCon,
                     hintText: 'Name',
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   25.w.H(),
                   CommonTextField(
                     controller: ctrl.emailCon,
                     hintText: 'Email',
                     keyboardType: TextInputType.emailAddress,
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   25.w.H(),
                   CommonTextField(
                     obscureText: ctrl.isShowPass,
@@ -162,8 +164,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     controller: ctrl.passCon,
                     hintText: 'Password',
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   25.w.H(),
                   DropdownButtonHideUnderline(
                     child: Container(
@@ -203,26 +204,28 @@ class RegisterScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   50.h.H(),
                   Row(
                     children: [
                       SizedBox(
-                        width: 20.h,
-                        height: 20.h,
-                        child: Checkbox(
-                          hoverColor: whiteColor,
-                          checkColor: Theme.of(context).secondaryHeaderColor,
-                          activeColor: whiteColor,
-                          onChanged: (value) {
-                            ctrl.isCheck = !ctrl.isCheck;
-                            ctrl.update();
-                          },
-                          value: ctrl.isCheck,
+                        width: 15.h,
+                        height: 15.h,
+                        child: Transform.scale(
+                          scale: 1.h,
+                          child: Checkbox(
+                            hoverColor: whiteColor,
+                            checkColor: Theme.of(context).secondaryHeaderColor,
+                            activeColor: whiteColor,
+                            onChanged: (value) {
+                              ctrl.isCheck = !ctrl.isCheck;
+                              ctrl.update();
+                            },
+                            value: ctrl.isCheck,
+                          ),
                         ),
                       ),
-                      20.0.h.W(),
+                      15.0.h.W(),
                       Expanded(
                           child: Text.rich(
                         TextSpan(children: [
@@ -242,6 +245,10 @@ class RegisterScreen extends StatelessWidget {
                                 fontSize:
                                     MediaQuery.of(context).size.height * .02,
                                 decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.to(const PrivacyPolicyScreen());
+                              },
                           ),
                           TextSpan(
                             text: 'and ',
@@ -252,21 +259,23 @@ class RegisterScreen extends StatelessWidget {
                                     MediaQuery.of(context).size.height * .02),
                           ),
                           TextSpan(
-                            text: 'terms of service.',
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontWeight: FontWeight.w800,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * .02,
-                                decoration: TextDecoration.underline),
-                          ),
+                              text: 'terms of service.',
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * .02,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Get.to(const TermOfServiceScreen());
+                                }),
                         ]),
-                        maxLines: 2,
+
                         // overflow: TextOverflow.ellipsis,
                       )),
                     ],
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   20.h.H(),
                   CommonAppButton(
                     title: 'Register',
@@ -275,8 +284,7 @@ class RegisterScreen extends StatelessWidget {
                       FocusScope.of(context).unfocus();
                       ctrl.registration();
                     },
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .06),
+                  ).paddingSymmetric(horizontal: 60.h),
                   10.h.H(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -298,7 +306,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  (Platform.isIOS ? 70 : 0).h.H(),
+                  (Platform.isIOS ? 50 : 0).h.H(),
                   Visibility(
                     visible: Platform.isIOS,
                     child: CommonAppButton(
@@ -314,9 +322,10 @@ class RegisterScreen extends StatelessWidget {
                               ? MediaQuery.of(context).size.height * .025
                               : MediaQuery.of(context).size.height * .04),
                       radius: 100.r,
-                      onTap: () {},
-                    ).paddingSymmetric(
-                        horizontal: MediaQuery.of(context).size.height * .06),
+                      onTap: () {
+                        Get.find<LogInController>().appleLogin();
+                      },
+                    ).paddingSymmetric(horizontal: 60.h),
                   ),
                   20.h.H(),
                   Row(
@@ -344,6 +353,7 @@ class RegisterScreen extends StatelessWidget {
                         size: MediaQuery.of(context).size.height * .02,
                         decoration: TextDecoration.underline),
                   ),
+                  50.h.H(),
                 ],
               ),
             );

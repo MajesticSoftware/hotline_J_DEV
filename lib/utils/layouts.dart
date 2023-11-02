@@ -124,9 +124,7 @@ Expanded buildExpandedBoxWidget(BuildContext context,
 // bool isDark = false;
 Container commonDivider(BuildContext context) {
   return Container(
-    height: PreferenceManager.getIsDarkMode() ?? true
-        ? MediaQuery.of(context).size.height * .00018
-        : MediaQuery.of(context).size.height * .001,
-    color: backGroundColor,
+    height: MediaQuery.of(context).size.height * .001,
+    color: Theme.of(context).indicatorColor,
   );
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
@@ -152,6 +153,17 @@ class GameListingController extends GetxController {
   set isSearch(bool value) {
     _isSearch = value;
     update();
+  }
+
+  accountLogOut() {
+    bool isDark = PreferenceManager.getIsDarkMode();
+    Get.changeThemeMode(
+        PreferenceManager.getIsDarkMode() ? ThemeMode.dark : ThemeMode.light);
+    Get.offAll(LogInScreen());
+    PreferenceManager.clearData();
+    PreferenceManager.setIsLogin(false);
+    PreferenceManager.setIsDarkMod(isDark);
+    showAppSnackBar('Successfully logged out.', status: true);
   }
 
   void logOut(BuildContext context) async {

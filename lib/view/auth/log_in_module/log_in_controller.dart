@@ -56,6 +56,7 @@ class LogInController extends GetxController {
               Get.offAll(SelectGameScreen());
               emailCon.clear();
               passCon.clear();
+              isCheck = false;
             }
           }
         } else {
@@ -98,42 +99,40 @@ class LogInController extends GetxController {
       String socialId = '',
       String authorizationCode = '',
       String fullName = ''}) async {
-    // try {
-    isLoading.value = true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText, status: false);
-    result = await UserStartupRepo().socialUserLogin(
-      authorizationCode: authorizationCode,
-      socialId: socialId,
-    );
-    isLoading.value = true;
-    log('result.status---${result.status}');
-    if (result.status == false) {
-      if (result.data != null) {
-        UserModel user = UserModel.fromJson(result.data.toJson());
-        if (user.data != null) {
-          PreferenceManager.setUserData(user.data!);
-          PreferenceManager.setIsLogin(true);
-          Get.offAll(SelectGameScreen());
+    try {
+      isLoading.value = true;
+      ResponseItem result =
+          ResponseItem(data: null, message: errorText.tr, status: false);
+      result = await UserStartupRepo().socialUserLogin(
+          socialId: socialId,
+          email: userEmail,
+          authorizationCode: authorizationCode,
+          userName: fullName);
+      try {
+        isLoading.value = true;
+        if (result.status) {
+          if (result.data != null) {
+            UserModel response = UserModel.fromJson(result.toJson());
+            if (response.data != null) {
+              PreferenceManager.setUserData(response.data!);
+              PreferenceManager.setIsLogin(true);
+              Get.offAll(SelectGameScreen());
+            }
+          }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(result.message);
         }
+      } catch (e) {
         isLoading.value = false;
+        showAppSnackBar(errorText);
       }
-    } else if (result.status) {
-      if (userEmail.isNotEmpty) {
-        socialRegistration(
-            authorizationCode: authorizationCode,
-            fullName: fullName,
-            socialId: socialId,
-            userEmail: userEmail);
-      } else {
-        isLoading.value = false;
-        showAppSnackBar(result.message);
-      }
-    } else {
       isLoading.value = false;
-      showAppSnackBar(result.message);
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(errorText);
     }
-    isLoading.value = false;
   }
 
   void socialRegistration(

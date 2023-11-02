@@ -48,7 +48,7 @@ class CommonTextField extends StatelessWidget {
         autofocus: false,
         style: GoogleFonts.nunitoSans(
           fontSize: MediaQuery.of(context).size.height * .018,
-          color: appColor,
+          color: Theme.of(context).secondaryHeaderColor,
           fontWeight: FontWeight.w700,
         ),
         inputFormatters: inputFormatters,
@@ -63,7 +63,7 @@ class CommonTextField extends StatelessWidget {
           hintStyle: hintTextStyle(
               size: hintTextSize ?? MediaQuery.of(context).size.height * .018,
               weight: FontWeight.w500,
-              color: appColor),
+              color: Theme.of(context).secondaryHeaderColor),
           suffixIcon: isPasswordField ?? false
               ? suffixIcon ?? const SizedBox()
               : const SizedBox(),

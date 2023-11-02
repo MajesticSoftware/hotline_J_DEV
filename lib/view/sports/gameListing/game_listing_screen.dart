@@ -118,20 +118,20 @@ class SelectGameScreen extends StatelessWidget {
                             .toString()
                             .appCommonText(
                                 color: yellowColor,
-                                align: TextAlign.start,
+                                align: TextAlign.center,
                                 weight: FontWeight.w700,
                                 size: MediaQuery.of(context).size.height * .02),
                         (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
                             .toString()
                             .appCommonText(
                                 color: yellowColor,
-                                align: TextAlign.start,
+                                align: TextAlign.center,
                                 weight: FontWeight.w700,
                                 size:
                                     MediaQuery.of(context).size.height * .022),
                       ],
                     ),
-                  ).paddingOnly(bottom: 20.h, top: 110.h)
+                  ).paddingOnly(bottom: 30.h, top: 90.h)
                 : const SizedBox(),
             Visibility(
               visible: (PreferenceManager.getIsLogin() ?? false) == false ||
@@ -181,7 +181,7 @@ class SelectGameScreen extends StatelessWidget {
               widget: Icon(
                 Icons.local_fire_department_outlined,
                 color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
+                size: 35.h,
               ),
               title: 'Gambling 101',
               context: context,
@@ -197,7 +197,7 @@ class SelectGameScreen extends StatelessWidget {
                 widget: Icon(
                   Icons.person_outline_rounded,
                   color: whiteColor,
-                  size: MediaQuery.of(context).size.width * .06,
+                  size: 35.h,
                 ),
                 title: 'Profile',
                 context: context,
@@ -213,7 +213,7 @@ class SelectGameScreen extends StatelessWidget {
                 widget: Icon(
                   Icons.lock_reset_rounded,
                   color: whiteColor,
-                  size: MediaQuery.of(context).size.width * .06,
+                  size: 35.h,
                 ),
                 title: 'Reset Password',
                 context: context,
@@ -227,9 +227,9 @@ class SelectGameScreen extends StatelessWidget {
               visible: (PreferenceManager.getIsLogin() ?? false) == true,
               child: drawerCard(
                 widget: Icon(
-                  Icons.delete,
+                  Icons.delete_outline,
                   color: whiteColor,
-                  size: MediaQuery.of(context).size.width * .05,
+                  size: 32.h,
                 ),
                 title: 'Delete Account',
                 context: context,
@@ -255,7 +255,7 @@ class SelectGameScreen extends StatelessWidget {
               widget: Icon(
                 Icons.event_note_outlined,
                 color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
+                size: 30.h,
               ),
               title: 'Terms of Service',
               context: context,
@@ -268,7 +268,7 @@ class SelectGameScreen extends StatelessWidget {
               widget: Icon(
                 Icons.privacy_tip_outlined,
                 color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
+                size: 30.h,
               ),
               title: 'Privacy Policy',
               context: context,
@@ -281,7 +281,7 @@ class SelectGameScreen extends StatelessWidget {
               widget: Icon(
                 Icons.logout,
                 color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
+                size: 30.h,
               ),
               title: 'Logout',
               context: context,
@@ -294,15 +294,7 @@ class SelectGameScreen extends StatelessWidget {
                       title: logOutText,
                       subtitle: logOutDialogText,
                       onTap: () {
-                        // if (PreferenceManager.getSkipLogin() == true) {
-                        PreferenceManager.clearData();
-                        PreferenceManager.setIsLogin(false);
-                        Get.offAll(LogInScreen());
-                        showAppSnackBar('Successfully logged out.',
-                            status: true);
-                        // } else {
-                        //   controller.logOut(context);
-                        // }
+                        controller.accountLogOut();
                       },
                     );
                   },
@@ -311,8 +303,8 @@ class SelectGameScreen extends StatelessWidget {
             ),
             20.h.H(),
             Container(
-              width: 160.w,
-              height: 70.w,
+              width: 110.h,
+              height: 50.h,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100.r),
                   border: Border.all(
@@ -337,8 +329,8 @@ class SelectGameScreen extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.all(2.sp),
                       child: Container(
-                        width: 60.w,
-                        height: 50.w,
+                        width: 45.h,
+                        height: 39.h,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.horizontal(
                                 left: Radius.circular(100.r)),
@@ -354,8 +346,8 @@ class SelectGameScreen extends StatelessWidget {
                               color: PreferenceManager.getIsDarkMode() ?? false
                                   ? darkSunColor
                                   : blackColor,
-                              width: 35.w,
-                              height: 35.w,
+                              width: 25.h,
+                              height: 25.h,
                               fit: BoxFit.contain,
                             ),
                           ],
@@ -372,8 +364,8 @@ class SelectGameScreen extends StatelessWidget {
                       controller.update();
                     },
                     child: Container(
-                      width: 60.w,
-                      height: 50.w,
+                      width: 45.h,
+                      height: 39.h,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.horizontal(
                               right: Radius.circular(100.r)),
@@ -389,8 +381,8 @@ class SelectGameScreen extends StatelessWidget {
                             color: PreferenceManager.getIsDarkMode() ?? false
                                 ? whiteColor
                                 : greyDarkColor,
-                            width: 35.w,
-                            height: 35.w,
+                            width: 25.h,
+                            height: 25.h,
                             fit: BoxFit.contain,
                           ),
                         ],

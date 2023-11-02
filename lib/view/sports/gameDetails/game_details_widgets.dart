@@ -835,7 +835,7 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           (index) => Container(
             width: 1,
             height: MediaQuery.of(context).size.height * .043,
-            color: backGroundColor,
+            color: Theme.of(context).indicatorColor,
           ),
         ),
       ),
@@ -925,7 +925,7 @@ Row quarterBacksData(
           (index) => Container(
             width: 1,
             height: MediaQuery.of(context).size.height * .043,
-            color: backGroundColor,
+            color: Theme.of(context).indicatorColor,
           ),
         ),
       ),
@@ -3868,13 +3868,13 @@ headerWidget(BuildContext context, SportEvents gameDetails,
             margin: EdgeInsets.zero,
             // height: MediaQuery.of(context).size.height * .175,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                    MediaQuery.of(context).size.width * .01),
-                image: DecorationImage(
-                    image: AssetImage(PreferenceManager.getIsDarkMode() ?? true
-                        ? Assets.imagesBackDark
-                        : Assets.imagesBackLight),
-                    fit: BoxFit.fill)),
+              borderRadius: BorderRadius.circular(
+                  MediaQuery.of(context).size.width * .01),
+              gradient: LinearGradient(colors: [
+                Theme.of(context).shadowColor,
+                Theme.of(context).secondaryHeaderColor,
+              ]),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

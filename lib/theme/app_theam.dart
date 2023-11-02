@@ -11,6 +11,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
       secondaryHeaderColor: appColor,
       scaffoldBackgroundColor: backGroundColor,
+      shadowColor: filterColor,
       primaryColor: boxColor,
       canvasColor: whiteColor,
       focusColor: dividerColor,
@@ -18,6 +19,7 @@ class AppTheme {
       cardColor: whiteColor,
       splashColor: primaryColor,
       disabledColor: appColor,
+      indicatorColor: dividerColor,
       hintColor: blackColor,
       backgroundColor: appColor,
       highlightColor: blackColor,
@@ -127,6 +129,7 @@ class AppTheme {
       ));
 
   static ThemeData darkTheme = ThemeData(
+      shadowColor: darkBackGroundColor,
       secondaryHeaderColor: darkBackGroundColor,
       focusColor: blackColor,
       scaffoldBackgroundColor: darkScaffoldColor,
@@ -136,6 +139,7 @@ class AppTheme {
       cardColor: blackColor,
       backgroundColor: blackColor,
       hintColor: darkSunColor,
+      indicatorColor: greyColor,
       disabledColor: whiteColor,
       canvasColor: darkBackGroundColor,
       highlightColor: whiteColor,

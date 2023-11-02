@@ -12,6 +12,18 @@ class TermOfServiceScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backGroundColor,
       appBar: AppBar(
+        centerTitle: true,
+        leading: InkWell(
+          highlightColor: Colors.transparent,
+          onTap: () {
+            Get.back();
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            size: 30.h,
+            color: whiteColor,
+          ),
+        ),
         backgroundColor: Theme.of(context).secondaryHeaderColor,
         title: 'Term of service'
             .appCommonText(color: whiteColor, weight: FontWeight.w700),

@@ -215,6 +215,8 @@ class UserStartupRepo {
   Future<ResponseItem> socialUserLogin({
     required String socialId,
     required String authorizationCode,
+    required String email,
+    required String userName,
   }) async {
     bool status = false;
     ResponseItem result;
@@ -225,7 +227,9 @@ class UserStartupRepo {
     Map<String, String> params = {
       "apple_social_id": socialId,
       "login_type": "apple",
-      "authorization_code": authorizationCode
+      "authorization_code": authorizationCode,
+      "user_email": email,
+      "user_name": userName
     };
 
     var queryParameters = {RequestParam.service: MethodNames.checkSocialLogin};

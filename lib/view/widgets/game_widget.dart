@@ -75,10 +75,7 @@ class GameWidget extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               color: Theme.of(context).canvasColor,
-              border: Border.all(
-                  color: PreferenceManager.getIsDarkMode() ?? false
-                      ? greyColor
-                      : dividerColor),
+              border: Border.all(color: Theme.of(context).indicatorColor),
               borderRadius: BorderRadius.circular(
                   MediaQuery.of(context).size.width * .02)),
           child: Row(
@@ -485,7 +482,7 @@ class GameTabCard extends StatelessWidget {
   }
 }
 
-class AppDrawer extends StatelessWidget {
+/*class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
@@ -738,7 +735,7 @@ class AppDrawer extends StatelessWidget {
       }),
     );
   }
-}
+}*/
 
 Widget drawerCard(
     {String title = '',
@@ -751,7 +748,7 @@ Widget drawerCard(
     child: Row(
       children: [
         CircleAvatar(
-          radius: 34.r,
+          radius: 28.h,
           backgroundColor: whiteColor.withOpacity(.2),
           child: icon != null
               ? SvgPicture.asset(
@@ -767,7 +764,7 @@ Widget drawerCard(
             color: whiteColor,
             align: TextAlign.start,
             weight: FontWeight.w700,
-            size: MediaQuery.of(context).size.height * .024),
+            size: 22.h),
       ],
     ).paddingOnly(bottom: MediaQuery.of(Get.context!).size.width * .04),
   ).paddingSymmetric(horizontal: MediaQuery.of(Get.context!).size.width * .05);
@@ -1363,7 +1360,11 @@ PreferredSize commonAppBar(
                       onTap: () {
                         scaffoldKey.currentState!.openDrawer();
                       },
-                      child: const Icon(Icons.menu, color: yellowColor)),
+                      child: Icon(
+                        Icons.menu,
+                        color: yellowColor,
+                        size: 35.h,
+                      )),
                   Expanded(
                     child: SvgPicture.asset(Assets.imagesLogo,
                         height: 34.w, fit: BoxFit.contain),

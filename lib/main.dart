@@ -39,22 +39,18 @@ class MyApp extends StatelessWidget {
       builder: (_, child) {
         return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: PreferenceManager.getIsDarkMode() ?? false
-                ? ThemeMode.dark
-                : ThemeMode.light,
+            themeMode: ThemeMode.light,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             initialBinding: BaseBindings(),
-            home: PreferenceManager.getSkipLogin() == true
-                ? PreferenceManager.getIsFirstLoaded() == null
+            home: PreferenceManager.getSkipLogin() ?? false
+                ? (PreferenceManager.getIsFirstLoaded() == null ||
+                        !PreferenceManager.getIsFirstLoaded())
                     ? const AppStartScreen()
                     : SelectGameScreen()
-                : PreferenceManager.getIsLogin() == null ||
-                        PreferenceManager.getIsLogin() == false
-                    ? LogInScreen()
-                    : PreferenceManager.getIsFirstLoaded() == null
-                        ? const AppStartScreen()
-                        : SelectGameScreen());
+                : PreferenceManager.getIsLogin() ?? false
+                    ? SelectGameScreen()
+                    : LogInScreen());
       },
     );
   }

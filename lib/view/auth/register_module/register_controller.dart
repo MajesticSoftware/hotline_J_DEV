@@ -30,6 +30,7 @@ class RegisterCon extends GetxController {
     emailCon.clear();
     nameCon.clear();
     passCon.clear();
+    isCheck = false;
     imageFile = null;
   }
 

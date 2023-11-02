@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/theme/app_color.dart';
 import 'package:hotlines/utils/extension.dart';
+
+import '../../generated/assets.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({Key? key}) : super(key: key);
@@ -12,9 +15,21 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backGroundColor,
       appBar: AppBar(
+        leading: InkWell(
+          highlightColor: Colors.transparent,
+          onTap: () {
+            Get.back();
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            size: 30.h,
+            color: whiteColor,
+          ),
+        ),
         backgroundColor: Theme.of(context).secondaryHeaderColor,
-        title: 'Term of service'
+        title: 'Privacy Policy'
             .appCommonText(color: whiteColor, weight: FontWeight.w700),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(

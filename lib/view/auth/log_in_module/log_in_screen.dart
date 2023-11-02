@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,8 @@ import '../../../theme/app_color.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/layouts.dart';
 import '../../main/app_starting_screen.dart';
+import '../../term_of_service/privacy_policy.dart';
+import '../../term_of_service/term_service_screen.dart';
 import '../../widgets/common_widget.dart';
 import '../../widgets/text_field_widget.dart';
 import '../forgot_pass/forgot_pass_screen.dart';
@@ -36,7 +39,7 @@ class LogInScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  150.h.H(),
+                  100.h.H(),
                   SvgPicture.asset(
                     Assets.imagesAppLogo,
                     fit: BoxFit.contain,
@@ -47,8 +50,7 @@ class LogInScreen extends StatelessWidget {
                     controller: ctrl.emailCon,
                     hintText: 'Email',
                     keyboardType: TextInputType.emailAddress,
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .07),
+                  ).paddingSymmetric(horizontal: 70.h),
                   25.h.H(),
                   CommonTextField(
                     obscureText: ctrl.isShowPass,
@@ -67,8 +69,7 @@ class LogInScreen extends StatelessWidget {
                     ),
                     controller: ctrl.passCon,
                     hintText: 'Password',
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .07),
+                  ).paddingSymmetric(horizontal: 70.h),
                   10.h.H(),
                   InkWell(
                     onTap: () {
@@ -84,27 +85,29 @@ class LogInScreen extends StatelessWidget {
                           color: whiteColor,
                           weight: FontWeight.w700,
                           size: 18.h),
-                    ).paddingSymmetric(
-                        horizontal: MediaQuery.of(context).size.height * .07),
+                    ).paddingSymmetric(horizontal: 70.h),
                   ),
                   40.h.H(),
                   Row(
                     children: [
                       SizedBox(
-                        width: 20.h,
-                        height: 20.h,
-                        child: Checkbox(
-                          hoverColor: whiteColor,
-                          checkColor: Theme.of(context).secondaryHeaderColor,
-                          activeColor: whiteColor,
-                          onChanged: (value) {
-                            ctrl.isCheck = !ctrl.isCheck;
-                            ctrl.update();
-                          },
-                          value: ctrl.isCheck,
+                        width: 15.h,
+                        height: 15.h,
+                        child: Transform.scale(
+                          scale: 1.h,
+                          child: Checkbox(
+                            hoverColor: whiteColor,
+                            checkColor: Theme.of(context).secondaryHeaderColor,
+                            activeColor: whiteColor,
+                            onChanged: (value) {
+                              ctrl.isCheck = !ctrl.isCheck;
+                              ctrl.update();
+                            },
+                            value: ctrl.isCheck,
+                          ),
                         ),
                       ),
-                      20.0.h.W(),
+                      15.0.h.W(),
                       Expanded(
                           child: Text.rich(
                         TextSpan(children: [
@@ -124,6 +127,10 @@ class LogInScreen extends StatelessWidget {
                                 fontSize:
                                     MediaQuery.of(context).size.height * .02,
                                 decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.to(const PrivacyPolicyScreen());
+                              },
                           ),
                           TextSpan(
                             text: 'and ',
@@ -134,21 +141,23 @@ class LogInScreen extends StatelessWidget {
                                     MediaQuery.of(context).size.height * .02),
                           ),
                           TextSpan(
-                            text: 'terms of service.',
-                            style: TextStyle(
-                                color: whiteColor,
-                                fontWeight: FontWeight.w800,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * .02,
-                                decoration: TextDecoration.underline),
-                          ),
+                              text: 'terms of service.',
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * .02,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Get.to(const TermOfServiceScreen());
+                                }),
                         ]),
-                        maxLines: 2,
+
                         // overflow: TextOverflow.ellipsis,
                       )),
                     ],
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .07),
+                  ).paddingSymmetric(horizontal: 70.h),
                   20.h.H(),
                   CommonAppButton(
                     title: 'Login',
@@ -157,8 +166,7 @@ class LogInScreen extends StatelessWidget {
                       FocusScope.of(context).unfocus();
                       ctrl.login();
                     },
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .07),
+                  ).paddingSymmetric(horizontal: 70.h),
                   10.h.H(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -199,8 +207,7 @@ class LogInScreen extends StatelessWidget {
                       onTap: () {
                         ctrl.appleLogin();
                       },
-                    ).paddingSymmetric(
-                        horizontal: MediaQuery.of(context).size.height * .07),
+                    ).paddingSymmetric(horizontal: 70.h),
                   ),
                   40.h.H(),
                   Row(
@@ -231,6 +238,7 @@ class LogInScreen extends StatelessWidget {
                         size: MediaQuery.of(context).size.height * .02,
                         decoration: TextDecoration.underline),
                   ),
+                  50.h.H(),
                 ],
               ),
             );

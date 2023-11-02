@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:hotlines/extras/constants.dart';
 import 'package:hotlines/theme/app_color.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/profile_module/profile_controller.dart';
@@ -60,9 +61,8 @@ class ProfileScreen extends StatelessWidget {
                   SvgPicture.asset(
                     Assets.imagesLogo,
                     fit: BoxFit.contain,
-                  ).paddingSymmetric(
-                      horizontal: MediaQuery.of(context).size.height * .13),
-                  20.h.H(),
+                  ).paddingSymmetric(horizontal: 130.h),
+                  (mobileView.size.shortestSide < 600 ? 20 : 50).h.H(),
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
