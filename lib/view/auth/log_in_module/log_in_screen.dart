@@ -87,8 +87,8 @@ class LogInScreen extends StatelessWidget {
                           size: 18.h),
                     ).paddingSymmetric(horizontal: 70.h),
                   ),
-                  40.h.H(),
-                  Row(
+                  60.h.H(),
+                  /*    Row(
                     children: [
                       SizedBox(
                         width: 15.h,
@@ -158,7 +158,7 @@ class LogInScreen extends StatelessWidget {
                       )),
                     ],
                   ).paddingSymmetric(horizontal: 70.h),
-                  20.h.H(),
+                  20.h.H(),*/
                   CommonAppButton(
                     title: 'Login',
                     radius: 5,

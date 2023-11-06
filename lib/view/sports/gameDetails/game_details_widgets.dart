@@ -1010,7 +1010,7 @@ class HeaderTab extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: InkWell(
                     highlightColor: Colors.transparent,
                     onTap: awayOnTap,
@@ -1058,16 +1058,19 @@ class HeaderTab extends StatelessWidget {
                   color: backGroundColor,
                 ),*/
                 Expanded(
-                  flex: 1,
-                  child: title.appCommonText(
-                    weight: FontWeight.bold,
-                    align: TextAlign.center,
-                    size: MediaQuery.of(context).size.height * .018,
-                    color: Theme.of(context).highlightColor,
+                  flex: 2,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: title.appCommonText(
+                      weight: FontWeight.bold,
+                      align: TextAlign.center,
+                      size: MediaQuery.of(context).size.height * .018,
+                      color: Theme.of(context).highlightColor,
+                    ),
                   ),
                 ),
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: InkWell(
                     highlightColor: Colors.transparent,
                     onTap: homeOnTap,

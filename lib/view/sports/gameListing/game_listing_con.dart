@@ -156,9 +156,10 @@ class GameListingController extends GetxController {
   }
 
   accountLogOut() {
-    bool isDark = PreferenceManager.getIsDarkMode();
-    Get.changeThemeMode(
-        PreferenceManager.getIsDarkMode() ? ThemeMode.dark : ThemeMode.light);
+    bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+    Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+        ? ThemeMode.dark
+        : ThemeMode.light);
     Get.offAll(LogInScreen());
     PreferenceManager.clearData();
     PreferenceManager.setIsLogin(false);
@@ -176,9 +177,14 @@ class GameListingController extends GetxController {
         log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
             ForgotPasswordResModel.fromJson(result.toJson());
+        bool isDark = (PreferenceManager.getIsDarkMode() ?? false);
+        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+            ? ThemeMode.dark
+            : ThemeMode.light);
+        Get.offAll(LogInScreen());
         PreferenceManager.clearData();
         PreferenceManager.setIsLogin(false);
-        Get.offAll(LogInScreen());
+        PreferenceManager.setIsDarkMod(isDark);
         showAppSnackBar(response.msg, status: true);
         isLoading.value = false;
       } else {

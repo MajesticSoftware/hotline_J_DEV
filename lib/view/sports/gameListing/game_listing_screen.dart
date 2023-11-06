@@ -243,6 +243,8 @@ class SelectGameScreen extends StatelessWidget {
                         title: deleteText,
                         subtitle: deleteDialogText,
                         onTap: () {
+                          Navigator.of(context).pop(false);
+                          scaffoldKey.currentState!.closeDrawer();
                           controller.deleteAc(context);
                         },
                       );

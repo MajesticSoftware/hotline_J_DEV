@@ -32,9 +32,10 @@ class LogInController extends GetxController {
       showAppSnackBar('Please enter password');
     } else if (passCon.text.length < 6) {
       showAppSnackBar('Password must be at least six character');
-    } else if (!isCheck) {
+    } /*else if (!isCheck) {
       showAppSnackBar('Please accept term and conditions.');
-    } else {
+    }*/
+    else {
       isLoading.value = true;
       ResponseItem result =
           ResponseItem(data: null, message: errorText.tr, status: false);
@@ -116,7 +117,9 @@ class LogInController extends GetxController {
             if (response.data != null) {
               PreferenceManager.setUserData(response.data!);
               PreferenceManager.setIsLogin(true);
-              Get.offAll(SelectGameScreen());
+              PreferenceManager.getIsFirstLoaded() == null
+                  ? Get.offAll(const AppStartScreen())
+                  : Get.offAll(SelectGameScreen());
             }
           }
         } else {
