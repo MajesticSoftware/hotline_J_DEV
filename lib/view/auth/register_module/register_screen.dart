@@ -38,7 +38,7 @@ class RegisterScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  50.h.H(),
+                  70.h.H(),
                   SvgPicture.asset(
                     Assets.imagesLogo,
                     fit: BoxFit.contain,
@@ -176,14 +176,16 @@ class RegisterScreen extends StatelessWidget {
                         dropdownColor: whiteColor,
                         isExpanded: true,
                         borderRadius: BorderRadius.circular(5),
-                        iconDisabledColor: appColor,
-                        iconEnabledColor: appColor,
+                        iconDisabledColor:
+                            Theme.of(context).secondaryHeaderColor,
+                        iconEnabledColor:
+                            Theme.of(context).secondaryHeaderColor,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         hint: (ctrl.selectedSpot.isEmpty
                                 ? 'Favorite Spots'
                                 : ctrl.selectedSpot)
                             .appCommonText(
-                                color: appColor,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 weight: ctrl.selectedSpot.isEmpty
                                     ? FontWeight.w500
                                     : FontWeight.w700,
@@ -193,7 +195,7 @@ class RegisterScreen extends StatelessWidget {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: value.appCommonText(
-                                color: appColor,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 size: MediaQuery.of(context).size.height * .018,
                                 weight: FontWeight.w800),
                           );
@@ -209,10 +211,10 @@ class RegisterScreen extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 15.h,
-                        height: 15.h,
+                        width: 20.h,
+                        height: 20.h,
                         child: Transform.scale(
-                          scale: 1.h,
+                          scale: 1.3.h,
                           child: Checkbox(
                             hoverColor: whiteColor,
                             checkColor: Theme.of(context).secondaryHeaderColor,
@@ -306,27 +308,26 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  (Platform.isIOS ? 50 : 0).h.H(),
-                  Visibility(
-                    visible: Platform.isIOS,
-                    child: CommonAppButton(
-                      title: Platform.isIOS
-                          ? ' Sign in with Apple'
-                          : 'Sign in with Google',
-                      textColor: whiteColor,
-                      buttonColor: Colors.black,
-                      icon: Icon(
-                          Platform.isIOS ? Icons.apple : Icons.g_mobiledata,
-                          color: whiteColor,
-                          size: Platform.isIOS
-                              ? MediaQuery.of(context).size.height * .025
-                              : MediaQuery.of(context).size.height * .04),
-                      radius: 100.r,
-                      onTap: () {
-                        Get.find<LogInController>().appleLogin();
-                      },
-                    ).paddingSymmetric(horizontal: 60.h),
-                  ),
+                  50.h.H(),
+                  CommonAppButton(
+                    title: Platform.isIOS
+                        ? ' Sign in with Apple'
+                        : '  Sign in with Google',
+                    textColor: whiteColor,
+                    buttonColor: Colors.black,
+                    icon: Platform.isIOS
+                        ? Icon(Icons.apple,
+                            color: whiteColor,
+                            size: MediaQuery.of(context).size.height * .025)
+                        : SvgPicture.asset(Assets.imagesGoogleIcon,
+                            color: whiteColor),
+                    radius: 100.r,
+                    onTap: () {
+                      Platform.isIOS
+                          ? Get.find<LogInController>().appleLogin()
+                          : Get.find<LogInController>().googleSignIn();
+                    },
+                  ).paddingSymmetric(horizontal: 60.h),
                   20.h.H(),
                   Row(
                     children: [

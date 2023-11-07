@@ -28,6 +28,7 @@ class Assets {
   static const String imagesFanduel = 'assets/images/Fanduel.jpeg';
   static const String imagesFire = 'assets/images/fire.png';
   static const String imagesGOLF = 'assets/images/GOLF.png';
+  static const String imagesGoogleIcon = 'assets/images/google_icon.svg';
   static const String imagesHeart = 'assets/images/heart.png';
   static const String imagesLightModeBack = 'assets/images/lightModeBack.svg';
   static const String imagesLogo = 'assets/images/logo.svg';

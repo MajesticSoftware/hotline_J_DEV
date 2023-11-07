@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/model/user_model.dart';
 import 'package:hotlines/theme/helper.dart';
@@ -87,6 +88,7 @@ class LogInController extends GetxController {
         socialLogin(
             fullName: credential.givenName ?? "",
             userEmail: credential.email ?? "",
+            loginType: 'apple',
             authorizationCode: credential.authorizationCode,
             socialId: credential.userIdentifier ?? "");
       } catch (e) {
@@ -95,9 +97,33 @@ class LogInController extends GetxController {
     } else {}
   }
 
+  void googleSignIn() async {
+    try {
+      GoogleSignIn signIn = GoogleSignIn(
+        scopes: <String>[
+          'email',
+        ],
+      );
+      signIn.signIn().then((detail) {
+        var name = detail!.displayName!.split(" ");
+        socialLogin(
+            userEmail: detail.email,
+            loginType: 'google',
+            socialId: detail.id,
+            fullName: detail.displayName ?? "",
+            authorizationCode: detail.serverAuthCode!);
+        log('details--${detail.id}---$name---${detail.email}');
+      });
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(e.toString());
+    }
+  }
+
   void socialLogin(
       {String userEmail = "",
       String socialId = '',
+      String loginType = '',
       String authorizationCode = '',
       String fullName = ''}) async {
     try {
@@ -105,6 +131,7 @@ class LogInController extends GetxController {
       ResponseItem result =
           ResponseItem(data: null, message: errorText.tr, status: false);
       result = await UserStartupRepo().socialUserLogin(
+          loginType: loginType,
           socialId: socialId,
           email: userEmail,
           authorizationCode: authorizationCode,

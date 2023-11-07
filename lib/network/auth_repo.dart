@@ -217,6 +217,7 @@ class UserStartupRepo {
     required String authorizationCode,
     required String email,
     required String userName,
+    required String loginType,
   }) async {
     bool status = false;
     ResponseItem result;
@@ -224,13 +225,21 @@ class UserStartupRepo {
 
     String message = "";
 
-    Map<String, String> params = {
-      "apple_social_id": socialId,
-      "login_type": "apple",
-      "authorization_code": authorizationCode,
-      "user_email": email,
-      "user_name": userName
-    };
+    Map<String, String> params = loginType == 'apple'
+        ? {
+            "apple_social_id": socialId,
+            "login_type": loginType,
+            "authorization_code": authorizationCode,
+            "user_email": email,
+            "user_name": userName
+          }
+        : {
+            "google_social_id": socialId,
+            "login_type": loginType,
+            "authorization_code": authorizationCode,
+            "user_email": email,
+            "user_name": userName
+          };
 
     var queryParameters = {RequestParam.service: MethodNames.checkSocialLogin};
     String queryString = Uri(queryParameters: queryParameters).query;

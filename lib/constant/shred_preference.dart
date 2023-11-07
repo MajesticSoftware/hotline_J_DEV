@@ -136,6 +136,14 @@ class PreferenceManager {
     return getStorage.read("skipLogin");
   }
 
+  static Future setLoginType(String loginType) async {
+    await getStorage.write("loginType", loginType);
+  }
+
+  static getLoginType() {
+    return getStorage.read("loginType");
+  }
+
   static setUserData(UserData response) {
     setUserName(response.userName ?? "");
     setUserEmail(response.userEmail ?? "");
@@ -143,6 +151,7 @@ class PreferenceManager {
     setUserToken(response.userToken ?? "");
     setUserProfile(response.userProfilePic ?? "");
     setFavoriteSport(response.favouriteSport ?? "");
+    setLoginType(response.loginType ?? "");
     setDeviceType(Platform.isIOS ? "iOS" : "android");
     setUserId(response.userId ?? 0);
     setIsLogin(true);

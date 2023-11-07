@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "766321432388",
+    "project_id": "hotlines-app",
+    "storage_bucket": "hotlines-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766321432388:android:51297c1f0a081813ce2911",
+        "android_client_info": {
+          "package_name": "com.fa.app.hotlines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766321432388-nrsppsc490bjo416ndnnn683g85lqagf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fa.app.hotlines",
+            "certificate_hash": "589080371bfd2e682e5ddaa26a84a3fd3bc01c6d"
+          }
+        },
+        {
+          "client_id": "766321432388-8cnj77cfa57o0mdv5cvqjdrtt39n5rsn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqsJEAE_J9NyzQKm2FTKIieUIyWJxDuzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766321432388-8cnj77cfa57o0mdv5cvqjdrtt39n5rsn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

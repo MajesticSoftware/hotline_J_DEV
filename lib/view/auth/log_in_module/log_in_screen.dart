@@ -39,7 +39,7 @@ class LogInScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  100.h.H(),
+                  150.h.H(),
                   SvgPicture.asset(
                     Assets.imagesAppLogo,
                     fit: BoxFit.contain,
@@ -90,11 +90,11 @@ class LogInScreen extends StatelessWidget {
                   60.h.H(),
                   /*    Row(
                     children: [
-                      SizedBox(
-                        width: 15.h,
-                        height: 15.h,
+                       SizedBox(
+                        width: 20.h,
+                        height: 20.h,
                         child: Transform.scale(
-                          scale: 1.h,
+                          scale: 1.3.h,
                           child: Checkbox(
                             hoverColor: whiteColor,
                             checkColor: Theme.of(context).secondaryHeaderColor,
@@ -188,27 +188,24 @@ class LogInScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  (Platform.isIOS ? 70 : 0).h.H(),
-                  Visibility(
-                    visible: Platform.isIOS,
-                    child: CommonAppButton(
-                      title: Platform.isIOS
-                          ? ' Sign in with Apple'
-                          : 'Sign in with Google',
-                      textColor: whiteColor,
-                      buttonColor: Colors.black,
-                      icon: Icon(
-                          Platform.isIOS ? Icons.apple : Icons.g_mobiledata,
-                          color: whiteColor,
-                          size: Platform.isIOS
-                              ? MediaQuery.of(context).size.height * .025
-                              : MediaQuery.of(context).size.height * .04),
-                      radius: 100.r,
-                      onTap: () {
-                        ctrl.appleLogin();
-                      },
-                    ).paddingSymmetric(horizontal: 70.h),
-                  ),
+                  70.h.H(),
+                  CommonAppButton(
+                    title: Platform.isIOS
+                        ? ' Sign in with Apple'
+                        : '  Sign in with Google',
+                    textColor: whiteColor,
+                    buttonColor: Colors.black,
+                    icon: Platform.isIOS
+                        ? Icon(Icons.apple,
+                            color: whiteColor,
+                            size: MediaQuery.of(context).size.height * .025)
+                        : SvgPicture.asset(Assets.imagesGoogleIcon,
+                            color: whiteColor),
+                    radius: 100.r,
+                    onTap: () {
+                      Platform.isIOS ? ctrl.appleLogin() : ctrl.googleSignIn();
+                    },
+                  ).paddingSymmetric(horizontal: 70.h),
                   40.h.H(),
                   Row(
                     children: [

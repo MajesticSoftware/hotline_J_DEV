@@ -23,17 +23,22 @@ class UserModel {
 }
 
 class UserData {
-  num? userId;
+  int? userId;
   String? userToken;
   String? authToken;
   String? userName;
   String? userEmail;
   String? userPassword;
   String? userProfilePic;
+  String? loginType;
   String? appleSocialId;
   String? googleSocialId;
   String? favouriteSport;
   int? isLoggedOut;
+  String? verifyForgotCode;
+  String? clientSecret;
+  String? accessToken;
+  String? authorizationCode;
 
   UserData(
       {this.userId,
@@ -43,10 +48,15 @@ class UserData {
       this.userEmail,
       this.userPassword,
       this.userProfilePic,
+      this.loginType,
       this.appleSocialId,
       this.googleSocialId,
       this.favouriteSport,
-      this.isLoggedOut});
+      this.isLoggedOut,
+      this.verifyForgotCode,
+      this.clientSecret,
+      this.accessToken,
+      this.authorizationCode});
 
   UserData.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
@@ -56,10 +66,15 @@ class UserData {
     userEmail = json['user_email'];
     userPassword = json['user_password'];
     userProfilePic = json['user_profile_pic'];
+    loginType = json['login_type'];
     appleSocialId = json['apple_social_id'];
     googleSocialId = json['google_social_id'];
     favouriteSport = json['favourite_sport'];
     isLoggedOut = json['is_logged_out'];
+    verifyForgotCode = json['verify_forgot_code'];
+    clientSecret = json['client_secret'];
+    accessToken = json['access_token'];
+    authorizationCode = json['authorization_code'];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,10 +86,15 @@ class UserData {
     data['user_email'] = userEmail;
     data['user_password'] = userPassword;
     data['user_profile_pic'] = userProfilePic;
+    data['login_type'] = loginType;
     data['apple_social_id'] = appleSocialId;
     data['google_social_id'] = googleSocialId;
     data['favourite_sport'] = favouriteSport;
     data['is_logged_out'] = isLoggedOut;
+    data['verify_forgot_code'] = verifyForgotCode;
+    data['client_secret'] = clientSecret;
+    data['access_token'] = accessToken;
+    data['authorization_code'] = authorizationCode;
     return data;
   }
 }

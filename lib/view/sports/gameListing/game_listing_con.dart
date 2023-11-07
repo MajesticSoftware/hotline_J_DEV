@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
@@ -160,11 +161,25 @@ class GameListingController extends GetxController {
     Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
         ? ThemeMode.dark
         : ThemeMode.light);
+    if (PreferenceManager.getLoginType() == 'google') {
+      signOut();
+    }
     Get.offAll(LogInScreen());
     PreferenceManager.clearData();
     PreferenceManager.setIsLogin(false);
     PreferenceManager.setIsDarkMod(isDark);
     showAppSnackBar('Successfully logged out.', status: true);
+  }
+
+  static Future<bool> signOut() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    try {
+      await googleSignIn.signOut();
+      return true;
+    } catch (e) {
+      showAppSnackBar('logOutErrorMsg'.tr);
+    }
+    return false;
   }
 
   void logOut(BuildContext context) async {
@@ -177,10 +192,13 @@ class GameListingController extends GetxController {
         log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
             ForgotPasswordResModel.fromJson(result.toJson());
-        bool isDark = (PreferenceManager.getIsDarkMode() ?? false);
+        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
         Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
             ? ThemeMode.dark
             : ThemeMode.light);
+        if (PreferenceManager.getLoginType() == 'google') {
+          await signOut();
+        }
         Get.offAll(LogInScreen());
         PreferenceManager.clearData();
         PreferenceManager.setIsLogin(false);
@@ -208,9 +226,17 @@ class GameListingController extends GetxController {
         log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
             ForgotPasswordResModel.fromJson(result.toJson());
+        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+            ? ThemeMode.dark
+            : ThemeMode.light);
+        if (PreferenceManager.getLoginType() == 'google') {
+          signOut();
+        }
+        Get.offAll(LogInScreen());
         PreferenceManager.clearData();
         PreferenceManager.setIsLogin(false);
-        Get.offAll(LogInScreen());
+        PreferenceManager.setIsDarkMod(isDark);
         showAppSnackBar(response.msg, status: true);
         isLoading.value = false;
       } else {
