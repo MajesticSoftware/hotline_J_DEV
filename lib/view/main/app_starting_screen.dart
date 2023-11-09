@@ -28,7 +28,7 @@ class AppStartScreen extends StatelessWidget {
         ),
         child: GestureDetector(
           child: 'Explore sports'.appCommonText(
-              weight: FontWeight.w700, color: appColor, size: 18),
+              weight: FontWeight.w700, color: appColor, size: 20.h),
           onTap: () {
             PreferenceManager.setIsFirstLoaded(true);
             Get.offAll(SelectGameScreen());
@@ -40,15 +40,15 @@ class AppStartScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            20.H(),
+            20.h.H(),
             Center(
               child: SvgPicture.asset(Assets.imagesLogo,
                   height: 70.w, fit: BoxFit.contain),
             ),
-            25.H(),
+            25.h.H(),
             "Getting Started:".appCommonText(
                 weight: FontWeight.bold, color: yellowColor, size: 25),
-            20.H(),
+            20.h.H(),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class AppStartScreen extends StatelessWidget {
                   height: MediaQuery.of(Get.context!).size.width * .055,
                   fit: BoxFit.contain,
                 ),
-                10.W(),
+                10.h.W(),
                 Expanded(
                     child: RichText(
                   text: TextSpan(
@@ -110,7 +110,7 @@ class AppStartScreen extends StatelessWidget {
                 ))
               ],
             ),
-            10.H(),
+            10.h.H(),
             dialogCard(
                 image: Assets.imagesPopcorn,
                 title:

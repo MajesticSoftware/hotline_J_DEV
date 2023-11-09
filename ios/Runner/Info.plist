@@ -25,9 +25,13 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
-    <false/>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We are requesting use of the camera to upload a profile picture during the registration of the application.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We are requesting use of the camera to upload a profile picture during the registration of the application.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -36,10 +40,6 @@
 	<string>Main</string>
 	<key>UIStatusBarStyle</key>
 	<string></string>
-    <key>NSCameraUsageDescription</key>
-	<string>We are requesting use of the camera to upload a profile picture during the registration of the application.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We are requesting use of the camera to upload a profile picture during the registration of the application.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

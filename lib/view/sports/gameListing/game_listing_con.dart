@@ -168,6 +168,7 @@ class GameListingController extends GetxController {
     PreferenceManager.clearData();
     PreferenceManager.setIsLogin(false);
     PreferenceManager.setIsDarkMod(isDark);
+    PreferenceManager.setIsFirstLoaded(true);
     showAppSnackBar('Successfully logged out.', status: true);
   }
 
@@ -203,6 +204,7 @@ class GameListingController extends GetxController {
         PreferenceManager.clearData();
         PreferenceManager.setIsLogin(false);
         PreferenceManager.setIsDarkMod(isDark);
+        PreferenceManager.setIsFirstLoaded(true);
         showAppSnackBar(response.msg, status: true);
         isLoading.value = false;
       } else {
