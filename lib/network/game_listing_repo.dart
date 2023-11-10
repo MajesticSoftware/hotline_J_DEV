@@ -130,6 +130,24 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> playerProfileRepo(
+      {String playerId = '', String sportKey = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(sportKey == "NFL"
+        ? "${AppUrls.NFL_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NFL_APIKEY}"
+        : '${AppUrls.NCAA_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NCAA_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///NFL STATICS
   Future<ResponseItem> nflStaticsRepo(
       {String teamId = '', String seasons = '', String sportKey = ''}) async {

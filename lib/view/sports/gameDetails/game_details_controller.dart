@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:collection/collection.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
@@ -15,7 +16,9 @@ import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
+import '../../../model/player_profile_nfl_model.dart';
 import '../../../model/response_item.dart';
+import '../../../model/roster_model.dart';
 import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
@@ -302,6 +305,132 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       // isLoading.value = false;
       log('ERROR PROFILE HOME RES------------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future profileHomeTeamResponse(
+      {String playerId = '', String sportKey = '', bool isLoad = false}) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo()
+        .playerProfileRepo(playerId: playerId, sportKey: sportKey);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NFLProfileModel response = NFLProfileModel.fromJson(result.data);
+          final playerData = response.seasons;
+          if (playerData != null) {
+            for (var element in playerData) {
+              if (element.year == DateTime.now().year &&
+                  element.type == "REG") {
+                if (element.teams != null) {
+                  element.teams?.forEach((static) {
+                    num totalPlay = static.statistics?.gamesPlayed ?? 1;
+                    homeQb = [
+                      ((int.parse(static.statistics?.passing?.yards
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(static.statistics?.passing?.touchdowns
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      ((int.parse(static.statistics?.rushing?.yards
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(static.statistics?.rushing?.touchdowns
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                    ];
+                  });
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      // isLoading.value = false;
+      log('ERROR PROFILE NFL HOME RES------------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future profileAwayTeamResponse(
+      {String playerId = '', String sportKey = '', bool isLoad = false}) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo()
+        .playerProfileRepo(playerId: playerId, sportKey: sportKey);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NFLProfileModel response = NFLProfileModel.fromJson(result.data);
+          final playerData = response.seasons;
+          if (playerData != null) {
+            for (var element in playerData) {
+              if (element.year == DateTime.now().year &&
+                  element.type == "REG") {
+                if (element.teams != null) {
+                  element.teams?.forEach((static) {
+                    num totalPlay = static.statistics?.gamesPlayed ?? 1;
+                    awayQb = [
+                      ((int.parse(static.statistics?.passing?.yards
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(static.statistics?.passing?.touchdowns
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                      ((int.parse(static.statistics?.rushing?.yards
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(1)),
+                      ((int.parse(static.statistics?.rushing?.touchdowns
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
+                    ];
+                  });
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // isLoading.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      // isLoading.value = false;
+      log('ERROR PROFILE NFL AWAY RES------------$e');
       showAppSnackBar(
         errorText,
       );
@@ -645,6 +774,7 @@ class GameDetailsController extends GetxController {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+          List<num> gameStart = [];
           if (response.season != null) {
             if (response.record != null) {
               var offenciveData = response.record;
@@ -765,27 +895,35 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
-                  if (player.position == 'QB' && player.gamesStarted != 0) {
-                    num totalPlay = player.gamesPlayed ?? 1;
-                    homeQb = [
-                      ((int.parse(player.passing?.yards.toString() ?? "0") /
-                              totalPlay)
-                          .toStringAsFixed(1)),
-                      ((int.parse(player.passing?.touchdowns.toString() ??
-                                  "0") /
-                              totalPlay)
-                          .toStringAsFixed(2)),
-                      ((int.parse(player.rushing?.yards.toString() ?? "0") /
-                              totalPlay)
-                          .toStringAsFixed(1)),
-                      ((int.parse(player.rushing?.touchdowns.toString() ??
-                                  "0") /
-                              totalPlay)
-                          .toStringAsFixed(2)),
-                      // (player.passing?.interceptions ?? "0").toString(),
-                      // (player.fumbles?.fumbles ?? "0").toString(),
-                    ];
-                    gameDetails.homePlayerName = (player.name ?? "").toString();
+                  if (DateTime.parse(gameDetails.scheduled ?? "").day !=
+                      DateTime.now().day) {
+                    if (player.position == 'QB' && player.gamesStarted != 0) {
+                      gameStart.add(player.gamesStarted ?? 0);
+                      num gameStartNum = gameStart.max;
+                      if (gameStartNum == player.gamesStarted) {
+                        num totalPlay = player.gamesPlayed ?? 1;
+                        homeQb = [
+                          ((int.parse(player.passing?.yards.toString() ?? "0") /
+                                  totalPlay)
+                              .toStringAsFixed(1)),
+                          ((int.parse(player.passing?.touchdowns.toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+                          ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                                  totalPlay)
+                              .toStringAsFixed(1)),
+                          ((int.parse(player.rushing?.touchdowns.toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+                          // (player.passing?.interceptions ?? "0").toString(),
+                          // (player.fumbles?.fumbles ?? "0").toString(),
+                        ];
+                        gameDetails.homePlayerName =
+                            (player.name ?? "").toString();
+                      }
+                    }
                   }
                 });
               }
@@ -819,6 +957,65 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  Future nflRosterResponse(
+      {String homeTeamId = '',
+      String awayTeamId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nflRosterRepo(
+        gameId: replaceId(gameDetails.uuids ?? ""), sportKey: sportKey);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          GameRosterModel response = GameRosterModel.fromJson(result.data);
+          if (response.home?.id.toString() == homeTeamId) {
+            if (response.home?.players != null) {
+              response.home?.players?.forEach((player) {
+                if (player.status == 'started' && player.position == "QB") {
+                  gameDetails.homePlayerName = (player.name ?? "").toString();
+                  gameDetails.homePlayerId = (player.id ?? "").toString();
+                }
+              });
+            }
+          }
+          if (response.away?.id.toString() == awayTeamId) {
+            if (response.away?.players != null) {
+              response.away?.players?.forEach((player) {
+                if (player.status == 'started' && player.position == "QB") {
+                  gameDetails.awayPlayerName = (player.name ?? "").toString();
+                  gameDetails.awayPlayerId = (player.id ?? "").toString();
+                }
+              });
+            }
+          }
+        } else {
+          showAppSnackBar(
+            result.message,
+          );
+          isLoading.value = false;
+        }
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
+      }
+
+      // isLoading.value = false;
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR NFL HOME STATICS-----------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
   Future nflStaticsAwayTeamResponse(
       {String awayTeamId = '',
       required SportEvents gameDetails,
@@ -835,6 +1032,7 @@ class GameDetailsController extends GetxController {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
+          List<num> gameStart = [];
           if (response.season != null) {
             if (response.record != null) {
               var offenciveData = response.record;
@@ -955,28 +1153,36 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
-                  if (player.position == 'QB' && player.gamesStarted != 0) {
-                    num totalPlay = player.gamesPlayed ?? 1;
-                    awayQb = [
-                      ((int.parse(player.passing?.yards.toString() ?? "0") /
-                              totalPlay)
-                          .toStringAsFixed(1)),
-                      ((int.parse(player.passing?.touchdowns.toString() ??
-                                  "0") /
-                              totalPlay)
-                          .toStringAsFixed(2)),
-                      ((int.parse(player.rushing?.yards.toString() ?? "0") /
-                              totalPlay)
-                          .toStringAsFixed(1)),
-                      ((int.parse(player.rushing?.touchdowns.toString() ??
-                                  "0") /
-                              totalPlay)
-                          .toStringAsFixed(2)),
-                      // (player.passing?.interceptions ?? "0").toString(),
-                      // (player.fumbles?.fumbles ?? "0").toString(),
-                    ];
+                  if (DateTime.parse(gameDetails.scheduled ?? "").day !=
+                      DateTime.now().day) {
+                    if (player.position == 'QB' && player.gamesStarted != 0) {
+                      gameStart.add(player.gamesStarted ?? 0);
+                      num gameStartNum = gameStart.max;
+                      if (gameStartNum == player.gamesStarted) {
+                        num totalPlay = player.gamesPlayed ?? 1;
+                        awayQb = [
+                          ((int.parse(player.passing?.yards.toString() ?? "0") /
+                                  totalPlay)
+                              .toStringAsFixed(1)),
+                          ((int.parse(player.passing?.touchdowns.toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+                          ((int.parse(player.rushing?.yards.toString() ?? "0") /
+                                  totalPlay)
+                              .toStringAsFixed(1)),
+                          ((int.parse(player.rushing?.touchdowns.toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+                          // (player.passing?.interceptions ?? "0").toString(),
+                          // (player.fumbles?.fumbles ?? "0").toString(),
+                        ];
 
-                    gameDetails.awayPlayerName = (player.name ?? "").toString();
+                        gameDetails.awayPlayerName =
+                            (player.name ?? "").toString();
+                      }
+                    }
                   }
                 });
               }
@@ -1469,6 +1675,30 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
+      nflRosterResponse(
+              gameDetails: gameDetails,
+              isLoad: false,
+              sportKey: sportKey,
+              awayTeamId: awayTeam?.abbreviation == 'LV'
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(awayTeam?.uuids ?? ''),
+              homeTeamId: homeTeam?.abbreviation == 'LV'
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(homeTeam?.uuids ?? ''))
+          .then((value) {
+        if (gameDetails.homePlayerId.isNotEmpty) {
+          profileHomeTeamResponse(
+              sportKey: sportKey,
+              playerId: gameDetails.homePlayerId,
+              isLoad: isLoad);
+        }
+        if (gameDetails.awayPlayerId.isNotEmpty) {
+          profileAwayTeamResponse(
+              sportKey: sportKey,
+              playerId: gameDetails.awayPlayerId,
+              isLoad: isLoad);
+        }
+      });
       nflStaticsAwayTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,
@@ -1529,6 +1759,30 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
+      nflRosterResponse(
+              gameDetails: gameDetails,
+              isLoad: false,
+              sportKey: sportKey,
+              awayTeamId: awayTeam?.abbreviation == 'LV'
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(awayTeam?.uuids ?? ''),
+              homeTeamId: homeTeam?.abbreviation == 'LV'
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(homeTeam?.uuids ?? ''))
+          .then((value) {
+        if (gameDetails.homePlayerId.isNotEmpty) {
+          profileHomeTeamResponse(
+              sportKey: sportKey,
+              playerId: gameDetails.homePlayerId,
+              isLoad: isLoad);
+        }
+        if (gameDetails.awayPlayerId.isNotEmpty) {
+          profileAwayTeamResponse(
+              sportKey: sportKey,
+              playerId: gameDetails.awayPlayerId,
+              isLoad: isLoad);
+        }
+      });
       recordsOfNCAAAndNFL(
           isLoad: false,
           sportEvent: gameDetails,

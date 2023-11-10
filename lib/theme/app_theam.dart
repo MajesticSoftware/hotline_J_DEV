@@ -69,7 +69,7 @@ class AppTheme {
         headlineLarge: GoogleFonts.nunitoSans(
           color: blackColor,
           fontWeight: FontWeight.w700,
-          fontSize: Get.height * .02,
+          fontSize: Get.height * .018,
         ),
 
         /*   displayLarge: GoogleFonts.nunitoSans(
@@ -197,7 +197,7 @@ class AppTheme {
         headlineLarge: GoogleFonts.nunitoSans(
           color: whiteColor,
           fontWeight: FontWeight.w700,
-          fontSize: Get.height * .02,
+          fontSize: Get.height * .018,
         ),
         /* displayLarge: const TextStyle(
           color: Color(0XFFFF6666),

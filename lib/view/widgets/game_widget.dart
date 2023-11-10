@@ -946,7 +946,7 @@ class HeaderCard extends StatelessWidget {
                 child: ''.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .017),
+                    size: MediaQuery.of(context).size.height * .016),
               ),
               Expanded(
                 flex: 1,
@@ -960,21 +960,21 @@ class HeaderCard extends StatelessWidget {
                 child: spread.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .017),
+                    size: MediaQuery.of(context).size.height * .016),
               ),
               Expanded(
                 flex: 1,
                 child: moneyLine.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .017),
+                    size: MediaQuery.of(context).size.height * .016),
               ),
               Expanded(
                 flex: 1,
                 child: overUnder.appCommonText(
                     color: whiteColor,
                     weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .017),
+                    size: MediaQuery.of(context).size.height * .016),
               ),
             ],
           ),

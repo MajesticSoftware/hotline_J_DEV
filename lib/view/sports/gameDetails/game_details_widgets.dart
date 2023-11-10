@@ -996,7 +996,7 @@ class HeaderTab extends StatelessWidget {
         height: MediaQuery.of(context).size.height * .046,
         width: Get.width,
         decoration: BoxDecoration(
-          color: Theme.of(context).splashColor,
+          color: Theme.of(context).disabledColor,
           borderRadius: BorderRadius.vertical(
               top: Radius.circular(MediaQuery.of(context).size.width * .01)),
         ),
@@ -1045,7 +1045,7 @@ class HeaderTab extends StatelessWidget {
                           maxLine: 1,
                           size: MediaQuery.of(context).size.height * .014,
                           align: TextAlign.end,
-                          color: Theme.of(context).highlightColor,
+                          color: Theme.of(context).cardColor,
                         ),
                       ],
                     ).paddingSymmetric(
@@ -1065,7 +1065,7 @@ class HeaderTab extends StatelessWidget {
                       weight: FontWeight.bold,
                       align: TextAlign.center,
                       size: MediaQuery.of(context).size.height * .018,
-                      color: Theme.of(context).highlightColor,
+                      color: Theme.of(context).cardColor,
                     ),
                   ),
                 ),
@@ -1082,7 +1082,7 @@ class HeaderTab extends StatelessWidget {
                           maxLine: 1,
                           size: MediaQuery.of(context).size.height * .014,
                           align: TextAlign.start,
-                          color: Theme.of(context).highlightColor,
+                          color: Theme.of(context).cardColor,
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * .01,
@@ -3223,25 +3223,53 @@ Padding hotlinesWidget(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-              height: MediaQuery.of(context).size.height * .032,
-              width: Get.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(
-                          MediaQuery.of(context).size.width * .01)),
-                  color: Theme.of(context).disabledColor),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  hotlines.appCommonText(
-                      color: Theme.of(context).cardColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w600,
-                      size: Get.height * .018),
-                ],
-              )),
+          InkWell(
+            highlightColor: Colors.transparent,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(
+                          20.r,
+                        ),
+                      ),
+                    ),
+                    shadowColor: Theme.of(context).secondaryHeaderColor,
+                    contentPadding: EdgeInsets.all(20.h),
+                    title:
+                        'Fun plus money prop bets or parlay legs available for this game across major sportsbooks.'
+                            .appCommonText(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                align: TextAlign.center,
+                                weight: FontWeight.w600,
+                                size: Get.height * .016),
+                  );
+                },
+              );
+            },
+            child: Container(
+                height: MediaQuery.of(context).size.height * .032,
+                width: Get.width,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(
+                            MediaQuery.of(context).size.width * .01)),
+                    color: Theme.of(context).disabledColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    'Plus Money Props'.appCommonText(
+                        color: Theme.of(context).cardColor,
+                        align: TextAlign.start,
+                        weight: FontWeight.w600,
+                        size: Get.height * .016),
+                  ],
+                )),
+          ),
           Container(
             height: MediaQuery.of(context).size.height * .032,
             color: Theme.of(context).splashColor,
@@ -3512,21 +3540,21 @@ Container mainLinesHeader(BuildContext context) {
                 color: Theme.of(context).cardColor,
                 align: TextAlign.center,
                 weight: FontWeight.w600,
-                size: Get.height * .018),
+                size: Get.height * .016),
           ),
           Expanded(
             child: moneyLine.appCommonText(
                 color: Theme.of(context).cardColor,
                 align: TextAlign.center,
                 weight: FontWeight.w600,
-                size: Get.height * .018),
+                size: Get.height * .016),
           ),
           Expanded(
             child: overUnder.appCommonText(
                 color: Theme.of(context).cardColor,
                 align: TextAlign.center,
                 weight: FontWeight.w600,
-                size: Get.height * .018),
+                size: Get.height * .016),
           ),
         ],
       ).paddingSymmetric(horizontal: MediaQuery.of(context).size.height * .01));
