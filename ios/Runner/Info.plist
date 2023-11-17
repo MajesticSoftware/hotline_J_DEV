@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Hotline Sports</string>
+	<string>Hotlines Sports</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -49,5 +49,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>branch_key</key>
+    <string>key_test_em8y5dhWcvCDOAu6WpjNtfjiEsoEXMQU</string>
+    <key>branch_universal_link_domains</key>
+    <array>
+    	<string>xlbkl.test-app.link</string>
+    	<string>xlbkl-alternate.test-app.link</string>
+    	<string>xlbkl.app.link</string>
+    	<string>xlbkl-alternate.app.link</string>
+    </array>
 </dict>
 </plist>

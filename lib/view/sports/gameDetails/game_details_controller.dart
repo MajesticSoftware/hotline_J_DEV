@@ -895,8 +895,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
-                  if (DateTime.parse(gameDetails.scheduled ?? "").day !=
-                      DateTime.now().day) {
+                  if (gameDetails.status != "closed") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
@@ -1153,8 +1152,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
-                  if (DateTime.parse(gameDetails.scheduled ?? "").day !=
-                      DateTime.now().day) {
+                  if (gameDetails.status != 'closed') {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;

@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -9,11 +15,35 @@ import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 
 import '../../constant/shred_preference.dart';
+import '../../extras/constants.dart';
+import '../../theme/helper.dart';
+import '../../utils/deep_linking.dart';
 import '../auth/log_in_module/log_in_screen.dart';
 import '../sports/gameListing/game_listing_screen.dart';
 
-class AppStartScreen extends StatelessWidget {
+class AppStartScreen extends StatefulWidget {
   const AppStartScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AppStartScreen> createState() => _AppStartScreenState();
+}
+
+class _AppStartScreenState extends State<AppStartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    FlutterBranchSdk.validateSDKIntegration();
+    Future.delayed(Duration.zero, () {
+      DeepLinkingUtils().listenDeepLinkData(context);
+    });
+    DeepLinkingUtils().initializeDeepLinkData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    DeepLinkingUtils().streamSubscriptionDeepLink?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +171,10 @@ class AppStartScreen extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          // recognizer: TapGestureRecognizer()
-                          //   ..onTap = () => launchInBrowser(Uri.parse(
-                          //       'https://testflight.apple.com/join/KOp4iOSH')),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // DeepLinkingUtils().generateDeepLink(context);
+                            },
                           text: 'Share with your friends!',
                           style: GoogleFonts.nunitoSans(
                             color: whiteColor,

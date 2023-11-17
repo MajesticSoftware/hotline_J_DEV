@@ -32,3 +32,11 @@ Map<String, String> requestAuthHeader(bool passAuthToken) {
 // ignore: deprecated_member_use
 final mobileView = MediaQueryData.fromView(WidgetsBinding.instance.window);
 RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
+class AppConstants {
+  static const String deepLinkTitle = "deep_link_title";
+  static const String clickedBranchLink = "+clicked_branch_link";
+  static const String controlParamsKey = '\$uri_redirect_mode';
+  static const String deepLinkData = 'flutter deep link';
+  static const String branchIoCanonicalIdentifier = 'flutter/branch';
+}

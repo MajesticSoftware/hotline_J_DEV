@@ -3223,53 +3223,63 @@ Padding hotlinesWidget(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          InkWell(
-            highlightColor: Colors.transparent,
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          20.r,
-                        ),
+          Container(
+              height: MediaQuery.of(context).size.height * .032,
+              width: Get.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(
+                          MediaQuery.of(context).size.width * .01)),
+                  color: Theme.of(context).disabledColor),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  'Plus Money Props   '.appCommonText(
+                      color: Theme.of(context).cardColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w600,
+                      size: Get.height * .016),
+                  InkWell(
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  20.r,
+                                ),
+                              ),
+                            ),
+                            shadowColor: Theme.of(context).secondaryHeaderColor,
+                            contentPadding: EdgeInsets.all(20.h),
+                            title:
+                                'Fun plus money prop bets or parlay legs available for this game across major sportsbooks.'
+                                    .appCommonText(
+                                        color: Theme.of(context)
+                                            .secondaryHeaderColor,
+                                        align: TextAlign.center,
+                                        weight: FontWeight.w600,
+                                        size: Get.height * .016),
+                          );
+                        },
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: Get.height * .012,
+                      backgroundColor: Theme.of(context).cardColor,
+                      child: Center(
+                        child: Icon(Icons.question_mark,
+                            color: Theme.of(context).disabledColor,
+                            size: Get.height * .016),
                       ),
                     ),
-                    shadowColor: Theme.of(context).secondaryHeaderColor,
-                    contentPadding: EdgeInsets.all(20.h),
-                    title:
-                        'Fun plus money prop bets or parlay legs available for this game across major sportsbooks.'
-                            .appCommonText(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                align: TextAlign.center,
-                                weight: FontWeight.w600,
-                                size: Get.height * .016),
-                  );
-                },
-              );
-            },
-            child: Container(
-                height: MediaQuery.of(context).size.height * .032,
-                width: Get.width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(
-                            MediaQuery.of(context).size.width * .01)),
-                    color: Theme.of(context).disabledColor),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    'Plus Money Props'.appCommonText(
-                        color: Theme.of(context).cardColor,
-                        align: TextAlign.start,
-                        weight: FontWeight.w600,
-                        size: Get.height * .016),
-                  ],
-                )),
-          ),
+                  )
+                ],
+              ).paddingSymmetric(horizontal: 20.h)),
           Container(
             height: MediaQuery.of(context).size.height * .032,
             color: Theme.of(context).splashColor,
