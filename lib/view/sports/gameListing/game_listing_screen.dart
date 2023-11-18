@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/app_strings.dart';
+import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/profile_module/profile_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
@@ -301,6 +302,18 @@ class SelectGameScreen extends StatelessWidget {
                     );
                   },
                 );
+              },
+            ),
+            drawerCard(
+              widget: Icon(
+                Icons.share,
+                color: whiteColor,
+                size: 30.h,
+              ),
+              title: 'Share with your friends!',
+              context: context,
+              onTap: () {
+                DeepLinkingUtils().generateLink(context);
               },
             ),
             20.h.H(),

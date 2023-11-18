@@ -185,7 +185,7 @@ class RegisterScreen extends StatelessWidget {
                               Theme.of(context).secondaryHeaderColor,
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           hint: (ctrl.selectedSpot.isEmpty
-                                  ? 'Favorite spots'
+                                  ? 'Favorite Sports'
                                   : ctrl.selectedSpot)
                               .appCommonText(
                                   color: Theme.of(context).secondaryHeaderColor,

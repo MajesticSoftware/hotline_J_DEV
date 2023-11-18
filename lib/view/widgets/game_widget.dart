@@ -760,11 +760,16 @@ Widget drawerCard(
               : widget ?? const SizedBox(),
         ),
         20.h.W(),
-        title.appCommonText(
-            color: whiteColor,
-            align: TextAlign.start,
-            weight: FontWeight.w700,
-            size: 22.h),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: title.appCommonText(
+                color: whiteColor,
+                align: TextAlign.start,
+                weight: FontWeight.w700,
+                size: 22.h),
+          ),
+        ),
       ],
     ).paddingOnly(bottom: MediaQuery.of(Get.context!).size.width * .04),
   ).paddingSymmetric(horizontal: MediaQuery.of(Get.context!).size.width * .05);

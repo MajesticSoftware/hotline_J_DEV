@@ -1,52 +1,49 @@
-import 'dart:async';
 import 'dart:developer';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:hotlines/theme/helper.dart';
+import 'package:share_plus/share_plus.dart';
 
-import '../extras/constants.dart';
+import 'extension.dart';
 
 class DeepLinkingUtils {
-  StreamSubscription<Map>? streamSubscriptionDeepLink;
-  BranchUniversalObject? buo;
-  BranchLinkProperties? lp;
-  BranchResponse? response;
-  void listenDeepLinkData(BuildContext context) async {
-    streamSubscriptionDeepLink = FlutterBranchSdk.initSession().listen((data) {
-      if (data.containsKey(AppConstants.clickedBranchLink) &&
-          data[AppConstants.clickedBranchLink] == true) {
-        log('LINK--${data[AppConstants.deepLinkTitle]}');
+  void branchListenLinks() {
+    FlutterBranchSdk.initSession().listen((data) async {
+      log('listenDynamicLinks - DeepLink Data: $data');
+      if (data.containsKey('+clicked_branch_link')) {
+        if (data['+non_branch_link'] != null) {
+          String link = data['+non_branch_link'];
+
+          log("linklinklink$link");
+        }
       }
     }, onError: (error) {
       PlatformException platformException = error as PlatformException;
-      log('${platformException.code} - ${platformException.message}');
+      log('InitSession error: ${platformException.code} - ${platformException.message}');
     });
   }
 
-  //To Setup Data For Generation Of Deep Link
-  void initializeDeepLinkData() {
-    buo = BranchUniversalObject(
-      canonicalIdentifier: AppConstants.branchIoCanonicalIdentifier,
-      contentMetadata: BranchContentMetaData()
-        ..addCustomMetadata(
-            AppConstants.deepLinkTitle, AppConstants.deepLinkData),
-    );
-    FlutterBranchSdk.registerView(buo: buo!);
-
-    lp = BranchLinkProperties();
-    lp?.addControlParam(AppConstants.controlParamsKey, '1');
-  }
-
-  //To Generate Deep Link For Branch Io
-  void generateDeepLink(BuildContext context) async {
-    BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp!);
+  void generateLink(BuildContext context) async {
+    BranchResponse response = await FlutterBranchSdk.getShortUrl(
+        buo: BranchUniversalObject(
+            title: 'Hotlines Sports',
+            canonicalIdentifier: 'flutter/branch',
+            canonicalUrl:
+                'https://xlbkl.test-app.link?%24randomized_bundle_token=1254293642370486604'),
+        linkProperties: BranchLinkProperties(
+            channel: 'facebook',
+            feature: 'sharing',
+            stage: 'new share',
+            campaign: 'campaign',
+            tags: ['one', 'two', 'three']));
     if (response.success) {
-      print(response.result);
-      showAppSnackBar("${response.result}");
+      if (context.mounted) {
+        shareLink(response.result);
+      }
     } else {
-      log('${response.errorCode} - ${response.errorMessage}');
+      showAppSnackBar(
+          'Error : ${response.errorCode} - ${response.errorMessage}');
     }
   }
 }

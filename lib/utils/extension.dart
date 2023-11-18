@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../constant/shred_preference.dart';
 import '../theme/theme.dart';
@@ -22,6 +23,12 @@ extension AddSpace on num {
   Widget W() {
     return SizedBox(width: toDouble());
   }
+}
+
+shareLink(
+  String link,
+) async {
+  await Share.share(link);
 }
 
 String dateWidget(String down) {

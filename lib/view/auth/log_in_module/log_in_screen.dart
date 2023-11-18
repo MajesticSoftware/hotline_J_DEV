@@ -17,8 +17,6 @@ import '../../../theme/app_color.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/layouts.dart';
 import '../../main/app_starting_screen.dart';
-import '../../term_of_service/privacy_policy.dart';
-import '../../term_of_service/term_service_screen.dart';
 import '../../widgets/common_widget.dart';
 import '../../widgets/text_field_widget.dart';
 import '../forgot_pass/forgot_pass_screen.dart';

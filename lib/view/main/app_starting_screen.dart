@@ -32,17 +32,15 @@ class _AppStartScreenState extends State<AppStartScreen> {
   @override
   void initState() {
     super.initState();
-    FlutterBranchSdk.validateSDKIntegration();
+    // FlutterBranchSdk.validateSDKIntegration();
     Future.delayed(Duration.zero, () {
-      DeepLinkingUtils().listenDeepLinkData(context);
+      DeepLinkingUtils().branchListenLinks();
     });
-    DeepLinkingUtils().initializeDeepLinkData();
   }
 
   @override
   void dispose() {
     super.dispose();
-    DeepLinkingUtils().streamSubscriptionDeepLink?.cancel();
   }
 
   @override
@@ -173,7 +171,7 @@ class _AppStartScreenState extends State<AppStartScreen> {
                         TextSpan(
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              // DeepLinkingUtils().generateDeepLink(context);
+                              DeepLinkingUtils().generateLink(context);
                             },
                           text: 'Share with your friends!',
                           style: GoogleFonts.nunitoSans(
