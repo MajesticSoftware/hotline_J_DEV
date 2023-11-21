@@ -9,6 +9,7 @@ import 'package:hotlines/utils/utils.dart';
 import 'package:intl/intl.dart';
 
 import '../../../constant/constant.dart';
+import '../../../model/depth_chart_model.dart';
 import '../../../model/game_model.dart';
 
 import '../../../model/hotlines_data_model.dart' as hotlines;
@@ -895,7 +896,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
-                  if (gameDetails.status != "closed") {
+                  if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
@@ -956,7 +957,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  Future nflRosterResponse(
+  Future depthChartResponse(
       {String homeTeamId = '',
       String awayTeamId = '',
       required SportEvents gameDetails,
@@ -965,28 +966,39 @@ class GameDetailsController extends GetxController {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().nflRosterRepo(
-        gameId: replaceId(gameDetails.uuids ?? ""), sportKey: sportKey);
+    result = await GameListingRepo().depthChartRepo(sportKey: sportKey);
     try {
       if (result.status) {
         if (result.data != null) {
-          GameRosterModel response = GameRosterModel.fromJson(result.data);
-          if (response.home?.id.toString() == homeTeamId) {
-            if (response.home?.players != null) {
-              response.home?.players?.forEach((player) {
-                if (player.status == 'started' && player.position == "QB") {
-                  gameDetails.homePlayerName = (player.name ?? "").toString();
-                  gameDetails.homePlayerId = (player.id ?? "").toString();
+          DepthChartModel response = DepthChartModel.fromJson(result.data);
+          if (response.teams != null) {
+            int homeIndex = response.teams!
+                .indexWhere((element) => element.id == homeTeamId);
+            if ((homeIndex) >= 0) {
+              response.teams![homeIndex].offense?.forEach((position) {
+                if (position.position?.name == 'QB') {
+                  position.position?.players?.forEach((player) {
+                    if (player.depth == 1 && player.position == "QB") {
+                      gameDetails.homePlayerName =
+                          (player.name ?? "").toString();
+                      gameDetails.homePlayerId = (player.id ?? "").toString();
+                    }
+                  });
                 }
               });
             }
-          }
-          if (response.away?.id.toString() == awayTeamId) {
-            if (response.away?.players != null) {
-              response.away?.players?.forEach((player) {
-                if (player.status == 'started' && player.position == "QB") {
-                  gameDetails.awayPlayerName = (player.name ?? "").toString();
-                  gameDetails.awayPlayerId = (player.id ?? "").toString();
+            int awayIndex = response.teams!
+                .indexWhere((element) => element.id == awayTeamId);
+            if ((awayIndex) >= 0) {
+              response.teams![awayIndex].offense?.forEach((position) {
+                if (position.position?.name == 'QB') {
+                  position.position?.players?.forEach((player) {
+                    if (player.depth == 1 && player.position == "QB") {
+                      gameDetails.awayPlayerName =
+                          (player.name ?? "").toString();
+                      gameDetails.awayPlayerId = (player.id ?? "").toString();
+                    }
+                  });
                 }
               });
             }
@@ -1152,7 +1164,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
-                  if (gameDetails.status != 'closed') {
+                  if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
@@ -1673,7 +1685,7 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
-      nflRosterResponse(
+      depthChartResponse(
               gameDetails: gameDetails,
               isLoad: false,
               sportKey: sportKey,
@@ -1757,7 +1769,7 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
-      nflRosterResponse(
+      depthChartResponse(
               gameDetails: gameDetails,
               isLoad: false,
               sportKey: sportKey,

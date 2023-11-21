@@ -167,15 +167,14 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  Future<ResponseItem> nflRosterRepo(
-      {String gameId = '', String sportKey = ''}) async {
+  Future<ResponseItem> depthChartRepo({String sportKey = ''}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "NFL"
-        ? '${AppUrls.NFL_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NFL_APIKEY}'
-        : '${AppUrls.NCAA_BASE_URL}games/$gameId/roster.json?api_key=${AppUrls.NCAA_APIKEY}');
+        ? '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year}/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NFL_APIKEY}'
+        : '${AppUrls.NCAA_BASE_URL}seasons/${DateTime.now().year}/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
