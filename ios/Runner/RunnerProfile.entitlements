@@ -8,10 +8,10 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:xlbkl.test-app.link</string>
-		<string>applinks:xlbkl-alternate.test-app.link</string>
-		<string>applinks:xlbkl.app.link</string>
-		<string>applinks:xlbkl-alternate.app.link</string>
+		<string>applinks:0pv5q.test-app.link</string>
+		<string>applinks:0pv5q-alternate.test-app.link</string>
+		<string>applinks:0pv5q.app.link</string>
+		<string>applinks:0pv5q-alternate.app.link</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

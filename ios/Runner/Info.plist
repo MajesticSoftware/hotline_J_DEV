@@ -59,13 +59,13 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>branch_key</key>
-    <string>key_test_em8y5dhWcvCDOAu6WpjNtfjiEsoEXMQU</string>
+    <string>key_live_bDfwtS4emTgqpGe8NG8IMccmvymUyNO9</string>
     <key>branch_universal_link_domains</key>
     <array>
-    	<string>xlbkl.test-app.link</string>
-    	<string>xlbkl-alternate.test-app.link</string>
-    	<string>xlbkl.app.link</string>
-    	<string>xlbkl-alternate.app.link</string>
+    	<string>0pv5q.test-app.link</string>
+    	<string>0pv5q-alternate.test-app.link</string>
+    	<string>0pv5q.app.link</string>
+    	<string>0pv5q-alternate.app.link</string>
     </array>
 </dict>
 </plist>
