@@ -115,15 +115,22 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                         widget.sportKey == 'MLB'
                             ? playerStatWidget(context, con, widget.sportKey,
                                 widget.gameDetails, awayTeam, homeTeam)
-                            : quarterBacks(context, con, widget.gameDetails,
-                                awayTeam, homeTeam, widget.sportKey),
+                            : widget.sportKey == 'NBA' ||
+                                    widget.sportKey == 'NCAAB'
+                                ? const SizedBox()
+                                : quarterBacks(context, con, widget.gameDetails,
+                                    awayTeam, homeTeam, widget.sportKey),
                         hitterPlayerStatWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'MLB'
+                        widget.sportKey == 'MLB' ||
+                                widget.sportKey == 'NBA' ||
+                                widget.sportKey == 'NCAAB'
                             ? const SizedBox()
                             : wrPlayersWidget(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'NCAA'
+                        widget.sportKey == 'NCAA' ||
+                                widget.sportKey == 'NBA' ||
+                                widget.sportKey == 'NCAAB'
                             ? const SizedBox()
                             : injuryReportWidget(context, widget.gameDetails,
                                 widget.sportKey, awayTeam, homeTeam, con),

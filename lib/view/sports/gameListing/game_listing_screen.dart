@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/app_strings.dart';
 import 'package:hotlines/utils/deep_linking.dart';
-import 'package:hotlines/view/profile_module/profile_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 import 'package:intl/intl.dart';
@@ -16,13 +15,11 @@ import '../../../extras/constants.dart';
 import '../../../extras/request_constants.dart';
 import '../../../generated/assets.dart';
 import '../../../model/game_listing.dart';
-import '../../../model/leauge_model.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/animated_search.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
 import '../../../theme/theme.dart';
-import '../../auth/log_in_module/log_in_screen.dart';
 import '../../change_password/change_pass_screen.dart';
 import '../../profile_module/profile_screen.dart';
 import '../../term_of_service/privacy_policy.dart';
@@ -477,6 +474,9 @@ class SelectGameScreen extends StatelessWidget {
                                           (spotList(controller)[index].status !=
                                               'postponed'),
                                       child: GameWidget(
+                                        isShowWeather:
+                                            controller.sportKey == "NBA" ||
+                                                controller.sportKey == "NCAAB",
                                         onTap: () {
                                           controller.gameOnClick(
                                               context, index);
@@ -608,6 +608,8 @@ class SelectGameScreen extends StatelessWidget {
                               onTap: () {
                                 controller.searchGameOnClick(context, index);
                               },
+                              isShowWeather: controller.sportKey == "NBA" ||
+                                  controller.sportKey == "NCAAB",
                               awayTeamMoneyLine: competitors.awayMoneyLineValue,
                               homeTeamMoneyLine: competitors.homeMoneyLineValue,
                               awayTeamOU: competitors.awayOUValue,
@@ -680,6 +682,10 @@ class SelectGameScreen extends StatelessWidget {
         ? controller.mlbSportEventsList
         : controller.sportKey == 'NFL'
             ? controller.nflSportEventsList
-            : controller.ncaaSportEventsList);
+            : controller.sportKey == 'NBA'
+                ? controller.nbaSportEventsList
+                : controller.sportKey == 'NCAAB'
+                    ? controller.ncaabSportEventsList
+                    : controller.ncaaSportEventsList);
   }
 }

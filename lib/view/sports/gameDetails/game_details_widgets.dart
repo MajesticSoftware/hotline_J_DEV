@@ -41,10 +41,10 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
                   },
                   child: SvgPicture.asset(
                     Assets.imagesBackArrow,
-                    height: 30.w,
+                    height: 27.h,
                     alignment: Alignment.centerLeft,
                   ),
-                ),
+                ).paddingOnly(left: 8.h),
               ),
               Expanded(
                 child: SvgPicture.asset(Assets.imagesLogo,
@@ -54,8 +54,8 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
                       .appCommonText(
                           color: whiteColor,
                           size: MediaQuery.of(context).size.height * .024,
-                          weight: FontWeight.w700),*/
-              /* Container(
+                          weight: FontWeight.w700),*/ /*
+         Container(
                     height: MediaQuery.of(context).size.height * .033,
                     // width: MediaQuery.of(context).size.width * .099,
                     decoration: BoxDecoration(
@@ -426,21 +426,29 @@ Padding hitterPlayerStatWidget(
         return StickyHeader(
             header: customTabBar(
                 context, con, gameDetails, awayTeam, homeTeam, sportKey),
-            content: sportKey == 'MLB'
+            content: sportKey == 'NBA' || sportKey == 'NCAAB'
                 ? Column(
                     children: [
-                      headerOfHitterPlayerStat(context),
+                      headerOfNBAPlayerStat(context),
                       commonDivider(context),
                       hitterPlayerDetailCard(con),
                     ],
                   )
-                : Column(
-                    children: [
-                      headerOfRunningBacks(context),
-                      commonDivider(context),
-                      runningBacksCard(con, gameDetails),
-                    ],
-                  ));
+                : sportKey == 'MLB'
+                    ? Column(
+                        children: [
+                          headerOfHitterPlayerStat(context),
+                          commonDivider(context),
+                          hitterPlayerDetailCard(con),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          headerOfRunningBacks(context),
+                          commonDivider(context),
+                          runningBacksCard(con, gameDetails),
+                        ],
+                      ));
       }),
     ),
   );
@@ -658,6 +666,7 @@ Padding teamReportNFL(
                 awayOnTap: () {
                   con.isTeamReportTab = true;
                 },
+                isTeamStat: true,
                 homeOnTap: () {
                   con.isTeamReportTab = false;
                 },
@@ -674,7 +683,9 @@ Padding teamReportNFL(
           content: Column(
             children: [
               commonDivider(context),
-              nflOffenseDefenseData(con, context)
+              sportKey == "NBA" || sportKey == "NCAAB"
+                  ? nbaOffenseDefenseData(con, context)
+                  : nflOffenseDefenseData(con, context),
             ],
           )),
     ),
@@ -834,7 +845,7 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           10,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .043,
+            height: MediaQuery.of(context).size.height * .041,
             color: Theme.of(context).indicatorColor,
           ),
         ),
@@ -865,6 +876,101 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
                 con.defensive[index].toString().appCommonText(
+                    color: darkGreyColor,
+                    align: TextAlign.center,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .012),
+              ],
+            ).paddingSymmetric(
+                vertical: MediaQuery.of(context).size.height * .003);
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return commonDivider(context);
+          },
+        ),
+      ),
+    ],
+  );
+}
+
+Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
+  return Row(
+    children: [
+      Expanded(
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: con.nbaOffensive.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                (con.isTeamReportTab
+                        ? ((num.tryParse(con.nflAwayOffensiveList.isEmpty
+                                    ? '0'
+                                    : con.nflAwayOffensiveList[index])) ??
+                                con.nflAwayOffensiveList[index])
+                            .toString()
+                        : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
+                                    ? '0'
+                                    : con.nflHomeOffensiveList[index])) ??
+                                con.nflHomeOffensiveList[index])
+                            .toString())
+                    .appCommonText(
+                        color: Theme.of(context).highlightColor,
+                        weight: FontWeight.w700,
+                        align: TextAlign.center,
+                        size: MediaQuery.of(context).size.height * .014),
+                con.nbaOffensive[index].toString().appCommonText(
+                    color: darkGreyColor,
+                    align: TextAlign.center,
+                    weight: FontWeight.w600,
+                    size: MediaQuery.of(context).size.height * .012),
+              ],
+            ).paddingSymmetric(
+                vertical: MediaQuery.of(context).size.height * .003);
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return commonDivider(context);
+          },
+        ),
+      ),
+      Column(
+        children: List.generate(
+          1,
+          (index) => Container(
+            width: 1,
+            height: MediaQuery.of(context).size.height * .041,
+            color: Theme.of(context).indicatorColor,
+          ),
+        ),
+      ),
+      Expanded(
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: con.nbaDefensive.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                (!con.isTeamReportTab
+                        ? ((num.tryParse(con.nflAwayDefensiveList.isEmpty
+                                    ? '0'
+                                    : con.nflAwayDefensiveList[index])) ??
+                                con.nflAwayDefensiveList[index])
+                            .toString()
+                        : ((num.tryParse(con.nflHomeDefensiveList.isEmpty
+                                    ? '0'
+                                    : con.nflHomeDefensiveList[index])) ??
+                                con.nflHomeDefensiveList[index])
+                            .toString())
+                    .appCommonText(
+                        color: Theme.of(context).highlightColor,
+                        weight: FontWeight.w700,
+                        align: TextAlign.center,
+                        size: MediaQuery.of(context).size.height * .014),
+                con.nbaDefensive[index].toString().appCommonText(
                     color: darkGreyColor,
                     align: TextAlign.center,
                     weight: FontWeight.w600,
@@ -974,6 +1080,7 @@ class HeaderTab extends StatelessWidget {
       required this.homeText,
       this.awayTeam,
       this.homeTeam,
+      this.isTeamStat = false,
       required this.gameDetails,
       this.color,
       required this.title,
@@ -990,10 +1097,12 @@ class HeaderTab extends StatelessWidget {
   final void Function()? awayOnTap;
   final void Function()? homeOnTap;
   final Color? color;
+  final bool? isTeamStat;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * .046,
+        // height: MediaQuery.of(context).size.height * .046,
         width: Get.width,
         decoration: BoxDecoration(
           color: Theme.of(context).disabledColor,
@@ -1001,13 +1110,14 @@ class HeaderTab extends StatelessWidget {
               top: Radius.circular(MediaQuery.of(context).size.width * .01)),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * .004,
               width: Get.width,
             ),
-            const Spacer(),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 3,
@@ -1040,33 +1150,38 @@ class HeaderTab extends StatelessWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * .01,
                         ),
-                        (awayText).appCommonText(
-                          weight: FontWeight.bold,
-                          maxLine: 1,
-                          size: MediaQuery.of(context).size.height * .014,
-                          align: TextAlign.end,
-                          color: Theme.of(context).cardColor,
-                        ),
+                        awayText.length >= 18
+                            ? Container(
+                                width: 150.h,
+                                alignment: Alignment.centerLeft,
+                                child: (awayText).appCommonText(
+                                  weight: FontWeight.bold,
+                                  maxLine: 2,
+                                  size:
+                                      MediaQuery.of(context).size.height * .013,
+                                  align: TextAlign.start,
+                                  color: Theme.of(context).cardColor,
+                                ),
+                              )
+                            : (awayText).appCommonText(
+                                weight: FontWeight.bold,
+                                maxLine: 2,
+                                size: MediaQuery.of(context).size.height * .013,
+                                align: TextAlign.start,
+                                color: Theme.of(context).cardColor,
+                              ),
                       ],
                     ).paddingSymmetric(
                         vertical: MediaQuery.of(context).size.height * .006),
                   ),
                 ),
-                /*Container(
-                  width: 1,
-                  height: MediaQuery.of(context).size.height * .035,
-                  color: backGroundColor,
-                ),*/
                 Expanded(
-                  flex: 2,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: title.appCommonText(
-                      weight: FontWeight.bold,
-                      align: TextAlign.center,
-                      size: MediaQuery.of(context).size.height * .018,
-                      color: Theme.of(context).cardColor,
-                    ),
+                  flex: isTeamStat ?? false ? 2 : 1,
+                  child: title.appCommonText(
+                    weight: FontWeight.bold,
+                    align: TextAlign.center,
+                    size: MediaQuery.of(context).size.height * .018,
+                    color: Theme.of(context).cardColor,
                   ),
                 ),
                 Expanded(
@@ -1114,7 +1229,6 @@ class HeaderTab extends StatelessWidget {
                 ),
               ],
             ),
-            const Spacer(),
             isSelected
                 ? Row(
                     children: [
@@ -1923,6 +2037,51 @@ SizedBox headerOfHitterPlayerStat(BuildContext context) {
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             child: 'AVG'.appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.end,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+      ],
+    ).paddingSymmetric(horizontal: MediaQuery.sizeOf(context).width * .015),
+  );
+}
+
+SizedBox headerOfNBAPlayerStat(BuildContext context) {
+  return SizedBox(
+    height: MediaQuery.sizeOf(context).height * .034,
+    child: Row(
+      children: [
+        Expanded(
+            flex: 3,
+            child: ('Name').appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.start,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: 'Pts/Gm'.appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.end,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: '3s/Gm'.appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.end,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: 'Asst/Gm'.appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.end,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: 'Rbds/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
@@ -4050,63 +4209,71 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                         SizedBox(
                           height: MediaQuery.of(context).size.width * .003,
                         ),
-                        Row(
-                          //  crossAxisAlignment: WrapCrossAlignment.center,
-                          // alignment: WrapAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: (gameDetails.venue != null
-                                              ? '${gameDetails.venue?.name}, '
-                                              : '')
-                                          .toString()
-                                          .appCommonText(
-                                              size: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .014,
-                                              color: lightGrayColor,
-                                              weight: FontWeight.w600),
+                        Visibility(
+                          visible: sportKey == 'NFL' ||
+                              sportKey == 'NCAA' ||
+                              sportKey == 'MLB',
+                          child: Row(
+                            //  crossAxisAlignment: WrapCrossAlignment.center,
+                            // alignment: WrapAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: (gameDetails.venue != null
+                                                ? '${gameDetails.venue?.name}, '
+                                                : '')
+                                            .toString()
+                                            .appCommonText(
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .014,
+                                                color: lightGrayColor,
+                                                weight: FontWeight.w600),
+                                      ),
                                     ),
-                                  ),
-                                  (gameDetails.tmpInFahrenheit == 32
-                                          ? "TBD"
-                                          : gameDetails.tmpInFahrenheit
-                                              .toString()
-                                              .split('.')
-                                              .first)
-                                      .toString()
-                                      .appCommonText(
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .014,
-                                          color: whiteColor,
-                                          weight: FontWeight.w400),
-                                  ' °F '.appCommonText(
-                                    size: MediaQuery.of(context).size.height *
-                                        .01,
-                                    weight: FontWeight.w300,
-                                    color: whiteColor,
-                                  ),
-                                  getWeatherIcon(gameDetails.weather, context,
-                                      MediaQuery.of(context).size.height * .02)
-                                  /*   getWeatherIcon(
-                                      (gameDetails.venue != null
-                                          ? gameDetails.venue?.weather ??
-                                          'Sunny'
-                                          : 'Sunny'),
-                                      context,
-                                      MediaQuery.of(context).size.height * .02)*/
-                                ],
+                                    (gameDetails.tmpInFahrenheit == 32
+                                            ? "TBD"
+                                            : gameDetails.tmpInFahrenheit
+                                                .toString()
+                                                .split('.')
+                                                .first)
+                                        .toString()
+                                        .appCommonText(
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .014,
+                                            color: whiteColor,
+                                            weight: FontWeight.w400),
+                                    ' °F '.appCommonText(
+                                      size: MediaQuery.of(context).size.height *
+                                          .01,
+                                      weight: FontWeight.w300,
+                                      color: whiteColor,
+                                    ),
+                                    getWeatherIcon(
+                                        gameDetails.weather,
+                                        context,
+                                        MediaQuery.of(context).size.height *
+                                            .02)
+                                    /*   getWeatherIcon(
+                                        (gameDetails.venue != null
+                                            ? gameDetails.venue?.weather ??
+                                            'Sunny'
+                                            : 'Sunny'),
+                                        context,
+                                        MediaQuery.of(context).size.height * .02)*/
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         )
                       ],
                     )),

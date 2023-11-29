@@ -16,6 +16,10 @@ class AppUrls {
   // ignore: constant_identifier_names
   static const String MLB_BASE_URL =
       "https://api.sportradar.com/mlb/production/v7/en/";
+  static const String NBA_BASE_URL =
+      "https://api.sportradar.com/nba/trial/v8/en/";
+  static const String NCAAB_BASE_URL =
+      "https://api.sportradar.us/ncaamb/trial/v8/en/";
   // ignore: constant_identifier_names
   static const String NFL_BASE_URL =
       "https://api.sportradar.us/nfl/official/production/v7/en/";
@@ -29,7 +33,8 @@ class AppUrls {
   // ignore: constant_identifier_names
   static const String MLB_APIKEY = "5hnm7xhtgc8q22q2x4w6urvb";
   // ignore: constant_identifier_names
-  static const String NBA_APIKEY = "dwk38t4j9k57uwa8v2tkw673";
+  static const String NBA_APIKEY = "mhu9ht7986xebkx9vptsv3y5";
+  static const String NCAAB_APIKEY = "sp5jxad2v7ue2t6nm5q32a27";
   static const String imageUrl =
       "http://134.209.79.197/hotlines/api/app_images/profile_images/";
 }

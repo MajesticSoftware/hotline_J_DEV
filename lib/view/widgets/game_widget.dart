@@ -14,12 +14,8 @@ import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
 import '../../constant/app_strings.dart';
-import '../../extras/request_constants.dart';
 import '../../generated/assets.dart';
 import '../../model/leauge_model.dart';
-import '../auth/log_in_module/log_in_screen.dart';
-import '../profile_module/profile_screen.dart';
-import 'common_dialog.dart';
 
 class GameWidget extends StatelessWidget {
   const GameWidget(
@@ -42,7 +38,8 @@ class GameWidget extends StatelessWidget {
       required this.homeTeamSpread,
       required this.homeTeamMoneyLine,
       required this.homeTeamOU,
-      this.onTap})
+      this.onTap,
+      required this.isShowWeather})
       : super(key: key);
   final String awayTeamImageUrl;
   final String awayTeamRank;
@@ -61,6 +58,7 @@ class GameWidget extends StatelessWidget {
   final String dateTime;
   final bool isLive;
   final int weather;
+  final bool isShowWeather;
   final num temp;
   final void Function()? onTap;
   @override
@@ -201,18 +199,21 @@ class GameWidget extends StatelessWidget {
                 ),
               ),
               10.w.W(),
-              Expanded(
-                flex: 1,
+              Visibility(
+                visible: isShowWeather,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     (MediaQuery.of(context).size.height * .005).H(),
-                    Text(
-                      dateTime,
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
+                    SizedBox(
+                      width: 50.h,
+                      child: dateTime.appCommonText(
+                        size: Get.height * .012,
+                        color: Theme.of(context).highlightColor,
+                      ),
                     ),
+                    10.w.H(),
                     isLive
                         ? Container(
                             height: MediaQuery.of(context).size.height * .02,
@@ -230,42 +231,76 @@ class GameWidget extends StatelessWidget {
                           )
                         : const SizedBox(),
                     5.w.H(),
-                    getWeatherIcon(weather, context,
-                        MediaQuery.of(context).size.height * .035),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      textBaseline: TextBaseline.alphabetic,
-                      verticalDirection: VerticalDirection.up,
-                      children: [
-                        Text(
-                          temp == 32
-                              ? "TBD"
-                              : '  ${temp.toString().split('.').first}',
-                          style: temp == 32
-                              ? Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                      fontSize: MediaQuery.of(context)
-                                              .size
-                                              .height *
-                                          .014)
-                              : Theme.of(context)
-                                  .textTheme
-                                  .displayMedium!
-                                  .copyWith(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              .024),
-                        ),
-                        Text(
-                          '°F',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                    )
                   ],
+                ),
+              ),
+              Visibility(
+                visible: !isShowWeather,
+                child: Expanded(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      (MediaQuery.of(context).size.height * .005).H(),
+                      Text(
+                        dateTime,
+                        style: Theme.of(context).textTheme.displaySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      isLive
+                          ? Container(
+                              height: MediaQuery.of(context).size.height * .02,
+                              width: MediaQuery.of(context).size.width * .07,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(105),
+                                  color: redColor),
+                              child: Center(
+                                child: 'LIVE'.appCommonText(
+                                    color: whiteColor,
+                                    size: MediaQuery.of(context).size.height *
+                                        .012,
+                                    weight: FontWeight.bold),
+                              ),
+                            )
+                          : const SizedBox(),
+                      5.w.H(),
+                      getWeatherIcon(weather, context,
+                          MediaQuery.of(context).size.height * .035),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        textBaseline: TextBaseline.alphabetic,
+                        verticalDirection: VerticalDirection.up,
+                        children: [
+                          Text(
+                            temp == 32
+                                ? "TBD"
+                                : '  ${temp.toString().split('.').first}',
+                            style: temp == 32
+                                ? Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                .014)
+                                : Theme.of(context)
+                                    .textTheme
+                                    .displayMedium!
+                                    .copyWith(
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                .024),
+                          ),
+                          Text(
+                            '°F',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
               10.w.W(),
@@ -358,11 +393,15 @@ class GameTabCard extends StatelessWidget {
     const Color(0xff0C4981),
     const Color(0xff1A8B47),
     const Color(0xffEABB42),
+    Colors.orange,
+    Colors.deepPurpleAccent
   ];
   final List<Color> sportColor = [
     const Color(0xff0C4981).withOpacity(.4),
     const Color(0xff1A8B47).withOpacity(.4),
     const Color(0xffEABB42).withOpacity(.4),
+    Colors.orange.withOpacity(.4),
+    Colors.deepPurpleAccent.withOpacity(.4),
   ];
   @override
   Widget build(BuildContext context) {
@@ -373,7 +412,7 @@ class GameTabCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return index == 3 /*|| index == 4*/
+                  return index == 5 /*|| index == 4*/
                       ? InkWell(
                           highlightColor: Colors.transparent,
                           onTap: /* Platform.isIOS && index == 3
@@ -446,7 +485,10 @@ class GameTabCard extends StatelessWidget {
                                       MediaQuery.of(context).size.height * .04,
                                   width:
                                       MediaQuery.of(context).size.width * .01,
-                                  fit: BoxFit.contain,
+                                  fit: index == 4
+                                      ? BoxFit.cover
+                                      : BoxFit.contain,
+                                  color: whiteColor,
                                 ).paddingSymmetric(
                                     vertical:
                                         MediaQuery.of(context).size.height *
@@ -475,7 +517,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 4 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 6 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);

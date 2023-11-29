@@ -2,16 +2,9 @@
 class Assets {
   Assets._();
 
-  static const String assetsGamesReponse = 'assets/games_reponse.json';
-  static const String assetsGamesReponseNew = 'assets/games_reponse_new.json';
   static const String assetsImagesBAL = 'assets/images/BAL.svg';
   static const String assetsImagesFire = 'assets/images/fire.svg';
   static const String assetsImagesPITT = 'assets/images/PITT.svg';
-  static const String assetsNflRes = 'assets/nfl_res.json';
-  static const String hotlinesAssetsGamesReponse = 'assets/games_reponse.json';
-  static const String hotlinesAssetsGamesReponseNew =
-      'assets/games_reponse_new.json';
-  static const String hotlinesAssetsNflRes = 'assets/nfl_res.json';
   static const String imagesAUTO = 'assets/images/AUTO.png';
   static const String imagesAppLogo = 'assets/images/app_logo.svg';
   static const String imagesBAL = 'assets/images/BAL.png';
@@ -41,7 +34,9 @@ class Assets {
   static const String imagesNCAA1 = 'assets/images/NCAA1.png';
   static const String imagesNFT = 'assets/images/NFT.png';
   static const String imagesNHL = 'assets/images/NHL.png';
+  static const String imagesNba = 'assets/images/nba.svg';
   static const String imagesNcaa = 'assets/images/ncaa.svg';
+  static const String imagesNcaab = 'assets/images/ncaab.svg';
   static const String imagesNfl = 'assets/images/nfl.svg';
   static const String imagesNfl1 = 'assets/images/nfl1.png';
   static const String imagesNoSportImage = 'assets/images/no_sport_image.png';

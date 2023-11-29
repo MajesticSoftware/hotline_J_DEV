@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../generated/assets.dart';
 
 class LeagueModel {
-  String image;
+  // String image;
   String gameImage;
   String gameName;
   String key;
@@ -13,7 +13,8 @@ class LeagueModel {
   bool isAvailable;
 
   LeagueModel(
-      {required this.image,
+      {
+      // required this.image,
       required this.gameImage,
       required this.gameName,
       required this.key,
@@ -31,18 +32,14 @@ List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
-      image: Assets.imagesNfl1,
       date: formatted,
-      // date: '2023-09-08',
       key: 'NFL',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       sportId: 'sr:sport:16',
       isAvailable: true),
   LeagueModel(
       gameImage: Assets.imagesNcaa,
-      image: Assets.imagesNCAA1,
       date: formatted,
-      // date: '2023-08-26',
       key: 'NCAA',
       gameName: 'NCAAF',
       sportId: 'sr:sport:16',
@@ -51,13 +48,27 @@ List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       gameImage: Assets.imagesMlb,
       gameName: 'MLB',
-      image: Assets.imagesMLB,
       date: formatted,
       key: 'MLB',
       sportId: 'sr:sport:3',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
-
+  LeagueModel(
+      sportId: 'sr:sport:2',
+      gameName: 'NBA',
+      date: formatted,
+      key: 'NBA',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      isAvailable: true,
+      gameImage: Assets.imagesNba),
+  LeagueModel(
+      sportId: 'sr:sport:2',
+      gameName: 'NCAAB',
+      date: formatted,
+      key: 'NCAAB',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      isAvailable: true,
+      gameImage: Assets.imagesNcaab),
 /*
   LeagueModel(
       sportId: 'sr:sport:2',
@@ -66,13 +77,7 @@ List<LeagueModel> sportsLeagueList = [
       key: 'NHL',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: false),
-  LeagueModel(
-      sportId: '',
-      image: Assets.imagesNBA,
-      date: '',
-      key: 'NBA',
-      apiKey: '',
-      isAvailable: false),
+
   LeagueModel(
       sportId: '',
       image: Assets.imagesGOLF,

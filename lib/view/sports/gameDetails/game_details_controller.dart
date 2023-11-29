@@ -42,6 +42,9 @@ class GameDetailsController extends GetxController {
     'Field goal Percentage',
     'Turnovers / Game',
   ];
+  List nbaOffensive = [
+    'Points Per Game',
+  ];
   List hittingMLB = [
     'Runs Scored/Game',
     'Hits/Game',
@@ -67,6 +70,9 @@ class GameDetailsController extends GetxController {
     'Opponent 4th Down Efficiency',
     'Field goal Percentage',
     'Turnovers Created/ Game'
+  ];
+  List nbaDefensive = [
+    'Points Allowed/Game',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -957,6 +963,44 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  List<StartingQBModel> qbsList = [
+    StartingQBModel(
+      playerId: "f2f29019-7306-4b1c-a9d8-e9f802cb06e0",
+      playerName: "Jake Browning",
+      teamId: "ad4ae08f-d808-42d5-a1e6-e9bc4e34d123",
+    ),
+    StartingQBModel(
+      playerId: "dabb52c0-455b-48fe-996b-abf758120623",
+      playerName: "Gardner Minshew",
+      teamId: "82cf9565-6eb9-4f01-bdbd-5aa0d472fcd9",
+    ),
+    StartingQBModel(
+      playerId: "a1ae8db0-eb91-11ed-a4cb-cd397e2b413c",
+      playerName: "Tommy DeVito",
+      teamId: "04aa1c9d-66da-489d-b16a-1dee3f2eec4d",
+    ),
+    StartingQBModel(
+      playerId: "4c8a2f7e-f982-4eca-9d52-cf53df6985a4",
+      playerName: "Will Levis",
+      teamId: "d26a1ca5-722d-4274-8f97-c92e49c96315",
+    ),
+    StartingQBModel(
+      playerId: "dd5a6b6e-ffae-45a5-b8e6-718a9251f374",
+      playerName: "Kyler Murray",
+      teamId: "de760528-1dc0-416a-a978-b510d20692ff",
+    ),
+    StartingQBModel(
+      playerId: "d66ae3ad-8a60-47e7-a3b2-18a1e8377e1b",
+      playerName: "Dorian Thompson-Robinson",
+      teamId: "d5a2eb42-8065-4174-ab79-0a6fa820e35e",
+    ),
+    StartingQBModel(
+      playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
+      playerName: "Joshua Dobbs",
+      teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    ),
+  ];
+
   Future depthChartResponse(
       {String homeTeamId = '',
       String awayTeamId = '',
@@ -967,62 +1011,102 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().depthChartRepo(sportKey: sportKey);
-    try {
-      if (result.status) {
-        if (result.data != null) {
-          DepthChartModel response = DepthChartModel.fromJson(result.data);
-          if (response.teams != null) {
-            int homeIndex = response.teams!
-                .indexWhere((element) => element.id == homeTeamId);
-            if ((homeIndex) >= 0) {
-              response.teams![homeIndex].offense?.forEach((position) {
-                if (position.position?.name == 'QB') {
-                  position.position?.players?.forEach((player) {
-                    if (player.depth == 1 && player.position == "QB") {
-                      gameDetails.homePlayerName =
-                          (player.name ?? "").toString();
-                      gameDetails.homePlayerId = (player.id ?? "").toString();
-                    }
-                  });
-                }
-              });
+
+    int homeInd = qbsList.indexWhere((element) => element.teamId == homeTeamId);
+    if (homeInd >= 0) {
+      gameDetails.homePlayerName = qbsList[homeInd].playerName;
+      gameDetails.homePlayerId = qbsList[homeInd].playerId;
+    } else {
+      try {
+        if (result.status) {
+          if (result.data != null) {
+            DepthChartModel response = DepthChartModel.fromJson(result.data);
+            if (response.teams != null) {
+              int homeIndex = response.teams!
+                  .indexWhere((element) => element.id == homeTeamId);
+              if ((homeIndex) >= 0) {
+                response.teams![homeIndex].offense?.forEach((position) {
+                  if (position.position?.name == 'QB') {
+                    position.position?.players?.forEach((player) {
+                      if (player.depth == 1 && player.position == "QB") {
+                        gameDetails.homePlayerName =
+                            (player.name ?? "").toString();
+                        gameDetails.homePlayerId = (player.id ?? "").toString();
+                      }
+                    });
+                  }
+                });
+              }
             }
-            int awayIndex = response.teams!
-                .indexWhere((element) => element.id == awayTeamId);
-            if ((awayIndex) >= 0) {
-              response.teams![awayIndex].offense?.forEach((position) {
-                if (position.position?.name == 'QB') {
-                  position.position?.players?.forEach((player) {
-                    if (player.depth == 1 && player.position == "QB") {
-                      gameDetails.awayPlayerName =
-                          (player.name ?? "").toString();
-                      gameDetails.awayPlayerId = (player.id ?? "").toString();
-                    }
-                  });
-                }
-              });
-            }
+          } else {
+            showAppSnackBar(
+              result.message,
+            );
+            isLoading.value = false;
           }
         } else {
+          isLoading.value = false;
           showAppSnackBar(
             result.message,
           );
-          isLoading.value = false;
         }
-      } else {
+
+        // isLoading.value = false;
+      } catch (e) {
         isLoading.value = false;
+        log('ERROR NFL HOME STATICS-----------$e');
         showAppSnackBar(
-          result.message,
+          errorText,
         );
       }
+    }
+    int awayInd = qbsList.indexWhere((element) => element.teamId == awayTeamId);
+    if (awayInd >= 0) {
+      gameDetails.awayPlayerName = qbsList[awayInd].playerName;
+      gameDetails.awayPlayerId = qbsList[awayInd].playerId;
+    } else {
+      try {
+        if (result.status) {
+          if (result.data != null) {
+            DepthChartModel response = DepthChartModel.fromJson(result.data);
+            if (response.teams != null) {
+              int awayIndex = response.teams!
+                  .indexWhere((element) => element.id == awayTeamId);
+              if ((awayIndex) >= 0) {
+                response.teams![awayIndex].offense?.forEach((position) {
+                  if (position.position?.name == 'QB') {
+                    position.position?.players?.forEach((player) {
+                      if (player.depth == 1 && player.position == "QB") {
+                        gameDetails.awayPlayerName =
+                            (player.name ?? "").toString();
+                        gameDetails.awayPlayerId = (player.id ?? "").toString();
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          } else {
+            showAppSnackBar(
+              result.message,
+            );
+            isLoading.value = false;
+          }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(
+            result.message,
+          );
+        }
 
-      // isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      log('ERROR NFL HOME STATICS-----------$e');
-      showAppSnackBar(
-        errorText,
-      );
+        // isLoading.value = false;
+      } catch (e) {
+        isLoading.value = false;
+        log('ERROR NFL HOME STATICS-----------$e');
+        showAppSnackBar(
+          errorText,
+        );
+      }
     }
     update();
   }
@@ -1837,6 +1921,39 @@ class GameDetailsController extends GetxController {
         }
       }
     }
+    if (sportKey == 'NBA' || sportKey == "NCAAB") {
+      for (int i = 0; i <= 15; i += 5) {
+        log('i====$i');
+        hotlinesDataResponse(
+                awayTeamId: awayTeam?.id ?? "",
+                sportId: sportId,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(hotLinesDate)),
+                start: i,
+                isLoad: isLoad,
+                homeTeamId: homeTeam?.id ?? "")
+            .then((value) {
+          Future.delayed(const Duration(seconds: 3), () {
+            isHotlines = false;
+            isLoading.value = false;
+          });
+        });
+        if (hotlinesData.isNotEmpty && i == 15) {
+          isHotlines = false;
+          isLoading.value = false;
+          update();
+          break;
+        }
+      }
+    }
     update();
   }
+}
+
+class StartingQBModel {
+  String playerId;
+  String playerName;
+  String teamId;
+  StartingQBModel(
+      {required this.playerId, required this.playerName, required this.teamId});
 }
