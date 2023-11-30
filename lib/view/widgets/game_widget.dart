@@ -485,7 +485,7 @@ class GameTabCard extends StatelessWidget {
                                       MediaQuery.of(context).size.height * .04,
                                   width:
                                       MediaQuery.of(context).size.width * .01,
-                                  fit: index == 4
+                                  fit: index == 4 || index == 3
                                       ? BoxFit.cover
                                       : BoxFit.contain,
                                   color: whiteColor,

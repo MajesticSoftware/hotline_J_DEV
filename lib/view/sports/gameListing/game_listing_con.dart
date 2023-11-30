@@ -942,10 +942,18 @@ class GameListingController extends GetxController {
           if (homeTeamId == game.home?.id) {
             nbaSportEventsList[index].homeScore =
                 (game.home?.points ?? "0").toString();
+            nbaSportEventsList[index].homeWin =
+                (game.home?.record?.wins ?? "0").toString();
+            nbaSportEventsList[index].homeLoss =
+                (game.home?.record?.losses ?? "0").toString();
           }
           if (awayTeamId == game.away?.id) {
             nbaSportEventsList[index].awayScore =
                 (game.away?.points ?? "0").toString();
+            nbaSportEventsList[index].awayWin =
+                (game.away?.record?.wins ?? "0").toString();
+            nbaSportEventsList[index].awayLoss =
+                (game.away?.record?.losses ?? "0").toString();
           }
         }
         update();

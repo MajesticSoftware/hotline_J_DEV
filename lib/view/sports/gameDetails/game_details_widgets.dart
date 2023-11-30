@@ -431,7 +431,17 @@ Padding hitterPlayerStatWidget(
                     children: [
                       headerOfNBAPlayerStat(context),
                       commonDivider(context),
-                      hitterPlayerDetailCard(con),
+                      nbaRushingCard(con, gameDetails),
+                      Obx(() => Visibility(
+                            visible: con.isLoadPlayStatAway.value,
+                            child: circularWidget(context).paddingAll(
+                                MediaQuery.of(context).size.height * .01),
+                          )),
+                      Obx(() => Visibility(
+                            visible: con.isLoadPlayStatHome.value,
+                            child: circularWidget(context).paddingAll(
+                                MediaQuery.of(context).size.height * .01),
+                          ))
                     ],
                   )
                 : sportKey == 'MLB'
@@ -1128,25 +1138,12 @@ class HeaderTab extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         commonCachedNetworkImage(
-                            width: Get.height * .025,
-                            height: Get.height * .025,
-                            imageUrl: isSelected
-                                ? (awayTeam?.abbreviation == 'NCST'
-                                    ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                    : awayTeam?.abbreviation == 'ULL'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                        : awayTeam?.abbreviation == 'ULL'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                            : awayTeam?.abbreviation == 'SHS'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                : gameDetails.gameLogoAwayLink)
-                                : (homeTeam?.abbreviation == 'NCST'
-                                    ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                    : homeTeam?.abbreviation == 'ULL'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                        : homeTeam?.abbreviation == 'SHS'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                            : gameDetails.gameHomeLogoLink)),
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: isSelected
+                              ? awayLogo(awayTeam, gameDetails)
+                              : homeLogo(homeTeam, gameDetails),
+                        ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * .01,
                         ),
@@ -1203,25 +1200,12 @@ class HeaderTab extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .01,
                         ),
                         commonCachedNetworkImage(
-                            width: Get.height * .025,
-                            height: Get.height * .025,
-                            imageUrl: !isSelected
-                                ? (awayTeam?.abbreviation == 'NCST'
-                                    ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                    : awayTeam?.abbreviation == 'ULL'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                        : awayTeam?.abbreviation == 'ULL'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                            : awayTeam?.abbreviation == 'SHS'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                : gameDetails.gameLogoAwayLink)
-                                : (homeTeam?.abbreviation == 'NCST'
-                                    ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                    : homeTeam?.abbreviation == 'ULL'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                        : homeTeam?.abbreviation == 'SHS'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                            : gameDetails.gameHomeLogoLink)),
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: !isSelected
+                              ? awayLogo(awayTeam, gameDetails)
+                              : homeLogo(homeTeam, gameDetails),
+                        ),
                       ],
                     ).paddingSymmetric(
                         vertical: MediaQuery.of(context).size.height * .006),
@@ -1630,6 +1614,202 @@ ListView runningBacksCard(
   );
 }
 
+ListView nbaRushingCard(
+  GameDetailsController con,
+  SportEvents gameDetails,
+) {
+  return ListView.separated(
+    shrinkWrap: true,
+    padding: EdgeInsets.zero,
+    physics: const BouncingScrollPhysics(),
+    itemBuilder: (context, i) {
+      // num totalPlay = con.isTab
+      //     ? gameDetails.awayRushingPlayer[i].gamesPlayed ?? 1
+      //     : gameDetails.homeRushingPlayer[i].gamesPlayed ?? 1;
+
+      return con.isTab
+          ? ExpandableNotifier(
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: nbaAwayHeader(
+                          context,
+                          i,
+                          con,
+                          gameDetails,
+                        ),
+                        collapsed: const SizedBox(),
+                        expanded:
+                            Column() /*Column(
+                          children: [
+                            expandableTileCardRunning(context, con,
+                                value1: ((int.parse(gameDetails
+                                                .awayRushingPlayer[i]
+                                                .
+                                                ?.attempts
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2)),
+                                title1: 'Carries/Game',
+                                title2: 'TD/Game',
+                                value2: ((int.parse(gameDetails
+                                                .awayRushingPlayer[i]
+                                                .rushing
+                                                ?.touchdowns
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2))),
+                            expandableTileCardRunning(context, con,
+                                value1: ((int.parse(gameDetails
+                                                .awayRushingPlayer[i]
+                                                .rushing
+                                                ?.yards
+                                                .toString() ??
+                                            "0") /
+                                        totalPlay)
+                                    .toStringAsFixed(2)),
+                                title1: 'Yards/Game',
+                                title2: 'Longest Run',
+                                value2:
+                                    '${gameDetails.awayRushingPlayer[i].rushing?.longest ?? "0"}'),
+                            expandableTileCardRunning(context, con,
+                                value1: num.parse(gameDetails
+                                            .awayRushingPlayer[i]
+                                            .rushing
+                                            ?.avgYards
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(2),
+                                title1: 'Average Carry',
+                                title2: 'Fumbles',
+                                value2:
+                                    '${gameDetails.awayRushingPlayer[i].fumbles?.fumbles ?? "0"}'),
+                            */ /*  expandableTileCardRunning(context, con,
+                                value1: num.parse(gameDetails
+                                            .awayRushingPlayer[i]
+                                            .receiving
+                                            ?.yards
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(1),
+                                title1: 'Rec Yards/Game',
+                                title2: 'Rec TD/Game',
+                                value2: num.parse(gameDetails
+                                            .awayRushingPlayer[i]
+                                            .receiving
+                                            ?.touchdowns
+                                            .toString() ??
+                                        '0')
+                                    .toStringAsFixed(1)),*/ /*
+                          ],
+                        )*/
+                        ),
+                  ],
+                ),
+              ),
+            )
+          : ExpandableNotifier(
+              key: Key(i.toString()),
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: nbaHomeHeader(
+                          context,
+                          i,
+                          con,
+                          gameDetails,
+                        ),
+                        collapsed: const SizedBox(),
+                        expanded: /*Column(
+                        children: [
+                          expandableTileCardRunning(context, con,
+                              value1: ((int.parse(gameDetails
+                                              .homeRushingPlayer[i]
+                                              .rushing
+                                              ?.attempts
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2)),
+                              title1: 'Carries/Game',
+                              title2: 'TD/Game',
+                              value2: ((int.parse(gameDetails
+                                              .homeRushingPlayer[i]
+                                              .rushing
+                                              ?.touchdowns
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2))),
+                          expandableTileCardRunning(context, con,
+                              value1: ((int.parse(gameDetails
+                                              .homeRushingPlayer[i]
+                                              .rushing
+                                              ?.yards
+                                              .toString() ??
+                                          "0") /
+                                      totalPlay)
+                                  .toStringAsFixed(2)),
+                              title1: 'Yards/Game',
+                              title2: 'Longest Run',
+                              value2:
+                                  '${gameDetails.homeRushingPlayer[i].rushing?.longest ?? "0"}'),
+                          expandableTileCardRunning(context, con,
+                              value1: num.parse(gameDetails
+                                          .homeRushingPlayer[i]
+                                          .rushing
+                                          ?.avgYards
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(2),
+                              title1: 'Average Carry',
+                              title2: 'Fumbles',
+                              value2:
+                                  '${gameDetails.homeRushingPlayer[i].fumbles?.fumbles ?? "0"}'),
+                          */ /*   expandableTileCardRunning(context, con,
+                              value1: num.parse(gameDetails
+                                          .homeRushingPlayer[i]
+                                          .receiving
+                                          ?.yards
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(1),
+                              title1: 'Rec Yards/Game',
+                              title2: 'Rec TD/Game',
+                              value2: num.parse(gameDetails
+                                          .homeRushingPlayer[i]
+                                          .receiving
+                                          ?.touchdowns
+                                          .toString() ??
+                                      '0')
+                                  .toStringAsFixed(1)),*/ /*
+                        ],
+                      ),*/
+                            Column()),
+                  ],
+                ),
+              ),
+            );
+    },
+    separatorBuilder: (BuildContext context, int index) {
+      return gameDetails.awayRushingPlayerName.isEmpty
+          ? const SizedBox()
+          : commonDivider(context);
+    },
+    itemCount: con.isTab
+        ? gameDetails.awayRushingPlayerName.length
+        : gameDetails.homeRushingPlayerName.length,
+  );
+}
+
 Container expandableTileCard(BuildContext context, GameDetailsController con,
     {String title1 = '',
     String value1 = '',
@@ -1932,6 +2112,136 @@ SizedBox runningHomeHeader(
   );
 }
 
+SizedBox nbaHomeHeader(
+  BuildContext context,
+  int index,
+  GameDetailsController con,
+  SportEvents gameDetails,
+) {
+  try {
+    return SizedBox(
+      // height: MediaQuery.sizeOf(context).height * .031,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: (gameDetails.homeRushingPlayerName[index].abbrName ?? "")
+                  .appCommonText(
+                      color: blueColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+        ],
+      ).paddingSymmetric(
+          horizontal: MediaQuery.sizeOf(context).width * .015,
+          vertical: MediaQuery.sizeOf(context).width * .01),
+    );
+  } catch (e) {
+    return const SizedBox();
+  }
+}
+
+SizedBox nbaAwayHeader(
+  BuildContext context,
+  int index,
+  GameDetailsController con,
+  SportEvents gameDetails,
+) {
+  try {
+    return SizedBox(
+      // height: MediaQuery.sizeOf(context).height * .031,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: (gameDetails.awayRushingPlayerName[index].abbrName ?? "")
+                  .appCommonText(
+                      color: blueColor,
+                      align: TextAlign.start,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+                  .toString()
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
+        ],
+      ).paddingSymmetric(
+          horizontal: MediaQuery.sizeOf(context).width * .015,
+          vertical: MediaQuery.sizeOf(context).width * .01),
+    );
+  } catch (e) {
+    return const SizedBox();
+  }
+}
+
 SizedBox runningAwayHeader(
   BuildContext context,
   int index,
@@ -2220,15 +2530,10 @@ Container customTabBar(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: awayTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : awayTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : awayTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameLogoAwayLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: awayLogo(awayTeam, gameDetails),
+                      ),
                     ],
                   ),
                 ),
@@ -2254,15 +2559,10 @@ Container customTabBar(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: homeTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : homeTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : homeTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameHomeLogoLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: homeLogo(homeTeam, gameDetails),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -2363,15 +2663,10 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                         width: MediaQuery.of(context).size.width * .01,
                       ),
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: awayTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : awayTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : awayTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameLogoAwayLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: awayLogo(awayTeam, gameDetails),
+                      ),
                     ],
                   ),
                 ),
@@ -2397,15 +2692,10 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: homeTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : homeTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : homeTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameHomeLogoLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: homeLogo(homeTeam, gameDetails),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -2508,15 +2798,10 @@ Container teamReportTab(BuildContext context, GameDetailsController con,
                         width: MediaQuery.of(context).size.width * .01,
                       ),
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: awayTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : awayTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : awayTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameLogoAwayLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: awayLogo(awayTeam, gameDetails),
+                      ),
                     ],
                   ),
                 ),
@@ -2541,15 +2826,10 @@ Container teamReportTab(BuildContext context, GameDetailsController con,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: homeTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : homeTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : homeTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameHomeLogoLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: homeLogo(homeTeam, gameDetails),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -2671,15 +2951,10 @@ class TabCard extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .01,
                         ),
                         commonCachedNetworkImage(
-                            width: Get.height * .025,
-                            height: Get.height * .025,
-                            imageUrl: awayTeam?.abbreviation == 'NCST'
-                                ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                : awayTeam?.abbreviation == 'ULL'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                    : awayTeam?.abbreviation == 'SHS'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                        : gameDetails.gameLogoAwayLink),
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: awayLogo(awayTeam, gameDetails),
+                        ),
                       ],
                     ),
                   ),
@@ -2702,15 +2977,10 @@ class TabCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         commonCachedNetworkImage(
-                            width: Get.height * .025,
-                            height: Get.height * .025,
-                            imageUrl: homeTeam?.abbreviation == 'NCST'
-                                ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                : homeTeam?.abbreviation == 'ULL'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                    : homeTeam?.abbreviation == 'SHS'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                        : gameDetails.gameHomeLogoLink),
+                          width: Get.height * .025,
+                          height: Get.height * .025,
+                          imageUrl: homeLogo(homeTeam, gameDetails),
+                        ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * .01,
                         ),
@@ -3144,15 +3414,10 @@ Container injuriesTab(BuildContext context, GameDetailsController con,
                         width: MediaQuery.of(context).size.width * .01,
                       ),
                       commonCachedNetworkImage(
-                          width: Get.height * .025,
-                          height: Get.height * .025,
-                          imageUrl: awayTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : awayTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : awayTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameLogoAwayLink),
+                        width: Get.height * .025,
+                        height: Get.height * .025,
+                        imageUrl: awayLogo(awayTeam, gameDetails),
+                      ),
                     ],
                   ),
                 ),
@@ -3179,13 +3444,7 @@ Container injuriesTab(BuildContext context, GameDetailsController con,
                       commonCachedNetworkImage(
                           width: Get.height * .025,
                           height: Get.height * .025,
-                          imageUrl: homeTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : homeTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : homeTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameHomeLogoLink),
+                          imageUrl: homeLogo(homeTeam, gameDetails)),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .01,
                       ),
@@ -3290,17 +3549,10 @@ Container headerTitleWidget(BuildContext context, String title,
                   width: MediaQuery.of(context).size.width * .01,
                 ),
                 commonCachedNetworkImage(
-                    width: Get.height * .025,
-                    height: Get.height * .025,
-                    imageUrl: awayTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : awayTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : awayTeam?.abbreviation == 'ULL'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                : awayTeam?.abbreviation == 'SHS'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                    : gameDetails.gameLogoAwayLink),
+                  width: Get.height * .025,
+                  height: Get.height * .025,
+                  imageUrl: awayLogo(awayTeam, gameDetails),
+                ),
               ],
             ),
           ),
@@ -3323,15 +3575,10 @@ Container headerTitleWidget(BuildContext context, String title,
                       : MainAxisAlignment.start,
               children: [
                 commonCachedNetworkImage(
-                    width: Get.height * .025,
-                    height: Get.height * .025,
-                    imageUrl: homeTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : homeTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : homeTeam?.abbreviation == 'SHS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                : gameDetails.gameHomeLogoLink),
+                  width: Get.height * .025,
+                  height: Get.height * .025,
+                  imageUrl: homeLogo(homeTeam, gameDetails),
+                ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .01,
                 ),
@@ -3537,13 +3784,7 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.network(
-                  awayTeam?.abbreviation == 'NCST'
-                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                      : awayTeam?.abbreviation == 'ULL'
-                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                          : awayTeam?.abbreviation == 'SHS'
-                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                              : gameDetails.gameLogoAwayLink,
+                  awayLogo(awayTeam, gameDetails),
                   width: Get.height * .035,
                   height: Get.height * .035,
                   fit: BoxFit.contain,
@@ -3574,13 +3815,7 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.network(
-                  homeTeam?.abbreviation == 'NCST'
-                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                      : homeTeam?.abbreviation == 'ULL'
-                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                          : homeTeam?.abbreviation == 'SHS'
-                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                              : gameDetails.gameHomeLogoLink,
+                  homeLogo(homeTeam, gameDetails),
                   width: Get.height * .035,
                   height: Get.height * .035,
                   fit: BoxFit.contain,
@@ -3775,20 +4010,8 @@ Widget hotlinesCard(
                                 : con.hotlinesIndex == 2
                                     ? con.hotlinesFData[index].teamId
                                     : con.hotlinesMData[index].teamId))
-                    ? (homeTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : homeTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : homeTeam?.abbreviation == 'SHS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                : gameDetails.gameHomeLogoLink)
-                    : (awayTeam?.abbreviation == 'NCST'
-                        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                        : awayTeam?.abbreviation == 'ULL'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                            : awayTeam?.abbreviation == 'SHS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                : gameDetails.gameLogoAwayLink),
+                    ? homeLogo(homeTeam, gameDetails)
+                    : awayLogo(awayTeam, gameDetails),
                 height: MediaQuery.of(context).size.height * .03,
                 width: MediaQuery.of(context).size.width * .04,
                 fit: BoxFit.contain,
@@ -4028,6 +4251,52 @@ Container tabTitleWidget(BuildContext context) {
       ));
 }
 
+String awayLogo(
+  Competitors? awayTeam,
+  SportEvents gameDetails,
+) {
+  return awayTeam?.abbreviation == 'ALBY'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+      : awayTeam?.abbreviation == 'SCUS'
+          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+          : awayTeam?.abbreviation == 'WEBB'
+              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+              : awayTeam?.abbreviation == 'QUC'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                  : awayTeam?.abbreviation == 'GC'
+                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                      : awayTeam?.abbreviation == 'NCST'
+                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                          : awayTeam?.abbreviation == 'ULL'
+                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                              : awayTeam?.abbreviation == 'SHS'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                  : gameDetails.gameLogoAwayLink;
+}
+
+String homeLogo(
+  Competitors? homeTeam,
+  SportEvents gameDetails,
+) {
+  return homeTeam?.abbreviation == 'ALBY'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+      : homeTeam?.abbreviation == 'SCUS'
+          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+          : homeTeam?.abbreviation == 'WEBB'
+              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+              : homeTeam?.abbreviation == 'QUC'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                  : homeTeam?.abbreviation == 'GC'
+                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                      : homeTeam?.abbreviation == 'NCST'
+                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                          : homeTeam?.abbreviation == 'ULL'
+                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                              : homeTeam?.abbreviation == 'SHS'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                  : gameDetails.gameHomeLogoLink;
+}
+
 headerWidget(BuildContext context, SportEvents gameDetails,
     Competitors? awayTeam, Competitors? homeTeam, String sportKey) {
   return Stack(
@@ -4113,13 +4382,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.network(
-                          awayTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : awayTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : awayTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameLogoAwayLink,
+                          awayLogo(awayTeam, gameDetails),
                           width: Get.height * .048,
                           height: Get.height * .048,
                           fit: BoxFit.contain,
@@ -4293,13 +4556,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                               color: greyColor.withOpacity(0.2),
                             ),
                           ),
-                          homeTeam?.abbreviation == 'NCST'
-                              ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                              : homeTeam?.abbreviation == 'ULL'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                  : homeTeam?.abbreviation == 'SHS'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                      : gameDetails.gameHomeLogoLink,
+                          homeLogo(homeTeam, gameDetails),
                           width: Get.height * .048,
                           height: Get.height * .048,
                           fit: BoxFit.contain,

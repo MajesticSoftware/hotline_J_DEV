@@ -1,4 +1,6 @@
+import 'nba_player_profile_model.dart' as pro;
 import 'nfl_statics_model.dart';
+import 'nba_roster_model.dart' as nba;
 
 class GameListingDataModel {
   String? generatedAt;
@@ -116,6 +118,10 @@ class SportEvents {
   List<Players> homeReceiversPlayer = [];
   List<Players> awayRunningBackPlayer = [];
   List<Players> homeRunningBackPlayer = [];
+  List<pro.Total> homeRushingPlayer = [];
+  List<pro.Total> awayRushingPlayer = [];
+  List<nba.Players> homeRushingPlayerName = [];
+  List<nba.Players> awayRushingPlayerName = [];
   List homeTeamInjuredPlayer = [];
   num temp = 273.15;
   int weather = 805;

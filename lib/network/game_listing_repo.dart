@@ -186,6 +186,25 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NBA PLAYER PROFILE
+  Future<ResponseItem> nbaPlayerProfileRepo(
+      {String playerId = '', String seasons = '', String sportKey = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(sportKey == "NBA"
+        ? '${AppUrls.NBA_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NBA_APIKEY}'
+        : '${AppUrls.NCAAB_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NCAAB_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   Future<ResponseItem> depthChartRepo({String sportKey = ''}) async {
     ResponseItem result;
     bool status = true;
@@ -194,6 +213,25 @@ class GameListingRepo {
     Uri uri = Uri.parse(sportKey == "NFL"
         ? '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year}/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NFL_APIKEY}'
         : '${AppUrls.NCAA_BASE_URL}seasons/${DateTime.now().year}/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NCAA_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///NBA RUSHING ROSTER
+  Future<ResponseItem> nbaRosterRepo(
+      {String teamId = '', String seasons = '', String sportKey = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(sportKey == "NBA"
+        ? '${AppUrls.NBA_BASE_URL}teams/$teamId/profile.json?api_key=${AppUrls.NBA_APIKEY}'
+        : '${AppUrls.NCAAB_BASE_URL}teams/$teamId/profile.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

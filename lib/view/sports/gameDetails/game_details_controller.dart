@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
+import 'package:hotlines/model/nba_player_profile_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 
 import 'package:hotlines/utils/utils.dart';
@@ -14,6 +15,7 @@ import '../../../model/game_model.dart';
 
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
+import '../../../model/nba_roster_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
@@ -956,6 +958,186 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERROR NFL HOME STATICS-----------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  ///NBA ROSTER PLAYER STATICS
+  Future nbaRosterStaticsHomeResponse(
+      {String homeTeamId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaRosterRepo(
+        teamId: homeTeamId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
+    gameDetails.homeRushingPlayerName.clear();
+    gameDetails.homeRushingPlayer.clear();
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NBARosterModel response = NBARosterModel.fromJson(result.data);
+          if (response.id == homeTeamId) {
+            response.players?.forEach((player) async {
+              if (player.status == 'ACT') {
+                gameDetails.homeRushingPlayerName.add(player);
+              }
+            });
+          }
+        } else {
+          isLoading.value = false;
+        }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR NBA HOME STATICS-----------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  Future nbaRosterStaticsAwayResponse(
+      {String awayTeamId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaRosterRepo(
+        teamId: awayTeamId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
+    gameDetails.awayRushingPlayerName.clear();
+    gameDetails.awayRushingPlayer.clear();
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NBARosterModel response = NBARosterModel.fromJson(result.data);
+          if (response.id == awayTeamId) {
+            response.players?.forEach((player) async {
+              if (player.status == 'ACT') {
+                gameDetails.awayRushingPlayerName.add(player);
+              }
+            });
+          }
+        } else {
+          isLoading.value = false;
+        }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR NBA HOME STATICS-----------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  RxBool isLoadPlayStatAway = false.obs;
+
+  ///NBA Away PLAYER PROFILE
+  Future nbaAwayPlayerProfileResponse(
+      {String playerId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    isLoadPlayStatAway.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaPlayerProfileRepo(
+        playerId: playerId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
+
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NBAPlayerProfileModel response =
+              NBAPlayerProfileModel.fromJson(result.data);
+          if (response.seasons != null) {
+            response.seasons?.forEach((season) {
+              if (season.year == DateTime.now().year) {
+                season.teams?.forEach((team) {
+                  gameDetails.awayRushingPlayer.add(team.total!);
+                });
+              }
+            });
+          }
+        } else {
+          isLoadPlayStatAway.value = false;
+        }
+      } else {
+        isLoadPlayStatAway.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      isLoadPlayStatAway.value = false;
+      log('ERROR isLoadPlayStat AWAY STATICS------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
+
+  RxBool isLoadPlayStatHome = false.obs;
+
+  ///NBA HOME PLAYER PROFILE
+  Future nbaHomePlayerProfileResponse(
+      {String playerId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    isLoadPlayStatHome.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaPlayerProfileRepo(
+        playerId: playerId,
+        seasons: DateTime.now().year.toString(),
+        sportKey: sportKey);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NBAPlayerProfileModel response =
+              NBAPlayerProfileModel.fromJson(result.data);
+          if (response.seasons != null) {
+            response.seasons?.forEach((season) {
+              if (season.year == DateTime.now().year) {
+                season.teams?.forEach((team) {
+                  gameDetails.homeRushingPlayer.add(team.total!);
+                });
+              }
+            });
+          }
+        } else {
+          isLoadPlayStatHome.value = false;
+        }
+      } else {
+        isLoadPlayStatHome.value = false;
+        // showAppSnackBar(
+        //   result.message,
+        // );
+      }
+    } catch (e) {
+      isLoadPlayStatHome.value = false;
+      log('ERROR isLoadPlayStat AWAY STATICS------$e');
       showAppSnackBar(
         errorText,
       );
@@ -1922,6 +2104,39 @@ class GameDetailsController extends GetxController {
       }
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
+      isHotlines = true;
+      if (sportKey == 'NBA') {
+        await nbaRosterStaticsHomeResponse(
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          isLoad: isLoad,
+          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+        );
+        await nbaRosterStaticsAwayResponse(
+            gameDetails: gameDetails,
+            sportKey: sportKey,
+            isLoad: isLoad,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+        gameDetails.awayRushingPlayer.clear();
+        for (var player in gameDetails.awayRushingPlayerName) {
+          await nbaAwayPlayerProfileResponse(
+                  gameDetails: gameDetails,
+                  sportKey: sportKey,
+                  isLoad: isLoad,
+                  playerId: player.id ?? "")
+              .then((value) => isLoadPlayStatAway.value = false);
+        }
+        gameDetails.homeRushingPlayer.clear();
+        for (var player in gameDetails.homeRushingPlayerName) {
+          await nbaHomePlayerProfileResponse(
+                  gameDetails: gameDetails,
+                  sportKey: sportKey,
+                  isLoad: isLoad,
+                  playerId: player.id ?? "")
+              .then((value) => isLoadPlayStatHome.value = false);
+        }
+      }
+
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         hotlinesDataResponse(

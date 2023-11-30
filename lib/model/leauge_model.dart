@@ -60,7 +60,7 @@ List<LeagueModel> sportsLeagueList = [
       key: 'NBA',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true,
-      gameImage: Assets.imagesNba),
+      gameImage: Assets.imagesNcaab),
   LeagueModel(
       sportId: 'sr:sport:2',
       gameName: 'NCAAB',

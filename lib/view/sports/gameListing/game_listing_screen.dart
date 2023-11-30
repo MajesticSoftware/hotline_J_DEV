@@ -513,22 +513,10 @@ class SelectGameScreen extends StatelessWidget {
                                                 .status ==
                                             'live',
                                         dateTime: '$date, $dateTime',
-                                        awayTeamImageUrl: spotList(
-                                                        controller)[index]
-                                                    .awayTeam ==
-                                                'North Carolina State Wolfpack'
-                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                            : spotList(controller)[index]
-                                                        .awayTeam ==
-                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                : spotList(controller)[index]
-                                                            .awayTeam ==
-                                                        'Sam Houston State Bearkats'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : spotList(
-                                                            controller)[index]
-                                                        .gameLogoAwayLink,
+                                        awayTeamImageUrl: awayLogo(
+                                            spotList(controller)[index],
+                                            controller,
+                                            index),
                                         awayTeamRank:
                                             (spotList(controller)[index]
                                                         .awayRank ==
@@ -545,22 +533,10 @@ class SelectGameScreen extends StatelessWidget {
                                         awayTeamScore:
                                             (spotList(controller)[index]
                                                 .awayScore),
-                                        homeTeamImageUrl: spotList(
-                                                        controller)[index]
-                                                    .homeTeam ==
-                                                'North Carolina State Wolfpack'
-                                            ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                            : spotList(controller)[index]
-                                                        .homeTeam ==
-                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                : spotList(controller)[index]
-                                                            .homeTeam ==
-                                                        'Sam Houston State Bearkats'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                    : spotList(
-                                                            controller)[index]
-                                                        .gameHomeLogoLink,
+                                        homeTeamImageUrl: homeLogo(
+                                            spotList(controller)[index],
+                                            controller,
+                                            index),
                                         homeTeamRank:
                                             (spotList(controller)[index]
                                                         .homeRank ==
@@ -626,16 +602,8 @@ class SelectGameScreen extends StatelessWidget {
                               temp: competitors.tmpInFahrenheit,
                               isLive: competitors.status == 'live',
                               dateTime: '$date, $dateTime',
-                              awayTeamImageUrl: competitors.awayTeam ==
-                                      'North Carolina State Wolfpack'
-                                  ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                  : competitors.awayTeam ==
-                                          'Louisiana-Lafayette Ragin Cajuns'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                      : competitors.awayTeam ==
-                                              'Sam Houston State Bearkats'
-                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                          : competitors.gameLogoAwayLink,
+                              awayTeamImageUrl:
+                                  awayLogo(competitors, controller, index),
                               awayTeamRank: (competitors.awayRank == '0'
                                   ? ''
                                   : competitors.awayRank),
@@ -643,16 +611,8 @@ class SelectGameScreen extends StatelessWidget {
                                   ? competitors.awayTeamAbb
                                   : competitors.awayTeam),
                               awayTeamScore: (competitors.awayScore),
-                              homeTeamImageUrl: competitors.homeTeam ==
-                                      'North Carolina State Wolfpack'
-                                  ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                                  : competitors.homeTeam ==
-                                          'Louisiana-Lafayette Ragin Cajuns'
-                                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                      : competitors.homeTeam ==
-                                              'Sam Houston State Bearkats'
-                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                          : competitors.gameHomeLogoLink,
+                              homeTeamImageUrl:
+                                  homeLogo(competitors, controller, index),
                               homeTeamRank: (competitors.homeRank == '0'
                                   ? ''
                                   : competitors.homeRank),
@@ -675,6 +635,52 @@ class SelectGameScreen extends StatelessWidget {
             controller.isLoading.value ? const AppProgress() : const SizedBox())
       ],
     );
+  }
+
+  String awayLogo(
+      SportEvents competitors, GameListingController controller, int index) {
+    return competitors.awayTeam == 'North Carolina State Wolfpack'
+        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+        : competitors.awayTeamAbb == 'ALBY'
+            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+            : competitors.awayTeamAbb == 'SCUS'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                : competitors.awayTeamAbb == 'WEBB'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                    : competitors.awayTeamAbb == 'QUC'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                        : competitors.awayTeamAbb == 'GC'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                            : competitors.awayTeam ==
+                                    'Louisiana-Lafayette Ragin Cajuns'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                : competitors.awayTeam ==
+                                        'Sam Houston State Bearkats'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                    : competitors.gameLogoAwayLink;
+  }
+
+  String homeLogo(
+      SportEvents competitors, GameListingController controller, int index) {
+    return competitors.homeTeam == 'North Carolina State Wolfpack'
+        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+        : competitors.homeTeamAbb == 'ALBY'
+            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+            : competitors.homeTeamAbb == 'WEBB'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                : competitors.homeTeamAbb == 'SCUS'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                    : competitors.homeTeamAbb == 'QUC'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                        : competitors.homeTeamAbb == 'GC'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                            : competitors.homeTeam ==
+                                    'Louisiana-Lafayette Ragin Cajuns'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                : competitors.homeTeam ==
+                                        'Sam Houston State Bearkats'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                    : competitors.gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

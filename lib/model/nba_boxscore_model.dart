@@ -123,6 +123,7 @@ class Home {
   String? srId;
   num? remainingTimeouts;
   String? reference;
+  Record? record;
   List<Scoring>? scoring;
   Leaders? leaders;
 
@@ -136,6 +137,7 @@ class Home {
       this.srId,
       this.remainingTimeouts,
       this.reference,
+      this.record,
       this.scoring,
       this.leaders});
 
@@ -155,6 +157,7 @@ class Home {
         scoring!.add(Scoring.fromJson(v));
       });
     }
+    record = json['record'] != null ? Record.fromJson(json['record']) : null;
     leaders =
         json['leaders'] != null ? Leaders.fromJson(json['leaders']) : null;
   }
@@ -170,12 +173,34 @@ class Home {
     data['sr_id'] = srId;
     data['remaining_timeouts'] = remainingTimeouts;
     data['reference'] = reference;
+    if (record != null) {
+      data['record'] = record!.toJson();
+    }
     if (scoring != null) {
       data['scoring'] = scoring!.map((v) => v.toJson()).toList();
     }
     if (leaders != null) {
       data['leaders'] = leaders!.toJson();
     }
+    return data;
+  }
+}
+
+class Record {
+  int? wins;
+  int? losses;
+
+  Record({this.wins, this.losses});
+
+  Record.fromJson(Map<String, dynamic> json) {
+    wins = json['wins'];
+    losses = json['losses'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['wins'] = wins;
+    data['losses'] = losses;
     return data;
   }
 }
