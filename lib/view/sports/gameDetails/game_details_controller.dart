@@ -113,16 +113,16 @@ class GameDetailsController extends GetxController {
     'Passing TDs/Game',
     'Rushing Yards/Game',
     'Rushing TDs/Game',
-    // 'Interceptions',
+    'Interceptions',
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
     'Passing TDs Allowed/Game',
     'Rushing Yards Allowed/Game',
     'Rushing TDs Allowed/Game',
-    // 'Interceptions',
+    'Interceptions',
   ];
-  bool _isQuarterBacksTab = true;
+  /*bool _isQuarterBacksTab = true;
 
   bool get isQuarterBacksTab => _isQuarterBacksTab;
 
@@ -158,7 +158,7 @@ class GameDetailsController extends GetxController {
     _isTab1 = value;
 
     update();
-  }
+  }*/
 
   bool _isTeamReportTab = true;
 
@@ -361,6 +361,8 @@ class GameDetailsController extends GetxController {
                                   "0") /
                               totalPlay)
                           .toStringAsFixed(2)),
+                      (static.statistics?.passing?.interceptions ?? "0")
+                          .toString(),
                     ];
                   });
                 }
@@ -424,6 +426,8 @@ class GameDetailsController extends GetxController {
                                   "0") /
                               totalPlay)
                           .toStringAsFixed(2)),
+                      (static.statistics?.passing?.interceptions ?? "0")
+                          .toString(),
                     ];
                   });
                 }
@@ -925,7 +929,7 @@ class GameDetailsController extends GetxController {
                                       "0") /
                                   totalPlay)
                               .toStringAsFixed(2)),
-                          // (player.passing?.interceptions ?? "0").toString(),
+                          (player.passing?.interceptions ?? "0").toString(),
                           // (player.fumbles?.fumbles ?? "0").toString(),
                         ];
                         gameDetails.homePlayerName =
@@ -1073,7 +1077,7 @@ class GameDetailsController extends GetxController {
             response.seasons?.forEach((season) {
               if (season.year == DateTime.now().year) {
                 season.teams?.forEach((team) {
-                  gameDetails.awayRushingPlayer.add(team.total!);
+                  gameDetails.awayRushingPlayer.add(team.average!);
                 });
               }
             });
@@ -1121,7 +1125,7 @@ class GameDetailsController extends GetxController {
             response.seasons?.forEach((season) {
               if (season.year == DateTime.now().year) {
                 season.teams?.forEach((team) {
-                  gameDetails.homeRushingPlayer.add(team.total!);
+                  gameDetails.homeRushingPlayer.add(team.average!);
                 });
               }
             });
@@ -1451,7 +1455,7 @@ class GameDetailsController extends GetxController {
                                       "0") /
                                   totalPlay)
                               .toStringAsFixed(2)),
-                          // (player.passing?.interceptions ?? "0").toString(),
+                          (player.passing?.interceptions ?? "0").toString(),
                           // (player.fumbles?.fumbles ?? "0").toString(),
                         ];
 

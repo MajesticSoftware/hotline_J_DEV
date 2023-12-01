@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../constant/shred_preference.dart';
 
@@ -107,6 +109,40 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                             context, widget.gameDetails, awayTeam, homeTeam),
                         hotlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam, _tabController!),
+                        20.h.H(),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.width * .01),
+                              color: Theme.of(context).canvasColor),
+                          child: Row(
+                            children: [
+                              20.h.W(),
+                              ClipTab(
+                                isSelected: con.isTeamReportTab,
+                                teamLogo:
+                                    awayLogo(awayTeam, widget.gameDetails),
+                                onTap: () {
+                                  con.isTeamReportTab = true;
+                                },
+                              ),
+                              80.h.W(),
+                              ClipTab(
+                                isSelected: !con.isTeamReportTab,
+                                onTap: () {
+                                  con.isTeamReportTab = false;
+                                },
+                                teamLogo:
+                                    homeLogo(homeTeam, widget.gameDetails),
+                              ),
+                              20.h.W(),
+                            ],
+                          ).paddingSymmetric(
+                            vertical: 5,
+                          ),
+                        ).paddingSymmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.height * .02),
                         widget.sportKey == 'MLB'
                             ? teamReportWidget(context, widget.sportKey,
                                 widget.gameDetails, awayTeam, homeTeam)

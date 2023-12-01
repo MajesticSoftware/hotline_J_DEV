@@ -1595,16 +1595,16 @@ class GameListingController extends GetxController {
           if (nbaSportEventsList.isNotEmpty) {
             for (int i = 0; i < nbaSportEventsList.length; i++) {
               if (nbaSportEventsList[i].uuids != null) {
-                await boxScoreNBAResponse(
-                    sportKey: sportKey,
-                    homeTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
-                        "",
-                    gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
-                    index: i);
+                // await boxScoreNBAResponse(
+                //     sportKey: sportKey,
+                //     homeTeamId: replaceId(
+                //             nbaSportEventsList[i].competitors[0].uuids ?? '') ??
+                //         "",
+                //     awayTeamId: replaceId(
+                //             nbaSportEventsList[i].competitors[1].uuids ?? '') ??
+                //         "",
+                //     gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
+                //     index: i);
               }
             }
           }
@@ -1706,18 +1706,18 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   nbaTodayEventsList[i].status != 'closed') {
                 if (nbaTodayEventsList[i].uuids != null) {
-                  await boxScoreNBAResponse(
-                      sportKey: sportKey,
-                      homeTeamId: replaceId(
-                              nbaTodayEventsList[i].competitors[0].uuids ??
-                                  '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              nbaTodayEventsList[i].competitors[1].uuids ??
-                                  '') ??
-                          "",
-                      gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
-                      index: i);
+                  // await boxScoreNBAResponse(
+                  //     sportKey: sportKey,
+                  //     homeTeamId: replaceId(
+                  //             nbaTodayEventsList[i].competitors[0].uuids ??
+                  //                 '') ??
+                  //         "",
+                  //     awayTeamId: replaceId(
+                  //             nbaTodayEventsList[i].competitors[1].uuids ??
+                  //                 '') ??
+                  //         "",
+                  //     gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
+                  //     index: i);
                 }
               }
             }

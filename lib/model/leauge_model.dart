@@ -45,14 +45,7 @@ List<LeagueModel> sportsLeagueList = [
       sportId: 'sr:sport:16',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
-  LeagueModel(
-      gameImage: Assets.imagesMlb,
-      gameName: 'MLB',
-      date: formatted,
-      key: 'MLB',
-      sportId: 'sr:sport:3',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: true),
+
   LeagueModel(
       sportId: 'sr:sport:2',
       gameName: 'NBA',
@@ -69,6 +62,14 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
+  LeagueModel(
+      gameImage: Assets.imagesMlb,
+      gameName: 'MLB',
+      date: formatted,
+      key: 'MLB',
+      sportId: 'sr:sport:3',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      isAvailable: true),
 /*
   LeagueModel(
       sportId: 'sr:sport:2',

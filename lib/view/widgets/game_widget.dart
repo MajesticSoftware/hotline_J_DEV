@@ -140,7 +140,7 @@ class GameWidget extends StatelessWidget {
                           Expanded(
                             flex: 0,
                             child: Text(
-                              '  Vs',
+                              '  @',
                               style: Theme.of(context).textTheme.labelSmall,
                               textAlign: TextAlign.center,
                             ),
@@ -207,7 +207,7 @@ class GameWidget extends StatelessWidget {
                   children: [
                     (MediaQuery.of(context).size.height * .005).H(),
                     SizedBox(
-                      width: 50.h,
+                      width: 60.h,
                       child: dateTime.appCommonText(
                         size: Get.height * .012,
                         color: Theme.of(context).highlightColor,
@@ -412,14 +412,16 @@ class GameTabCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return index == 5 /*|| index == 4*/
+                  return /*index == 5 */ /*|| index == 4*/ /*
                       ? InkWell(
                           highlightColor: Colors.transparent,
-                          onTap: /* Platform.isIOS && index == 3
+                          onTap: */
+                      /* Platform.isIOS && index == 3
                               ? onTapContact
                               : index == 3
                                   ?*/
-                              onTapGambling /*  : onTapContact*/,
+                      /*
+                              onTapGambling */ /*  : onTapContact*/ /*,
                           child: Container(
                             height: MediaQuery.of(context).size.height * .05,
                             decoration: BoxDecoration(
@@ -427,11 +429,11 @@ class GameTabCard extends StatelessWidget {
                                 color: Theme.of(context).primaryColor),
                             child: Center(
                               child:
-                                  (/*Platform.isIOS && index == 3
+                                  (*/ /*Platform.isIOS && index == 3
                                       ? 'Contact'
                                       : index == 3
-                                          ?*/
-                                          gambling /*: 'Contact'*/)
+                                          ?*/ /*
+                                          gambling */ /*: 'Contact'*/ /*)
                                       .appCommonText(
                                           color: Theme.of(context).cardColor,
                                           align: TextAlign.start,
@@ -444,20 +446,21 @@ class GameTabCard extends StatelessWidget {
                             ),
                           ),
                         )
-                      : GestureDetector(
-                          onTap: () {
-                            controller.tabClick(context, index);
-                            controller.update();
-                          },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * .05,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.r),
-                                color: controller.isSelectedGame ==
-                                        sportsLeagueList[index].gameName
-                                    ? sportSelectedColor[index]
-                                    : sportColor[index]
-                                /*image: controller.isSelectedGame ==
+                      :*/
+                      GestureDetector(
+                    onTap: () {
+                      controller.tabClick(context, index);
+                      controller.update();
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * .05,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          color: controller.isSelectedGame ==
+                                  sportsLeagueList[index].gameName
+                              ? sportSelectedColor[index]
+                              : sportColor[index]
+                          /*image: controller.isSelectedGame ==
                                         sportsLeagueList[index].gameName
                                     ? DecorationImage(
                                         image: AssetImage(
@@ -474,50 +477,44 @@ class GameTabCard extends StatelessWidget {
                                             BlendMode.dstATop),
                                         fit: BoxFit.cover,
                                       )*/
-                                ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  sportsLeagueList[index].gameImage,
-                                  height:
-                                      MediaQuery.of(context).size.height * .04,
-                                  width:
-                                      MediaQuery.of(context).size.width * .01,
-                                  fit: index == 4 || index == 3
-                                      ? BoxFit.cover
-                                      : BoxFit.contain,
-                                  color: whiteColor,
-                                ).paddingSymmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            .010,
-                                    horizontal:
-                                        MediaQuery.of(context).size.height *
-                                            .010),
-                                sportsLeagueList[index]
-                                    .gameName
-                                    .appCommonText(
-                                        color: Colors.white,
-                                        align: TextAlign.start,
-                                        size:
-                                            MediaQuery.of(context).size.height *
-                                                .018,
-                                        weight: FontWeight.w700)
-                                    .paddingOnly(
-                                        right:
-                                            MediaQuery.of(context).size.height *
-                                                .020)
-                              ],
-                            ),
                           ),
-                        );
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            sportsLeagueList[index].gameImage,
+                            height: MediaQuery.of(context).size.height * .04,
+                            width: MediaQuery.of(context).size.width * .01,
+                            fit: index == 2 || index == 3
+                                ? BoxFit.cover
+                                : BoxFit.contain,
+                            color: whiteColor,
+                          ).paddingSymmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * .010,
+                              horizontal:
+                                  MediaQuery.of(context).size.height * .010),
+                          sportsLeagueList[index]
+                              .gameName
+                              .appCommonText(
+                                  color: Colors.white,
+                                  align: TextAlign.start,
+                                  size:
+                                      MediaQuery.of(context).size.height * .018,
+                                  weight: FontWeight.w700)
+                              .paddingOnly(
+                                  right:
+                                      MediaQuery.of(context).size.height * .020)
+                        ],
+                      ),
+                    ),
+                  );
                 },
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 6 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 5 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);

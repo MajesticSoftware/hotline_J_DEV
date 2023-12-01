@@ -118,8 +118,8 @@ class SportEvents {
   List<Players> homeReceiversPlayer = [];
   List<Players> awayRunningBackPlayer = [];
   List<Players> homeRunningBackPlayer = [];
-  List<pro.Total> homeRushingPlayer = [];
-  List<pro.Total> awayRushingPlayer = [];
+  List<pro.Average> homeRushingPlayer = [];
+  List<pro.Average> awayRushingPlayer = [];
   List<nba.Players> homeRushingPlayerName = [];
   List<nba.Players> awayRushingPlayerName = [];
   List homeTeamInjuredPlayer = [];

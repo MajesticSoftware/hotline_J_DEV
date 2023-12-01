@@ -166,12 +166,44 @@ class SelectGameScreen extends StatelessWidget {
               },
             ),
             drawerCard(
+              widget: SvgPicture.asset(
+                Assets.imagesNcaab,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .035,
+                width: MediaQuery.of(context).size.width * .035,
+                fit: BoxFit.cover,
+              ),
+              title: 'NBA',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.tabClick(context, 2);
+                controller.update();
+              },
+            ),
+            drawerCard(
+              widget: SvgPicture.asset(
+                Assets.imagesNcaab,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .035,
+                width: MediaQuery.of(context).size.width * .035,
+                fit: BoxFit.cover,
+              ),
+              title: 'NCAAB',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState!.closeDrawer();
+                controller.tabClick(context, 3);
+                controller.update();
+              },
+            ),
+            drawerCard(
               icon: Assets.imagesMlb,
               title: 'MLB',
               context: context,
               onTap: () {
                 scaffoldKey.currentState!.closeDrawer();
-                controller.tabClick(context, 2);
+                controller.tabClick(context, 4);
                 controller.update();
               },
             ),

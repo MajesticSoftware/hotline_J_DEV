@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -495,11 +497,12 @@ Padding wrPlayersWidget(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, i) {
-                    num totalPlay = con.isTab1
-                        ? gameDetails.awayReceiversPlayer[i].gamesPlayed ?? 1
-                        : gameDetails.homeReceiversPlayer[i].gamesPlayed ?? 1;
-
-                    return con.isTab1
+                    num totalPlay = con.isTeamReportTab
+                        ? num.parse(gameDetails.awayWin) +
+                            num.parse(gameDetails.awayLoss)
+                        : num.parse(gameDetails.homeWin) +
+                            num.parse(gameDetails.homeLoss);
+                    return con.isTeamReportTab
                         ? ExpandableNotifier(
                             initialExpanded: i == con.isExpand,
                             child: ScrollOnExpand(
@@ -509,46 +512,21 @@ Padding wrPlayersWidget(
                                       theme: const ExpandableThemeData(
                                           hasIcon: false),
                                       header: receivingAwayPlayerCard(
-                                          context, gameDetails, i),
+                                          context, gameDetails, i, totalPlay),
                                       collapsed: const SizedBox(),
                                       expanded: Column(
                                         children: [
                                           expandableTileCardRunning(
                                               context, con,
-                                              value1: ((int.parse(gameDetails
-                                                              .awayReceiversPlayer[
-                                                                  i]
-                                                              .receiving
-                                                              ?.receptions
-                                                              .toString() ??
-                                                          "0") /
-                                                      totalPlay)
-                                                  .toStringAsFixed(2)),
-                                              title1: 'Receptions/Game',
-                                              title2: 'TD/Game',
-                                              value2: ((int.parse(gameDetails
-                                                              .awayReceiversPlayer[
-                                                                  i]
-                                                              .receiving
-                                                              ?.touchdowns
-                                                              .toString() ??
-                                                          "0") /
-                                                      totalPlay)
-                                                  .toStringAsFixed(2))),
-                                          expandableTileCardRunning(
-                                              context, con,
-                                              value1: ((int.parse(gameDetails
-                                                              .awayReceiversPlayer[
-                                                                  i]
-                                                              .receiving
-                                                              ?.yards
-                                                              .toString() ??
-                                                          "0") /
-                                                      totalPlay)
-                                                  .toStringAsFixed(2)),
-                                              title1: 'Yards/Game',
-                                              title2: 'Longest Catch',
-                                              value2:
+                                              value2: (gameDetails
+                                                      .awayReceiversPlayer[i]
+                                                      .receiving
+                                                      ?.yards
+                                                      .toString() ??
+                                                  "0"),
+                                              title2: 'Yards',
+                                              title1: 'Longest Catch',
+                                              value1:
                                                   '${gameDetails.awayReceiversPlayer[i].receiving?.longest ?? "0"}'),
                                           expandableTileCardRunning(
                                               context, con,
@@ -574,44 +552,20 @@ Padding wrPlayersWidget(
                                     theme: const ExpandableThemeData(
                                         hasIcon: false),
                                     header: receivingHomePlayerCard(
-                                        context, gameDetails, i),
+                                        context, gameDetails, i, totalPlay),
                                     collapsed: const SizedBox(),
                                     expanded: Column(
                                       children: [
                                         expandableTileCardRunning(context, con,
-                                            value1: ((int.parse(gameDetails
-                                                            .homeReceiversPlayer[
-                                                                i]
-                                                            .receiving
-                                                            ?.receptions
-                                                            .toString() ??
-                                                        "0") /
-                                                    totalPlay)
-                                                .toStringAsFixed(2)),
-                                            title1: 'Receptions/Game',
-                                            title2: 'TD/Game',
-                                            value2: ((int.parse(gameDetails
-                                                            .homeReceiversPlayer[
-                                                                i]
-                                                            .receiving
-                                                            ?.touchdowns
-                                                            .toString() ??
-                                                        "0") /
-                                                    totalPlay)
-                                                .toStringAsFixed(2))),
-                                        expandableTileCardRunning(context, con,
-                                            value1: ((int.parse(gameDetails
-                                                            .homeReceiversPlayer[
-                                                                i]
-                                                            .receiving
-                                                            ?.yards
-                                                            .toString() ??
-                                                        "0") /
-                                                    totalPlay)
-                                                .toStringAsFixed(2)),
-                                            title1: 'Yards/Game',
-                                            title2: 'Longest Catch',
-                                            value2:
+                                            value2: gameDetails
+                                                    .homeReceiversPlayer[i]
+                                                    .receiving
+                                                    ?.yards
+                                                    .toString() ??
+                                                "0",
+                                            title2: 'Yards',
+                                            title1: 'Longest Catch',
+                                            value1:
                                                 '${gameDetails.homeReceiversPlayer[i].receiving?.longest ?? "0"}'),
                                         expandableTileCardRunning(context, con,
                                             value1:
@@ -631,7 +585,7 @@ Padding wrPlayersWidget(
                   separatorBuilder: (context, index) {
                     return commonDivider(context);
                   },
-                  itemCount: con.isTab1
+                  itemCount: con.isTeamReportTab
                       ? gameDetails.awayReceiversPlayer.length
                       : gameDetails.homeReceiversPlayer.length,
                 )
@@ -642,7 +596,7 @@ Padding wrPlayersWidget(
   );
 }
 
-Padding teamReportNFL(
+Widget teamReportNFL(
     BuildContext context,
     GameDetailsController con,
     SportEvents gameDetails,
@@ -672,6 +626,7 @@ Padding teamReportNFL(
                   homeOnTap: () {
                     con.isTeamReportTab = false;
                   }),*/
+
               HeaderTab(
                 awayOnTap: () {
                   con.isTeamReportTab = true;
@@ -683,8 +638,8 @@ Padding teamReportNFL(
                 title: 'Team Stats',
                 isSelected: con.isTeamReportTab,
                 gameDetails: gameDetails,
-                homeText: 'Defense',
-                awayText: 'Offense',
+                awayText: con.isTeamReportTab ? "Offense" : 'Defense',
+                homeText: con.isTeamReportTab ? "Defense" : 'Offense',
                 homeTeam: homeTeam,
                 awayTeam: awayTeam,
               ),
@@ -737,16 +692,17 @@ Padding quarterBacks(
                   }),*/
               HeaderTab(
                 title: 'QBs',
-                awayOnTap: () {
-                  con.isQuarterBacksTab = true;
-                },
-                homeOnTap: () {
-                  con.isQuarterBacksTab = false;
-                },
-                isSelected: con.isQuarterBacksTab,
+                // awayOnTap: () {
+                //   con.isQuarterBacksTab = true;
+                // },
+                // homeOnTap: () {
+                //   con.isQuarterBacksTab = false;
+                // },
+                // isSelected: con.isQuarterBacksTab,
+                isSelected: con.isTeamReportTab,
                 gameDetails: gameDetails,
                 homeText: 'Defense',
-                awayText: (con.isQuarterBacksTab
+                awayText: (con.isTeamReportTab
                     ? gameDetails.awayPlayerName
                     : gameDetails.homePlayerName),
                 homeTeam: homeTeam,
@@ -777,7 +733,7 @@ Container playernameWidget(
         children: [
           Expanded(
             flex: 2,
-            child: (con.isQuarterBacksTab
+            child: (con.isTeamReportTab
                     ? gameDetails.awayPlayerName
                     : gameDetails.homePlayerName)
                 .appCommonText(
@@ -793,7 +749,7 @@ Container playernameWidget(
           ),
           Expanded(
             flex: 2,
-            child: (!con.isQuarterBacksTab
+            child: (!con.isTeamReportTab
                     ? gameDetails.awayPlayerName
                     : gameDetails.homePlayerName)
                 .appCommonText(
@@ -826,10 +782,10 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
                                     : con.nflAwayOffensiveList[index])) ??
                                 con.nflAwayOffensiveList[index])
                             .toString()
-                        : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
+                        : ((num.tryParse(con.nflAwayDefensiveList.isEmpty
                                     ? '0'
-                                    : con.nflHomeOffensiveList[index])) ??
-                                con.nflHomeOffensiveList[index])
+                                    : con.nflAwayDefensiveList[index])) ??
+                                con.nflAwayDefensiveList[index])
                             .toString())
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
@@ -869,16 +825,16 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           itemBuilder: (context, index) {
             return Column(
               children: [
-                (!con.isTeamReportTab
-                        ? ((num.tryParse(con.nflAwayDefensiveList.isEmpty
-                                    ? '0'
-                                    : con.nflAwayDefensiveList[index])) ??
-                                con.nflAwayDefensiveList[index])
-                            .toString()
-                        : ((num.tryParse(con.nflHomeDefensiveList.isEmpty
+                (con.isTeamReportTab
+                        ? ((num.tryParse(con.nflHomeDefensiveList.isEmpty
                                     ? '0'
                                     : con.nflHomeDefensiveList[index])) ??
                                 con.nflHomeDefensiveList[index])
+                            .toString()
+                        : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
+                                    ? '0'
+                                    : con.nflHomeOffensiveList[index])) ??
+                                con.nflHomeOffensiveList[index])
                             .toString())
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
@@ -1013,7 +969,8 @@ Row quarterBacksData(
               children: [
                 (con.awayQb.isEmpty || con.homeQb.isEmpty
                         ? "0"
-                        : con.isQuarterBacksTab
+                        // : con.isQuarterBacksTab
+                        : con.isTeamReportTab
                             ? con.awayQb[index]
                             : con.homeQb[index])
                     .appCommonText(
@@ -1037,10 +994,10 @@ Row quarterBacksData(
       ),
       Column(
         children: List.generate(
-          4,
+          5,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .043,
+            height: MediaQuery.of(context).size.height * .041,
             color: Theme.of(context).indicatorColor,
           ),
         ),
@@ -1056,7 +1013,8 @@ Row quarterBacksData(
               children: [
                 (con.awayDefense.isEmpty || con.homeDefense.isEmpty
                         ? "0"
-                        : !con.isQuarterBacksTab
+                        : !con.isTeamReportTab
+                            // : !con.isQuarterBacksTab
                             ? con.awayDefense[index]
                             : con.homeDefense[index])
                     .appCommonText(
@@ -1133,16 +1091,14 @@ class HeaderTab extends StatelessWidget {
                   flex: 3,
                   child: InkWell(
                     highlightColor: Colors.transparent,
-                    onTap: awayOnTap,
+                    // onTap: awayOnTap,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         commonCachedNetworkImage(
                           width: Get.height * .025,
                           height: Get.height * .025,
-                          imageUrl: isSelected
-                              ? awayLogo(awayTeam, gameDetails)
-                              : homeLogo(homeTeam, gameDetails),
+                          imageUrl: awayLogo(awayTeam, gameDetails),
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * .01,
@@ -1185,7 +1141,7 @@ class HeaderTab extends StatelessWidget {
                   flex: 3,
                   child: InkWell(
                     highlightColor: Colors.transparent,
-                    onTap: homeOnTap,
+                    // onTap: homeOnTap,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -1202,9 +1158,7 @@ class HeaderTab extends StatelessWidget {
                         commonCachedNetworkImage(
                           width: Get.height * .025,
                           height: Get.height * .025,
-                          imageUrl: !isSelected
-                              ? awayLogo(awayTeam, gameDetails)
-                              : homeLogo(homeTeam, gameDetails),
+                          imageUrl: homeLogo(homeTeam, gameDetails),
                         ),
                       ],
                     ).paddingSymmetric(
@@ -1244,7 +1198,7 @@ class HeaderTab extends StatelessWidget {
 }
 
 SizedBox receivingAwayPlayerCard(
-    BuildContext context, SportEvents gameDetails, int index) {
+    BuildContext context, SportEvents gameDetails, int index, num totalPlay) {
   return SizedBox(
     // height: MediaQuery.sizeOf(context).height * .034,
     child: Row(
@@ -1260,24 +1214,46 @@ SizedBox receivingAwayPlayerCard(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                ('${gameDetails.awayReceiversPlayer[index].receiving?.touchdowns ?? "0"}')
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
+            child: ((int.parse(gameDetails.awayReceiversPlayer[index].receiving
+                                ?.touchdowns
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                ('${gameDetails.awayReceiversPlayer[index].receiving?.yards ?? "0"}')
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
+            child: ((int.parse(gameDetails
+                                .awayReceiversPlayer[index].receiving?.yards
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
+        Expanded(
+            flex: 2,
+            child: ((int.parse(gameDetails.awayReceiversPlayer[index].receiving
+                                ?.receptions
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
       ],
     ).paddingSymmetric(
         horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -1286,7 +1262,7 @@ SizedBox receivingAwayPlayerCard(
 }
 
 SizedBox receivingHomePlayerCard(
-    BuildContext context, SportEvents gameDetails, int index) {
+    BuildContext context, SportEvents gameDetails, int index, num totalPlay) {
   return SizedBox(
     // height: MediaQuery.sizeOf(context).height * .034,
     child: Row(
@@ -1302,24 +1278,45 @@ SizedBox receivingHomePlayerCard(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                ('${gameDetails.homeReceiversPlayer[index].receiving?.touchdowns ?? "0"}')
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
+            child: ((int.parse(gameDetails.homeReceiversPlayer[index].receiving
+                                ?.touchdowns
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                ('${gameDetails.homeReceiversPlayer[index].receiving?.yards ?? "0"}')
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
+            child: ((int.parse(gameDetails
+                                .homeReceiversPlayer[index].receiving?.yards
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
+        Expanded(
+            flex: 2,
+            child: ((int.parse(gameDetails.homeReceiversPlayer[index].receiving
+                                ?.receptions
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
       ],
     ).paddingSymmetric(
         horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -1338,7 +1335,7 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
               int.parse(b.ab).compareTo(int.parse(a.ab)));
       con.hitterHomePlayerMainList
           .sort((b, a) => int.parse(a.ab).compareTo(int.parse(b.ab)));
-      return con.isTab
+      return con.isTeamReportTab
           ? ExpandableNotifier(
               initialExpanded: i == con.isExpand,
               child: ScrollOnExpand(
@@ -1416,7 +1413,7 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
     separatorBuilder: (BuildContext context, int index) {
       return commonDivider(context);
     },
-    itemCount: con.isTab
+    itemCount: con.isTeamReportTab
         ? con.hitterAwayPlayerMainList.length
         : con.hitterHomePlayerMainList.length,
   );
@@ -1431,11 +1428,12 @@ ListView runningBacksCard(
     padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      num totalPlay = con.isTab
-          ? gameDetails.awayRunningBackPlayer[i].gamesPlayed ?? 1
-          : gameDetails.homeRunningBackPlayer[i].gamesPlayed ?? 1;
+      num totalPlay = con.isTeamReportTab
+          ? num.parse(gameDetails.awayWin) + num.parse(gameDetails.awayLoss)
+          : num.parse(gameDetails.homeWin) + num.parse(gameDetails.homeLoss);
 
-      return con.isTab
+      // return con.isTab
+      return con.isTeamReportTab
           ? ExpandableNotifier(
               initialExpanded: i == con.isExpand,
               child: ScrollOnExpand(
@@ -1444,25 +1442,21 @@ ListView runningBacksCard(
                     ExpandablePanel(
                         theme: const ExpandableThemeData(hasIcon: false),
                         header: runningAwayHeader(
-                          context,
-                          i,
-                          con,
-                          gameDetails,
-                        ),
+                            context, i, con, gameDetails, totalPlay),
                         collapsed: const SizedBox(),
                         expanded: Column(
                           children: [
                             expandableTileCardRunning(context, con,
                                 value1: ((int.parse(gameDetails
                                                 .awayRunningBackPlayer[i]
-                                                .rushing
-                                                ?.attempts
+                                                .receiving
+                                                ?.yards
                                                 .toString() ??
                                             "0") /
                                         totalPlay)
                                     .toStringAsFixed(2)),
-                                title1: 'Carries/Game',
-                                title2: 'TD/Game',
+                                title1: 'Rec Yds/Game',
+                                title2: 'Rush TDs/Game',
                                 value2: ((int.parse(gameDetails
                                                 .awayRunningBackPlayer[i]
                                                 .rushing
@@ -1474,13 +1468,13 @@ ListView runningBacksCard(
                             expandableTileCardRunning(context, con,
                                 value1: ((int.parse(gameDetails
                                                 .awayRunningBackPlayer[i]
-                                                .rushing
-                                                ?.yards
+                                                .receiving
+                                                ?.touchdowns
                                                 .toString() ??
                                             "0") /
                                         totalPlay)
                                     .toStringAsFixed(2)),
-                                title1: 'Yards/Game',
+                                title1: 'Rec TDs/Game',
                                 title2: 'Longest Run',
                                 value2:
                                     '${gameDetails.awayRunningBackPlayer[i].rushing?.longest ?? "0"}'),
@@ -1496,23 +1490,6 @@ ListView runningBacksCard(
                                 title2: 'Fumbles',
                                 value2:
                                     '${gameDetails.awayRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
-                            /*  expandableTileCardRunning(context, con,
-                                value1: num.parse(gameDetails
-                                            .awayRunningBackPlayer[i]
-                                            .receiving
-                                            ?.yards
-                                            .toString() ??
-                                        '0')
-                                    .toStringAsFixed(1),
-                                title1: 'Rec Yards/Game',
-                                title2: 'Rec TD/Game',
-                                value2: num.parse(gameDetails
-                                            .awayRunningBackPlayer[i]
-                                            .receiving
-                                            ?.touchdowns
-                                            .toString() ??
-                                        '0')
-                                    .toStringAsFixed(1)),*/
                           ],
                         ))
                   ],
@@ -1528,25 +1505,21 @@ ListView runningBacksCard(
                     ExpandablePanel(
                       theme: const ExpandableThemeData(hasIcon: false),
                       header: runningHomeHeader(
-                        context,
-                        i,
-                        con,
-                        gameDetails,
-                      ),
+                          context, i, con, gameDetails, totalPlay),
                       collapsed: const SizedBox(),
                       expanded: Column(
                         children: [
                           expandableTileCardRunning(context, con,
                               value1: ((int.parse(gameDetails
                                               .homeRunningBackPlayer[i]
-                                              .rushing
-                                              ?.attempts
+                                              .receiving
+                                              ?.yards
                                               .toString() ??
                                           "0") /
                                       totalPlay)
                                   .toStringAsFixed(2)),
-                              title1: 'Carries/Game',
-                              title2: 'TD/Game',
+                              title1: 'Rec Yds/Game',
+                              title2: 'Rush TDs/Game',
                               value2: ((int.parse(gameDetails
                                               .homeRunningBackPlayer[i]
                                               .rushing
@@ -1558,13 +1531,13 @@ ListView runningBacksCard(
                           expandableTileCardRunning(context, con,
                               value1: ((int.parse(gameDetails
                                               .homeRunningBackPlayer[i]
-                                              .rushing
-                                              ?.yards
+                                              .receiving
+                                              ?.touchdowns
                                               .toString() ??
                                           "0") /
                                       totalPlay)
                                   .toStringAsFixed(2)),
-                              title1: 'Yards/Game',
+                              title1: 'Rec TDs/Game',
                               title2: 'Longest Run',
                               value2:
                                   '${gameDetails.homeRunningBackPlayer[i].rushing?.longest ?? "0"}'),
@@ -1580,23 +1553,6 @@ ListView runningBacksCard(
                               title2: 'Fumbles',
                               value2:
                                   '${gameDetails.homeRunningBackPlayer[i].fumbles?.fumbles ?? "0"}'),
-                          /*   expandableTileCardRunning(context, con,
-                              value1: num.parse(gameDetails
-                                          .homeRunningBackPlayer[i]
-                                          .receiving
-                                          ?.yards
-                                          .toString() ??
-                                      '0')
-                                  .toStringAsFixed(1),
-                              title1: 'Rec Yards/Game',
-                              title2: 'Rec TD/Game',
-                              value2: num.parse(gameDetails
-                                          .homeRunningBackPlayer[i]
-                                          .receiving
-                                          ?.touchdowns
-                                          .toString() ??
-                                      '0')
-                                  .toStringAsFixed(1)),*/
                         ],
                       ),
                     ),
@@ -1608,7 +1564,7 @@ ListView runningBacksCard(
     separatorBuilder: (BuildContext context, int index) {
       return commonDivider(context);
     },
-    itemCount: con.isTab
+    itemCount: con.isTeamReportTab
         ? gameDetails.awayRunningBackPlayer.length
         : gameDetails.homeRunningBackPlayer.length,
   );
@@ -1623,92 +1579,40 @@ ListView nbaRushingCard(
     padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      // num totalPlay = con.isTab
-      //     ? gameDetails.awayRushingPlayer[i].gamesPlayed ?? 1
-      //     : gameDetails.homeRushingPlayer[i].gamesPlayed ?? 1;
-
-      return con.isTab
+      return con.isTeamReportTab
           ? ExpandableNotifier(
               initialExpanded: i == con.isExpand,
               child: ScrollOnExpand(
                 child: Column(
                   children: [
                     ExpandablePanel(
-                        theme: const ExpandableThemeData(hasIcon: false),
-                        header: nbaAwayHeader(
-                          context,
-                          i,
-                          con,
-                          gameDetails,
-                        ),
-                        collapsed: const SizedBox(),
-                        expanded:
-                            Column() /*Column(
-                          children: [
-                            expandableTileCardRunning(context, con,
-                                value1: ((int.parse(gameDetails
-                                                .awayRushingPlayer[i]
-                                                .
-                                                ?.attempts
-                                                .toString() ??
-                                            "0") /
-                                        totalPlay)
-                                    .toStringAsFixed(2)),
-                                title1: 'Carries/Game',
-                                title2: 'TD/Game',
-                                value2: ((int.parse(gameDetails
-                                                .awayRushingPlayer[i]
-                                                .rushing
-                                                ?.touchdowns
-                                                .toString() ??
-                                            "0") /
-                                        totalPlay)
-                                    .toStringAsFixed(2))),
-                            expandableTileCardRunning(context, con,
-                                value1: ((int.parse(gameDetails
-                                                .awayRushingPlayer[i]
-                                                .rushing
-                                                ?.yards
-                                                .toString() ??
-                                            "0") /
-                                        totalPlay)
-                                    .toStringAsFixed(2)),
-                                title1: 'Yards/Game',
-                                title2: 'Longest Run',
-                                value2:
-                                    '${gameDetails.awayRushingPlayer[i].rushing?.longest ?? "0"}'),
-                            expandableTileCardRunning(context, con,
-                                value1: num.parse(gameDetails
-                                            .awayRushingPlayer[i]
-                                            .rushing
-                                            ?.avgYards
-                                            .toString() ??
-                                        '0')
-                                    .toStringAsFixed(2),
-                                title1: 'Average Carry',
-                                title2: 'Fumbles',
-                                value2:
-                                    '${gameDetails.awayRushingPlayer[i].fumbles?.fumbles ?? "0"}'),
-                            */ /*  expandableTileCardRunning(context, con,
-                                value1: num.parse(gameDetails
-                                            .awayRushingPlayer[i]
-                                            .receiving
-                                            ?.yards
-                                            .toString() ??
-                                        '0')
-                                    .toStringAsFixed(1),
-                                title1: 'Rec Yards/Game',
-                                title2: 'Rec TD/Game',
-                                value2: num.parse(gameDetails
-                                            .awayRushingPlayer[i]
-                                            .receiving
-                                            ?.touchdowns
-                                            .toString() ??
-                                        '0')
-                                    .toStringAsFixed(1)),*/ /*
-                          ],
-                        )*/
-                        ),
+                      theme: const ExpandableThemeData(hasIcon: false),
+                      header: nbaAwayHeader(
+                        context,
+                        i,
+                        con,
+                        gameDetails,
+                      ),
+                      collapsed: const SizedBox(),
+                      expanded: Column(
+                        children: [
+                          expandableTileCardRunning(context, con,
+                              value1: (gameDetails.awayRushingPlayer[i].minutes
+                                  .toString()),
+                              title1: 'Minutes/Game',
+                              title2: 'Steals/Game',
+                              value2: (gameDetails.awayRushingPlayer[i].steals
+                                  .toString())),
+                          expandableTileCardRunning(context, con,
+                              value1: gameDetails.awayRushingPlayer[i].blocks
+                                  .toString(),
+                              title1: 'Blocks/Game',
+                              title2: 'Turnovers/Game',
+                              value2: gameDetails.awayRushingPlayer[i].turnovers
+                                  .toString()),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1720,80 +1624,33 @@ ListView nbaRushingCard(
                 child: Column(
                   children: [
                     ExpandablePanel(
-                        theme: const ExpandableThemeData(hasIcon: false),
-                        header: nbaHomeHeader(
-                          context,
-                          i,
-                          con,
-                          gameDetails,
-                        ),
-                        collapsed: const SizedBox(),
-                        expanded: /*Column(
+                      theme: const ExpandableThemeData(hasIcon: false),
+                      header: nbaHomeHeader(
+                        context,
+                        i,
+                        con,
+                        gameDetails,
+                      ),
+                      collapsed: const SizedBox(),
+                      expanded: Column(
                         children: [
                           expandableTileCardRunning(context, con,
-                              value1: ((int.parse(gameDetails
-                                              .homeRushingPlayer[i]
-                                              .rushing
-                                              ?.attempts
-                                              .toString() ??
-                                          "0") /
-                                      totalPlay)
-                                  .toStringAsFixed(2)),
-                              title1: 'Carries/Game',
-                              title2: 'TD/Game',
-                              value2: ((int.parse(gameDetails
-                                              .homeRushingPlayer[i]
-                                              .rushing
-                                              ?.touchdowns
-                                              .toString() ??
-                                          "0") /
-                                      totalPlay)
-                                  .toStringAsFixed(2))),
+                              value1: (gameDetails.homeRushingPlayer[i].minutes
+                                  .toString()),
+                              title1: 'Minutes/Game',
+                              title2: 'Steals/Game',
+                              value2: (gameDetails.homeRushingPlayer[i].steals
+                                  .toString())),
                           expandableTileCardRunning(context, con,
-                              value1: ((int.parse(gameDetails
-                                              .homeRushingPlayer[i]
-                                              .rushing
-                                              ?.yards
-                                              .toString() ??
-                                          "0") /
-                                      totalPlay)
-                                  .toStringAsFixed(2)),
-                              title1: 'Yards/Game',
-                              title2: 'Longest Run',
-                              value2:
-                                  '${gameDetails.homeRushingPlayer[i].rushing?.longest ?? "0"}'),
-                          expandableTileCardRunning(context, con,
-                              value1: num.parse(gameDetails
-                                          .homeRushingPlayer[i]
-                                          .rushing
-                                          ?.avgYards
-                                          .toString() ??
-                                      '0')
-                                  .toStringAsFixed(2),
-                              title1: 'Average Carry',
-                              title2: 'Fumbles',
-                              value2:
-                                  '${gameDetails.homeRushingPlayer[i].fumbles?.fumbles ?? "0"}'),
-                          */ /*   expandableTileCardRunning(context, con,
-                              value1: num.parse(gameDetails
-                                          .homeRushingPlayer[i]
-                                          .receiving
-                                          ?.yards
-                                          .toString() ??
-                                      '0')
-                                  .toStringAsFixed(1),
-                              title1: 'Rec Yards/Game',
-                              title2: 'Rec TD/Game',
-                              value2: num.parse(gameDetails
-                                          .homeRushingPlayer[i]
-                                          .receiving
-                                          ?.touchdowns
-                                          .toString() ??
-                                      '0')
-                                  .toStringAsFixed(1)),*/ /*
+                              value1: gameDetails.homeRushingPlayer[i].blocks
+                                  .toString(),
+                              title1: 'Blocks/Game',
+                              title2: 'Turnovers/Game',
+                              value2: gameDetails.homeRushingPlayer[i].turnovers
+                                  .toString()),
                         ],
-                      ),*/
-                            Column()),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1804,7 +1661,7 @@ ListView nbaRushingCard(
           ? const SizedBox()
           : commonDivider(context);
     },
-    itemCount: con.isTab
+    itemCount: con.isTeamReportTab
         ? gameDetails.awayRushingPlayerName.length
         : gameDetails.homeRushingPlayerName.length,
   );
@@ -2050,6 +1907,7 @@ SizedBox runningHomeHeader(
   int index,
   GameDetailsController con,
   SportEvents gameDetails,
+  num totalPlay,
 ) {
   return SizedBox(
     // height: MediaQuery.sizeOf(context).height * .031,
@@ -2065,31 +1923,19 @@ SizedBox runningHomeHeader(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                (gameDetails.homeRunningBackPlayer[index].rushing?.touchdowns ??
-                        "0")
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
-        Expanded(
-            flex: 2,
-            child:
-                (gameDetails.homeRunningBackPlayer[index].rushing?.yards ?? "0")
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
-        Expanded(
-            flex: 2,
-            child: (gameDetails
-                        .homeRunningBackPlayer[index].receiving?.touchdowns ??
-                    "0")
-                .toString()
+            child: num.parse(((num.parse((gameDetails
+                                        .homeRunningBackPlayer[index]
+                                        .rushing
+                                        ?.touchdowns ??
+                                    "0")
+                                .toString()) +
+                            num.parse((gameDetails.homeRunningBackPlayer[index]
+                                        .receiving?.touchdowns ??
+                                    "0")
+                                .toString())) /
+                        totalPlay)
+                    .toString())
+                .toStringAsFixed(2)
                 .appCommonText(
                     color: Theme.of(context).highlightColor,
                     align: TextAlign.end,
@@ -2097,9 +1943,32 @@ SizedBox runningHomeHeader(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child: (gameDetails.homeRunningBackPlayer[index].receiving?.yards ??
-                    "0")
-                .toString()
+            child: num.parse(((num.parse((gameDetails
+                                        .homeRunningBackPlayer[index]
+                                        .rushing
+                                        ?.yards ??
+                                    "0")
+                                .toString()) +
+                            num.parse((gameDetails.homeRunningBackPlayer[index]
+                                        .receiving?.yards ??
+                                    "0")
+                                .toString())) /
+                        totalPlay)
+                    .toString())
+                .toStringAsFixed(2)
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
+        Expanded(
+            flex: 2,
+            child: ((int.parse(gameDetails
+                                .homeRunningBackPlayer[index].rushing?.attempts
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
                 .appCommonText(
                     color: Theme.of(context).highlightColor,
                     align: TextAlign.end,
@@ -2133,7 +2002,7 @@ SizedBox nbaHomeHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+              child: (gameDetails.homeRushingPlayer[index].points ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2142,7 +2011,17 @@ SizedBox nbaHomeHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+              child:
+                  (gameDetails.homeRushingPlayer[index].threePointsMade ?? "0")
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.homeRushingPlayer[index].assists ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2151,16 +2030,7 @@ SizedBox nbaHomeHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
-          Expanded(
-              flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].fastBreakPts ?? "0")
+              child: (gameDetails.homeRushingPlayer[index].rebounds ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2198,7 +2068,7 @@ SizedBox nbaAwayHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+              child: (gameDetails.awayRushingPlayer[index].points ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2207,7 +2077,17 @@ SizedBox nbaAwayHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+              child:
+                  (gameDetails.awayRushingPlayer[index].threePointsMade ?? "0")
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails.awayRushingPlayer[index].assists ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2216,16 +2096,7 @@ SizedBox nbaAwayHeader(
                       size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
-          Expanded(
-              flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].fastBreakPts ?? "0")
+              child: (gameDetails.awayRushingPlayer[index].rebounds ?? "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2247,6 +2118,7 @@ SizedBox runningAwayHeader(
   int index,
   GameDetailsController con,
   SportEvents gameDetails,
+  num totalPlay,
 ) {
   return SizedBox(
     // height: MediaQuery.sizeOf(context).height * .031,
@@ -2262,30 +2134,39 @@ SizedBox runningAwayHeader(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                (gameDetails.awayRunningBackPlayer[index].rushing?.touchdowns ??
-                        "0")
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
+            child: num.parse(((num.parse((gameDetails
+                                        .awayRunningBackPlayer[index]
+                                        .rushing
+                                        ?.touchdowns ??
+                                    "0")
+                                .toString()) +
+                            num.parse((gameDetails.awayRunningBackPlayer[index]
+                                        .receiving?.touchdowns ??
+                                    "0")
+                                .toString())) /
+                        totalPlay)
+                    .toString())
+                .toStringAsFixed(2)
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child:
-                (gameDetails.awayRunningBackPlayer[index].rushing?.yards ?? "0")
-                    .toString()
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        align: TextAlign.end,
-                        weight: FontWeight.w400,
-                        size: MediaQuery.sizeOf(context).height * .014)),
-        Expanded(
-            flex: 2,
-            child: (gameDetails
-                        .awayRunningBackPlayer[index].receiving?.touchdowns ??
-                    "0")
+            child: num.parse(((num.parse((gameDetails
+                                        .awayRunningBackPlayer[index]
+                                        .rushing
+                                        ?.yards ??
+                                    "0")
+                                .toString()) +
+                            num.parse((gameDetails.awayRunningBackPlayer[index]
+                                        .receiving?.yards ??
+                                    "0")
+                                .toString())) /
+                        totalPlay)
+                    .toString())
+                .toStringAsFixed(2)
                 .toString()
                 .appCommonText(
                     color: Theme.of(context).highlightColor,
@@ -2294,9 +2175,12 @@ SizedBox runningAwayHeader(
                     size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
             flex: 2,
-            child: (gameDetails.awayRunningBackPlayer[index].receiving?.yards ??
-                    "0")
-                .toString()
+            child: ((int.parse(gameDetails
+                                .awayRunningBackPlayer[index].rushing?.attempts
+                                .toString() ??
+                            "0") /
+                        totalPlay)
+                    .toStringAsFixed(2))
                 .appCommonText(
                     color: Theme.of(context).highlightColor,
                     align: TextAlign.end,
@@ -2415,28 +2299,21 @@ SizedBox headerOfRunningBacks(BuildContext context) {
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rush TDs'.appCommonText(
+            child: 'TDs/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rush Yds'.appCommonText(
+            child: 'Yrds/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rec TDs'.appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w700,
-                size: MediaQuery.sizeOf(context).height * .016)),
-        Expanded(
-            flex: 2,
-            child: 'Rec Yds'.appCommonText(
+            child: 'Carries/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
@@ -2460,14 +2337,21 @@ SizedBox headerOfWRPlayers(BuildContext context) {
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rec TDs'.appCommonText(
+            child: 'TDs/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rec Yds'.appCommonText(
+            child: 'Rec Yds/Gm'.appCommonText(
+                color: Theme.of(context).highlightColor,
+                align: TextAlign.end,
+                weight: FontWeight.w700,
+                size: MediaQuery.sizeOf(context).height * .016)),
+        Expanded(
+            flex: 2,
+            child: 'Recp/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
@@ -2507,10 +2391,10 @@ Container customTabBar(
                 flex: 2,
                 child: InkWell(
                   highlightColor: Colors.transparent,
-                  onTap: () {
-                    con.isTab = true;
-                    con.isExpand = -1;
-                  },
+                  // onTap: () {
+                  //   con.isTab = true;
+                  //   con.isExpand = -1;
+                  // },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -2551,10 +2435,10 @@ Container customTabBar(
                 flex: 2,
                 child: InkWell(
                   highlightColor: Colors.transparent,
-                  onTap: () {
-                    con.isTab = false;
-                    con.isExpand = -1;
-                  },
+                  // onTap: () {
+                  //   con.isTab = false;
+                  //   con.isExpand = -1;
+                  // },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -2586,7 +2470,8 @@ Container customTabBar(
           ).paddingSymmetric(
               horizontal: MediaQuery.sizeOf(context).width * .015),
           const Spacer(),
-          con.isTab
+          // con.isTab
+          con.isTeamReportTab
               ? Row(
                   children: [
                     Expanded(
@@ -2640,10 +2525,10 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                 flex: 2,
                 child: InkWell(
                   highlightColor: Colors.transparent,
-                  onTap: () {
-                    con.isTab1 = true;
-                    con.isExpand = -1;
-                  },
+                  // onTap: () {
+                  //   con.isTab1 = true;
+                  //   con.isExpand = -1;
+                  // },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -2684,10 +2569,10 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
                 flex: 2,
                 child: InkWell(
                   highlightColor: Colors.transparent,
-                  onTap: () {
-                    con.isTab1 = false;
-                    con.isExpand = -1;
-                  },
+                  // onTap: () {
+                  //   con.isTab1 = false;
+                  //   con.isExpand = -1;
+                  // },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -2719,7 +2604,8 @@ Container customTabBar1(BuildContext context, GameDetailsController con,
           ).paddingSymmetric(
               horizontal: MediaQuery.sizeOf(context).width * .015),
           const Spacer(),
-          con.isTab1
+          con.isTeamReportTab
+              // con.isTab1
               ? Row(
                   children: [
                     Expanded(
@@ -3270,7 +3156,7 @@ injuryReportWidget(
                           padding: EdgeInsets.zero,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return (con.isInjuriesTab
+                            return (con.isTeamReportTab
                                     ? '${gameDetails.awayTeamInjuredPlayer[index]}'
                                     : '${gameDetails.homeTeamInjuredPlayer[index]}')
                                 .toString()
@@ -3347,13 +3233,9 @@ injuryReportWidget(
                           separatorBuilder: (context, index) {
                             return commonDivider(context);
                           },
-                          itemCount: /*gameDetails.awayTeamInjuredPlayer.length >=
-                                  gameDetails.homeTeamInjuredPlayer.length
+                          itemCount: con.isTeamReportTab
                               ? gameDetails.awayTeamInjuredPlayer.length
-                              : gameDetails.homeTeamInjuredPlayer.length*/
-                              con.isInjuriesTab
-                                  ? gameDetails.awayTeamInjuredPlayer.length
-                                  : gameDetails.homeTeamInjuredPlayer.length);
+                              : gameDetails.homeTeamInjuredPlayer.length);
             }),
           ],
         ),
@@ -3390,7 +3272,7 @@ Container injuriesTab(BuildContext context, GameDetailsController con,
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   onTap: () {
-                    con.isInjuriesTab = true;
+                    // con.isInjuriesTab = true;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -3436,7 +3318,7 @@ Container injuriesTab(BuildContext context, GameDetailsController con,
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   onTap: () {
-                    con.isInjuriesTab = false;
+                    // con.isInjuriesTab = false;
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -3471,7 +3353,8 @@ Container injuriesTab(BuildContext context, GameDetailsController con,
           ).paddingSymmetric(
               horizontal: MediaQuery.sizeOf(context).width * .015),
           const Spacer(),
-          con.isInjuriesTab
+          con.isTeamReportTab
+              // con.isInjuriesTab
               ? Row(
                   children: [
                     Expanded(
@@ -4665,4 +4548,45 @@ headerWidget(BuildContext context, SportEvents gameDetails,
           : const SizedBox(),
     ],
   );
+}
+
+class ClipTab extends StatelessWidget {
+  const ClipTab(
+      {Key? key, required this.teamLogo, required this.isSelected, this.onTap})
+      : super(key: key);
+
+  final String teamLogo;
+  final bool isSelected;
+  final void Function()? onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: InkWell(
+      highlightColor: Colors.transparent,
+      splashFactory: NoSplash.splashFactory,
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: isSelected ? yellowColor : appColor, width: 3),
+            borderRadius: BorderRadius.circular(2),
+            color: appColor),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            commonCachedNetworkImage(
+              width: Get.height * .028,
+              height: Get.height * .028,
+              imageUrl: teamLogo,
+            ),
+            '  Offense'.appCommonText(
+                size: Get.height * .018,
+                weight: FontWeight.bold,
+                color: whiteColor)
+          ],
+        ).paddingSymmetric(horizontal: 10, vertical: 6),
+      ),
+    ));
+  }
 }
