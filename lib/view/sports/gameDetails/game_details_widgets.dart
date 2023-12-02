@@ -701,10 +701,12 @@ Padding quarterBacks(
                 // isSelected: con.isQuarterBacksTab,
                 isSelected: con.isTeamReportTab,
                 gameDetails: gameDetails,
-                homeText: 'Defense',
+                homeText: !con.isTeamReportTab
+                    ? gameDetails.homePlayerName
+                    : 'Defense',
                 awayText: (con.isTeamReportTab
                     ? gameDetails.awayPlayerName
-                    : gameDetails.homePlayerName),
+                    : 'Defense'),
                 homeTeam: homeTeam,
                 awayTeam: awayTeam,
               ),
@@ -792,11 +794,15 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.offensive[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.offensive[index]
+                        : con.defensive[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -841,11 +847,15 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.defensive[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.defensive[index]
+                        : con.offensive[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -887,11 +897,15 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.nbaOffensive[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.nbaOffensive[index]
+                        : con.nbaDefensive[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -936,11 +950,15 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.nbaDefensive[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.nbaDefensive[index]
+                        : con.nbaOffensive[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -972,17 +990,21 @@ Row quarterBacksData(
                         // : con.isQuarterBacksTab
                         : con.isTeamReportTab
                             ? con.awayQb[index]
-                            : con.homeQb[index])
+                            : con.awayDefense[index])
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.teamQuarterBacks[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.teamQuarterBacks[index]
+                        : con.teamQuarterBacksDefence[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -1013,20 +1035,24 @@ Row quarterBacksData(
               children: [
                 (con.awayDefense.isEmpty || con.homeDefense.isEmpty
                         ? "0"
-                        : !con.isTeamReportTab
+                        : con.isTeamReportTab
                             // : !con.isQuarterBacksTab
-                            ? con.awayDefense[index]
+                            ? con.homeQb[index]
                             : con.homeDefense[index])
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
                         weight: FontWeight.w700,
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
-                con.teamQuarterBacksDefence[index].toString().appCommonText(
-                    color: darkGreyColor,
-                    align: TextAlign.center,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .012),
+                (con.isTeamReportTab
+                        ? con.teamQuarterBacksDefence[index]
+                        : con.teamQuarterBacks[index])
+                    .toString()
+                    .appCommonText(
+                        color: darkGreyColor,
+                        align: TextAlign.center,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .012),
               ],
             ).paddingSymmetric(
                 vertical: MediaQuery.of(context).size.height * .003);
@@ -2306,7 +2332,7 @@ SizedBox headerOfRunningBacks(BuildContext context) {
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Yrds/Gm'.appCommonText(
+            child: 'Yds/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,
@@ -2344,7 +2370,7 @@ SizedBox headerOfWRPlayers(BuildContext context) {
                 size: MediaQuery.sizeOf(context).height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rec Yds/Gm'.appCommonText(
+            child: 'Yds/Gm'.appCommonText(
                 color: Theme.of(context).highlightColor,
                 align: TextAlign.end,
                 weight: FontWeight.w700,

@@ -361,8 +361,11 @@ class GameDetailsController extends GetxController {
                                   "0") /
                               totalPlay)
                           .toStringAsFixed(2)),
-                      (static.statistics?.passing?.interceptions ?? "0")
-                          .toString(),
+                      ((int.parse(static.statistics?.passing?.interceptions
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
                     ];
                   });
                 }
@@ -426,8 +429,11 @@ class GameDetailsController extends GetxController {
                                   "0") /
                               totalPlay)
                           .toStringAsFixed(2)),
-                      (static.statistics?.passing?.interceptions ?? "0")
-                          .toString(),
+                      ((int.parse(static.statistics?.passing?.interceptions
+                                      .toString() ??
+                                  "0") /
+                              totalPlay)
+                          .toStringAsFixed(2)),
                     ];
                   });
                 }
@@ -894,7 +900,10 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
-                (offenciveData?.defense?.interceptions ?? "0").toString(),
+                (int.parse(defenciveData?.defense?.interceptions.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -929,7 +938,12 @@ class GameDetailsController extends GetxController {
                                       "0") /
                                   totalPlay)
                               .toStringAsFixed(2)),
-                          (player.passing?.interceptions ?? "0").toString(),
+                          ((int.parse(player.passing?.interceptions
+                                          .toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+
                           // (player.fumbles?.fumbles ?? "0").toString(),
                         ];
                         gameDetails.homePlayerName =
@@ -1421,7 +1435,11 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(2)),
-                (offenciveData?.defense?.interceptions ?? "0").toString(),
+                ((int.parse(defenciveData?.defense?.interceptions.toString() ??
+                            "0") /
+                        totalGame)
+                    .toStringAsFixed(2)),
+                // (offenciveData?.defense?.interceptions ?? "0").toString(),
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -1455,7 +1473,12 @@ class GameDetailsController extends GetxController {
                                       "0") /
                                   totalPlay)
                               .toStringAsFixed(2)),
-                          (player.passing?.interceptions ?? "0").toString(),
+                          ((int.parse(player.passing?.interceptions
+                                          .toString() ??
+                                      "0") /
+                                  totalPlay)
+                              .toStringAsFixed(2)),
+
                           // (player.fumbles?.fumbles ?? "0").toString(),
                         ];
 
