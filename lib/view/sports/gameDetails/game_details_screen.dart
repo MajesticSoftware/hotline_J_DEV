@@ -164,9 +164,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                             ? const SizedBox()
                             : wrPlayersWidget(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'NCAA' ||
-                                widget.sportKey == 'NBA' ||
-                                widget.sportKey == 'NCAAB'
+                        widget.sportKey == 'NCAA' || widget.sportKey == 'NCAAB'
                             ? const SizedBox()
                             : injuryReportWidget(context, widget.gameDetails,
                                 widget.sportKey, awayTeam, homeTeam, con),

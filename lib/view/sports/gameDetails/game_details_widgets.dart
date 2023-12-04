@@ -1605,82 +1605,90 @@ ListView nbaRushingCard(
     padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      return con.isTeamReportTab
-          ? ExpandableNotifier(
-              initialExpanded: i == con.isExpand,
-              child: ScrollOnExpand(
-                child: Column(
-                  children: [
-                    ExpandablePanel(
-                      theme: const ExpandableThemeData(hasIcon: false),
-                      header: nbaAwayHeader(
-                        context,
-                        i,
-                        con,
-                        gameDetails,
+      try {
+        return con.isTeamReportTab
+            ? ExpandableNotifier(
+                initialExpanded: i == con.isExpand,
+                child: ScrollOnExpand(
+                  child: Column(
+                    children: [
+                      ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: nbaAwayHeader(
+                          context,
+                          i,
+                          con,
+                          gameDetails,
+                        ),
+                        collapsed: const SizedBox(),
+                        expanded: Column(
+                          children: [
+                            expandableTileCardRunning(context, con,
+                                value1: (gameDetails
+                                    .awayRushingPlayer[i].minutes
+                                    .toString()),
+                                title1: 'Minutes/Game',
+                                title2: 'Steals/Game',
+                                value2: (gameDetails.awayRushingPlayer[i].steals
+                                    .toString())),
+                            expandableTileCardRunning(context, con,
+                                value1: gameDetails.awayRushingPlayer[i].blocks
+                                    .toString(),
+                                title1: 'Blocks/Game',
+                                title2: 'Turnovers/Game',
+                                value2: gameDetails
+                                    .awayRushingPlayer[i].turnovers
+                                    .toString()),
+                          ],
+                        ),
                       ),
-                      collapsed: const SizedBox(),
-                      expanded: Column(
-                        children: [
-                          expandableTileCardRunning(context, con,
-                              value1: (gameDetails.awayRushingPlayer[i].minutes
-                                  .toString()),
-                              title1: 'Minutes/Game',
-                              title2: 'Steals/Game',
-                              value2: (gameDetails.awayRushingPlayer[i].steals
-                                  .toString())),
-                          expandableTileCardRunning(context, con,
-                              value1: gameDetails.awayRushingPlayer[i].blocks
-                                  .toString(),
-                              title1: 'Blocks/Game',
-                              title2: 'Turnovers/Game',
-                              value2: gameDetails.awayRushingPlayer[i].turnovers
-                                  .toString()),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            )
-          : ExpandableNotifier(
-              key: Key(i.toString()),
-              initialExpanded: i == con.isExpand,
-              child: ScrollOnExpand(
-                child: Column(
-                  children: [
-                    ExpandablePanel(
-                      theme: const ExpandableThemeData(hasIcon: false),
-                      header: nbaHomeHeader(
-                        context,
-                        i,
-                        con,
-                        gameDetails,
+              )
+            : ExpandableNotifier(
+                key: Key(i.toString()),
+                initialExpanded: i == con.isExpand,
+                child: ScrollOnExpand(
+                  child: Column(
+                    children: [
+                      ExpandablePanel(
+                        theme: const ExpandableThemeData(hasIcon: false),
+                        header: nbaHomeHeader(
+                          context,
+                          i,
+                          con,
+                          gameDetails,
+                        ),
+                        collapsed: const SizedBox(),
+                        expanded: Column(
+                          children: [
+                            expandableTileCardRunning(context, con,
+                                value1: (gameDetails
+                                    .homeRushingPlayer[i].minutes
+                                    .toString()),
+                                title1: 'Minutes/Game',
+                                title2: 'Steals/Game',
+                                value2: (gameDetails.homeRushingPlayer[i].steals
+                                    .toString())),
+                            expandableTileCardRunning(context, con,
+                                value1: gameDetails.homeRushingPlayer[i].blocks
+                                    .toString(),
+                                title1: 'Blocks/Game',
+                                title2: 'Turnovers/Game',
+                                value2: gameDetails
+                                    .homeRushingPlayer[i].turnovers
+                                    .toString()),
+                          ],
+                        ),
                       ),
-                      collapsed: const SizedBox(),
-                      expanded: Column(
-                        children: [
-                          expandableTileCardRunning(context, con,
-                              value1: (gameDetails.homeRushingPlayer[i].minutes
-                                  .toString()),
-                              title1: 'Minutes/Game',
-                              title2: 'Steals/Game',
-                              value2: (gameDetails.homeRushingPlayer[i].steals
-                                  .toString())),
-                          expandableTileCardRunning(context, con,
-                              value1: gameDetails.homeRushingPlayer[i].blocks
-                                  .toString(),
-                              title1: 'Blocks/Game',
-                              title2: 'Turnovers/Game',
-                              value2: gameDetails.homeRushingPlayer[i].turnovers
-                                  .toString()),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+      } catch (e) {
+        return SizedBox.shrink();
+      }
     },
     separatorBuilder: (BuildContext context, int index) {
       return gameDetails.awayRushingPlayerName.isEmpty
@@ -3164,8 +3172,9 @@ injuryReportWidget(
                   ? SizedBox(
                       height: MediaQuery.of(context).size.height * .1,
                     )
-                  : gameDetails.homeTeamInjuredPlayer.isEmpty &&
-                          gameDetails.awayTeamInjuredPlayer.isEmpty
+                  : (!con.isTeamReportTab
+                          ? gameDetails.homeTeamInjuredPlayer.isEmpty
+                          : gameDetails.awayTeamInjuredPlayer.isEmpty)
                       ? SizedBox(
                           height: MediaQuery.of(context).size.height * .1,
                           child: Center(

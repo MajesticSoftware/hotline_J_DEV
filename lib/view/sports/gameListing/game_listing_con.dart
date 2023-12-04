@@ -917,43 +917,25 @@ class GameListingController extends GetxController {
       if (result.status) {
         NBABoxScoreModel response = NBABoxScoreModel.fromJson(result.data);
         final game = response;
+
         if (game.id == gameId) {
-          // String down = (game.situation?.down ?? "").toString();
-          // if ((down) == '1') {
-          //   down = '${down}st';
-          // } else if ((down).toString().endsWith('1') &&
-          //     !(down).toString().startsWith('1')) {
-          //   down = '${down}st';
-          // } else if ((down).toString().endsWith('2') &&
-          //     !(down).toString().startsWith('1')) {
-          //   down = '${down}nd';
-          // } else if ((down).toString().endsWith('3') &&
-          //     !(down).toString().startsWith('1')) {
-          //   down = '${down}rd';
-          // } else {
-          //   down = down;
-          // }
-          //
-          // nbaSportEventsList[index].inning = (game.quarter ?? "0").toString();
-          // nbaSportEventsList[index].inningHalf = "Q";
-          //
-          // nbaSportEventsList[index].currentTime =
-          //     'Q${(game.quarter ?? "0")} ${game.clock ?? ""}, $down & ${game.yfd ?? ""}';
           if (homeTeamId == game.home?.id) {
-            nbaSportEventsList[index].homeScore =
-                (game.home?.points ?? "0").toString();
-            nbaSportEventsList[index].homeWin =
-                (game.home?.record?.wins ?? "0").toString();
-            nbaSportEventsList[index].homeLoss =
-                (game.home?.record?.losses ?? "0").toString();
+            if (sportKey == "NBA") {
+              nbaSportEventsList[index].homeScore =
+                  (game.home?.points ?? "0").toString();
+            } else {
+              ncaabSportEventsList[index].homeScore =
+                  (game.home?.points ?? "0").toString();
+            }
           }
           if (awayTeamId == game.away?.id) {
-            nbaSportEventsList[index].awayScore =
-                (game.away?.points ?? "0").toString();
-            nbaSportEventsList[index].awayWin =
-                (game.away?.record?.wins ?? "0").toString();
-            nbaSportEventsList[index].awayLoss =
-                (game.away?.record?.losses ?? "0").toString();
+            if (sportKey == "NBA") {
+              nbaSportEventsList[index].awayScore =
+                  (game.away?.points ?? "0").toString();
+            } else {
+              ncaabSportEventsList[index].awayScore =
+                  (game.away?.points ?? "0").toString();
+            }
           }
         }
         update();
@@ -1595,16 +1577,16 @@ class GameListingController extends GetxController {
           if (nbaSportEventsList.isNotEmpty) {
             for (int i = 0; i < nbaSportEventsList.length; i++) {
               if (nbaSportEventsList[i].uuids != null) {
-                // await boxScoreNBAResponse(
-                //     sportKey: sportKey,
-                //     homeTeamId: replaceId(
-                //             nbaSportEventsList[i].competitors[0].uuids ?? '') ??
-                //         "",
-                //     awayTeamId: replaceId(
-                //             nbaSportEventsList[i].competitors[1].uuids ?? '') ??
-                //         "",
-                //     gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
-                //     index: i);
+                await boxScoreNBAResponse(
+                    sportKey: sportKey,
+                    homeTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
+                        "",
+                    gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
+                    index: i);
               }
             }
           }
@@ -1706,18 +1688,18 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   nbaTodayEventsList[i].status != 'closed') {
                 if (nbaTodayEventsList[i].uuids != null) {
-                  // await boxScoreNBAResponse(
-                  //     sportKey: sportKey,
-                  //     homeTeamId: replaceId(
-                  //             nbaTodayEventsList[i].competitors[0].uuids ??
-                  //                 '') ??
-                  //         "",
-                  //     awayTeamId: replaceId(
-                  //             nbaTodayEventsList[i].competitors[1].uuids ??
-                  //                 '') ??
-                  //         "",
-                  //     gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
-                  //     index: i);
+                  await boxScoreNBAResponse(
+                      sportKey: sportKey,
+                      homeTeamId: replaceId(
+                              nbaTodayEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              nbaTodayEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }
@@ -1751,23 +1733,27 @@ class GameListingController extends GetxController {
                 date: DateFormat('yyyy-MM-dd')
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
-            .then((value) {
+            .then((value) async {
           getAllEventList(sportKey, isLoad);
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
+          // gameListingsWithLogoResponse(DateTime.now().year.toString(), "NCAA",
+          //     isLoad: isLoad);
           if (ncaabSportEventsList.isNotEmpty) {
             for (int i = 0; i < ncaabSportEventsList.length; i++) {
               if (ncaabSportEventsList[i].uuids != null) {
-                // boxScoreNBAResponse(
-                //     sportKey: sportKey,
-                //     homeTeamId: replaceId(
-                //             nbaTodayEventsList[i].competitors[0].uuids ?? '') ??
-                //         "",
-                //     awayTeamId: replaceId(
-                //             nbaTodayEventsList[i].competitors[1].uuids ?? '') ??
-                //         "",
-                //     gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
-                //     index: i);
+                await boxScoreNBAResponse(
+                    sportKey: sportKey,
+                    homeTeamId: replaceId(
+                            ncaabTodayEventsList[i].competitors[0].uuids ??
+                                '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            ncaabTodayEventsList[i].competitors[1].uuids ??
+                                '') ??
+                        "",
+                    gameId: replaceId(ncaabTodayEventsList[i].uuids ?? ''),
+                    index: i);
               }
             }
           }
@@ -1784,7 +1770,7 @@ class GameListingController extends GetxController {
                   sportKey: sportKey,
                   date: date,
                   sportId: sportId)
-              .then((value) {
+              .then((value) async {
             setOdds(ncaabTodayEventsList);
             for (int i = 0; i < ncaabTodayEventsList.length; i++) {
               int newIndex = (ncaabSportEventsList.indexWhere(
@@ -1869,18 +1855,18 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   ncaabTodayEventsList[i].status != 'closed') {
                 if (ncaabTodayEventsList[i].uuids != null) {
-                  // boxScoreNBAResponse(
-                  //     sportKey: sportKey,
-                  //     homeTeamId: replaceId(
-                  //             nbaTodayEventsList[i].competitors[0].uuids ??
-                  //                 '') ??
-                  //         "",
-                  //     awayTeamId: replaceId(
-                  //             nbaTodayEventsList[i].competitors[1].uuids ??
-                  //                 '') ??
-                  //         "",
-                  //     gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
-                  //     index: i);
+                  await boxScoreNBAResponse(
+                      sportKey: sportKey,
+                      homeTeamId: replaceId(
+                              ncaabTodayEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              ncaabTodayEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(ncaabTodayEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }

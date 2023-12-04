@@ -16,6 +16,7 @@ import '../../../model/game_model.dart';
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_roster_model.dart';
+import '../../../model/ncaab_standings_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
@@ -1123,7 +1124,7 @@ class GameDetailsController extends GetxController {
       required SportEvents gameDetails,
       bool isLoad = false,
       String sportKey = ''}) async {
-    isLoadPlayStatHome.value = !isLoad ? false : true;
+    // isLoadPlayStatHome.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nbaPlayerProfileRepo(
@@ -1758,7 +1759,7 @@ class GameDetailsController extends GetxController {
     result = await GameListingRepo().recordRepoNCAA(sportKey: key);
     try {
       if (result.status) {
-        if (key == 'NFL') {
+        if (key == 'NFL' || key == "NBA") {
           NFLTeamRecordModel response =
               NFLTeamRecordModel.fromJson(result.data);
           final game = response.conferences;
@@ -1778,7 +1779,7 @@ class GameDetailsController extends GetxController {
               });
             }
           }
-        } else {
+        } else if (key == "NCAA") {
           TeamRecordModel response = TeamRecordModel.fromJson(result.data);
           final game = response.divisions;
           if (game != null) {
@@ -1794,6 +1795,24 @@ class GameDetailsController extends GetxController {
                     sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
                   }
                 });
+              });
+            }
+          }
+        } else if (key == "NCAAB") {
+          NCAABStandingsModel response =
+              NCAABStandingsModel.fromJson(result.data);
+          final game = response.conferences;
+          if (game != null) {
+            for (var element in game) {
+              element.teams?.forEach((team) {
+                if (team.id == homeId) {
+                  sportEvent.homeWin = (team.wins ?? "0").toString();
+                  sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+                }
+                if (team.id == awayId) {
+                  sportEvent.awayWin = (team.wins ?? "0").toString();
+                  sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+                }
               });
             }
           }
@@ -1830,29 +1849,7 @@ class GameDetailsController extends GetxController {
       sportEvent?.homeTeamInjuredPlayer.clear();
       sportEvent?.awayTeamInjuredPlayer.clear();
       if (result.status) {
-        if (sportKey == "MLB") {
-          MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
-          if (response.teams != null) {
-            response.teams?.forEach((team) {
-              if (team.id == awayTeamId) {
-                team.players?.forEach((player) {
-                  if (player.status != 'A') {
-                    sportEvent?.awayTeamInjuredPlayer.add(
-                        '${player.firstName?[0]}. ${player.lastName}(${player.status})');
-                  }
-                });
-              }
-              if (team.id == homeTeamId) {
-                team.players?.forEach((player) {
-                  if (player.status != 'A') {
-                    sportEvent?.homeTeamInjuredPlayer.add(
-                        '${player.firstName?[0]}. ${player.lastName}(${player.status})');
-                  }
-                });
-              }
-            });
-          }
-        } else {
+        if (sportKey == "NFL") {
           NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
           if (response.teams != null) {
             response.teams?.forEach((team) {
@@ -1869,6 +1866,38 @@ class GameDetailsController extends GetxController {
                   if (player.position != 'A') {
                     sportEvent?.homeTeamInjuredPlayer.add(
                         '${player.name?[0]}. ${player.name?.split(' ').last}(${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""})');
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
+          if (response.teams != null) {
+            response.teams?.forEach((team) {
+              if (team.id == awayTeamId) {
+                team.players?.forEach((player) {
+                  if (player.status != 'A') {
+                    if (sportKey == "NBA") {
+                      sportEvent?.awayTeamInjuredPlayer.add(
+                          '${player.firstName?[0]}. ${player.lastName}(${player.injuries?.first.status})');
+                    } else {
+                      sportEvent?.awayTeamInjuredPlayer.add(
+                          '${player.firstName?[0]}. ${player.lastName}(${player.status})');
+                    }
+                  }
+                });
+              }
+              if (team.id == homeTeamId) {
+                team.players?.forEach((player) {
+                  if (player.status != 'A') {
+                    if (sportKey == "NBA") {
+                      sportEvent?.homeTeamInjuredPlayer.add(
+                          '${player.firstName?[0]}. ${player.lastName}(${player.injuries?.first.status})');
+                    } else {
+                      sportEvent?.homeTeamInjuredPlayer.add(
+                          '${player.firstName?[0]}. ${player.lastName}(${player.status})');
+                    }
                   }
                 });
               }
@@ -1930,6 +1959,7 @@ class GameDetailsController extends GetxController {
           homeTeamId: replaceId(homeTeam?.uuids ?? ''),
           gameDetails: gameDetails);
       mlbInjuriesResponse(
+          sportKey: 'MLB',
           isLoad: false,
           sportEvent: gameDetails,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),
@@ -2028,6 +2058,7 @@ class GameDetailsController extends GetxController {
               : replaceId(homeTeam?.uuids ?? ''));
       mlbInjuriesResponse(
           isLoad: false,
+          sportKey: "NFL",
           sportEvent: gameDetails,
           awayTeamId: awayTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
@@ -2132,37 +2163,6 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
       isHotlines = true;
-      if (sportKey == 'NBA') {
-        await nbaRosterStaticsHomeResponse(
-          gameDetails: gameDetails,
-          sportKey: sportKey,
-          isLoad: isLoad,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-        );
-        await nbaRosterStaticsAwayResponse(
-            gameDetails: gameDetails,
-            sportKey: sportKey,
-            isLoad: isLoad,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-        gameDetails.awayRushingPlayer.clear();
-        for (var player in gameDetails.awayRushingPlayerName) {
-          await nbaAwayPlayerProfileResponse(
-                  gameDetails: gameDetails,
-                  sportKey: sportKey,
-                  isLoad: isLoad,
-                  playerId: player.id ?? "")
-              .then((value) => isLoadPlayStatAway.value = false);
-        }
-        gameDetails.homeRushingPlayer.clear();
-        for (var player in gameDetails.homeRushingPlayerName) {
-          await nbaHomePlayerProfileResponse(
-                  gameDetails: gameDetails,
-                  sportKey: sportKey,
-                  isLoad: isLoad,
-                  playerId: player.id ?? "")
-              .then((value) => isLoadPlayStatHome.value = false);
-        }
-      }
 
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
@@ -2186,6 +2186,49 @@ class GameDetailsController extends GetxController {
           update();
           break;
         }
+      }
+      if (sportKey == "NBA") {
+        mlbInjuriesResponse(
+            isLoad: false,
+            sportKey: "NBA",
+            sportEvent: gameDetails,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      }
+      recordsOfNCAAAndNFL(
+          isLoad: false,
+          sportEvent: gameDetails,
+          key: sportKey,
+          awayId: replaceId(awayTeam?.uuids ?? ''),
+          homeId: replaceId(homeTeam?.uuids ?? ''));
+      await nbaRosterStaticsHomeResponse(
+        gameDetails: gameDetails,
+        sportKey: sportKey,
+        isLoad: isLoad,
+        homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+      );
+      await nbaRosterStaticsAwayResponse(
+          gameDetails: gameDetails,
+          sportKey: sportKey,
+          isLoad: isLoad,
+          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+      gameDetails.awayRushingPlayer.clear();
+      for (var player in gameDetails.awayRushingPlayerName) {
+        await nbaAwayPlayerProfileResponse(
+                gameDetails: gameDetails,
+                sportKey: sportKey,
+                isLoad: isLoad,
+                playerId: player.id ?? "")
+            .then((value) => isLoadPlayStatAway.value = false);
+      }
+      gameDetails.homeRushingPlayer.clear();
+      for (var player in gameDetails.homeRushingPlayerName) {
+        await nbaHomePlayerProfileResponse(
+                gameDetails: gameDetails,
+                sportKey: sportKey,
+                isLoad: isLoad,
+                playerId: player.id ?? "")
+            .then((value) => isLoadPlayStatHome.value = false);
       }
     }
     update();

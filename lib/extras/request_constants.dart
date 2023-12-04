@@ -33,8 +33,8 @@ class AppUrls {
   // ignore: constant_identifier_names
   static const String MLB_APIKEY = "5hnm7xhtgc8q22q2x4w6urvb";
   // ignore: constant_identifier_names
-  static const String NBA_APIKEY = "mhu9ht7986xebkx9vptsv3y5";
-  static const String NCAAB_APIKEY = "sp5jxad2v7ue2t6nm5q32a27";
+  static const String NBA_APIKEY = "mr9pm983hk4qdmfek4yr36zc";
+  static const String NCAAB_APIKEY = "694fz42sggq4h5rbuynbwfuw";
   static const String imageUrl =
       "http://134.209.79.197/hotlines/api/app_images/profile_images/";
 }
