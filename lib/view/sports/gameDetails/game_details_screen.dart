@@ -110,65 +110,101 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                         hotlinesWidget(context, con, widget.gameDetails,
                             awayTeam, homeTeam, _tabController!),
                         20.h.H(),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  MediaQuery.of(context).size.width * .01),
-                              color: Theme.of(context).canvasColor),
-                          child: Row(
-                            children: [
-                              20.h.W(),
-                              ClipTab(
-                                isSelected: con.isTeamReportTab,
-                                teamLogo:
-                                    awayLogo(awayTeam, widget.gameDetails),
-                                onTap: () {
-                                  con.isTeamReportTab = true;
-                                },
+                        StickyHeader(
+                            header: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width * .01),
+                                  color: Theme.of(context).canvasColor),
+                              child: Row(
+                                children: [
+                                  20.h.W(),
+                                  ClipTab(
+                                    isSelected: con.isTeamReportTab,
+                                    teamLogo:
+                                        awayLogo(awayTeam, widget.gameDetails),
+                                    onTap: () {
+                                      con.isTeamReportTab = true;
+                                    },
+                                  ),
+                                  80.h.W(),
+                                  ClipTab(
+                                    isSelected: !con.isTeamReportTab,
+                                    onTap: () {
+                                      con.isTeamReportTab = false;
+                                    },
+                                    teamLogo:
+                                        homeLogo(homeTeam, widget.gameDetails),
+                                  ),
+                                  20.h.W(),
+                                ],
+                              ).paddingSymmetric(
+                                vertical: 5,
                               ),
-                              80.h.W(),
-                              ClipTab(
-                                isSelected: !con.isTeamReportTab,
-                                onTap: () {
-                                  con.isTeamReportTab = false;
-                                },
-                                teamLogo:
-                                    homeLogo(homeTeam, widget.gameDetails),
-                              ),
-                              20.h.W(),
-                            ],
-                          ).paddingSymmetric(
-                            vertical: 5,
-                          ),
-                        ).paddingSymmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.height * .02),
-                        widget.sportKey == 'MLB'
-                            ? teamReportWidget(context, widget.sportKey,
-                                widget.gameDetails, awayTeam, homeTeam)
-                            : teamReportNFL(context, con, widget.gameDetails,
-                                awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'MLB'
-                            ? playerStatWidget(context, con, widget.sportKey,
-                                widget.gameDetails, awayTeam, homeTeam)
-                            : widget.sportKey == 'NBA' ||
-                                    widget.sportKey == 'NCAAB'
-                                ? const SizedBox()
-                                : quarterBacks(context, con, widget.gameDetails,
-                                    awayTeam, homeTeam, widget.sportKey),
-                        hitterPlayerStatWidget(context, con, widget.gameDetails,
-                            awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'MLB' ||
-                                widget.sportKey == 'NBA' ||
-                                widget.sportKey == 'NCAAB'
-                            ? const SizedBox()
-                            : wrPlayersWidget(context, con, widget.gameDetails,
-                                awayTeam, homeTeam, widget.sportKey),
-                        widget.sportKey == 'NCAA' || widget.sportKey == 'NCAAB'
-                            ? const SizedBox()
-                            : injuryReportWidget(context, widget.gameDetails,
-                                widget.sportKey, awayTeam, homeTeam, con),
-                        40.H(),
+                            ).paddingSymmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.height * .02),
+                            content: Column(
+                              children: [
+                                widget.sportKey == 'MLB'
+                                    ? teamReportWidget(context, widget.sportKey,
+                                        widget.gameDetails, awayTeam, homeTeam)
+                                    : teamReportNFL(
+                                        context,
+                                        con,
+                                        widget.gameDetails,
+                                        awayTeam,
+                                        homeTeam,
+                                        widget.sportKey),
+                                widget.sportKey == 'MLB'
+                                    ? playerStatWidget(
+                                        context,
+                                        con,
+                                        widget.sportKey,
+                                        widget.gameDetails,
+                                        awayTeam,
+                                        homeTeam)
+                                    : widget.sportKey == 'NBA' ||
+                                            widget.sportKey == 'NCAAB'
+                                        ? const SizedBox()
+                                        : quarterBacks(
+                                            context,
+                                            con,
+                                            widget.gameDetails,
+                                            awayTeam,
+                                            homeTeam,
+                                            widget.sportKey),
+                                hitterPlayerStatWidget(
+                                    context,
+                                    con,
+                                    widget.gameDetails,
+                                    awayTeam,
+                                    homeTeam,
+                                    widget.sportKey),
+                                widget.sportKey == 'MLB' ||
+                                        widget.sportKey == 'NBA' ||
+                                        widget.sportKey == 'NCAAB'
+                                    ? const SizedBox()
+                                    : wrPlayersWidget(
+                                        context,
+                                        con,
+                                        widget.gameDetails,
+                                        awayTeam,
+                                        homeTeam,
+                                        widget.sportKey),
+                                widget.sportKey == 'NCAA' ||
+                                        widget.sportKey == 'NCAAB'
+                                    ? const SizedBox()
+                                    : injuryReportWidget(
+                                        context,
+                                        widget.gameDetails,
+                                        widget.sportKey,
+                                        awayTeam,
+                                        homeTeam,
+                                        con),
+                                40.H(),
+                              ],
+                            ))
                       ],
                     ),
                   ))

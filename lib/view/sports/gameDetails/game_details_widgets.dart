@@ -434,16 +434,6 @@ Padding hitterPlayerStatWidget(
                       headerOfNBAPlayerStat(context),
                       commonDivider(context),
                       nbaRushingCard(con, gameDetails),
-                      Obx(() => Visibility(
-                            visible: con.isLoadPlayStatAway.value,
-                            child: circularWidget(context).paddingAll(
-                                MediaQuery.of(context).size.height * .01),
-                          )),
-                      Obx(() => Visibility(
-                            visible: con.isLoadPlayStatHome.value,
-                            child: circularWidget(context).paddingAll(
-                                MediaQuery.of(context).size.height * .01),
-                          ))
                     ],
                   )
                 : sportKey == 'MLB'
@@ -1037,8 +1027,8 @@ Row quarterBacksData(
                         ? "0"
                         : con.isTeamReportTab
                             // : !con.isQuarterBacksTab
-                            ? con.homeQb[index]
-                            : con.homeDefense[index])
+                            ? con.homeDefense[index]
+                            : con.homeQb[index])
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
                         weight: FontWeight.w700,
@@ -1605,99 +1595,102 @@ ListView nbaRushingCard(
     padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      try {
-        return con.isTeamReportTab
-            ? ExpandableNotifier(
-                initialExpanded: i == con.isExpand,
-                child: ScrollOnExpand(
-                  child: Column(
-                    children: [
-                      ExpandablePanel(
-                        theme: const ExpandableThemeData(hasIcon: false),
-                        header: nbaAwayHeader(
-                          context,
-                          i,
-                          con,
-                          gameDetails,
-                        ),
-                        collapsed: const SizedBox(),
-                        expanded: Column(
-                          children: [
-                            expandableTileCardRunning(context, con,
-                                value1: (gameDetails
-                                    .awayRushingPlayer[i].minutes
-                                    .toString()),
-                                title1: 'Minutes/Game',
-                                title2: 'Steals/Game',
-                                value2: (gameDetails.awayRushingPlayer[i].steals
-                                    .toString())),
-                            expandableTileCardRunning(context, con,
-                                value1: gameDetails.awayRushingPlayer[i].blocks
-                                    .toString(),
-                                title1: 'Blocks/Game',
-                                title2: 'Turnovers/Game',
-                                value2: gameDetails
-                                    .awayRushingPlayer[i].turnovers
-                                    .toString()),
-                          ],
-                        ),
+      return con.isTeamReportTab
+          ? ExpandableNotifier(
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
+                      theme: const ExpandableThemeData(hasIcon: false),
+                      header: nbaAwayHeader(
+                        context,
+                        i,
+                        con,
+                        gameDetails,
                       ),
-                    ],
-                  ),
-                ),
-              )
-            : ExpandableNotifier(
-                key: Key(i.toString()),
-                initialExpanded: i == con.isExpand,
-                child: ScrollOnExpand(
-                  child: Column(
-                    children: [
-                      ExpandablePanel(
-                        theme: const ExpandableThemeData(hasIcon: false),
-                        header: nbaHomeHeader(
-                          context,
-                          i,
-                          con,
-                          gameDetails,
-                        ),
-                        collapsed: const SizedBox(),
-                        expanded: Column(
-                          children: [
-                            expandableTileCardRunning(context, con,
-                                value1: (gameDetails
-                                    .homeRushingPlayer[i].minutes
-                                    .toString()),
-                                title1: 'Minutes/Game',
-                                title2: 'Steals/Game',
-                                value2: (gameDetails.homeRushingPlayer[i].steals
-                                    .toString())),
-                            expandableTileCardRunning(context, con,
-                                value1: gameDetails.homeRushingPlayer[i].blocks
-                                    .toString(),
-                                title1: 'Blocks/Game',
-                                title2: 'Turnovers/Game',
-                                value2: gameDetails
-                                    .homeRushingPlayer[i].turnovers
-                                    .toString()),
-                          ],
-                        ),
+                      collapsed: const SizedBox(),
+                      expanded: Column(
+                        children: [
+                          expandableTileCardRunning(context, con,
+                              value1: ((gameDetails.awayRushingPlayer[i].average
+                                          ?.minutes ??
+                                      "")
+                                  .toString()),
+                              title1: 'Minutes/Game',
+                              title2: 'Steals/Game',
+                              value2: ((gameDetails.awayRushingPlayer[i].average
+                                          ?.steals ??
+                                      "")
+                                  .toString())),
+                          expandableTileCardRunning(context, con,
+                              value1: (gameDetails
+                                      .awayRushingPlayer[i].average?.blocks)
+                                  .toString(),
+                              title1: 'Blocks/Game',
+                              title2: 'Turnovers/Game',
+                              value2: (gameDetails.awayRushingPlayer[i].average
+                                          ?.turnovers ??
+                                      "")
+                                  .toString()),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-      } catch (e) {
-        return SizedBox.shrink();
-      }
+              ),
+            )
+          : ExpandableNotifier(
+              key: Key(i.toString()),
+              initialExpanded: i == con.isExpand,
+              child: ScrollOnExpand(
+                child: Column(
+                  children: [
+                    ExpandablePanel(
+                      theme: const ExpandableThemeData(hasIcon: false),
+                      header: nbaHomeHeader(
+                        context,
+                        i,
+                        con,
+                        gameDetails,
+                      ),
+                      collapsed: const SizedBox(),
+                      expanded: Column(
+                        children: [
+                          expandableTileCardRunning(context, con,
+                              value1: ((gameDetails.homeRushingPlayer[i].average
+                                          ?.minutes ??
+                                      "")
+                                  .toString()),
+                              title1: 'Minutes/Game',
+                              title2: 'Steals/Game',
+                              value2: ((gameDetails.homeRushingPlayer[i].average
+                                          ?.steals ??
+                                      "")
+                                  .toString())),
+                          expandableTileCardRunning(context, con,
+                              value1: (gameDetails
+                                      .homeRushingPlayer[i].average?.blocks)
+                                  .toString(),
+                              title1: 'Blocks/Game',
+                              title2: 'Turnovers/Game',
+                              value2: (gameDetails
+                                      .homeRushingPlayer[i].average?.turnovers)
+                                  .toString()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
     },
     separatorBuilder: (BuildContext context, int index) {
-      return gameDetails.awayRushingPlayerName.isEmpty
-          ? const SizedBox()
-          : commonDivider(context);
+      return commonDivider(context);
     },
     itemCount: con.isTeamReportTab
-        ? gameDetails.awayRushingPlayerName.length
-        : gameDetails.homeRushingPlayerName.length,
+        ? gameDetails.awayRushingPlayer.length
+        : gameDetails.homeRushingPlayer.length,
   );
 }
 
@@ -2028,15 +2021,28 @@ SizedBox nbaHomeHeader(
         children: [
           Expanded(
               flex: 3,
-              child: (gameDetails.homeRushingPlayerName[index].abbrName ?? "")
-                  .appCommonText(
-                      color: blueColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
+              child:
+                  ('${gameDetails.homeRushingPlayer[index].firstName.toString().characters.first}. ${gameDetails.homeRushingPlayer[index].lastName}')
+                      .appCommonText(
+                          color: blueColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].points ?? "0")
+              child:
+                  (gameDetails.homeRushingPlayer[index].average?.points ?? "0")
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails
+                          .homeRushingPlayer[index].average?.threePointsMade ??
+                      "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2046,7 +2052,7 @@ SizedBox nbaHomeHeader(
           Expanded(
               flex: 2,
               child:
-                  (gameDetails.homeRushingPlayer[index].threePointsMade ?? "0")
+                  (gameDetails.homeRushingPlayer[index].average?.assists ?? "0")
                       .toString()
                       .appCommonText(
                           color: Theme.of(context).highlightColor,
@@ -2055,16 +2061,8 @@ SizedBox nbaHomeHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].assists ?? "0")
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
-          Expanded(
-              flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].rebounds ?? "0")
+              child: (gameDetails.homeRushingPlayer[index].average?.rebounds ??
+                      "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2094,15 +2092,28 @@ SizedBox nbaAwayHeader(
         children: [
           Expanded(
               flex: 3,
-              child: (gameDetails.awayRushingPlayerName[index].abbrName ?? "")
-                  .appCommonText(
-                      color: blueColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
+              child:
+                  ('${gameDetails.awayRushingPlayer[index].firstName.toString().characters.first}. ${gameDetails.awayRushingPlayer[index].lastName}')
+                      .appCommonText(
+                          color: blueColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].points ?? "0")
+              child:
+                  (gameDetails.awayRushingPlayer[index].average?.points ?? "0")
+                      .toString()
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
+          Expanded(
+              flex: 2,
+              child: (gameDetails
+                          .awayRushingPlayer[index].average?.threePointsMade ??
+                      "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2112,7 +2123,7 @@ SizedBox nbaAwayHeader(
           Expanded(
               flex: 2,
               child:
-                  (gameDetails.awayRushingPlayer[index].threePointsMade ?? "0")
+                  (gameDetails.awayRushingPlayer[index].average?.assists ?? "0")
                       .toString()
                       .appCommonText(
                           color: Theme.of(context).highlightColor,
@@ -2121,16 +2132,8 @@ SizedBox nbaAwayHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].assists ?? "0")
-                  .toString()
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
-          Expanded(
-              flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].rebounds ?? "0")
+              child: (gameDetails.awayRushingPlayer[index].average?.rebounds ??
+                      "0")
                   .toString()
                   .appCommonText(
                       color: Theme.of(context).highlightColor,
@@ -2458,7 +2461,12 @@ Container customTabBar(
               ),
               Expanded(
                 flex: 3,
-                child: (sportKey == 'MLB' ? '' : 'Rushing').appCommonText(
+                child: (sportKey == 'MLB'
+                        ? ''
+                        : sportKey == 'NBA' || sportKey == 'NCAAB'
+                            ? "Players"
+                            : 'Rushing')
+                    .appCommonText(
                   weight: FontWeight.bold,
                   align: TextAlign.center,
                   size: MediaQuery.of(context).size.height * .018,

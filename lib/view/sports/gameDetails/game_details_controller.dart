@@ -16,6 +16,7 @@ import '../../../model/game_model.dart';
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_roster_model.dart';
+import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
@@ -114,14 +115,14 @@ class GameDetailsController extends GetxController {
     'Passing TDs/Game',
     'Rushing Yards/Game',
     'Rushing TDs/Game',
-    'Interceptions',
+    'Interceptions/Game',
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
     'Passing TDs Allowed/Game',
     'Rushing Yards Allowed/Game',
     'Rushing TDs Allowed/Game',
-    'Interceptions',
+    'Interceptions/Game',
   ];
   /*bool _isQuarterBacksTab = true;
 
@@ -983,7 +984,7 @@ class GameDetailsController extends GetxController {
     }
     update();
   }
-
+/*
   ///NBA ROSTER PLAYER STATICS
   Future nbaRosterStaticsHomeResponse(
       {String homeTeamId = '',
@@ -1092,7 +1093,7 @@ class GameDetailsController extends GetxController {
             response.seasons?.forEach((season) {
               if (season.year == DateTime.now().year) {
                 season.teams?.forEach((team) {
-                  gameDetails.awayRushingPlayer.add(team.average!);
+                  gameDetails.awayRushingPlayer.add(team);
                 });
               }
             });
@@ -1162,7 +1163,7 @@ class GameDetailsController extends GetxController {
       );
     }
     update();
-  }
+  }*/
 
   List<StartingQBModel> qbsList = [
     StartingQBModel(
@@ -1834,6 +1835,80 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  ///NBA STATICS API
+  Future staticsAwayNBA({
+    String awayId = '',
+    bool isLoad = false,
+    required SportEvents gameDetails,
+    String key = '',
+  }) async {
+    gameDetails.awayRushingPlayer.clear();
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
+    try {
+      if (result.status) {
+        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+        if (response.players != null) {
+          response.players?.forEach((player) {
+            gameDetails.awayRushingPlayer.add(player);
+          });
+        }
+        (gameDetails.awayRushingPlayer).sort((a, b) =>
+            (b.average?.minutes ?? 0).compareTo((a.average?.minutes ?? 0)));
+        update();
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR RECORD NFL && NCAA--------$e');
+      // showAppSnackBar(
+      //   errorText,
+      // );
+    }
+    update();
+  }
+
+  Future staticsHomeNBA({
+    String homeId = '',
+    bool isLoad = false,
+    required SportEvents gameDetails,
+    String key = '',
+  }) async {
+    gameDetails.homeRushingPlayer.clear();
+    isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: homeId);
+    try {
+      if (result.status) {
+        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+        if (response.players != null) {
+          response.players?.forEach((player) {
+            gameDetails.homeRushingPlayer.add(player);
+          });
+        }
+        (gameDetails.homeRushingPlayer).sort((a, b) =>
+            (b.average?.minutes ?? 0).compareTo((a.average?.minutes ?? 0)));
+      } else {
+        isLoading.value = false;
+      }
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR RECORD NFL && NCAA--------$e');
+      // showAppSnackBar(
+      //   errorText,
+      // );
+    }
+
+    update();
+  }
+
   ///MLB INJURY REPORT
   Future mlbInjuriesResponse(
       {String awayTeamId = '',
@@ -2163,7 +2238,32 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
       isHotlines = true;
-
+      await staticsAwayNBA(
+        gameDetails: gameDetails,
+        isLoad: isLoad,
+        key: sportKey,
+        awayId: replaceId(awayTeam?.uuids ?? ''),
+      );
+      await staticsHomeNBA(
+        gameDetails: gameDetails,
+        isLoad: isLoad,
+        key: sportKey,
+        homeId: replaceId(homeTeam?.uuids ?? ''),
+      );
+      recordsOfNCAAAndNFL(
+          isLoad: false,
+          sportEvent: gameDetails,
+          key: sportKey,
+          awayId: replaceId(awayTeam?.uuids ?? ''),
+          homeId: replaceId(homeTeam?.uuids ?? ''));
+      if (sportKey == "NBA") {
+        mlbInjuriesResponse(
+            isLoad: false,
+            sportKey: "NBA",
+            sportEvent: gameDetails,
+            awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+      }
       for (int i = 0; i <= 15; i += 5) {
         log('i====$i');
         hotlinesDataResponse(
@@ -2187,21 +2287,7 @@ class GameDetailsController extends GetxController {
           break;
         }
       }
-      if (sportKey == "NBA") {
-        mlbInjuriesResponse(
-            isLoad: false,
-            sportKey: "NBA",
-            sportEvent: gameDetails,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      }
-      recordsOfNCAAAndNFL(
-          isLoad: false,
-          sportEvent: gameDetails,
-          key: sportKey,
-          awayId: replaceId(awayTeam?.uuids ?? ''),
-          homeId: replaceId(homeTeam?.uuids ?? ''));
-      await nbaRosterStaticsHomeResponse(
+      /*   await nbaRosterStaticsHomeResponse(
         gameDetails: gameDetails,
         sportKey: sportKey,
         isLoad: isLoad,
@@ -2229,7 +2315,7 @@ class GameDetailsController extends GetxController {
                 isLoad: isLoad,
                 playerId: player.id ?? "")
             .then((value) => isLoadPlayStatHome.value = false);
-      }
+      }*/
     }
     update();
   }

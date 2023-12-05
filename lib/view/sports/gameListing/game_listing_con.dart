@@ -1742,18 +1742,23 @@ class GameListingController extends GetxController {
           if (ncaabSportEventsList.isNotEmpty) {
             for (int i = 0; i < ncaabSportEventsList.length; i++) {
               if (ncaabSportEventsList[i].uuids != null) {
-                await boxScoreNBAResponse(
-                    sportKey: sportKey,
-                    homeTeamId: replaceId(
-                            ncaabTodayEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaabTodayEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                    gameId: replaceId(ncaabTodayEventsList[i].uuids ?? ''),
-                    index: i);
+                if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
+                        .toLocal()
+                        .day ==
+                    DateTime.now().day) {
+                  await boxScoreNBAResponse(
+                      sportKey: sportKey,
+                      homeTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
+                      index: i);
+                }
               }
             }
           }

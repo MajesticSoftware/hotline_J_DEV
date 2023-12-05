@@ -190,6 +190,25 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NBA STATICS
+  Future<ResponseItem> nbaStaticsRepo(
+      {String teamId = '', String sportKey = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse(sportKey == "NBA"
+        ? '${AppUrls.NBA_BASE_URL}seasons/${DateTime.now().year}/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NBA_APIKEY}'
+        : '${AppUrls.NCAAB_BASE_URL}seasons/${DateTime.now().year}/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NCAAB_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///NBA PLAYER PROFILE
   Future<ResponseItem> nbaPlayerProfileRepo(
       {String playerId = '', String seasons = '', String sportKey = ''}) async {

@@ -1,4 +1,4 @@
-import 'nba_player_profile_model.dart' as pro;
+import 'nba_statics_model.dart' as pro;
 import 'nfl_statics_model.dart';
 import 'nba_roster_model.dart' as nba;
 
@@ -118,10 +118,8 @@ class SportEvents {
   List<Players> homeReceiversPlayer = [];
   List<Players> awayRunningBackPlayer = [];
   List<Players> homeRunningBackPlayer = [];
-  List<pro.Average> homeRushingPlayer = [];
-  List<pro.Average> awayRushingPlayer = [];
-  List<nba.Players> homeRushingPlayerName = [];
-  List<nba.Players> awayRushingPlayerName = [];
+  List<pro.Players> homeRushingPlayer = [];
+  List<pro.Players> awayRushingPlayer = [];
   List homeTeamInjuredPlayer = [];
   num temp = 273.15;
   int weather = 805;
