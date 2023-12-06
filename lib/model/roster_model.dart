@@ -112,7 +112,7 @@ class Weather {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['condition'] = condition;
     data['humidity'] = humidity;
     data['temp'] = temp;
@@ -135,7 +135,7 @@ class Wind {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['speed'] = speed;
     data['direction'] = direction;
     return data;
@@ -160,7 +160,7 @@ class Summary {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (season != null) {
       data['season'] = season!.toJson();
     }
@@ -196,7 +196,7 @@ class Season {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['year'] = year;
     data['type'] = type;
@@ -219,7 +219,7 @@ class Week {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['sequence'] = sequence;
     data['title'] = title;
@@ -272,7 +272,7 @@ class Venue {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
     data['city'] = city;
@@ -303,7 +303,7 @@ class Location {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['lat'] = lat;
     data['lng'] = lng;
     return data;
@@ -324,7 +324,7 @@ class Record {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['wins'] = wins;
     data['losses'] = losses;
     data['ties'] = ties;
@@ -371,7 +371,7 @@ class Home {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
     data['market'] = market;

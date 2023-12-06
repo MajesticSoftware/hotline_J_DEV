@@ -44,9 +44,9 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="0pv5q.app.link" />
+                <data android:scheme="https" android:host="hotlinessports.app.link" />
                 <!-- example-alternate domain is required for App Links when the Journeys/Web SDK and Deepviews are used inside your website.  -->
-                <data android:scheme="https" android:host="0pv5q-alternate.app.link" />
+                <data android:scheme="https" android:host="hotlinessports-alternate.app.link" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

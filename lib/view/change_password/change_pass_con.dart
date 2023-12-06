@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 
 import '../../constant/app_strings.dart';
 import '../../constant/shred_preference.dart';

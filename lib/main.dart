@@ -2,23 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hotlines/constant/shred_preference.dart';
-import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
-import 'package:hotlines/view/auth/register_module/register_screen.dart';
 import 'package:hotlines/view/main/app_starting_screen.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
-
 import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
-  // Add this line
   await ScreenUtil.ensureScreenSize();
   await GetStorage.init();
   await PreferenceManager().putAppDeviceInfo();

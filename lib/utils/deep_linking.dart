@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:hotlines/theme/helper.dart';
-import 'package:share_plus/share_plus.dart';
 
 import 'extension.dart';
 

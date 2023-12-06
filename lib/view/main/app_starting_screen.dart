@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -15,10 +12,7 @@ import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 
 import '../../constant/shred_preference.dart';
-import '../../extras/constants.dart';
-import '../../theme/helper.dart';
 import '../../utils/deep_linking.dart';
-import '../auth/log_in_module/log_in_screen.dart';
 import '../sports/gameListing/game_listing_screen.dart';
 
 class AppStartScreen extends StatefulWidget {

@@ -1,6 +1,5 @@
 import 'nba_statics_model.dart' as pro;
 import 'nfl_statics_model.dart';
-import 'nba_roster_model.dart' as nba;
 
 class GameListingDataModel {
   String? generatedAt;

@@ -3,7 +3,6 @@ import 'package:collection/collection.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
-import 'package:hotlines/model/nba_player_profile_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 
 import 'package:hotlines/utils/utils.dart';
@@ -15,7 +14,6 @@ import '../../../model/game_model.dart';
 
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
-import '../../../model/nba_roster_model.dart';
 import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
 import '../../../model/nfl_statics_model.dart';
@@ -23,7 +21,6 @@ import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
 import '../../../model/player_profile_nfl_model.dart';
 import '../../../model/response_item.dart';
-import '../../../model/roster_model.dart';
 import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';

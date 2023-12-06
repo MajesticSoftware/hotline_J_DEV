@@ -3,10 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../constant/shred_preference.dart';
 import '../extras/constants.dart';
 import '../generated/assets.dart';
-import '../theme/app_color.dart';
 
 getWeatherIconOld(String condition, BuildContext context, double height) {
   // int data = (((condition) - 32) * (5 / 9) + 273.15).toInt();

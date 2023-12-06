@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotlines/theme/theme.dart';
+ import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 
 class CommonAppButton extends StatelessWidget {

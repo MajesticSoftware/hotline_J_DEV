@@ -1,5 +1,4 @@
-import 'dart:developer';
-import 'dart:io';
+ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -466,7 +465,7 @@ class SelectGameScreen extends StatelessWidget {
               child: Text(
                 '\nNo games today',
                 style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).cardColor,
+                          color: Theme.of(context).highlightColor,
                           fontWeight: FontWeight.bold,
                           fontSize: Get.height * .016),
                 textAlign: TextAlign.start,
