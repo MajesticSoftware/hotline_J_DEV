@@ -49,7 +49,7 @@ class TermOfServiceScreen extends StatelessWidget {
                     color: greyColor, size: 18.h, align: TextAlign.start),
             20.h.H(),
             "2. INTELLECTUAL PROPERTY RIGHTS"
-                .appCommonText(color: blackColor, weight: FontWeight.bold),
+                .appCommonText(color: blackColor, weight: FontWeight.bold,align: TextAlign.start),
             20.h.H(),
             "Our intellectual property"
                 .appCommonText(color: blackColor, weight: FontWeight.bold),

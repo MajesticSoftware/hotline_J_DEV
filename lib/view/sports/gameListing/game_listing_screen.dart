@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/constant/app_strings.dart';
 import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
@@ -464,7 +465,10 @@ class SelectGameScreen extends StatelessWidget {
                   !controller.isPagination),
               child: Text(
                 '\nNo games today',
-                style: Theme.of(context).textTheme.labelLarge,
+                style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .016),
                 textAlign: TextAlign.start,
                 maxLines: 2,
               ).paddingOnly(bottom: 15.w),

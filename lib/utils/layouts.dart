@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../constant/shred_preference.dart';
 import '../extras/constants.dart';
@@ -85,7 +86,10 @@ Expanded buildExpandedBoxWidget(BuildContext context,
               child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(upText,
-                      style: Theme.of(context).textTheme.bodySmall)),
+                      style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .014))),
             ),
           ).paddingSymmetric(
             horizontal: mobileView.size.shortestSide < 600
@@ -108,7 +112,10 @@ Expanded buildExpandedBoxWidget(BuildContext context,
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(bottomText,
-                    style: Theme.of(context).textTheme.bodySmall),
+                    style: GoogleFonts.nunitoSans(
+                        color: Theme.of(context).cardColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Get.height * .014)),
               ),
             ),
           ).paddingSymmetric(

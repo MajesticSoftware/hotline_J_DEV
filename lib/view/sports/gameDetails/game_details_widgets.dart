@@ -807,7 +807,7 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           10,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .041,
+            height: MediaQuery.of(context).size.height * .045,
             color: Theme.of(context).indicatorColor,
           ),
         ),
@@ -1009,7 +1009,7 @@ Row quarterBacksData(
           5,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .041,
+            height: MediaQuery.of(context).size.height * .044,
             color: Theme.of(context).indicatorColor,
           ),
         ),
@@ -3615,12 +3615,15 @@ Padding hotlinesWidget(
           Container(
             height: MediaQuery.of(context).size.height * .032,
             color: Theme.of(context).splashColor,
+
             child: TabBar(
               controller: tabController,
               onTap: (value) {
                 con.hotlinesIndex = value;
                 // log('INDEX===$value');
               },
+              dividerColor: Theme.of(context).splashColor,
+              indicatorSize: TabBarIndicatorSize.tab,
               indicatorPadding: EdgeInsets.zero,
               indicatorColor: yellowColor,
               tabs: [
@@ -3729,7 +3732,11 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   child: Text(
                     ('${awayTeam?.abbreviation} ${awayTeam?.name?.split(' ').last}')
                         .toString(),
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: GoogleFonts.nunitoSans(
+                      color: Theme.of(context).highlightColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: Get.height * .016,
+                    ),
                     textAlign: TextAlign.start,
                     maxLines: 2,
                   ),
@@ -3760,7 +3767,11 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   child: Text(
                     ('${homeTeam?.abbreviation} ${homeTeam?.name?.split(' ').last}')
                         .toString(),
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: GoogleFonts.nunitoSans(
+                      color: Theme.of(context).highlightColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: Get.height * .016,
+                    ),
                     textAlign: TextAlign.start,
                     maxLines: 2,
                   ),
@@ -3802,9 +3813,15 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   textBaseline: TextBaseline.alphabetic,
                   verticalDirection: VerticalDirection.up,
                   children: [
-                    Text('o', style: Theme.of(context).textTheme.bodySmall),
+                    Text('o', style:GoogleFonts.nunitoSans(
+                        color: Theme.of(context).cardColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Get.height * .014)),
                     Text((gameDetails.awayOUValue).toString(),
-                        style: Theme.of(context).textTheme.bodySmall),
+                        style: GoogleFonts.nunitoSans(
+                            color: Theme.of(context).cardColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Get.height * .014)),
                   ],
                 )),
               ).paddingSymmetric(
@@ -3829,9 +3846,15 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   textBaseline: TextBaseline.alphabetic,
                   verticalDirection: VerticalDirection.up,
                   children: [
-                    Text('u', style: Theme.of(context).textTheme.bodySmall),
+                    Text('u', style: GoogleFonts.nunitoSans(
+                        color: Theme.of(context).cardColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Get.height * .014)),
                     Text((gameDetails.homeOUValue).toString(),
-                        style: Theme.of(context).textTheme.bodySmall),
+                        style: GoogleFonts.nunitoSans(
+                            color: Theme.of(context).cardColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Get.height * .014)),
                   ],
                 )),
               ).paddingSymmetric(
@@ -4611,9 +4634,9 @@ class ClipTab extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(
-                color: isSelected ? yellowColor : appColor, width: 3),
+                color: isSelected ? yellowColor :    Theme.of(context).disabledColor, width: 3),
             borderRadius: BorderRadius.circular(2),
-            color: appColor),
+            color:    Theme.of(context).disabledColor,),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -4626,7 +4649,7 @@ class ClipTab extends StatelessWidget {
             '  Offense'.appCommonText(
                 size: Get.height * .018,
                 weight: FontWeight.bold,
-                color: whiteColor)
+                color: Theme.of(context).cardColor,)
           ],
         ).paddingSymmetric(horizontal: 10, vertical: 6),
       ),

@@ -65,47 +65,47 @@ class NFLProfileModel {
     status = json['status'];
     srId = json['sr_id'];
     experience = json['experience'];
-    team = json['team'] != null ? new Team.fromJson(json['team']) : null;
-    draft = json['draft'] != null ? new Draft.fromJson(json['draft']) : null;
+    team = json['team'] != null ? Team.fromJson(json['team']) : null;
+    draft = json['draft'] != null ? Draft.fromJson(json['draft']) : null;
     if (json['seasons'] != null) {
       seasons = <Seasons>[];
       json['seasons'].forEach((v) {
-        seasons!.add(new Seasons.fromJson(v));
+        seasons!.add(Seasons.fromJson(v));
       });
     }
     sComment = json['_comment'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['jersey'] = this.jersey;
-    data['last_name'] = this.lastName;
-    data['first_name'] = this.firstName;
-    data['abbr_name'] = this.abbrName;
-    data['birth_date'] = this.birthDate;
-    data['weight'] = this.weight;
-    data['height'] = this.height;
-    data['position'] = this.position;
-    data['birth_place'] = this.birthPlace;
-    data['high_school'] = this.highSchool;
-    data['college'] = this.college;
-    data['college_conf'] = this.collegeConf;
-    data['rookie_year'] = this.rookieYear;
-    data['status'] = this.status;
-    data['sr_id'] = this.srId;
-    data['experience'] = this.experience;
-    if (this.team != null) {
-      data['team'] = this.team!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['jersey'] = jersey;
+    data['last_name'] = lastName;
+    data['first_name'] = firstName;
+    data['abbr_name'] = abbrName;
+    data['birth_date'] = birthDate;
+    data['weight'] = weight;
+    data['height'] = height;
+    data['position'] = position;
+    data['birth_place'] = birthPlace;
+    data['high_school'] = highSchool;
+    data['college'] = college;
+    data['college_conf'] = collegeConf;
+    data['rookie_year'] = rookieYear;
+    data['status'] = status;
+    data['sr_id'] = srId;
+    data['experience'] = experience;
+    if (team != null) {
+      data['team'] = team!.toJson();
     }
-    if (this.draft != null) {
-      data['draft'] = this.draft!.toJson();
+    if (draft != null) {
+      data['draft'] = draft!.toJson();
     }
-    if (this.seasons != null) {
-      data['seasons'] = this.seasons!.map((v) => v.toJson()).toList();
+    if (seasons != null) {
+      data['seasons'] = seasons!.map((v) => v.toJson()).toList();
     }
-    data['_comment'] = this.sComment;
+    data['_comment'] = sComment;
     return data;
   }
 }
@@ -128,12 +128,12 @@ class Team {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['alias'] = this.alias;
-    data['sr_id'] = this.srId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['alias'] = alias;
+    data['sr_id'] = srId;
     return data;
   }
 }
@@ -150,16 +150,16 @@ class Draft {
     year = json['year'];
     round = json['round'];
     number = json['number'];
-    team = json['team'] != null ? new Team.fromJson(json['team']) : null;
+    team = json['team'] != null ? Team.fromJson(json['team']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['year'] = this.year;
-    data['round'] = this.round;
-    data['number'] = this.number;
-    if (this.team != null) {
-      data['team'] = this.team!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['year'] = year;
+    data['round'] = round;
+    data['number'] = number;
+    if (team != null) {
+      data['team'] = team!.toJson();
     }
     return data;
   }
@@ -182,19 +182,19 @@ class Seasons {
     if (json['teams'] != null) {
       teams = <Teams>[];
       json['teams'].forEach((v) {
-        teams!.add(new Teams.fromJson(v));
+        teams!.add(Teams.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['year'] = this.year;
-    data['type'] = this.type;
-    data['name'] = this.name;
-    if (this.teams != null) {
-      data['teams'] = this.teams!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['year'] = year;
+    data['type'] = type;
+    data['name'] = name;
+    if (teams != null) {
+      data['teams'] = teams!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -223,19 +223,19 @@ class Teams {
     alias = json['alias'];
     srId = json['sr_id'];
     statistics = json['statistics'] != null
-        ? new Statistics.fromJson(json['statistics'])
+        ? Statistics.fromJson(json['statistics'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['market'] = this.market;
-    data['alias'] = this.alias;
-    data['sr_id'] = this.srId;
-    if (this.statistics != null) {
-      data['statistics'] = this.statistics!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['market'] = market;
+    data['alias'] = alias;
+    data['sr_id'] = srId;
+    if (statistics != null) {
+      data['statistics'] = statistics!.toJson();
     }
     return data;
   }
@@ -263,37 +263,37 @@ class Statistics {
     gamesPlayed = json['games_played'];
     gamesStarted = json['games_started'];
     rushing =
-        json['rushing'] != null ? new Rushing.fromJson(json['rushing']) : null;
+        json['rushing'] != null ? Rushing.fromJson(json['rushing']) : null;
     penalties = json['penalties'] != null
-        ? new Penalties.fromJson(json['penalties'])
+        ? Penalties.fromJson(json['penalties'])
         : null;
     passing =
-        json['passing'] != null ? new Passing.fromJson(json['passing']) : null;
+        json['passing'] != null ? Passing.fromJson(json['passing']) : null;
     fumbles =
-        json['fumbles'] != null ? new Fumbles.fromJson(json['fumbles']) : null;
+        json['fumbles'] != null ? Fumbles.fromJson(json['fumbles']) : null;
     conversions = json['conversions'] != null
-        ? new Conversions.fromJson(json['conversions'])
+        ? Conversions.fromJson(json['conversions'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['games_played'] = this.gamesPlayed;
-    data['games_started'] = this.gamesStarted;
-    if (this.rushing != null) {
-      data['rushing'] = this.rushing!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['games_played'] = gamesPlayed;
+    data['games_started'] = gamesStarted;
+    if (rushing != null) {
+      data['rushing'] = rushing!.toJson();
     }
-    if (this.penalties != null) {
-      data['penalties'] = this.penalties!.toJson();
+    if (penalties != null) {
+      data['penalties'] = penalties!.toJson();
     }
-    if (this.passing != null) {
-      data['passing'] = this.passing!.toJson();
+    if (passing != null) {
+      data['passing'] = passing!.toJson();
     }
-    if (this.fumbles != null) {
-      data['fumbles'] = this.fumbles!.toJson();
+    if (fumbles != null) {
+      data['fumbles'] = fumbles!.toJson();
     }
-    if (this.conversions != null) {
-      data['conversions'] = this.conversions!.toJson();
+    if (conversions != null) {
+      data['conversions'] = conversions!.toJson();
     }
     return data;
   }
@@ -349,21 +349,21 @@ class Rushing {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['avg_yards'] = this.avgYards;
-    data['attempts'] = this.attempts;
-    data['touchdowns'] = this.touchdowns;
-    data['yards'] = this.yards;
-    data['longest'] = this.longest;
-    data['longest_touchdown'] = this.longestTouchdown;
-    data['redzone_attempts'] = this.redzoneAttempts;
-    data['tlost'] = this.tlost;
-    data['tlost_yards'] = this.tlostYards;
-    data['first_downs'] = this.firstDowns;
-    data['broken_tackles'] = this.brokenTackles;
-    data['kneel_downs'] = this.kneelDowns;
-    data['scrambles'] = this.scrambles;
-    data['yards_after_contact'] = this.yardsAfterContact;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['avg_yards'] = avgYards;
+    data['attempts'] = attempts;
+    data['touchdowns'] = touchdowns;
+    data['yards'] = yards;
+    data['longest'] = longest;
+    data['longest_touchdown'] = longestTouchdown;
+    data['redzone_attempts'] = redzoneAttempts;
+    data['tlost'] = tlost;
+    data['tlost_yards'] = tlostYards;
+    data['first_downs'] = firstDowns;
+    data['broken_tackles'] = brokenTackles;
+    data['kneel_downs'] = kneelDowns;
+    data['scrambles'] = scrambles;
+    data['yards_after_contact'] = yardsAfterContact;
     return data;
   }
 }
@@ -382,10 +382,10 @@ class Penalties {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['penalties'] = this.penalties;
-    data['yards'] = this.yards;
-    data['first_downs'] = this.firstDowns;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['penalties'] = penalties;
+    data['yards'] = yards;
+    data['first_downs'] = firstDowns;
     return data;
   }
 }
@@ -488,37 +488,37 @@ class Passing {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['attempts'] = this.attempts;
-    data['completions'] = this.completions;
-    data['cmp_pct'] = this.cmpPct;
-    data['yards'] = this.yards;
-    data['avg_yards'] = this.avgYards;
-    data['sacks'] = this.sacks;
-    data['sack_yards'] = this.sackYards;
-    data['touchdowns'] = this.touchdowns;
-    data['longest'] = this.longest;
-    data['interceptions'] = this.interceptions;
-    data['rating'] = this.rating;
-    data['longest_touchdown'] = this.longestTouchdown;
-    data['air_yards'] = this.airYards;
-    data['redzone_attempts'] = this.redzoneAttempts;
-    data['gross_yards'] = this.grossYards;
-    data['first_downs'] = this.firstDowns;
-    data['int_touchdowns'] = this.intTouchdowns;
-    data['throw_aways'] = this.throwAways;
-    data['poor_throws'] = this.poorThrows;
-    data['defended_passes'] = this.defendedPasses;
-    data['dropped_passes'] = this.droppedPasses;
-    data['spikes'] = this.spikes;
-    data['blitzes'] = this.blitzes;
-    data['hurries'] = this.hurries;
-    data['knockdowns'] = this.knockdowns;
-    data['pocket_time'] = this.pocketTime;
-    data['avg_pocket_time'] = this.avgPocketTime;
-    data['net_yards'] = this.netYards;
-    data['batted_passes'] = this.battedPasses;
-    data['on_target_throws'] = this.onTargetThrows;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['attempts'] = attempts;
+    data['completions'] = completions;
+    data['cmp_pct'] = cmpPct;
+    data['yards'] = yards;
+    data['avg_yards'] = avgYards;
+    data['sacks'] = sacks;
+    data['sack_yards'] = sackYards;
+    data['touchdowns'] = touchdowns;
+    data['longest'] = longest;
+    data['interceptions'] = interceptions;
+    data['rating'] = rating;
+    data['longest_touchdown'] = longestTouchdown;
+    data['air_yards'] = airYards;
+    data['redzone_attempts'] = redzoneAttempts;
+    data['gross_yards'] = grossYards;
+    data['first_downs'] = firstDowns;
+    data['int_touchdowns'] = intTouchdowns;
+    data['throw_aways'] = throwAways;
+    data['poor_throws'] = poorThrows;
+    data['defended_passes'] = defendedPasses;
+    data['dropped_passes'] = droppedPasses;
+    data['spikes'] = spikes;
+    data['blitzes'] = blitzes;
+    data['hurries'] = hurries;
+    data['knockdowns'] = knockdowns;
+    data['pocket_time'] = pocketTime;
+    data['avg_pocket_time'] = avgPocketTime;
+    data['net_yards'] = netYards;
+    data['batted_passes'] = battedPasses;
+    data['on_target_throws'] = onTargetThrows;
     return data;
   }
 }
@@ -564,18 +564,18 @@ class Fumbles {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fumbles'] = this.fumbles;
-    data['lost_fumbles'] = this.lostFumbles;
-    data['own_rec'] = this.ownRec;
-    data['own_rec_yards'] = this.ownRecYards;
-    data['opp_rec'] = this.oppRec;
-    data['opp_rec_yards'] = this.oppRecYards;
-    data['out_of_bounds'] = this.outOfBounds;
-    data['forced_fumbles'] = this.forcedFumbles;
-    data['own_rec_tds'] = this.ownRecTds;
-    data['opp_rec_tds'] = this.oppRecTds;
-    data['ez_rec_tds'] = this.ezRecTds;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['fumbles'] = fumbles;
+    data['lost_fumbles'] = lostFumbles;
+    data['own_rec'] = ownRec;
+    data['own_rec_yards'] = ownRecYards;
+    data['opp_rec'] = oppRec;
+    data['opp_rec_yards'] = oppRecYards;
+    data['out_of_bounds'] = outOfBounds;
+    data['forced_fumbles'] = forcedFumbles;
+    data['own_rec_tds'] = ownRecTds;
+    data['opp_rec_tds'] = oppRecTds;
+    data['ez_rec_tds'] = ezRecTds;
     return data;
   }
 }
@@ -612,15 +612,15 @@ class Conversions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pass_attempts'] = this.passAttempts;
-    data['pass_successes'] = this.passSuccesses;
-    data['rush_attempts'] = this.rushAttempts;
-    data['rush_successes'] = this.rushSuccesses;
-    data['receive_attempts'] = this.receiveAttempts;
-    data['receive_successes'] = this.receiveSuccesses;
-    data['defense_attempts'] = this.defenseAttempts;
-    data['defense_successes'] = this.defenseSuccesses;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['pass_attempts'] = passAttempts;
+    data['pass_successes'] = passSuccesses;
+    data['rush_attempts'] = rushAttempts;
+    data['rush_successes'] = rushSuccesses;
+    data['receive_attempts'] = receiveAttempts;
+    data['receive_successes'] = receiveSuccesses;
+    data['defense_attempts'] = defenseAttempts;
+    data['defense_successes'] = defenseSuccesses;
     return data;
   }
 }

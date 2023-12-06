@@ -18,17 +18,18 @@ import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
+  // Add this line
+  await ScreenUtil.ensureScreenSize();
   await GetStorage.init();
   await PreferenceManager().putAppDeviceInfo();
   // FlutterBranchSdk.validateSDKIntegration();
   runApp(const MyApp());
+
 }
 
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  // bool isDarkMode = PreferenceManager.getIsDarkMode() ?? false;
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -38,8 +39,8 @@ class MyApp extends StatelessWidget {
       designSize: const Size(810, 1080),
       minTextAdapt: true,
       splitScreenMode: true,
-      // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_, child) {
+      builder: (context2, child) {
+        // ScreenUtil.init(context);
         return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.light,

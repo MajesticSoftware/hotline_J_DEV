@@ -120,14 +120,21 @@ class GameWidget extends StatelessWidget {
                             flex: mobileView.size.shortestSide < 600 ? 1 : 2,
                             child: Text(
                               awayTeamAbb.toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .016),
                               textAlign: TextAlign.start,
                               maxLines: 2,
                             ),
                           ),
                           Text(
                             awayTeamScore.toString(),
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style:GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: Get.height * .018,
+                            ),
                             textAlign: TextAlign.start,
                             maxLines: 2,
                           )
@@ -141,7 +148,11 @@ class GameWidget extends StatelessWidget {
                             flex: 0,
                             child: Text(
                               '  @',
-                              style: Theme.of(context).textTheme.labelSmall,
+                              style: GoogleFonts.nunitoSans(
+                                color: Theme.of(context).highlightColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: Get.height * .016,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -181,14 +192,21 @@ class GameWidget extends StatelessWidget {
                             flex: mobileView.size.shortestSide < 600 ? 1 : 2,
                             child: Text(
                               homeTeamAbb.toString(),
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .016),
                               textAlign: TextAlign.start,
                               maxLines: 2,
                             ),
                           ),
                           Text(
                             homeTeamScore.toString(),
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style: GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: Get.height * .018,
+                            ),
                             textAlign: TextAlign.start,
                             maxLines: 2,
                           )
@@ -245,7 +263,11 @@ class GameWidget extends StatelessWidget {
                       (MediaQuery.of(context).size.height * .005).H(),
                       Text(
                         dateTime,
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).dividerColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: Get.height * .01,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       isLive
@@ -277,25 +299,25 @@ class GameWidget extends StatelessWidget {
                             temp == 32
                                 ? "TBD"
                                 : '  ${temp.toString().split('.').first}',
-                            style: temp == 32
-                                ? Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                .014)
-                                : Theme.of(context)
-                                    .textTheme
-                                    .displayMedium!
-                                    .copyWith(
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                .024),
+                            style:
+                                 GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize:temp == 32? MediaQuery.of(context).size.height *
+                                  .014
+                                 :MediaQuery.of(context).size.height *
+                                  .024
+                            )
+                                    ,
                           ),
                           Text(
                             '°F',
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style:  GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor
+                              ,
+                              fontWeight: FontWeight.w600,
+                              fontSize: Get.height * .01,
+                            ),
                           ),
                         ],
                       )
@@ -329,9 +351,15 @@ class GameWidget extends StatelessWidget {
                           verticalDirection: VerticalDirection.up,
                           children: [
                             Text('o',
-                                style: Theme.of(context).textTheme.bodySmall),
+                                style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .014)),
                             Text(awayTeamOU.toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
+                                style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .014)),
                           ],
                         )),
                       ).paddingSymmetric(
@@ -357,9 +385,15 @@ class GameWidget extends StatelessWidget {
                           verticalDirection: VerticalDirection.up,
                           children: [
                             Text('u',
-                                style: Theme.of(context).textTheme.bodySmall),
+                                style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .014)),
                             Text(homeTeamOU.toString(),
-                                style: Theme.of(context).textTheme.bodySmall),
+                                style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).cardColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .014)),
                           ],
                         )),
                       ).paddingSymmetric(

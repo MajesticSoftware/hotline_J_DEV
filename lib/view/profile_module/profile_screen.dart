@@ -47,6 +47,7 @@ class ProfileScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: InkWell(
                           highlightColor: Colors.transparent,
+                          splashFactory: NoSplash.splashFactory,
                           onTap: () {
                             Get.back();
                           },
