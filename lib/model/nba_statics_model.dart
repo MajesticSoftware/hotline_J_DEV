@@ -174,6 +174,8 @@ class Total {
   num? coachTechFouls;
   num? teamFouls;
   num? totalFouls;
+  num? minus;
+  num? plus;
 
   Total(
       {this.gamesPlayed,
@@ -238,6 +240,8 @@ class Total {
       this.secondChancePct,
       this.coachTechFouls,
       this.teamFouls,
+      this.minus,
+      this.plus,
       this.totalFouls});
 
   Total.fromJson(Map<String, dynamic> json) {
@@ -304,6 +308,8 @@ class Total {
     coachTechFouls = json['coach_tech_fouls'];
     teamFouls = json['team_fouls'];
     totalFouls = json['total_fouls'];
+   minus = json['minus'];
+   plus = json ['plus'];
   }
 
   Map<String, dynamic> toJson() {
@@ -371,6 +377,8 @@ class Total {
     data['coach_tech_fouls'] = coachTechFouls;
     data['team_fouls'] = teamFouls;
     data['total_fouls'] = totalFouls;
+    data['minus'] = minus;
+    data['plus'] =  plus;
     return data;
   }
 }

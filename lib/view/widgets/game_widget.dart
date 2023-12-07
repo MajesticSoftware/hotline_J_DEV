@@ -958,48 +958,51 @@ class NoGameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: Get.width,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              SvgPicture.asset(
-                Assets.imagesNodataImage,
-                width: MediaQuery.of(context).size.width * .349,
-                height: MediaQuery.of(context).size.height * .329,
-                fit: BoxFit.fill,
-              ),
-              Positioned(
-                bottom: MediaQuery.of(context).size.height * .07,
-                width: MediaQuery.of(context).size.width * .34,
-                child: GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * .032,
-                      width: MediaQuery.of(context).size.width * .34,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Theme.of(context).backgroundColor),
-                      child: Center(
-                        child: backButton.appCommonText(
-                            color: whiteColor,
-                            size: mobileView.size.shortestSide < 600
-                                ? MediaQuery.of(context).size.height * .012
-                                : MediaQuery.of(context).size.height * .014,
-                            weight: FontWeight.w500),
-                      ),
-                    )),
-              )
-            ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+
+            width: Get.width,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SvgPicture.asset(
+                  Assets.imagesNodataImage,
+                  width: MediaQuery.of(context).size.width * .349,
+                  height: MediaQuery.of(context).size.height * .329,
+                  fit: BoxFit.fill,
+                ),
+               /* Positioned(
+                  bottom: MediaQuery.of(context).size.height * .07,
+                  width: MediaQuery.of(context).size.width * .34,
+                  child: GestureDetector(
+                      onTap: () {
+                        // Get.back();
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .032,
+                        width: MediaQuery.of(context).size.width * .34,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Theme.of(context).backgroundColor),
+                        child: Center(
+                          child: backButton.appCommonText(
+                              color: whiteColor,
+                              size: mobileView.size.shortestSide < 600
+                                  ? MediaQuery.of(context).size.height * .012
+                                  : MediaQuery.of(context).size.height * .014,
+                              weight: FontWeight.w500),
+                        ),
+                      )),
+                )*/
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

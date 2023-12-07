@@ -70,6 +70,8 @@ class GameListingController extends GetxController {
     Future.delayed(
       Duration.zero,
       () async {
+        isPagination=true;
+        isLoading.value=true;
         await getResponse(true, sportKey);
       },
     );
@@ -347,7 +349,6 @@ class GameListingController extends GetxController {
     _isBackNCAA = value;
     update();
   }*/
-
   Future getResponse(bool isLoad, String sportKey) async {
     if (sportKey == 'MLB') {
       return await getGameListingForMLBRes(isLoad,
@@ -366,7 +367,6 @@ class GameListingController extends GetxController {
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
     }
   }
-
   searchData(String text, String sportKey) {
     searchList.clear();
     if (text.isNotEmpty) {
@@ -1561,6 +1561,7 @@ class GameListingController extends GetxController {
         .then((value) {
       isLoading.value = false;
       isPagination = isLoad;
+
       nbaTomorrowEventsList.clear();
       for (int i = 1; i <= 3; i++) {
         gameListingTomorrowApiRes(
@@ -1572,12 +1573,15 @@ class GameListingController extends GetxController {
                 sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
+          if (i == 3) {
+            isPagination = false;
+          }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
           if (nbaSportEventsList.isNotEmpty) {
             for (int i = 0; i < nbaSportEventsList.length; i++) {
               if (nbaSportEventsList[i].uuids != null) {
-                await boxScoreNBAResponse(
+                 boxScoreNBAResponse(
                     sportKey: sportKey,
                     homeTeamId: replaceId(
                             nbaSportEventsList[i].competitors[0].uuids ?? '') ??
@@ -1591,9 +1595,7 @@ class GameListingController extends GetxController {
             }
           }
         });
-        if (i == 3) {
-          isPagination = false;
-        }
+
       }
       if (nbaTodayEventsList.isNotEmpty) {
         timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -1688,7 +1690,7 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   nbaTodayEventsList[i].status != 'closed') {
                 if (nbaTodayEventsList[i].uuids != null) {
-                  await boxScoreNBAResponse(
+                   boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               nbaTodayEventsList[i].competitors[0].uuids ??
@@ -1735,6 +1737,9 @@ class GameListingController extends GetxController {
                 sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
+          if (i == 3) {
+            isPagination = false;
+          }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
           // gameListingsWithLogoResponse(DateTime.now().year.toString(), "NCAA",
@@ -1746,7 +1751,7 @@ class GameListingController extends GetxController {
                         .toLocal()
                         .day ==
                     DateTime.now().day) {
-                  await boxScoreNBAResponse(
+                   boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               ncaabSportEventsList[i].competitors[0].uuids ??
@@ -1763,9 +1768,7 @@ class GameListingController extends GetxController {
             }
           }
         });
-        if (i == 3) {
-          isPagination = false;
-        }
+
       }
       if (ncaabTodayEventsList.isNotEmpty) {
         timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -1860,7 +1863,7 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   ncaabTodayEventsList[i].status != 'closed') {
                 if (ncaabTodayEventsList[i].uuids != null) {
-                  await boxScoreNBAResponse(
+                   boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               ncaabTodayEventsList[i].competitors[0].uuids ??

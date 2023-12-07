@@ -870,15 +870,15 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
             return Column(
               children: [
                 (con.isTeamReportTab
-                        ? ((num.tryParse(con.nflAwayOffensiveList.isEmpty
+                        ? ((num.tryParse(con.nbaAwayOffensiveList.isEmpty
                                     ? '0'
-                                    : con.nflAwayOffensiveList[index])) ??
-                                con.nflAwayOffensiveList[index])
+                                    : con.nbaAwayOffensiveList[index])) ??
+                                con.nbaAwayOffensiveList[index])
                             .toString()
-                        : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
+                        : ((num.tryParse(con.nbaAwayDefensiveList.isEmpty
                                     ? '0'
-                                    : con.nflHomeOffensiveList[index])) ??
-                                con.nflHomeOffensiveList[index])
+                                    : con.nbaAwayDefensiveList[index])) ??
+                                con.nbaAwayDefensiveList[index])
                             .toString())
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
@@ -905,10 +905,10 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
       ),
       Column(
         children: List.generate(
-          1,
+          10,
           (index) => Container(
             width: 1,
-            height: MediaQuery.of(context).size.height * .041,
+            height: MediaQuery.of(context).size.height * .043,
             color: Theme.of(context).indicatorColor,
           ),
         ),
@@ -923,15 +923,15 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
             return Column(
               children: [
                 (!con.isTeamReportTab
-                        ? ((num.tryParse(con.nflAwayDefensiveList.isEmpty
+                        ? ((num.tryParse(con.nbaHomeOffensiveList.isEmpty
                                     ? '0'
-                                    : con.nflAwayDefensiveList[index])) ??
-                                con.nflAwayDefensiveList[index])
+                                    : con.nbaHomeOffensiveList[index])) ??
+                                con.nbaHomeOffensiveList[index])
                             .toString()
-                        : ((num.tryParse(con.nflHomeDefensiveList.isEmpty
+                        : ((num.tryParse(con.nbaHomeDefensiveList.isEmpty
                                     ? '0'
-                                    : con.nflHomeDefensiveList[index])) ??
-                                con.nflHomeDefensiveList[index])
+                                    : con.nbaHomeDefensiveList[index])) ??
+                                con.nbaHomeDefensiveList[index])
                             .toString())
                     .appCommonText(
                         color: Theme.of(context).highlightColor,
@@ -1630,6 +1630,24 @@ ListView nbaRushingCard(
                               value2: (gameDetails.awayRushingPlayer[i].average
                                           ?.turnovers ??
                                       "")
+                                  .toString()),  expandableTileCardRunning(context, con,
+                              value1: '${((gameDetails.awayRushingPlayer[i].total?.fieldGoalsPct??0)*(100) ).toStringAsFixed(1)}%',
+                              title1: 'Field Goal/Game',
+                              title2: 'Free Throw/Game',
+                              value2: '${((gameDetails.awayRushingPlayer[i].total?.freeThrowsPct??0)*(100) ).toStringAsFixed(1)}%'
+                                  .toString()),expandableTileCardRunning(context, con,
+                              value1: ('${((gameDetails.awayRushingPlayer[i].total?.threePointsPct??0)*(100) ).toStringAsFixed(1)}%')
+                                  .toString(),
+                              title1: 'Three Point/Game',
+                              title2: 'True Shooting',
+                              value2: ('${((gameDetails.awayRushingPlayer[i].total?.trueShootingPct??0)*(100) ).toStringAsFixed(1)}%')
+                                  .toString()),expandableTileCardRunning(context, con,
+                              value1: (((gameDetails.awayRushingPlayer[i].total?.plus??0)-(gameDetails.awayRushingPlayer[i].total?.minus??0))/(gameDetails.awayRushingPlayer[i].total?.gamesPlayed??1))
+                                  .toStringAsFixed(1),
+                              title1: 'Player +/-',
+                              title2: '',
+                              value2: (
+                                      "")
                                   .toString()),
                         ],
                       ),
@@ -1674,6 +1692,21 @@ ListView nbaRushingCard(
                               title2: 'Turnovers/Game',
                               value2: (gameDetails
                                       .homeRushingPlayer[i].average?.turnovers)
+                                  .toString()),   expandableTileCardRunning(context, con,
+                              value1: '${((gameDetails.homeRushingPlayer[i].total?.fieldGoalsPct??0)*(100) ).toStringAsFixed(1)}%',
+                              title1: 'Field Goal/Game',
+                              title2: 'Free Throw/Game',
+                              value2: '${((gameDetails.homeRushingPlayer[i].total?.freeThrowsPct??0)*(100) ).toStringAsFixed(1)}%',),   expandableTileCardRunning(context, con,
+                              value1: '${((gameDetails.homeRushingPlayer[i].total?.threePointsPct??0)*(100) ).toStringAsFixed(1)}%',
+                              title1: 'Three Point/Game',
+                              title2: 'True Shooting',
+                              value2: '${((gameDetails.homeRushingPlayer[i].total?.trueShootingPct??0)*(100) ).toStringAsFixed(1)}%',), expandableTileCardRunning(context, con,
+                              value1:(((gameDetails.homeRushingPlayer[i].total?.plus??0)-(gameDetails.homeRushingPlayer[i].total?.minus??0))/(gameDetails.homeRushingPlayer[i].total?.gamesPlayed??1))
+
+                                  .toStringAsFixed(1),
+                              title1: 'Player +/-',
+                              title2: '',
+                              value2: ('')
                                   .toString()),
                         ],
                       ),

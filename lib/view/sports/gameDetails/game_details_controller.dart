@@ -44,7 +44,16 @@ class GameDetailsController extends GetxController {
     'Turnovers / Game',
   ];
   List nbaOffensive = [
-    'Points Per Game',
+  'Points/Game',
+  'Rebounds/Game',
+  'Assists/Game',
+  'Steals/Game',
+  'Blocks/Game',
+  'Field Goal/Game',
+  'Free Throw/Game',
+  'Three Point/Game',
+  'True Shooting',
+  'Team per Off',
   ];
   List hittingMLB = [
     'Runs Scored/Game',
@@ -74,6 +83,15 @@ class GameDetailsController extends GetxController {
   ];
   List nbaDefensive = [
     'Points Allowed/Game',
+    'Opponent Rebounds/Game',
+    'Opponent Assists/Game',
+    'Opponent Steals/Game',
+    'Opponent Blocks/Game',
+    'Opponent Field Goal/Game',
+    'Opponent Free Throw/Game',
+    'Opponent Three Point/Game',
+    'Opponent True Shooting',
+    'Team per Def',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -1224,7 +1242,7 @@ class GameDetailsController extends GetxController {
               int homeIndex = response.teams!
                   .indexWhere((element) => element.id == homeTeamId);
               if ((homeIndex) >= 0) {
-                response.teams![homeIndex].offense?.forEach((position) {
+                response.teams?[homeIndex].offense?.forEach((position) {
                   if (position.position?.name == 'QB') {
                     position.position?.players?.forEach((player) {
                       if (player.depth == 1 && player.position == "QB") {
@@ -1272,7 +1290,7 @@ class GameDetailsController extends GetxController {
               int awayIndex = response.teams!
                   .indexWhere((element) => element.id == awayTeamId);
               if ((awayIndex) >= 0) {
-                response.teams![awayIndex].offense?.forEach((position) {
+                response.teams?[awayIndex].offense?.forEach((position) {
                   if (position.position?.name == 'QB') {
                     position.position?.players?.forEach((player) {
                       if (player.depth == 1 && player.position == "QB") {
@@ -1833,6 +1851,9 @@ class GameDetailsController extends GetxController {
   }
 
   ///NBA STATICS API
+
+  List<String> nbaAwayOffensiveList = [];
+  List<String> nbaAwayDefensiveList = [];
   Future staticsAwayNBA({
     String awayId = '',
     bool isLoad = false,
@@ -1848,6 +1869,36 @@ class GameDetailsController extends GetxController {
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+        if (response.ownRecord != null) {
+          var nbaOffensiveAverage=response.ownRecord?.average;
+          nbaAwayOffensiveList=[
+            '${nbaOffensiveAverage?.points??"0"}',
+            '${nbaOffensiveAverage?.rebounds??"0"}',
+            '${nbaOffensiveAverage?.assists??"0"}',
+            '${nbaOffensiveAverage?.steals??"0"}',
+            '${nbaOffensiveAverage?.blocks??"0"}',
+            '${((response.ownRecord?.total?.fieldGoalsPct??0)*(100) ).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.freeThrowsPct??0)*(100) ).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.threePointsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.trueShootingPct??0)*(100)).toStringAsFixed(1)}%',
+
+            '${nbaOffensiveAverage?.efficiency??"0"}%',
+          ];
+        }if (response.opponents != null) {
+          var nbaDefensiveAverage=response.opponents?.average;
+          nbaAwayDefensiveList=[
+            '${nbaDefensiveAverage?.points??"0"}',
+            '${nbaDefensiveAverage?.rebounds??"0"}',
+            '${nbaDefensiveAverage?.assists??"0"}',
+            '${nbaDefensiveAverage?.steals??"0"}',
+            '${nbaDefensiveAverage?.blocks??"0"}',
+            '${((response.opponents?.total?.fieldGoalsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.freeThrowsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.threePointsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.trueShootingPct??0)*(100)).toStringAsFixed(1)}%',
+            '${nbaDefensiveAverage?.efficiency??"0"}%',
+          ];
+        }
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.awayRushingPlayer.add(player);
@@ -1868,7 +1919,8 @@ class GameDetailsController extends GetxController {
     }
     update();
   }
-
+  List<String> nbaHomeOffensiveList = [];
+  List<String> nbaHomeDefensiveList = [];
   Future staticsHomeNBA({
     String homeId = '',
     bool isLoad = false,
@@ -1884,6 +1936,37 @@ class GameDetailsController extends GetxController {
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+
+        if (response.ownRecord != null) {
+          var nbaOffensiveAverage=response.ownRecord?.average;
+          nbaHomeOffensiveList=[
+            '${nbaOffensiveAverage?.points??"0"}',
+            '${nbaOffensiveAverage?.rebounds??"0"}',
+            '${nbaOffensiveAverage?.assists??"0"}',
+            '${nbaOffensiveAverage?.steals??"0"}',
+            '${nbaOffensiveAverage?.blocks??"0"}',
+            '${((response.ownRecord?.total?.fieldGoalsPct??0)* (100)).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.freeThrowsPct??0)* (100)).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.threePointsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.ownRecord?.total?.trueShootingPct??0)*(100)).toStringAsFixed(1)}%',
+            '${nbaOffensiveAverage?.efficiency??"0"}%',
+          ];
+        }if (response.opponents != null) {
+          var nbaDefensiveAverage=response.opponents?.average;
+          nbaHomeDefensiveList=[
+            '${nbaDefensiveAverage?.points??"0"}',
+            '${nbaDefensiveAverage?.rebounds??"0"}',
+            '${nbaDefensiveAverage?.assists??"0"}',
+            '${nbaDefensiveAverage?.steals??"0"}',
+            '${nbaDefensiveAverage?.blocks??"0"}',
+            '${((response.opponents?.total?.fieldGoalsPct??0)* (100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.freeThrowsPct??0)* (100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.threePointsPct??0)*(100)).toStringAsFixed(1)}%',
+            '${((response.opponents?.total?.trueShootingPct??0)*(100)).toStringAsFixed(1)}%',
+            '${nbaDefensiveAverage?.efficiency??"0"}%',
+          ];
+        }
+
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.homeRushingPlayer.add(player);
@@ -2235,13 +2318,13 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
       isHotlines = true;
-      await staticsAwayNBA(
+       staticsAwayNBA(
         gameDetails: gameDetails,
         isLoad: isLoad,
         key: sportKey,
         awayId: replaceId(awayTeam?.uuids ?? ''),
       );
-      await staticsHomeNBA(
+       staticsHomeNBA(
         gameDetails: gameDetails,
         isLoad: isLoad,
         key: sportKey,
