@@ -5,7 +5,6 @@ import '../constant/shred_preference.dart';
 
 Map<String, String> requestHeader() {
   return {
-    // 'X-RapidAPI-Key': '6dd1587895msh5f0c2263a5686aap120b34jsne9263cbd71ed',
     'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
     'X-RapidAPI-Host': 'sportspage-feeds.p.rapidapi.com'
   };
@@ -33,10 +32,4 @@ Map<String, String> requestAuthHeader(bool passAuthToken) {
 final mobileView = MediaQueryData.fromView(WidgetsBinding.instance.window);
 RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
 
-class AppConstants {
-  static const String deepLinkTitle = "deep_link_title";
-  static const String clickedBranchLink = "+clicked_branch_link";
-  static const String controlParamsKey = '\$uri_redirect_mode';
-  static const String deepLinkData = 'flutter deep link';
-  static const String branchIoCanonicalIdentifier = 'flutter/branch';
-}
+

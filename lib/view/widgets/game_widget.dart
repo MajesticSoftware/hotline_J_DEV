@@ -225,9 +225,10 @@ class GameWidget extends StatelessWidget {
                   children: [
                     (MediaQuery.of(context).size.height * .005).H(),
                     SizedBox(
-                      width: 60.h,
+                      width: 48.h,
                       child: dateTime.appCommonText(
                         size: Get.height * .012,
+
                         color: Theme.of(context).highlightColor,
                       ),
                     ),

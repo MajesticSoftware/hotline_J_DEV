@@ -396,6 +396,7 @@ class Average {
   num? steals;
   num? blocks;
   num? turnovers;
+
   num? personalFouls;
   num? flagrantFouls;
   num? blockedAtt;

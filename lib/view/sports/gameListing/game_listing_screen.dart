@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/constant/app_strings.dart';
 import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
@@ -436,7 +435,7 @@ class SelectGameScreen extends StatelessWidget {
                 ],
               ),
             ).paddingSymmetric(
-                horizontal: MediaQuery.of(Get.context!).size.width * .05),
+                horizontal: MediaQuery.of(context).size.width * .05),
             40.h.H(),
           ],
         ),
