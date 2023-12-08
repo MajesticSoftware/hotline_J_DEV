@@ -225,7 +225,7 @@ class GameWidget extends StatelessWidget {
                   children: [
                     (MediaQuery.of(context).size.height * .005).H(),
                     SizedBox(
-                      width: 48.h,
+                      width: 60.h,
                       child: dateTime.appCommonText(
                         size: Get.height * .012,
 
