@@ -266,13 +266,13 @@ class GameListingRepo {
 
   ///PLAYER PROPS API(HOTLINES)
   Future<ResponseItem> hotlinesDataRepo(
-      {String sportId = '', String date = '', int start = 0}) async {
+      {required String matchId}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(
-        'https://api.sportradar.com/oddscomparison-player-props/production/v2/en/sports/$sportId/schedules/$date/players_props.json?api_key=u647s6e6thkuae4n63kkcvhz&start=$start&limit=5');
+        'https://api.sportradar.com/oddscomparison-player-props/production/v2/en/sport_events/$matchId/players_props.json?api_key=u647s6e6thkuae4n63kkcvhz');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

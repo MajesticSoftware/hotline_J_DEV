@@ -1,41 +1,35 @@
 class HotlinesDataModel {
   String? generatedAt;
-  List<SportScheduleSportEventsPlayersProps>?
-      sportScheduleSportEventsPlayersProps;
+  SportEventPlayersProps? sportEventPlayersProps;
 
-  HotlinesDataModel(
-      {this.generatedAt, this.sportScheduleSportEventsPlayersProps});
+  HotlinesDataModel({this.generatedAt, this.sportEventPlayersProps});
 
   HotlinesDataModel.fromJson(Map<String, dynamic> json) {
     generatedAt = json['generated_at'];
-    if (json['sport_schedule_sport_events_players_props'] != null) {
-      sportScheduleSportEventsPlayersProps =
-          <SportScheduleSportEventsPlayersProps>[];
-      json['sport_schedule_sport_events_players_props'].forEach((v) {
-        sportScheduleSportEventsPlayersProps!
-            .add(SportScheduleSportEventsPlayersProps.fromJson(v));
-      });
-    }
+    sportEventPlayersProps = json['sport_event_players_props'] != null
+        ? SportEventPlayersProps.fromJson(json['sport_event_players_props'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['generated_at'] = generatedAt;
-    if (sportScheduleSportEventsPlayersProps != null) {
-      data['sport_schedule_sport_events_players_props'] =
-          sportScheduleSportEventsPlayersProps!.map((v) => v.toJson()).toList();
+    if (sportEventPlayersProps != null) {
+      data['sport_event_players_props'] = sportEventPlayersProps!.toJson();
     }
     return data;
   }
 }
 
-class SportScheduleSportEventsPlayersProps {
+class SportEventPlayersProps {
   SportEvent? sportEvent;
   List<PlayersProps>? playersProps;
+  PlayersMarkets? playersMarkets;
 
-  SportScheduleSportEventsPlayersProps({this.sportEvent, this.playersProps});
+  SportEventPlayersProps(
+      {this.sportEvent, this.playersProps, this.playersMarkets});
 
-  SportScheduleSportEventsPlayersProps.fromJson(Map<String, dynamic> json) {
+  SportEventPlayersProps.fromJson(Map<String, dynamic> json) {
     sportEvent = json['sport_event'] != null
         ? SportEvent.fromJson(json['sport_event'])
         : null;
@@ -45,6 +39,9 @@ class SportScheduleSportEventsPlayersProps {
         playersProps!.add(PlayersProps.fromJson(v));
       });
     }
+    playersMarkets = json['players_markets'] != null
+        ? PlayersMarkets.fromJson(json['players_markets'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -53,7 +50,11 @@ class SportScheduleSportEventsPlayersProps {
       data['sport_event'] = sportEvent!.toJson();
     }
     if (playersProps != null) {
-      data['players_props'] = playersProps!.map((v) => v.toJson()).toList();
+      data['players_props'] =
+          playersProps!.map((v) => v.toJson()).toList();
+    }
+    if (playersMarkets != null) {
+      data['players_markets'] = playersMarkets!.toJson();
     }
     return data;
   }
@@ -99,16 +100,16 @@ class Competitors {
   String? countryCode;
   String? abbreviation;
   String? qualifier;
-  int? rotationNumber;
+  num? rotationNumber;
 
   Competitors(
       {this.id,
-      this.name,
-      this.country,
-      this.countryCode,
-      this.abbreviation,
-      this.qualifier,
-      this.rotationNumber});
+        this.name,
+        this.country,
+        this.countryCode,
+        this.abbreviation,
+        this.qualifier,
+        this.rotationNumber});
 
   Competitors.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -140,7 +141,8 @@ class PlayersProps {
   PlayersProps({this.player, this.markets});
 
   PlayersProps.fromJson(Map<String, dynamic> json) {
-    player = json['player'] != null ? Player.fromJson(json['player']) : null;
+    player =
+    json['player'] != null ? Player.fromJson(json['player']) : null;
     if (json['markets'] != null) {
       markets = <Markets>[];
       json['markets'].forEach((v) {
@@ -225,11 +227,11 @@ class Books {
 
   Books(
       {this.id,
-      this.name,
-      this.removed,
-      this.externalSportEventId,
-      this.externalMarketId,
-      this.outcomes});
+        this.name,
+        this.removed,
+        this.externalSportEventId,
+        this.externalMarketId,
+        this.outcomes});
 
   Books.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -275,17 +277,17 @@ class Outcomes {
 
   Outcomes(
       {this.id,
-      this.type,
-      this.oddsDecimal,
-      this.oddsAmerican,
-      this.oddsFraction,
-      this.openOddsDecimal,
-      this.openOddsAmerican,
-      this.openOddsFraction,
-      this.total,
-      this.openTotal,
-      this.externalOutcomeId,
-      this.removed});
+        this.type,
+        this.oddsDecimal,
+        this.oddsAmerican,
+        this.oddsFraction,
+        this.openOddsDecimal,
+        this.openOddsAmerican,
+        this.openOddsFraction,
+        this.total,
+        this.openTotal,
+        this.externalOutcomeId,
+        this.removed});
 
   Outcomes.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -319,3 +321,28 @@ class Outcomes {
     return data;
   }
 }
+
+class PlayersMarkets {
+  List<Markets>? markets;
+
+  PlayersMarkets({this.markets});
+
+  PlayersMarkets.fromJson(Map<String, dynamic> json) {
+    if (json['markets'] != null) {
+      markets = <Markets>[];
+      json['markets'].forEach((v) {
+        markets!.add(Markets.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (markets != null) {
+      data['markets'] = markets!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+

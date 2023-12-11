@@ -3664,7 +3664,7 @@ Padding hotlinesWidget(
               ],
             ),
           ),
-          con.isHotlines
+          con.isLoading.value
               ? circularWidget(context)
                   .paddingAll(MediaQuery.of(context).size.height * .038)
               : (con.hotlinesIndex == 0
@@ -3673,8 +3673,7 @@ Padding hotlinesWidget(
                               ? con.hotlinesDData.isEmpty
                               : con.hotlinesIndex == 2
                                   ? con.hotlinesFData.isEmpty
-                                  : con.hotlinesMData.isEmpty) &&
-                      !con.isHotlines
+                                  : con.hotlinesMData.isEmpty)&&!con.isLoading.value
                   ? emptyListWidget(
                       context,
                       isAll: true,

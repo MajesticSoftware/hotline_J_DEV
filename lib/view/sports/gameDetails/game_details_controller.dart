@@ -1566,37 +1566,33 @@ class GameDetailsController extends GetxController {
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
-  bool _isHotlines = false;
-  bool get isHotlines => _isHotlines;
-  set isHotlines(bool value) {
-    _isHotlines = value;
-    update();
-  }
+  // bool _isHotlines = false;
+  //   bool get isHotlines => _isHotlines;
+  //   set isHotlines(bool value) {
+  //     _isHotlines = value;
+  //     update();
+  // }
 
   Future hotlinesDataResponse(
       {String awayTeamId = '',
       String sportId = '',
-      String date = '',
+      String matchId = '',
       bool isLoad = false,
-      int start = 0,
       String homeTeamId = ''}) async {
-    isHotlines = true;
+    // isHotlines = true;
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
-        .hotlinesDataRepo(sportId: sportId, date: date, start: start);
+        .hotlinesDataRepo(matchId: matchId);
     try {
       if (result.status) {
         hotlines.HotlinesDataModel response =
             hotlines.HotlinesDataModel.fromJson(result.data);
         final sportScheduleSportEventsPlayersProps =
-            response.sportScheduleSportEventsPlayersProps;
+            response.sportEventPlayersProps;
         if (sportScheduleSportEventsPlayersProps != null) {
-          for (var event in sportScheduleSportEventsPlayersProps) {
-            if (event.sportEvent?.competitors?[0].id == homeTeamId &&
-                event.sportEvent?.competitors?[1].id == awayTeamId) {
-              event.playersProps?.forEach((playersProp) {
+              sportScheduleSportEventsPlayersProps.playersProps?.forEach((playersProp) {
                 playersProp.markets?.forEach((market) {
                   market.books?.forEach((book) {
                     if (book.id == 'sr:book:18186' ||
@@ -1671,8 +1667,6 @@ class GameDetailsController extends GetxController {
                   });
                 });
               });
-            }
-          }
 
           List<HotlinesModel> hotlinesFinalData = [];
           hotlinesFinalData = hotlinesDData + hotlinesFData + hotlinesMData;
@@ -1703,63 +1697,27 @@ class GameDetailsController extends GetxController {
               }
             }
           }
-          /*  if (hotlinesDData.isNotEmpty) {
-            hotlinesDData.sort(
-                (a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
-
-            for (int i = 0; i < 2; i++) {
-              hotlinesData.add(hotlinesDData[i]);
-            }
-          }
-          if (hotlinesMData.isNotEmpty) {
-            hotlinesMData.sort(
-                (a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
-            for (var main in hotlinesMData) {
-              if (!(hotlinesData.indexWhere(
-                      (element) => element.playerName == main.playerName) >=
-                  0)) {
-                if (hotlinesData.length <= 3) {
-                  hotlinesData.add(main);
-                } else {
-                  break;
-                }
-              }
-            }
-          }
-          if (hotlinesFData.isNotEmpty) {
-            hotlinesFData.sort(
-                (a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
-            for (var main in hotlinesFData) {
-              if (!(hotlinesData.indexWhere(
-                      (element) => element.playerName == main.playerName) >=
-                  0)) {
-                if (hotlinesData.length <= 5) {
-                  hotlinesData.add(main);
-                } else {
-                  break;
-                }
-              }
-            }
-          }*/
           hotlinesData
               .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
           update();
         }
       } else {
-        isHotlines = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
+        // isHotlines = false;
+        isLoading.value = false;
+        showAppSnackBar(
+          result.message,
+        );
       }
     } catch (e) {
-      isHotlines = false;
+      // isHotlines = false;
       isLoading.value = false;
       log('ERROR HOTLINES DATA------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+      showAppSnackBar(
+        errorText,
+      );
     }
     update();
+    isLoading.value = false;
     return hotlinesData;
   }
 
@@ -2146,32 +2104,9 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
               awayTeamId: awayTeam?.id ?? "",
               sportId: sportId,
-              date: date,
-              start: 0,
+             matchId: gameDetails.id??"",
               isLoad: isLoad,
-              homeTeamId: homeTeam?.id ?? "")
-          .then((value) async {
-        for (int i = 1; i <= 2; i++) {
-          log('i====$i');
-          await hotlinesDataResponse(
-                  awayTeamId: awayTeam?.id ?? "",
-                  sportId: sportId,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  start: 0,
-                  isLoad: isLoad,
-                  homeTeamId: homeTeam?.id ?? "")
-              .then((value) {
-            isHotlines = false;
-            isLoading.value = false;
-          });
-          if (hotlinesData.isNotEmpty) {
-            isHotlines = false;
-            update();
-            break;
-          }
-        }
-      });
+              homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
@@ -2234,29 +2169,12 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
       hotlinesData.clear();
-      for (int i = 0; i <= 15; i += 5) {
-        log('i====$i');
-        hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(hotLinesDate)),
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          Future.delayed(const Duration(seconds: 3), () {
-            isHotlines = false;
-            isLoading.value = false;
-          });
-        });
-        if (hotlinesData.isNotEmpty && i == 15) {
-          isHotlines = false;
-          isLoading.value = false;
-          update();
-          break;
-        }
-      }
+      hotlinesDataResponse(
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: sportId,
+          matchId: gameDetails.id??"",
+          isLoad: isLoad,
+          homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
@@ -2304,32 +2222,15 @@ class GameDetailsController extends GetxController {
           gameDetails: gameDetails,
           sportKey: sportKey,
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      for (int i = 0; i <= 15; i += 5) {
-        log('i====$i');
-        hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(hotLinesDate)),
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          Future.delayed(const Duration(seconds: 3), () {
-            isHotlines = false;
-            isLoading.value = false;
-          });
-        });
-        if (hotlinesData.isNotEmpty && i == 15) {
-          isHotlines = false;
-          isLoading.value = false;
-          update();
-          break;
-        }
-      }
+      hotlinesDataResponse(
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: sportId,
+          matchId: gameDetails.id??"",
+          isLoad: isLoad,
+          homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
-      isHotlines = true;
+
       staticsAwayNBA(
         gameDetails: gameDetails,
         isLoad: isLoad,
@@ -2356,29 +2257,12 @@ class GameDetailsController extends GetxController {
             awayTeamId: replaceId(awayTeam?.uuids ?? ''),
             homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       }
-      for (int i = 0; i <= 15; i += 5) {
-        log('i====$i');
-        hotlinesDataResponse(
-                awayTeamId: awayTeam?.id ?? "",
-                sportId: sportId,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(hotLinesDate)),
-                start: i,
-                isLoad: isLoad,
-                homeTeamId: homeTeam?.id ?? "")
-            .then((value) {
-          Future.delayed(const Duration(seconds: 3), () {
-            isHotlines = false;
-            isLoading.value = false;
-          });
-        });
-        if (hotlinesData.isNotEmpty && i == 15) {
-          isHotlines = false;
-          isLoading.value = false;
-          update();
-          break;
-        }
-      }
+      hotlinesDataResponse(
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: sportId,
+          matchId: gameDetails.id??"",
+          isLoad: isLoad,
+          homeTeamId: homeTeam?.id ?? "");
       /*   await nbaRosterStaticsHomeResponse(
         gameDetails: gameDetails,
         sportKey: sportKey,
