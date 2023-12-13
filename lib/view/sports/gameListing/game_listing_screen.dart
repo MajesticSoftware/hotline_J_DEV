@@ -699,10 +699,16 @@ class SelectGameScreen extends StatelessWidget {
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.awayTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+            :competitors.awayTeamAbb == 'ARI'
+            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
             : competitors.awayTeamAbb == 'SCUS'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                :competitors.awayTeamAbb == 'FAMU'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
                 : competitors.awayTeamAbb == 'WEBB'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                    :competitors.awayTeamAbb == 'WAS'
+                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                     : competitors.awayTeamAbb == 'QUC'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                         : competitors.awayTeamAbb == 'GC'
@@ -724,8 +730,14 @@ class SelectGameScreen extends StatelessWidget {
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.homeTeamAbb == 'WEBB'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                : competitors.homeTeamAbb == 'ARI'
+                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
                 : competitors.homeTeamAbb == 'SCUS'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                    :competitors.homeTeamAbb == 'FAMU'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                    :competitors.homeTeamAbb == 'WAS'
+                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                     : competitors.homeTeamAbb == 'QUC'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                         : competitors.homeTeamAbb == 'GC'

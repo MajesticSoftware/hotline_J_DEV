@@ -358,7 +358,7 @@ class GameListingController extends GetxController {
           apiKey: apiKey, sportKey: "NFL", date: date, sportId: sportId);
     } else if (sportKey == 'NCAA') {
       return getGameListingForNCAAGame(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+          apiKey: apiKey, sportKey: sportKey, date: '2023-12-16', sportId: sportId);
     } else if (sportKey == 'NBA') {
       return getGameListingForNBARes(isLoad,
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
@@ -523,7 +523,7 @@ class GameListingController extends GetxController {
                 sportKey == 'NFL' &&
                 (difference.inHours >= (-6))) {
               nflTodayEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:101983' &&
+            } else if ((event.season?.id == 'sr:season:101983'||event.season?.id =="sr:season:101811") &&
                 sportKey == 'NCAA' &&
                 (difference.inHours >= (-6))) {
               ncaaTodayEventsList.add(event);
@@ -623,7 +623,7 @@ class GameListingController extends GetxController {
             } else if (event.season?.id == 'sr:season:102797' &&
                 sportKey == 'NFL') {
               nflTomorrowEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:101983' &&
+            } else if ((event.season?.id == 'sr:season:101983'||(event.season?.id == 'sr:season:101811') )&&
                 sportKey == 'NCAA') {
               ncaaTomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:104319' &&
@@ -1080,7 +1080,7 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaaTomorrowEventsList.clear();
-      for (int i = 1; i <= 6; i++) {
+      for (int i = 1; i <= 18; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -1092,7 +1092,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
-          if (i == 5) {
+          if (i == 18) {
             isPagination = false;
           }
         }).then((value) {

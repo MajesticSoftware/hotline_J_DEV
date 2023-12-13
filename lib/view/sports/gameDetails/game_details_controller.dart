@@ -1211,14 +1211,34 @@ class GameDetailsController extends GetxController {
       teamId: "de760528-1dc0-416a-a978-b510d20692ff",
     ),
     StartingQBModel(
-      playerId: "d66ae3ad-8a60-47e7-a3b2-18a1e8377e1b",
-      playerName: "Dorian Thompson-Robinson",
+      playerId: "64797df2-efd3-4b27-86ee-1d48f7edb09f",
+      playerName: "Joe Flacco",
       teamId: "d5a2eb42-8065-4174-ab79-0a6fa820e35e",
     ),
     StartingQBModel(
       playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
       playerName: "Joshua Dobbs",
       teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    ),
+    StartingQBModel(
+      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
+      playerName: "Aidan O'Connell",
+      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
+    ),
+    StartingQBModel(
+      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
+      playerName: "Aidan O'Connell",
+      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
+    ),
+    StartingQBModel(
+      playerId: "7a1b8f1a-9024-4897-86b0-01c63e00305e",
+      playerName: "Mitch Trubisky",
+      teamId: "cb2f9f1f-ac67-424e-9e72-1475cb0ed398",
+    ),
+    StartingQBModel(
+      playerId: "14926860-abef-45a9-b8f6-e66103ca6029",
+      playerName: "Bailey Zappe",
+      teamId: "97354895-8c77-4fd4-a860-32e62ea7382a",
     ),
   ];
 
@@ -1243,7 +1263,9 @@ class GameDetailsController extends GetxController {
           if (result.data != null) {
             DepthChartModel response = DepthChartModel.fromJson(result.data);
             if (response.teams != null) {
-              int homeIndex = response.teams?.indexWhere((element) => (element.id??0) == homeTeamId)??-1;
+              int homeIndex = response.teams?.indexWhere(
+                      (element) => (element.id ?? 0) == homeTeamId) ??
+                  -1;
               if ((homeIndex) >= 0) {
                 response.teams?[homeIndex].offense?.forEach((position) {
                   if (position.position?.name == 'QB') {
@@ -1290,7 +1312,9 @@ class GameDetailsController extends GetxController {
           if (result.data != null) {
             DepthChartModel response = DepthChartModel.fromJson(result.data);
             if (response.teams != null) {
-              int awayIndex = response.teams?.indexWhere((element) => (element.id??0) == awayTeamId)??-1;
+              int awayIndex = response.teams?.indexWhere(
+                      (element) => (element.id ?? 0) == awayTeamId) ??
+                  -1;
               if ((awayIndex) >= 0) {
                 response.teams?[awayIndex].offense?.forEach((position) {
                   if (position.position?.name == 'QB') {
@@ -1583,8 +1607,7 @@ class GameDetailsController extends GetxController {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .hotlinesDataRepo(matchId: matchId);
+    result = await GameListingRepo().hotlinesDataRepo(matchId: matchId);
     try {
       if (result.status) {
         hotlines.HotlinesDataModel response =
@@ -1592,81 +1615,77 @@ class GameDetailsController extends GetxController {
         final sportScheduleSportEventsPlayersProps =
             response.sportEventPlayersProps;
         if (sportScheduleSportEventsPlayersProps != null) {
-              sportScheduleSportEventsPlayersProps.playersProps?.forEach((playersProp) {
-                playersProp.markets?.forEach((market) {
-                  market.books?.forEach((book) {
-                    if (book.id == 'sr:book:18186' ||
-                        book.id == 'sr:book:18149' ||
-                        book.id == 'sr:book:17324') {
-                      book.outcomes?.forEach((outcome) {
-                        if (outcome.oddsAmerican != null) {
-                          if (!int.parse(outcome.oddsAmerican ?? '')
-                              .isNegative) {
-                            hotlinesMainData.add(HotlinesModel(
-                                teamId: playersProp.player?.competitorId ?? "",
-                                teamName:
-                                    '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
-                                tittle: market.name
-                                        ?.split('(')
-                                        .first
-                                        .toString()
-                                        .capitalize ??
-                                    '',
-                                playerName:
-                                    playersProp.player?.name?.split(',').last ??
-                                        '',
-                                bookId: book.id ?? '',
-                                value: '${outcome.oddsAmerican}'));
-                            hotlinesFData.clear();
-                            hotlinesDData.clear();
-                            hotlinesMData.clear();
-                            hotlinesMainData.sort((a, b) => int.parse(b.value)
-                                .compareTo(int.parse(a.value)));
-                            for (var element in hotlinesMainData) {
-                              if (element.bookId == 'sr:book:18149') {
-                                if (!(hotlinesDData.indexWhere((fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
-                                    0)) {
-                                  if (!(hotlinesDData.indexWhere((fData) =>
-                                          fData.tittle == element.tittle) >=
-                                      0)) {
-                                    hotlinesDData.add(element);
-                                  }
-                                }
+          sportScheduleSportEventsPlayersProps.playersProps
+              ?.forEach((playersProp) {
+            playersProp.markets?.forEach((market) {
+              market.books?.forEach((book) {
+                if (book.id == 'sr:book:18186' ||
+                    book.id == 'sr:book:18149' ||
+                    book.id == 'sr:book:17324') {
+                  book.outcomes?.forEach((outcome) {
+                    if (outcome.oddsAmerican != null) {
+                      if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
+                        hotlinesMainData.add(HotlinesModel(
+                            teamId: playersProp.player?.competitorId ?? "",
+                            teamName:
+                                '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                            tittle: market.name
+                                    ?.split('(')
+                                    .first
+                                    .toString()
+                                    .capitalize ??
+                                '',
+                            playerName:
+                                playersProp.player?.name?.split(',').last ?? '',
+                            bookId: book.id ?? '',
+                            value: '${outcome.oddsAmerican}'));
+                        hotlinesFData.clear();
+                        hotlinesDData.clear();
+                        hotlinesMData.clear();
+                        hotlinesMainData.sort((a, b) =>
+                            int.parse(b.value).compareTo(int.parse(a.value)));
+                        for (var element in hotlinesMainData) {
+                          if (element.bookId == 'sr:book:18149') {
+                            if (!(hotlinesDData.indexWhere((fData) =>
+                                    fData.playerName == element.playerName) >=
+                                0)) {
+                              if (!(hotlinesDData.indexWhere((fData) =>
+                                      fData.tittle == element.tittle) >=
+                                  0)) {
+                                hotlinesDData.add(element);
                               }
-                              if (element.bookId == 'sr:book:17324') {
-                                if (!(hotlinesMData.indexWhere((fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
-                                    0)) {
-                                  if (!(hotlinesMData.indexWhere((fData) =>
-                                          fData.tittle == element.tittle) >=
-                                      0)) {
-                                    hotlinesMData.add(element);
-                                  }
-                                }
+                            }
+                          }
+                          if (element.bookId == 'sr:book:17324') {
+                            if (!(hotlinesMData.indexWhere((fData) =>
+                                    fData.playerName == element.playerName) >=
+                                0)) {
+                              if (!(hotlinesMData.indexWhere((fData) =>
+                                      fData.tittle == element.tittle) >=
+                                  0)) {
+                                hotlinesMData.add(element);
                               }
-                              if (element.bookId == 'sr:book:18186') {
-                                if (!(hotlinesFData.indexWhere((fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
-                                    0)) {
-                                  if (!(hotlinesFData.indexWhere((fData) =>
-                                          fData.tittle == element.tittle) >=
-                                      0)) {
-                                    hotlinesFData.add(element);
-                                  }
-                                }
+                            }
+                          }
+                          if (element.bookId == 'sr:book:18186') {
+                            if (!(hotlinesFData.indexWhere((fData) =>
+                                    fData.playerName == element.playerName) >=
+                                0)) {
+                              if (!(hotlinesFData.indexWhere((fData) =>
+                                      fData.tittle == element.tittle) >=
+                                  0)) {
+                                hotlinesFData.add(element);
                               }
                             }
                           }
                         }
-                      });
+                      }
                     }
                   });
-                });
+                }
               });
+            });
+          });
 
           List<HotlinesModel> hotlinesFinalData = [];
           hotlinesFinalData = hotlinesDData + hotlinesFData + hotlinesMData;
@@ -1704,17 +1723,17 @@ class GameDetailsController extends GetxController {
       } else {
         // isHotlines = false;
         isLoading.value = false;
-        showAppSnackBar(
-          result.message,
-        );
+        // showAppSnackBar(
+        //   result.message,
+        // );
       }
     } catch (e) {
       // isHotlines = false;
       isLoading.value = false;
       log('ERROR HOTLINES DATA------$e');
-      showAppSnackBar(
-        errorText,
-      );
+      // showAppSnackBar(
+      //   errorText,
+      // );
     }
     update();
     isLoading.value = false;
@@ -1839,9 +1858,9 @@ class GameDetailsController extends GetxController {
             ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${((response.ownRecord?.total?.fieldGoalsPct ?? 0) * (100)).round()}%',
-            '${((response.ownRecord?.total?.freeThrowsPct ?? 0) * (100)).round()}%',
-            '${((response.ownRecord?.total?.threePointsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.fieldGoalsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.freeThrowsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.threePointsPct ?? 0) * (100)).round()}%',
             '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100)).round()}%',
             '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
           ];
@@ -1856,9 +1875,9 @@ class GameDetailsController extends GetxController {
             ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${((response.opponents?.total?.fieldGoalsPct ?? 0) * (100)). round()}%',
-            '${((response.opponents?.total?.freeThrowsPct ?? 0) * (100)). round()}%',
-            '${((response.opponents?.total?.threePointsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.fieldGoalsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.freeThrowsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.threePointsPct ?? 0) * (100)).round()}%',
             '${((response.opponents?.total?.trueShootingPct ?? 0) * (100)).round()}%',
             '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
           ];
@@ -1869,7 +1888,7 @@ class GameDetailsController extends GetxController {
           });
         }
         (gameDetails.awayRushingPlayer).sort((a, b) =>
-            (b.average?.minutes ?? 0).compareTo((a.average?.minutes ?? 0)));
+            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
         update();
       } else {
         isLoading.value = false;
@@ -1912,9 +1931,9 @@ class GameDetailsController extends GetxController {
             ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${((response.ownRecord?.total?.fieldGoalsPct ?? 0) * (100)) .round()}%',
-            '${((response.ownRecord?.total?.freeThrowsPct ?? 0) * (100)) .round()}%',
-            '${((response.ownRecord?.total?.threePointsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.fieldGoalsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.freeThrowsPct ?? 0) * (100)).round()}%',
+            '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0).toStringAsFixed(1)} / ${((response.ownRecord?.total?.threePointsPct ?? 0) * (100)).round()}%',
             '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100)).round()}%',
             '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
           ];
@@ -1929,9 +1948,9 @@ class GameDetailsController extends GetxController {
             ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${((response.opponents?.total?.fieldGoalsPct ?? 0) * (100)) .round()}%',
-            '${((response.opponents?.total?.freeThrowsPct ?? 0) * (100)) .round()}%',
-            '${((response.opponents?.total?.threePointsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.fieldGoalsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.freeThrowsPct ?? 0) * (100)).round()}%',
+            '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0).toStringAsFixed(1)} / ${((response.opponents?.total?.threePointsPct ?? 0) * (100)).round()}%',
             '${((response.opponents?.total?.trueShootingPct ?? 0) * (100)).round()}%',
             '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
           ];
@@ -1943,7 +1962,7 @@ class GameDetailsController extends GetxController {
           });
         }
         (gameDetails.homeRushingPlayer).sort((a, b) =>
-            (b.average?.minutes ?? 0).compareTo((a.average?.minutes ?? 0)));
+            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
       } else {
         isLoading.value = false;
       }
@@ -2102,11 +2121,11 @@ class GameDetailsController extends GetxController {
         );
       }
       hotlinesDataResponse(
-              awayTeamId: awayTeam?.id ?? "",
-              sportId: sportId,
-             matchId: gameDetails.id??"",
-              isLoad: isLoad,
-              homeTeamId: homeTeam?.id ?? "");
+          awayTeamId: awayTeam?.id ?? "",
+          sportId: sportId,
+          matchId: gameDetails.id ?? "",
+          isLoad: isLoad,
+          homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
@@ -2172,7 +2191,7 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
-          matchId: gameDetails.id??"",
+          matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
     }
@@ -2225,12 +2244,11 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
-          matchId: gameDetails.id??"",
+          matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
-
       staticsAwayNBA(
         gameDetails: gameDetails,
         isLoad: isLoad,
@@ -2260,7 +2278,7 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
-          matchId: gameDetails.id??"",
+          matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
       /*   await nbaRosterStaticsHomeResponse(

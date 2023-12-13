@@ -3983,6 +3983,14 @@ Widget hotlinesCard(
                 height: MediaQuery.of(context).size.height * .03,
                 width: MediaQuery.of(context).size.width * .04,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: Get.height * .025,
+                  height: Get.height * .025,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: greyColor.withOpacity(0.2),
+                  ),
+                ),
               ).paddingOnly(right: MediaQuery.of(context).size.width * .01),
               Expanded(
                 flex: mobileView.size.shortestSide < 600 ? 7 : 4,
@@ -4229,8 +4237,14 @@ String awayLogo(
           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
           : awayTeam?.abbreviation == 'WEBB'
               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+              :awayTeam?.abbreviation == 'ARI'
+              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+              :awayTeam?.abbreviation == 'WAS'
+              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
               : awayTeam?.abbreviation == 'QUC'
                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                  :awayTeam?.abbreviation == 'FAMU'
+                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
                   : awayTeam?.abbreviation == 'GC'
                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                       : awayTeam?.abbreviation == 'NCST'
@@ -4252,10 +4266,16 @@ String homeLogo(
           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
           : homeTeam?.abbreviation == 'WEBB'
               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+              :homeTeam?.abbreviation == 'ARI'
+              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
               : homeTeam?.abbreviation == 'QUC'
                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                   : homeTeam?.abbreviation == 'GC'
                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                      : homeTeam?.abbreviation == 'FAMU'
+                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                      : homeTeam?.abbreviation == 'WAS'
+                      ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                       : homeTeam?.abbreviation == 'NCST'
                           ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
                           : homeTeam?.abbreviation == 'ULL'
