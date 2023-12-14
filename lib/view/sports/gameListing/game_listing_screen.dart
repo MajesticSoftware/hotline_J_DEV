@@ -707,7 +707,7 @@ class SelectGameScreen extends StatelessWidget {
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
                 : competitors.awayTeamAbb == 'WEBB'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                    :competitors.awayTeamAbb == 'WAS'
+                    :competitors.awayTeamAbb == 'WAS'&&competitors.id=="sr:competitor:4432"
                     ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                     : competitors.awayTeamAbb == 'QUC'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
@@ -736,7 +736,7 @@ class SelectGameScreen extends StatelessWidget {
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
                     :competitors.homeTeamAbb == 'FAMU'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                    :competitors.homeTeamAbb == 'WAS'
+                    :competitors.homeTeamAbb == 'WAS'&&competitors.id=="sr:competitor:4432"
                     ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                     : competitors.homeTeamAbb == 'QUC'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"

@@ -4239,7 +4239,7 @@ String awayLogo(
               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
               :awayTeam?.abbreviation == 'ARI'
               ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-              :awayTeam?.abbreviation == 'WAS'
+              :awayTeam?.abbreviation == 'WAS'&&awayTeam?.id=="sr:competitor:4432"
               ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
               : awayTeam?.abbreviation == 'QUC'
                   ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
@@ -4274,7 +4274,7 @@ String homeLogo(
                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                       : homeTeam?.abbreviation == 'FAMU'
                       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                      : homeTeam?.abbreviation == 'WAS'
+                      : homeTeam?.abbreviation == 'WAS'&&homeTeam?.id=='sr:competitor:4432'
                       ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                       : homeTeam?.abbreviation == 'NCST'
                           ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
