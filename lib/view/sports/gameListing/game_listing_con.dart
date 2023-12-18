@@ -15,6 +15,7 @@ import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
+import '../../../model/nfl_rank_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 
@@ -1233,6 +1234,7 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
+
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1389,6 +1391,7 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
+
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,

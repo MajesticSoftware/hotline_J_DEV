@@ -302,6 +302,32 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NFL GAME RANK API
+  Future<ResponseItem> nflGameRankApi() async {
+    bool status = false;
+    ResponseItem result;
+    dynamic data;
+
+    String message = "";
+
+
+
+    var queryParameters = {RequestParam.service: MethodNames.getNFLGameOffenseRank};
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.postRequest(requestUrl, {}, false);
+
+    status = result.status;
+
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+
+
+
   ///OTHER APIS--LOGOS
   Future<ResponseItem> gameListingsWithLogo(
       String year, String sportKey) async {
@@ -332,4 +358,6 @@ class GameListingRepo {
     result = await BaseApiHelper.getRequest(parameter, {});
     return result;
   }
+
+
 }

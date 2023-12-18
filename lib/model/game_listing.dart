@@ -61,6 +61,14 @@ class SportEvents {
   String? scheduled;
   bool? startTimeTbd;
   String? status;
+  num? awayPointOffenseRank;
+  num? awayPointDefenseRank;
+  num? awayRushingOffenseRank;
+  num? awayRushingDefenseRank;
+  num? homePointOffenseRank;
+  num? homePointDefenseRank;
+  num? homeRushingOffenseRank;
+  num? homeRushingDefenseRank;
   TournamentRound? tournamentRound;
   Season? season;
   Tournament? tournament;
@@ -127,6 +135,14 @@ class SportEvents {
     this.scheduled,
     this.startTimeTbd,
     this.status,
+    this.awayPointOffenseRank=0,
+    this.awayPointDefenseRank=0,
+    this.awayRushingOffenseRank=0,
+    this.awayRushingDefenseRank=0,
+    this.homePointOffenseRank=0,
+    this.homePointDefenseRank=0,
+    this.homeRushingOffenseRank=0,
+    this.homeRushingDefenseRank=0,
     this.tournamentRound,
     this.season,
     this.tournament,

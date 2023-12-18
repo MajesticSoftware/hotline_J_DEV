@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hotlines/model/weather_model.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:intl/intl.dart';
@@ -637,7 +638,7 @@ Widget teamReportNFL(
               commonDivider(context),
               sportKey == "NBA" || sportKey == "NCAAB"
                   ? nbaOffenseDefenseData(con, context)
-                  : nflOffenseDefenseData(con, context),
+                  : nflOffenseDefenseData(con, context,sportKey,awayTeam,homeTeam),
             ],
           )),
     ),
@@ -753,7 +754,7 @@ Container playernameWidget(
   );
 }
 
-Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
+Row nflOffenseDefenseData(GameDetailsController con, BuildContext context,String sportKey,Competitors? awayTeam,Competitors? homeTeam) {
   return Row(
     children: [
       Expanded(
@@ -764,23 +765,43 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           itemCount: con.offensive.length,
           itemBuilder: (context, index) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                (con.isTeamReportTab
-                        ? ((num.tryParse(con.nflAwayOffensiveList.isEmpty
-                                    ? '0'
-                                    : con.nflAwayOffensiveList[index])) ??
-                                con.nflAwayOffensiveList[index])
-                            .toString()
-                        : ((num.tryParse(con.nflAwayDefensiveList.isEmpty
-                                    ? '0'
-                                    : con.nflAwayDefensiveList[index])) ??
-                                con.nflAwayDefensiveList[index])
-                            .toString())
-                    .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        weight: FontWeight.w700,
-                        align: TextAlign.center,
-                        size: MediaQuery.of(context).size.height * .014),
+                Row(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center, children: [
+
+                    (con.isTeamReportTab
+                          ? ((num.tryParse(con.nflAwayOffensiveList.isEmpty
+                                      ? '0'
+                                      : con.nflAwayOffensiveList[index])) ??
+                                  con.nflAwayOffensiveList[index])
+                              .toString()
+                          : ((num.tryParse(con.nflAwayDefensiveList.isEmpty
+                                      ? '0'
+                                      : con.nflAwayDefensiveList[index])) ??
+                                  con.nflAwayDefensiveList[index])
+                              .toString())
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          weight: FontWeight.w700,
+                          align: TextAlign.center,
+                          size: MediaQuery.of(context).size.height * .014),
+                  sportKey=="NFL"? (con.isTeamReportTab
+                      ? ((num.tryParse(con.nflAwayOffensiveRank.isEmpty
+                      ? '0'
+                      :   ' (${dateWidget(con.nflAwayOffensiveRank[index])})')) ??
+                      ' (${dateWidget(con.nflAwayOffensiveRank[index])})')
+                      .toString()
+                      : ((num.tryParse(con.nflAwayDefensiveRank.isEmpty
+                      ? '0'
+                      : ' (${dateWidget(con.nflAwayDefensiveRank[index])})')) ??
+                     ' (${ dateWidget(con.nflAwayDefensiveRank[index])})')
+                      .toString())
+                      .appCommonText(
+                      color:con.isTeamReportTab?(con.nflAwayOffensiveRank.isEmpty?Colors.transparent:con.nflAwayOffensiveRank[index]=="0"?Colors.transparent: num.parse(con.nflAwayOffensiveRank[index].toString())<=11?Colors.green: ((int.parse(con.nflAwayOffensiveRank[index].toString())<=22)&&(int.parse(con.nflAwayOffensiveRank[index].toString())>11))?yellowColor:redColor):(con.nflAwayDefensiveRank.isEmpty?Colors.transparent:con.nflAwayDefensiveRank[index]=="0"?Colors.transparent: num.parse(con.nflAwayDefensiveRank[index].toString())<=11?Colors.green: ((int.parse(con.nflAwayDefensiveRank[index].toString())<=22)&&(int.parse(con.nflAwayDefensiveRank[index].toString())>11))?yellowColor:redColor),
+                      weight: FontWeight.w700,
+                      align: TextAlign.center,
+                      size: MediaQuery.of(context).size.height * .014):const SizedBox(),
+                ]),
                 (con.isTeamReportTab
                         ? con.offensive[index]
                         : con.defensive[index])
@@ -802,10 +823,24 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
       Column(
         children: List.generate(
           10,
-          (index) => Container(
-            width: 1,
-            height: MediaQuery.of(context).size.height * .045,
-            color: Theme.of(context).indicatorColor,
+          (index) => Stack(
+            alignment: Alignment.center,
+            children: [
+
+              Container(
+                width: 1,
+                height: MediaQuery.of(context).size.height * .045,
+                color: Theme.of(context).indicatorColor,
+              ),
+            index==0?InkWell(
+              highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,onTap: () {
+
+              showDialogForRank(context, awayTeam, con, index, homeTeam);
+              },
+              child: SvgPicture.asset(Assets.assetsImagesFire,fit: BoxFit.contain,
+                  height: MediaQuery.of(context).size.height * .025),
+            ):const SizedBox()
+            ],
           ),
         ),
       ),
@@ -818,22 +853,45 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
           itemBuilder: (context, index) {
             return Column(
               children: [
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
                 (con.isTeamReportTab
-                        ? ((num.tryParse(con.nflHomeDefensiveList.isEmpty
-                                    ? '0'
-                                    : con.nflHomeDefensiveList[index])) ??
-                                con.nflHomeDefensiveList[index])
-                            .toString()
-                        : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
-                                    ? '0'
-                                    : con.nflHomeOffensiveList[index])) ??
-                                con.nflHomeOffensiveList[index])
-                            .toString())
+                    ? ((num.tryParse(con.nflHomeDefensiveList.isEmpty
+                    ? '0'
+                    : con.nflHomeDefensiveList[index])) ??
+                    con.nflHomeDefensiveList[index])
+                    .toString()
+                    : ((num.tryParse(con.nflHomeOffensiveList.isEmpty
+                    ? '0'
+                    : con.nflHomeOffensiveList[index])) ??
+                    con.nflHomeOffensiveList[index])
+                    .toString())
                     .appCommonText(
-                        color: Theme.of(context).highlightColor,
-                        weight: FontWeight.w700,
-                        align: TextAlign.center,
-                        size: MediaQuery.of(context).size.height * .014),
+                    color: Theme.of(context).highlightColor,
+                    weight: FontWeight.w700,
+                    align: TextAlign.center,
+                    size: MediaQuery.of(context).size.height * .014),
+                sportKey=="NFL"? (con.isTeamReportTab
+                    ? ((num.tryParse(con.nflHomeDefensiveRank.isEmpty
+                    ? '0'
+                    : ' (${dateWidget(con.nflHomeDefensiveRank[index])})')) ??
+                    ' (${dateWidget(con.nflHomeDefensiveRank[index])})')
+                    .toString()
+                    : ((num.tryParse(con.nflHomeOffensiveRank.isEmpty
+                    ? '0'
+                    : ' (${dateWidget(con.nflHomeOffensiveRank[index])})')) ??
+                    ' (${dateWidget(con.nflHomeOffensiveRank[index])})')
+                    .toString())
+                    .appCommonText(
+                    color:con.isTeamReportTab?(con.nflHomeOffensiveRank.isEmpty?Colors.transparent:con.nflHomeDefensiveRank[index]=="0"?Colors.transparent: num.parse(con.nflHomeDefensiveRank[index].toString())<=11?Colors.green: ((int.parse(con.nflHomeDefensiveRank[index].toString())>11)&&(int.parse(con.nflHomeDefensiveRank[index].toString())<=22))?yellowColor:redColor):(con.nflHomeOffensiveRank.isEmpty?Colors.transparent:con.nflHomeOffensiveRank[index]=="0"?Colors.transparent: num.parse(con.nflHomeOffensiveRank[index].toString())<=11?Colors.green: ((int.parse(con.nflHomeOffensiveRank[index].toString())<=22)&&(int.parse(con.nflHomeOffensiveRank[index].toString())>11))?yellowColor:redColor),
+
+                    weight: FontWeight.w700,
+                    align: TextAlign.center,
+                    size: MediaQuery.of(context).size.height * .014):const SizedBox(),
+              ],
+            ),
                 (con.isTeamReportTab
                         ? con.defensive[index]
                         : con.offensive[index])
@@ -854,6 +912,43 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context) {
       ),
     ],
   );
+}
+
+Future<dynamic> showDialogForRank(BuildContext context, Competitors? awayTeam, GameDetailsController con, int index, Competitors? homeTeam) {
+  return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(
+                        20.r,
+                      ),
+                    ),
+                  ),
+                  shadowColor: Theme.of(context).secondaryHeaderColor,
+                  contentPadding: EdgeInsets.all(20.h),
+                  title:
+                  '${awayTeam?.abbreviation} PPG Rank ${(con.isTeamReportTab
+                      ? ((num.tryParse(con.nflAwayOffensiveRank.isEmpty
+                      ? '0'
+                      :   ' (${dateWidget(con.nflAwayOffensiveRank[index])})')) ??
+                      ' (${dateWidget(con.nflAwayOffensiveRank[index])})')
+                      .toString()
+                      : ((num.tryParse(con.nflAwayDefensiveRank.isEmpty
+                      ? '0'
+                      : ' (${dateWidget(con.nflAwayDefensiveRank[index])})')) ??
+                      ' (${ dateWidget(con.nflAwayDefensiveRank[index])})')
+                      .toString())}\n${homeTeam?.abbreviation} PAG Rank '
+                      .appCommonText(
+                      color: Theme.of(context)
+                          .secondaryHeaderColor,
+                      align: TextAlign.center,
+                      weight: FontWeight.w600,
+                      size: Get.height * .016),
+                );
+              },
+            );
 }
 
 Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
@@ -885,7 +980,7 @@ Row nbaOffenseDefenseData(GameDetailsController con, BuildContext context) {
                         align: TextAlign.center,
                         size: MediaQuery.of(context).size.height * .014),
                 FittedBox(
-                 fit: BoxFit.scaleDown ,
+                  fit: BoxFit.scaleDown,
                   child: (con.isTeamReportTab
                           ? con.nbaOffensive[index]
                           : con.nbaDefensive[index])
@@ -1627,8 +1722,9 @@ ListView nbaRushingCard(
                                       0)
                                   .toStringAsFixed(1))),
                           expandableTileCardRunning(context, con,
-                              value1: (gameDetails
-                                      .awayRushingPlayer[i].average?.blocks??0)
+                              value1: (gameDetails.awayRushingPlayer[i].average
+                                          ?.blocks ??
+                                      0)
                                   .toStringAsFixed(1),
                               title1: 'Blocks/Game',
                               title2: 'Turnovers/Game',
@@ -1703,13 +1799,15 @@ ListView nbaRushingCard(
                                       0)
                                   .toStringAsFixed(1))),
                           expandableTileCardRunning(context, con,
-                              value1: (gameDetails
-                                      .homeRushingPlayer[i].average?.blocks??0)
+                              value1: (gameDetails.homeRushingPlayer[i].average
+                                          ?.blocks ??
+                                      0)
                                   .toStringAsFixed(1),
                               title1: 'Blocks/Game',
                               title2: 'Turnovers/Game',
-                              value2: (gameDetails
-                                      .homeRushingPlayer[i].average?.turnovers??0)
+                              value2: (gameDetails.homeRushingPlayer[i].average
+                                          ?.turnovers ??
+                                      0)
                                   .toStringAsFixed(1)),
                           expandableTileCardRunning(
                             context,
@@ -1886,11 +1984,13 @@ SizedBox expandedAwayHeader(
               alignment: Alignment.centerLeft,
               child: Row(
                 children: [
-                  con.hitterAwayPlayerMainList[index].playerName.toString().appCommonText(
-                      color: blueColor,
-                      align: TextAlign.start,
-                      weight: FontWeight.w600,
-                      size: MediaQuery.sizeOf(context).height * .014),
+                  con.hitterAwayPlayerMainList[index].playerName
+                      .toString()
+                      .appCommonText(
+                          color: blueColor,
+                          align: TextAlign.start,
+                          weight: FontWeight.w600,
+                          size: MediaQuery.sizeOf(context).height * .014),
                   ' ${con.hitterAwayPlayerMainList[index].position}'
                       .appCommonText(
                           color: grayColor,
@@ -1907,29 +2007,37 @@ SizedBox expandedAwayHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),*/
         Expanded(
-            child: con.hitterAwayPlayerMainList[index].hr.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterAwayPlayerMainList[index].hr
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterAwayPlayerMainList[index].rbi.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterAwayPlayerMainList[index].rbi
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterAwayPlayerMainList[index].bb.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterAwayPlayerMainList[index].bb
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterAwayPlayerMainList[index].avg.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterAwayPlayerMainList[index].avg
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
       ],
     ).paddingSymmetric(
         horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -1947,11 +2055,13 @@ SizedBox expandedHomeHeader(
             flex: mobileView.size.shortestSide < 600 ? 2 : 2,
             child: Row(
               children: [
-                con.hitterHomePlayerMainList[index].playerName.toString().appCommonText(
-                    color: blueColor,
-                    align: TextAlign.start,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.sizeOf(context).height * .014),
+                con.hitterHomePlayerMainList[index].playerName
+                    .toString()
+                    .appCommonText(
+                        color: blueColor,
+                        align: TextAlign.start,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.sizeOf(context).height * .014),
                 ' ${con.hitterHomePlayerMainList[index].position}'
                     .appCommonText(
                         color: grayColor,
@@ -1967,29 +2077,37 @@ SizedBox expandedHomeHeader(
                 weight: FontWeight.w400,
                 size: MediaQuery.sizeOf(context).height * .014)),*/
         Expanded(
-            child: con.hitterHomePlayerMainList[index].hr.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterHomePlayerMainList[index].hr
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterHomePlayerMainList[index].rbi.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterHomePlayerMainList[index].rbi
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterHomePlayerMainList[index].bb.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterHomePlayerMainList[index].bb
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
         Expanded(
-            child: con.hitterHomePlayerMainList[index].avg.toString().appCommonText(
-                color: Theme.of(context).highlightColor,
-                align: TextAlign.end,
-                weight: FontWeight.w400,
-                size: MediaQuery.sizeOf(context).height * .014)),
+            child: con.hitterHomePlayerMainList[index].avg
+                .toString()
+                .appCommonText(
+                    color: Theme.of(context).highlightColor,
+                    align: TextAlign.end,
+                    weight: FontWeight.w400,
+                    size: MediaQuery.sizeOf(context).height * .014)),
       ],
     ).paddingSymmetric(
         horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -2098,14 +2216,13 @@ SizedBox nbaHomeHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child:
-                  (gameDetails.homeRushingPlayer[index].average?.points ?? 0)
-                      .toStringAsFixed(1)
-                      .appCommonText(
-                          color: Theme.of(context).highlightColor,
-                          align: TextAlign.end,
-                          weight: FontWeight.w400,
-                          size: MediaQuery.sizeOf(context).height * .014)),
+              child: (gameDetails.homeRushingPlayer[index].average?.points ?? 0)
+                  .toStringAsFixed(1)
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
               child: (gameDetails
@@ -2129,14 +2246,14 @@ SizedBox nbaHomeHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.homeRushingPlayer[index].average?.rebounds ??
-                      0)
-                  .toStringAsFixed(1)
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
+              child:
+                  (gameDetails.homeRushingPlayer[index].average?.rebounds ?? 0)
+                      .toStringAsFixed(1)
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
         ],
       ).paddingSymmetric(
           horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -2169,14 +2286,13 @@ SizedBox nbaAwayHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child:
-                  (gameDetails.awayRushingPlayer[index].average?.points ?? 0)
-                      .toStringAsFixed(1)
-                      .appCommonText(
-                          color: Theme.of(context).highlightColor,
-                          align: TextAlign.end,
-                          weight: FontWeight.w400,
-                          size: MediaQuery.sizeOf(context).height * .014)),
+              child: (gameDetails.awayRushingPlayer[index].average?.points ?? 0)
+                  .toStringAsFixed(1)
+                  .appCommonText(
+                      color: Theme.of(context).highlightColor,
+                      align: TextAlign.end,
+                      weight: FontWeight.w400,
+                      size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
               child: (gameDetails
@@ -2191,7 +2307,8 @@ SizedBox nbaAwayHeader(
           Expanded(
               flex: 2,
               child:
-                  ((gameDetails.awayRushingPlayer[index].average?.assists??0).toStringAsFixed(1) )
+                  ((gameDetails.awayRushingPlayer[index].average?.assists ?? 0)
+                          .toStringAsFixed(1))
                       .toString()
                       .appCommonText(
                           color: Theme.of(context).highlightColor,
@@ -2200,14 +2317,14 @@ SizedBox nbaAwayHeader(
                           size: MediaQuery.sizeOf(context).height * .014)),
           Expanded(
               flex: 2,
-              child: (gameDetails.awayRushingPlayer[index].average?.rebounds ??
-                      0)
-                  .toStringAsFixed(1)
-                  .appCommonText(
-                      color: Theme.of(context).highlightColor,
-                      align: TextAlign.end,
-                      weight: FontWeight.w400,
-                      size: MediaQuery.sizeOf(context).height * .014)),
+              child:
+                  (gameDetails.awayRushingPlayer[index].average?.rebounds ?? 0)
+                      .toStringAsFixed(1)
+                      .appCommonText(
+                          color: Theme.of(context).highlightColor,
+                          align: TextAlign.end,
+                          weight: FontWeight.w400,
+                          size: MediaQuery.sizeOf(context).height * .014)),
         ],
       ).paddingSymmetric(
           horizontal: MediaQuery.sizeOf(context).width * .015,
@@ -3673,7 +3790,8 @@ Padding hotlinesWidget(
                               ? con.hotlinesDData.isEmpty
                               : con.hotlinesIndex == 2
                                   ? con.hotlinesFData.isEmpty
-                                  : con.hotlinesMData.isEmpty)&&!con.isLoading.value
+                                  : con.hotlinesMData.isEmpty) &&
+                      !con.isLoading.value
                   ? emptyListWidget(
                       context,
                       isAll: true,
@@ -4237,23 +4355,24 @@ String awayLogo(
           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
           : awayTeam?.abbreviation == 'WEBB'
               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-              :awayTeam?.abbreviation == 'ARI'
-              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-              :awayTeam?.abbreviation == 'WAS'&&awayTeam?.id=="sr:competitor:4432"
-              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-              : awayTeam?.abbreviation == 'QUC'
-                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                  :awayTeam?.abbreviation == 'FAMU'
-                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                  : awayTeam?.abbreviation == 'GC'
-                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                      : awayTeam?.abbreviation == 'NCST'
-                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                          : awayTeam?.abbreviation == 'ULL'
-                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                              : awayTeam?.abbreviation == 'SHS'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                  : gameDetails.gameLogoAwayLink;
+              : awayTeam?.abbreviation == 'ARI'
+                  ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                  : awayTeam?.abbreviation == 'WAS' &&
+                          awayTeam?.id == "sr:competitor:4432"
+                      ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                      : awayTeam?.abbreviation == 'QUC'
+                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                          : awayTeam?.abbreviation == 'FAMU'
+                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                              : awayTeam?.abbreviation == 'GC'
+                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                  : awayTeam?.abbreviation == 'NCST'
+                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                      : awayTeam?.abbreviation == 'ULL'
+                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                          : awayTeam?.abbreviation == 'SHS'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                              : gameDetails.gameLogoAwayLink;
 }
 
 String homeLogo(
@@ -4266,23 +4385,24 @@ String homeLogo(
           ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
           : homeTeam?.abbreviation == 'WEBB'
               ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-              :homeTeam?.abbreviation == 'ARI'
-              ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-              : homeTeam?.abbreviation == 'QUC'
-                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                  : homeTeam?.abbreviation == 'GC'
-                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                      : homeTeam?.abbreviation == 'FAMU'
-                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                      : homeTeam?.abbreviation == 'WAS'&&homeTeam?.id=='sr:competitor:4432'
-                      ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                      : homeTeam?.abbreviation == 'NCST'
-                          ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-                          : homeTeam?.abbreviation == 'ULL'
-                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                              : homeTeam?.abbreviation == 'SHS'
-                                  ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                  : gameDetails.gameHomeLogoLink;
+              : homeTeam?.abbreviation == 'ARI'
+                  ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                  : homeTeam?.abbreviation == 'QUC'
+                      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                      : homeTeam?.abbreviation == 'GC'
+                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                          : homeTeam?.abbreviation == 'FAMU'
+                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                              : homeTeam?.abbreviation == 'WAS' &&
+                                      homeTeam?.id == 'sr:competitor:4432'
+                                  ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                  : homeTeam?.abbreviation == 'NCST'
+                                      ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
+                                      : homeTeam?.abbreviation == 'ULL'
+                                          ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                          : homeTeam?.abbreviation == 'SHS'
+                                              ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                              : gameDetails.gameHomeLogoLink;
 }
 
 headerWidget(BuildContext context, SportEvents gameDetails,
