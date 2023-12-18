@@ -823,7 +823,7 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context,String
       Column(
         children: List.generate(
           10,
-          (index) => Stack(
+          (index) => index==0? Stack(
             alignment: Alignment.center,
             children: [
 
@@ -832,15 +832,19 @@ Row nflOffenseDefenseData(GameDetailsController con, BuildContext context,String
                 height: MediaQuery.of(context).size.height * .045,
                 color: Theme.of(context).indicatorColor,
               ),
-            index==0?InkWell(
+           InkWell(
               highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,onTap: () {
 
               showDialogForRank(context, awayTeam, con, index, homeTeam);
               },
               child: SvgPicture.asset(Assets.assetsImagesFire,fit: BoxFit.contain,
                   height: MediaQuery.of(context).size.height * .025),
-            ):const SizedBox()
+            )
             ],
+          ):  Container(
+            width: 1,
+            height: MediaQuery.of(context).size.height * .045,
+            color: Theme.of(context).indicatorColor,
           ),
         ),
       ),
@@ -919,6 +923,7 @@ Future<dynamic> showDialogForRank(BuildContext context, Competitors? awayTeam, G
               context: context,
               builder: (context) {
                 return AlertDialog(
+
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(
@@ -929,17 +934,7 @@ Future<dynamic> showDialogForRank(BuildContext context, Competitors? awayTeam, G
                   shadowColor: Theme.of(context).secondaryHeaderColor,
                   contentPadding: EdgeInsets.all(20.h),
                   title:
-                  '${awayTeam?.abbreviation} PPG Rank ${(con.isTeamReportTab
-                      ? ((num.tryParse(con.nflAwayOffensiveRank.isEmpty
-                      ? '0'
-                      :   ' (${dateWidget(con.nflAwayOffensiveRank[index])})')) ??
-                      ' (${dateWidget(con.nflAwayOffensiveRank[index])})')
-                      .toString()
-                      : ((num.tryParse(con.nflAwayDefensiveRank.isEmpty
-                      ? '0'
-                      : ' (${dateWidget(con.nflAwayDefensiveRank[index])})')) ??
-                      ' (${ dateWidget(con.nflAwayDefensiveRank[index])})')
-                      .toString())}\n${homeTeam?.abbreviation} PAG Rank '
+                 ( con.isTeamReportTab? '${awayTeam?.abbreviation} PPG Ranks ${dateWidget(con.nflAwayOffensiveRank[index])}\n${homeTeam?.abbreviation} PAG Rank ${dateWidget(con.nflHomeDefensiveRank[index])}':'${awayTeam?.abbreviation} PAG Rank ${dateWidget(con.nflAwayDefensiveRank[index])}\n${homeTeam?.abbreviation} PPA Rank ${dateWidget(con.nflHomeOffensiveRank[index])}')
                       .appCommonText(
                       color: Theme.of(context)
                           .secondaryHeaderColor,
