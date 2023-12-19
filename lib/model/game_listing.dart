@@ -69,6 +69,14 @@ class SportEvents {
   num? homePointDefenseRank;
   num? homeRushingOffenseRank;
   num? homeRushingDefenseRank;
+  num? awayPointOffense;
+  num? awayPointDefense;
+  num? awayRushingOffense;
+  num? awayRushingDefense;
+  num? homePointOffense;
+  num? homePointDefense;
+  num? homeRushingOffense;
+  num? homeRushingDefense;
   TournamentRound? tournamentRound;
   Season? season;
   Tournament? tournament;
@@ -143,6 +151,14 @@ class SportEvents {
     this.homePointDefenseRank=0,
     this.homeRushingOffenseRank=0,
     this.homeRushingDefenseRank=0,
+    this.awayPointOffense=0,
+    this.awayPointDefense=0,
+    this.awayRushingOffense=0,
+    this.awayRushingDefense=0,
+    this.homePointOffense=0,
+    this.homePointDefense=0,
+    this.homeRushingOffense=0,
+    this.homeRushingDefense=0,
     this.tournamentRound,
     this.season,
     this.tournament,

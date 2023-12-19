@@ -846,8 +846,9 @@ class GameDetailsController extends GetxController {
 
               ];
               nflHomeOffensiveList = [
-                offensivePoint,
-                ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") / totalGame)
+
+                 sportKey=="NFL"?gameDetails.homePointOffense.toString():offensivePoint,
+                 sportKey=="NFL"?gameDetails.homeRushingOffense.toString():((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") / totalGame)
         .toStringAsFixed(1)),
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
@@ -894,10 +895,11 @@ class GameDetailsController extends GetxController {
 
               ];
               nflHomeDefensiveList = [
-                defensivePoint,
-               ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
-    totalGame)
-        .toStringAsFixed(1)),
+
+                sportKey=="NFL"? gameDetails.homePointDefense.toString():defensivePoint,
+                sportKey=="NFL"? gameDetails.homeRushingDefense.toString():((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
+                    totalGame)
+                    .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -1391,12 +1393,20 @@ class GameDetailsController extends GetxController {
               gameDetails.awayPointDefenseRank=team.pointsDefenseRank??0;
               gameDetails.awayRushingOffenseRank=team.rushingOffenseRank??0;
               gameDetails.awayRushingDefenseRank=team.rushingDefenseRank??0;
+              gameDetails.awayPointOffense  =team.pointsOffense??0;
+              gameDetails.awayPointDefense  =team.pointsDefense??0;
+              gameDetails.awayRushingOffense=team.rushingOffense??0;
+              gameDetails.awayRushingDefense=team.rushingDefense??0;
             }
             if(homeTeamId==replaceId(team.teamId??"")) {
               gameDetails.homePointOffenseRank=team.pointOffenceRank??0;
               gameDetails.homePointDefenseRank=team.pointsDefenseRank??0;
               gameDetails.homeRushingOffenseRank=team.rushingOffenseRank??0;
               gameDetails.homeRushingDefenseRank=team.rushingDefenseRank??0;
+              gameDetails.homePointOffense  =team.pointsOffense??0;
+              gameDetails.homePointDefense  =team.pointsDefense??0;
+              gameDetails.homeRushingOffense=team.rushingOffense??0;
+              gameDetails.homeRushingDefense=team.rushingDefense??0;
             }
           });
         }
@@ -1452,10 +1462,12 @@ class GameDetailsController extends GetxController {
 
               ];
               nflAwayOffensiveList = [
-               offensivePoint,
-                ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
+              sportKey=="NFL"?gameDetails.awayPointOffense.toString(): offensivePoint,
+                sportKey=="NFL"? gameDetails.awayRushingOffense.toString(): ((int.parse(offenciveData?.rushing?.yards.toString() ?? "0") /
     totalGame)
         .toStringAsFixed(1)),
+
+
                 ((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -1501,9 +1513,10 @@ class GameDetailsController extends GetxController {
 
               ];
               nflAwayDefensiveList = [
-                defensivePoint,
-                ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") / totalGame).toStringAsFixed(1)),
-                ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
+
+
+                sportKey=="NFL"?    gameDetails.awayPointDefense.toString():defensivePoint,
+                sportKey=="NFL"?  gameDetails.awayRushingDefense.toString():((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") / totalGame).toStringAsFixed(1)),((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
