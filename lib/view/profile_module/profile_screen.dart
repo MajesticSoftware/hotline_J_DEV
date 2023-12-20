@@ -20,6 +20,7 @@ import '../widgets/text_field_widget.dart';
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
   final ProfileController profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

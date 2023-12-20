@@ -228,7 +228,7 @@ class SelectGameScreen extends StatelessWidget {
                   color: whiteColor,
                   size: 35.h,
                 ),
-                title: 'Profile',
+                title: 'Edit Profile',
                 context: context,
                 onTap: () {
                   scaffoldKey.currentState?.closeDrawer();
@@ -451,7 +451,7 @@ class SelectGameScreen extends StatelessWidget {
         Column(
           children: [
             (MediaQuery.of(context).size.height * .06).H(),
-         /*   Visibility(
+            /*   Visibility(
               visible: (controller.sportKey == 'MLB' &&
                   !(controller.mlbSportEventsList.indexWhere((element) =>
                           DateTime.parse(element.scheduled.toString())
@@ -472,218 +472,205 @@ class SelectGameScreen extends StatelessWidget {
               ).paddingOnly(bottom: 15.w),
             ),*/
             spotList(controller).isEmpty &&
-                        !controller.isLoading.value &&
-                        !controller.isPagination
-                    ? const NoGameWidget()
-                    : controller.searchCon.text.isEmpty
-                        ? Expanded(
-                            child: RefreshIndicator(
-                            onRefresh: () async {
-                              await controller.getResponse(
-                                  false, controller.sportKey);
-                            },
-                            color: Theme.of(context).primaryColor,
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: spotList(controller).length,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-
-                                try {
-                                  // SportEvents competitors = spotList(controller)[index];
-                                  String date = DateFormat.MMMd().format(
-                                      DateTime.parse(spotList(controller)[index]
-                                                  .scheduled ??
-                                              '')
-                                          .toLocal());
-                                  String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(spotList(controller)[index]
-                                                  .scheduled ??
-                                              '')
-                                          .toLocal());
-                                  return (spotList(controller).length ==
-                                              index + 1 &&
-                                          controller.isPagination)
-                                      ? const PaginationProgress()
-                                      : Visibility(
-                                          visible: (spotList(controller)[index]
-                                                          .status !=
-                                                      'closed' &&
-                                                  controller.sportKey !=
-                                                      "NFL") ||
-                                              (spotList(controller)[index]
+                    !controller.isLoading.value &&
+                    !controller.isPagination
+                ? const NoGameWidget()
+                : controller.searchCon.text.isEmpty
+                    ? Expanded(
+                        child: RefreshIndicator(
+                        onRefresh: () async {
+                          await controller.getResponse(
+                              false, controller.sportKey);
+                        },
+                        color: Theme.of(context).primaryColor,
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: spotList(controller).length,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            try {
+                              // SportEvents competitors = spotList(controller)[index];
+                              String date = DateFormat.MMMd().format(
+                                  DateTime.parse(spotList(controller)[index]
+                                              .scheduled ??
+                                          '')
+                                      .toLocal());
+                              String dateTime = DateFormat.jm().format(
+                                  DateTime.parse(spotList(controller)[index]
+                                              .scheduled ??
+                                          '')
+                                      .toLocal());
+                              return (spotList(controller).length ==
+                                          index + 1 &&
+                                      controller.isPagination)
+                                  ? const PaginationProgress()
+                                  : Visibility(
+                                      visible: (spotList(controller)[index]
                                                       .status !=
-                                                  'postponed'),
-                                          child: GameWidget(
-                                            isShowWeather:
-                                                controller.sportKey == "NBA" ||
-                                                    controller.sportKey ==
-                                                        "NCAAB",
-                                            onTap: () {
-                                              controller.gameOnClick(
-                                                  context, index);
-                                            },
-                                            awayTeamMoneyLine:
-                                                spotList(controller)[index]
-                                                    .awayMoneyLineValue,
-                                            homeTeamMoneyLine:
-                                                spotList(controller)[index]
-                                                    .homeMoneyLineValue,
-                                            awayTeamOU:
-                                                spotList(controller)[index]
-                                                    .awayOUValue,
-                                            homeTeamOU:
-                                                spotList(controller)[index]
-                                                    .homeOUValue,
-                                            weather: spotList(controller)[index]
-                                                .weather,
-                                            homeTeamSpread: spotList(
-                                                        controller)[index]
-                                                    .homeSpreadValue
-                                                    .contains('-')
-                                                ? spotList(controller)[index]
-                                                    .homeSpreadValue
-                                                : '+${spotList(controller)[index].homeSpreadValue}',
-                                            awayTeamSpread: spotList(
-                                                        controller)[index]
-                                                    .awaySpreadValue
-                                                    .contains('-')
-                                                ? spotList(controller)[index]
-                                                    .awaySpreadValue
-                                                : '+${spotList(controller)[index].awaySpreadValue}',
-                                            temp: spotList(controller)[index]
-                                                .tmpInFahrenheit,
-                                            isLive: spotList(controller)[index]
-                                                    .status ==
-                                                'live',
-                                            dateTime: '$date, $dateTime',
-                                            awayTeamImageUrl: awayLogo(
-                                                spotList(controller)[index],
-                                                controller,
-                                                index),
-                                            awayTeamRank: (spotList(
-                                                            controller)[index]
+                                                  'closed' &&
+                                              controller.sportKey != "NFL") ||
+                                          (spotList(controller)[index].status !=
+                                              'postponed'),
+                                      child: GameWidget(
+                                        isShowWeather:
+                                            controller.sportKey == "NBA" ||
+                                                controller.sportKey == "NCAAB",
+                                        onTap: () {
+                                          controller.gameOnClick(
+                                              context, index);
+                                        },
+                                        awayTeamMoneyLine:
+                                            spotList(controller)[index]
+                                                .awayMoneyLineValue,
+                                        homeTeamMoneyLine:
+                                            spotList(controller)[index]
+                                                .homeMoneyLineValue,
+                                        awayTeamOU: spotList(controller)[index]
+                                            .awayOUValue,
+                                        homeTeamOU: spotList(controller)[index]
+                                            .homeOUValue,
+                                        weather:
+                                            spotList(controller)[index].weather,
+                                        homeTeamSpread: spotList(
+                                                    controller)[index]
+                                                .homeSpreadValue
+                                                .contains('-')
+                                            ? spotList(controller)[index]
+                                                .homeSpreadValue
+                                            : '+${spotList(controller)[index].homeSpreadValue}',
+                                        awayTeamSpread: spotList(
+                                                    controller)[index]
+                                                .awaySpreadValue
+                                                .contains('-')
+                                            ? spotList(controller)[index]
+                                                .awaySpreadValue
+                                            : '+${spotList(controller)[index].awaySpreadValue}',
+                                        temp: spotList(controller)[index]
+                                            .tmpInFahrenheit,
+                                        isLive: spotList(controller)[index]
+                                                .status ==
+                                            'live',
+                                        dateTime: '$date, $dateTime',
+                                        awayTeamImageUrl: awayLogo(
+                                            spotList(controller)[index],
+                                            controller,
+                                            index),
+                                        awayTeamRank:
+                                            (spotList(controller)[index]
                                                         .awayRank ==
                                                     '0'
                                                 ? ''
                                                 : spotList(controller)[index]
                                                     .awayRank),
-                                            awayTeamAbb: (mobileView
-                                                        .size.shortestSide <
-                                                    600
+                                        awayTeamAbb:
+                                            (mobileView.size.shortestSide < 600
                                                 ? spotList(controller)[index]
                                                     .awayTeamAbb
                                                 : spotList(controller)[index]
                                                     .awayTeam),
-                                            awayTeamScore:
-                                                (spotList(controller)[index]
-                                                    .awayScore),
-                                            homeTeamImageUrl: homeLogo(
-                                                spotList(controller)[index],
-                                                controller,
-                                                index),
-                                            homeTeamRank: (spotList(
-                                                            controller)[index]
+                                        awayTeamScore:
+                                            (spotList(controller)[index]
+                                                .awayScore),
+                                        homeTeamImageUrl: homeLogo(
+                                            spotList(controller)[index],
+                                            controller,
+                                            index),
+                                        homeTeamRank:
+                                            (spotList(controller)[index]
                                                         .homeRank ==
                                                     '0'
                                                 ? ''
                                                 : spotList(controller)[index]
                                                     .homeRank),
-                                            homeTeamAbb: (mobileView
-                                                        .size.shortestSide <
-                                                    600
+                                        homeTeamAbb:
+                                            (mobileView.size.shortestSide < 600
                                                 ? spotList(controller)[index]
                                                     .homeTeamAbb
                                                 : spotList(controller)[index]
                                                     .homeTeam),
-                                            homeTeamScore:
-                                                spotList(controller)[index]
-                                                    .homeScore,
-                                          ),
-                                        );
-                                } catch (e) {
-                                  return const SizedBox();
-                                }
-                              },
-                            ),
-                          ))
-                        : Expanded(
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: controller.searchList.length,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                try {
-                                  SportEvents competitors =
-                                      controller.searchList[index];
-                                  String date = DateFormat.MMMd().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
-                                          .toLocal());
-                                  String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
-                                          .toLocal());
-                                  return Visibility(
-                                    visible: (competitors.status != 'closed' &&
-                                            controller.sportKey != "NFL") ||
-                                        (competitors.status != 'postponed'),
-                                    child: GameWidget(
-                                      onTap: () {
-                                        controller.searchGameOnClick(
-                                            context, index);
-                                      },
-                                      isShowWeather:
-                                          controller.sportKey == "NBA" ||
-                                              controller.sportKey == "NCAAB",
-                                      awayTeamMoneyLine:
-                                          competitors.awayMoneyLineValue,
-                                      homeTeamMoneyLine:
-                                          competitors.homeMoneyLineValue,
-                                      awayTeamOU: competitors.awayOUValue,
-                                      homeTeamOU: competitors.homeOUValue,
-                                      weather: competitors.weather,
-                                      homeTeamSpread: competitors
-                                              .homeSpreadValue
-                                              .contains('-')
+                                        homeTeamScore:
+                                            spotList(controller)[index]
+                                                .homeScore,
+                                      ),
+                                    );
+                            } catch (e) {
+                              return const SizedBox();
+                            }
+                          },
+                        ),
+                      ))
+                    : Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: controller.searchList.length,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            try {
+                              SportEvents competitors =
+                                  controller.searchList[index];
+                              String date = DateFormat.MMMd().format(
+                                  DateTime.parse(competitors.scheduled ?? '')
+                                      .toLocal());
+                              String dateTime = DateFormat.jm().format(
+                                  DateTime.parse(competitors.scheduled ?? '')
+                                      .toLocal());
+                              return Visibility(
+                                visible: (competitors.status != 'closed' &&
+                                        controller.sportKey != "NFL") ||
+                                    (competitors.status != 'postponed'),
+                                child: GameWidget(
+                                  onTap: () {
+                                    controller.searchGameOnClick(
+                                        context, index);
+                                  },
+                                  isShowWeather: controller.sportKey == "NBA" ||
+                                      controller.sportKey == "NCAAB",
+                                  awayTeamMoneyLine:
+                                      competitors.awayMoneyLineValue,
+                                  homeTeamMoneyLine:
+                                      competitors.homeMoneyLineValue,
+                                  awayTeamOU: competitors.awayOUValue,
+                                  homeTeamOU: competitors.homeOUValue,
+                                  weather: competitors.weather,
+                                  homeTeamSpread:
+                                      competitors.homeSpreadValue.contains('-')
                                           ? competitors.homeSpreadValue
                                           : '+${competitors.homeSpreadValue}',
-                                      awayTeamSpread: competitors
-                                              .awaySpreadValue
-                                              .contains('-')
+                                  awayTeamSpread:
+                                      competitors.awaySpreadValue.contains('-')
                                           ? competitors.awaySpreadValue
                                           : '+${competitors.awaySpreadValue}',
-                                      temp: competitors.tmpInFahrenheit,
-                                      isLive: competitors.status == 'live',
-                                      dateTime: '$date, $dateTime',
-                                      awayTeamImageUrl: awayLogo(
-                                          competitors, controller, index),
-                                      awayTeamRank: (competitors.awayRank == '0'
-                                          ? ''
-                                          : competitors.awayRank),
-                                      awayTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.awayTeamAbb
-                                              : competitors.awayTeam),
-                                      awayTeamScore: (competitors.awayScore),
-                                      homeTeamImageUrl: homeLogo(
-                                          competitors, controller, index),
-                                      homeTeamRank: (competitors.homeRank == '0'
-                                          ? ''
-                                          : competitors.homeRank),
-                                      homeTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.homeTeamAbb
-                                              : competitors.homeTeam),
-                                      homeTeamScore: competitors.homeScore,
-                                    ),
-                                  );
-                                } catch (e) {
-                                  return const SizedBox();
-                                }
-                              },
-                            ),
-                          ),
+                                  temp: competitors.tmpInFahrenheit,
+                                  isLive: competitors.status == 'live',
+                                  dateTime: '$date, $dateTime',
+                                  awayTeamImageUrl:
+                                      awayLogo(competitors, controller, index),
+                                  awayTeamRank: (competitors.awayRank == '0'
+                                      ? ''
+                                      : competitors.awayRank),
+                                  awayTeamAbb:
+                                      (mobileView.size.shortestSide < 600
+                                          ? competitors.awayTeamAbb
+                                          : competitors.awayTeam),
+                                  awayTeamScore: (competitors.awayScore),
+                                  homeTeamImageUrl:
+                                      homeLogo(competitors, controller, index),
+                                  homeTeamRank: (competitors.homeRank == '0'
+                                      ? ''
+                                      : competitors.homeRank),
+                                  homeTeamAbb:
+                                      (mobileView.size.shortestSide < 600
+                                          ? competitors.homeTeamAbb
+                                          : competitors.homeTeam),
+                                  homeTeamScore: competitors.homeScore,
+                                ),
+                              );
+                            } catch (e) {
+                              return const SizedBox();
+                            }
+                          },
+                        ),
+                      ),
             (MediaQuery.of(context).size.height * .01).H(),
           ],
         ),
@@ -699,27 +686,33 @@ class SelectGameScreen extends StatelessWidget {
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.awayTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
-            :competitors.awayTeamAbb == 'ARI'
-            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-            : competitors.awayTeamAbb == 'SCUS'
-                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                :competitors.awayTeamAbb == 'FAMU'
-                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                : competitors.awayTeamAbb == 'WEBB'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                    :competitors.awayTeamAbb == 'WAS'&&competitors.id=="sr:competitor:4432"
-                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                    : competitors.awayTeamAbb == 'QUC'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                        : competitors.awayTeamAbb == 'GC'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                            : competitors.awayTeam ==
-                                    'Louisiana-Lafayette Ragin Cajuns'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                : competitors.awayTeam ==
-                                        'Sam Houston State Bearkats'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                    : competitors.gameLogoAwayLink;
+            : competitors.awayTeamAbb == 'ARI'
+                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                : competitors.awayTeamAbb == 'SCUS'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                    : competitors.awayTeamAbb == 'FAMU'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                        : competitors.awayTeamAbb == 'WEBB'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                            : competitors.awayTeamAbb == 'WAS' &&
+                                    competitors.id == "sr:competitor:4432"
+                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                : competitors.awayTeamAbb == 'QUC'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                    : competitors.awayTeamAbb == 'GC'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                        : competitors.awayTeamAbb == 'CSN'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                            : competitors.awayTeam ==
+                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                : competitors.awayTeam == 'CSB'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                    : competitors.awayTeam ==
+                                                            'Sam Houston State Bearkats'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                        : competitors
+                                                            .gameLogoAwayLink;
   }
 
   String homeLogo(
@@ -731,24 +724,30 @@ class SelectGameScreen extends StatelessWidget {
             : competitors.homeTeamAbb == 'WEBB'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
                 : competitors.homeTeamAbb == 'ARI'
-                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                : competitors.homeTeamAbb == 'SCUS'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                    :competitors.homeTeamAbb == 'FAMU'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                    :competitors.homeTeamAbb == 'WAS'&&competitors.id=="sr:competitor:4432"
-                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                    : competitors.homeTeamAbb == 'QUC'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                        : competitors.homeTeamAbb == 'GC'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                            : competitors.homeTeam ==
-                                    'Louisiana-Lafayette Ragin Cajuns'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                : competitors.homeTeam ==
-                                        'Sam Houston State Bearkats'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                    : competitors.gameHomeLogoLink;
+                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                    : competitors.homeTeamAbb == 'SCUS'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                        : competitors.homeTeamAbb == 'FAMU'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                            : competitors.homeTeamAbb == 'CSN'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                : competitors.homeTeamAbb == 'WAS' &&
+                                        competitors.id == "sr:competitor:4432"
+                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                    : competitors.homeTeamAbb == 'QUC'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                        : competitors.homeTeamAbb == 'GC'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                            : competitors.homeTeamAbb == 'CSB'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                : competitors.homeTeam ==
+                                                        'Louisiana-Lafayette Ragin Cajuns'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                    : competitors.homeTeam ==
+                                                            'Sam Houston State Bearkats'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                        : competitors
+                                                            .gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

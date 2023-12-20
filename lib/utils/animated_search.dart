@@ -30,6 +30,7 @@ class AnimSearchBar extends StatefulWidget {
   final Icon? prefixIcon;
   final String helpText;
   final int animationDurationInMilli;
+
   // ignore: prefer_typing_uninitialized_variables
   final onSuffixTap;
   final bool rtl;

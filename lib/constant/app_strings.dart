@@ -1,6 +1,6 @@
-const String cameraText = "Camera";
+const String cameraText = "   Camera";
 const String selectImageText = "Select Image";
-const String photoLibraryText = "Photo library";
+const String photoLibraryText = "   Photo library";
 const String settingsText = "Settings";
 const logOutText = 'Logout';
 const deleteText = 'Delete Account';

@@ -19,6 +19,7 @@ class ForgotPassController extends GetxController {
   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
   RxBool isLoading = false.obs;
+
   void forgotPassResponse(BuildContext context) async {
     if (emailController.text == '' || emailController.text.isEmpty) {
       showAppSnackBar('Email must be required!');

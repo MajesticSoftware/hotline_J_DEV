@@ -9,6 +9,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../../constant/shred_preference.dart';
 
 import 'game_details_controller.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import '../../../utils/app_progress.dart';
@@ -37,6 +38,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
   final GameDetailsController gameDetailsController = Get.find();
 
   TabController? _tabController;
+
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -46,6 +48,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
   Competitors? homeTeam;
   Competitors? awayTeam;
   var client = http.Client();
+
   @override
   void dispose() {
     super.dispose();

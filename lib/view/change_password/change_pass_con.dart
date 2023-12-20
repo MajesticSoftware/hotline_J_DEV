@@ -15,6 +15,7 @@ class ChangePassController extends GetxController {
   TextEditingController newPassController = TextEditingController();
   TextEditingController confPassController = TextEditingController();
   RxBool isLoading = false.obs;
+
   void changePassResponse(BuildContext context) async {
     if (oldPassController.text == '' || oldPassController.text.isEmpty) {
       showAppSnackBar('Old password must be required!');

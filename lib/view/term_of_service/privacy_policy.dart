@@ -13,6 +13,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       backgroundColor: backGroundColor,
       appBar: AppBar(
         leading: InkWell(
+          splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
           onTap: () {
             Get.back();

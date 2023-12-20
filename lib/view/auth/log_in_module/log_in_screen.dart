@@ -21,6 +21,7 @@ import 'log_in_controller.dart';
 class LogInScreen extends StatelessWidget {
   LogInScreen({Key? key}) : super(key: key);
   final LogInController logInController = Get.put(LogInController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

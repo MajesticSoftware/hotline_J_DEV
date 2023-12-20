@@ -21,6 +21,7 @@ class RegisterCon extends GetxController {
   List<String> spotsList = ['NFL', 'NCAAF', 'MLB'];
   String selectedSpot = '';
   File? imageFile;
+
   void addImage(File newImage) {
     imageFile = newImage;
     update();
@@ -38,6 +39,7 @@ class RegisterCon extends GetxController {
   RxBool isLoading = false.obs;
   bool isShowPass = true;
   String profileImage = '';
+
   Future<void> registration() async {
     try {
       if (nameCon.text.isEmpty) {

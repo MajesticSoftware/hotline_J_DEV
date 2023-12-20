@@ -61,6 +61,7 @@ class GameWidget extends StatelessWidget {
   final bool isShowWeather;
   final num temp;
   final void Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -121,16 +122,16 @@ class GameWidget extends StatelessWidget {
                             child: Text(
                               awayTeamAbb.toString(),
                               style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).highlightColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .016),
+                                  color: Theme.of(context).highlightColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Get.height * .016),
                               textAlign: TextAlign.start,
                               maxLines: 2,
                             ),
                           ),
                           Text(
                             awayTeamScore.toString(),
-                            style:GoogleFonts.nunitoSans(
+                            style: GoogleFonts.nunitoSans(
                               color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.w700,
                               fontSize: Get.height * .018,
@@ -193,9 +194,9 @@ class GameWidget extends StatelessWidget {
                             child: Text(
                               homeTeamAbb.toString(),
                               style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).highlightColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .016),
+                                  color: Theme.of(context).highlightColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Get.height * .016),
                               textAlign: TextAlign.start,
                               maxLines: 2,
                             ),
@@ -228,7 +229,6 @@ class GameWidget extends StatelessWidget {
                       width: 60.h,
                       child: dateTime.appCommonText(
                         size: Get.height * .012,
-
                         color: Theme.of(context).highlightColor,
                       ),
                     ),
@@ -300,22 +300,18 @@ class GameWidget extends StatelessWidget {
                             temp == 32
                                 ? "TBD"
                                 : '  ${temp.toString().split('.').first}',
-                            style:
-                                 GoogleFonts.nunitoSans(
-                              color: Theme.of(context).highlightColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize:temp == 32? MediaQuery.of(context).size.height *
-                                  .014
-                                 :MediaQuery.of(context).size.height *
-                                  .024
-                            )
-                                    ,
+                            style: GoogleFonts.nunitoSans(
+                                color: Theme.of(context).highlightColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: temp == 32
+                                    ? MediaQuery.of(context).size.height * .014
+                                    : MediaQuery.of(context).size.height *
+                                        .024),
                           ),
                           Text(
                             '°F',
-                            style:  GoogleFonts.nunitoSans(
-                              color: Theme.of(context).highlightColor
-                              ,
+                            style: GoogleFonts.nunitoSans(
+                              color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.w600,
                               fontSize: Get.height * .01,
                             ),
@@ -353,14 +349,14 @@ class GameWidget extends StatelessWidget {
                           children: [
                             Text('o',
                                 style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).cardColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .014)),
+                                    color: Theme.of(context).cardColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Get.height * .014)),
                             Text(awayTeamOU.toString(),
                                 style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).cardColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .014)),
+                                    color: Theme.of(context).cardColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Get.height * .014)),
                           ],
                         )),
                       ).paddingSymmetric(
@@ -387,14 +383,14 @@ class GameWidget extends StatelessWidget {
                           children: [
                             Text('u',
                                 style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).cardColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .014)),
+                                    color: Theme.of(context).cardColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Get.height * .014)),
                             Text(homeTeamOU.toString(),
                                 style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).cardColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: Get.height * .014)),
+                                    color: Theme.of(context).cardColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Get.height * .014)),
                           ],
                         )),
                       ).paddingSymmetric(
@@ -438,6 +434,7 @@ class GameTabCard extends StatelessWidget {
     Colors.orange.withOpacity(.4),
     Colors.deepPurpleAccent.withOpacity(.4),
   ];
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -965,7 +962,6 @@ class NoGameWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-
             width: Get.width,
             child: Stack(
               alignment: Alignment.center,
@@ -976,7 +972,7 @@ class NoGameWidget extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * .329,
                   fit: BoxFit.fill,
                 ),
-               /* Positioned(
+                /* Positioned(
                   bottom: MediaQuery.of(context).size.height * .07,
                   width: MediaQuery.of(context).size.width * .34,
                   child: GestureDetector(
@@ -1421,6 +1417,7 @@ class TransperCard extends StatelessWidget {
 }
 
 var scaffoldKey = GlobalKey<ScaffoldState>();
+
 PreferredSize commonAppBar(
     BuildContext context, GameListingController controller) {
   return PreferredSize(

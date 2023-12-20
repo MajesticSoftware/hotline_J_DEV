@@ -15,7 +15,6 @@ import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
-import '../../../model/nfl_rank_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 
@@ -71,8 +70,8 @@ class GameListingController extends GetxController {
     Future.delayed(
       Duration.zero,
       () async {
-        isPagination=true;
-        isLoading.value=true;
+        isPagination = true;
+        isLoading.value = true;
         await getResponse(true, sportKey);
       },
     );
@@ -359,7 +358,7 @@ class GameListingController extends GetxController {
           apiKey: apiKey, sportKey: "NFL", date: date, sportId: sportId);
     } else if (sportKey == 'NCAA') {
       return getGameListingForNCAAGame(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: '2023-12-16', sportId: sportId);
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
     } else if (sportKey == 'NBA') {
       return getGameListingForNBARes(isLoad,
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
@@ -368,6 +367,7 @@ class GameListingController extends GetxController {
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
     }
   }
+
   searchData(String text, String sportKey) {
     searchList.clear();
     if (text.isNotEmpty) {
@@ -442,7 +442,9 @@ class GameListingController extends GetxController {
   }
 
   List<SportEvents> _ncaaTodayEventsList = [];
+
   List<SportEvents> get ncaaTodayEventsList => _ncaaTodayEventsList;
+
   set ncaaTodayEventsList(List<SportEvents> value) {
     _ncaaTodayEventsList = value;
     update();
@@ -481,6 +483,7 @@ class GameListingController extends GetxController {
   }
 
   List<SportEvents> _mlbTomorrowEventsList = [];
+
   List<SportEvents> get mlbTomorrowEventsList => _mlbTomorrowEventsList;
 
   set mlbTomorrowEventsList(List<SportEvents> value) {
@@ -524,7 +527,8 @@ class GameListingController extends GetxController {
                 sportKey == 'NFL' &&
                 (difference.inHours >= (-6))) {
               nflTodayEventsList.add(event);
-            } else if ((event.season?.id == 'sr:season:101983'||event.season?.id =="sr:season:101811") &&
+            } else if ((event.season?.id == 'sr:season:101983' ||
+                    event.season?.id == "sr:season:101811") &&
                 sportKey == 'NCAA' &&
                 (difference.inHours >= (-6))) {
               ncaaTodayEventsList.add(event);
@@ -624,7 +628,8 @@ class GameListingController extends GetxController {
             } else if (event.season?.id == 'sr:season:102797' &&
                 sportKey == 'NFL') {
               nflTomorrowEventsList.add(event);
-            } else if ((event.season?.id == 'sr:season:101983'||(event.season?.id == 'sr:season:101811') )&&
+            } else if ((event.season?.id == 'sr:season:101983' ||
+                    (event.season?.id == 'sr:season:101811')) &&
                 sportKey == 'NCAA') {
               ncaaTomorrowEventsList.add(event);
             } else if (event.season?.id == 'sr:season:104319' &&
@@ -1066,6 +1071,7 @@ class GameListingController extends GetxController {
   Timer? timer;
   Timer? timerNCAA;
   Timer? timerNFL;
+
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
@@ -1081,7 +1087,7 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaaTomorrowEventsList.clear();
-      for (int i = 1; i <= 18; i++) {
+      for (int i = 1; i <= 12; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -1093,7 +1099,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
-          if (i == 18) {
+          if (i == 12) {
             isPagination = false;
           }
         }).then((value) {
@@ -1234,7 +1240,6 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1391,7 +1396,6 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1584,7 +1588,7 @@ class GameListingController extends GetxController {
           if (nbaSportEventsList.isNotEmpty) {
             for (int i = 0; i < nbaSportEventsList.length; i++) {
               if (nbaSportEventsList[i].uuids != null) {
-                 boxScoreNBAResponse(
+                boxScoreNBAResponse(
                     sportKey: sportKey,
                     homeTeamId: replaceId(
                             nbaSportEventsList[i].competitors[0].uuids ?? '') ??
@@ -1598,7 +1602,6 @@ class GameListingController extends GetxController {
             }
           }
         });
-
       }
       if (nbaTodayEventsList.isNotEmpty) {
         timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -1693,7 +1696,7 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   nbaTodayEventsList[i].status != 'closed') {
                 if (nbaTodayEventsList[i].uuids != null) {
-                   boxScoreNBAResponse(
+                  boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               nbaTodayEventsList[i].competitors[0].uuids ??
@@ -1754,7 +1757,7 @@ class GameListingController extends GetxController {
                         .toLocal()
                         .day ==
                     DateTime.now().day) {
-                   boxScoreNBAResponse(
+                  boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               ncaabSportEventsList[i].competitors[0].uuids ??
@@ -1771,7 +1774,6 @@ class GameListingController extends GetxController {
             }
           }
         });
-
       }
       if (ncaabTodayEventsList.isNotEmpty) {
         timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -1866,7 +1868,7 @@ class GameListingController extends GetxController {
                       DateTime.now().day &&
                   ncaabTodayEventsList[i].status != 'closed') {
                 if (ncaabTodayEventsList[i].uuids != null) {
-                   boxScoreNBAResponse(
+                  boxScoreNBAResponse(
                       sportKey: sportKey,
                       homeTeamId: replaceId(
                               ncaabTodayEventsList[i].competitors[0].uuids ??

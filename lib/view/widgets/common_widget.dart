@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
- import 'package:hotlines/theme/theme.dart';
+import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 
 class CommonAppButton extends StatelessWidget {
@@ -18,6 +18,7 @@ class CommonAppButton extends StatelessWidget {
   final Color? buttonColor;
   final Color? textColor;
   final Widget? icon;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

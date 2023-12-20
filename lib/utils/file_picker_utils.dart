@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,9 @@ class PickFile {
                   children: [
                     ListTile(
                       title: photoLibraryText.appCommonText(
-                          color: blackColor, align: TextAlign.start),
+                          color: blackColor,
+                          align: TextAlign.start,
+                          size: 25.h),
                       horizontalTitleGap: 0,
                       leading:
                           const Icon(Icons.photo_library, color: blackColor),
@@ -35,7 +38,9 @@ class PickFile {
                     ListTile(
                       horizontalTitleGap: 0,
                       title: cameraText.appCommonText(
-                          color: blackColor, align: TextAlign.start),
+                          color: blackColor,
+                          align: TextAlign.start,
+                          size: 25.h),
                       leading:
                           const Icon(Icons.photo_camera, color: blackColor),
                       onTap: () {

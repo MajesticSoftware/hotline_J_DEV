@@ -19,12 +19,12 @@ Future<void> main() async {
   await PreferenceManager().putAppDeviceInfo();
   // FlutterBranchSdk.validateSDKIntegration();
   runApp(const MyApp());
-
 }
 
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([

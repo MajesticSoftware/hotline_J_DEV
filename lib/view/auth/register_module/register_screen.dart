@@ -26,6 +26,7 @@ import '../../widgets/text_field_widget.dart';
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
   final RegisterCon registerCon = Get.put(RegisterCon());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

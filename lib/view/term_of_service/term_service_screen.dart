@@ -14,6 +14,7 @@ class TermOfServiceScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         leading: InkWell(
+          splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
           onTap: () {
             Get.back();
@@ -48,8 +49,10 @@ class TermOfServiceScreen extends StatelessWidget {
                 .appCommonText(
                     color: greyColor, size: 18.h, align: TextAlign.start),
             20.h.H(),
-            "2. INTELLECTUAL PROPERTY RIGHTS"
-                .appCommonText(color: blackColor, weight: FontWeight.bold,align: TextAlign.start),
+            "2. INTELLECTUAL PROPERTY RIGHTS".appCommonText(
+                color: blackColor,
+                weight: FontWeight.bold,
+                align: TextAlign.start),
             20.h.H(),
             "Our intellectual property"
                 .appCommonText(color: blackColor, weight: FontWeight.bold),

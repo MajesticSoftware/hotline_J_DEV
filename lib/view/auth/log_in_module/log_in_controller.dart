@@ -22,6 +22,7 @@ class LogInController extends GetxController {
   TextEditingController emailCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
   RxBool isLoading = false.obs;
+
   login() async {
     if (emailCon.text.isEmpty) {
       showAppSnackBar('Please enter email');
@@ -31,7 +32,8 @@ class LogInController extends GetxController {
       showAppSnackBar('Please enter password');
     } else if (passCon.text.length < 6) {
       showAppSnackBar('Password must be at least six character');
-    } /*else if (!isCheck) {
+    }
+    /*else if (!isCheck) {
       showAppSnackBar('Please accept term and conditions.');
     }*/
     else {

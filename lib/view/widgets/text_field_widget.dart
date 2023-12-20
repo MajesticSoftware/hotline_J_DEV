@@ -35,6 +35,7 @@ class CommonTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool? readOnly;
   final Widget? suffixIcon;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

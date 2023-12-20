@@ -19,6 +19,7 @@ class ProfileController extends GetxController {
   String profileImage = PreferenceManager.getUserProfile() ?? "";
   String userName = PreferenceManager.getUserProfile() ?? "";
   File? imageFile;
+
   void addImage(File newImage) {
     imageFile = newImage;
     update();
@@ -28,6 +29,7 @@ class ProfileController extends GetxController {
   String selectedSpot = PreferenceManager.getFavoriteSport() ?? "NFL";
 
   RxBool isLoading = false.obs;
+
   Future<void> updateUserProfile() async {
     try {
       if (nameCon.text.isEmpty) {
@@ -66,6 +68,9 @@ class ProfileController extends GetxController {
             isLoading.value = false;
             showAppSnackBar(result.message);
           }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(result.message);
         }
       }
     } catch (e) {

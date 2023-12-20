@@ -29,6 +29,7 @@ class ChangePassScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: InkWell(
+                        splashFactory: NoSplash.splashFactory,
                         highlightColor: Colors.transparent,
                         onTap: () {
                           Get.back();
