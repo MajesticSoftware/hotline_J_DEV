@@ -14,7 +14,9 @@ class AppProgress extends StatelessWidget {
         color: blackColor.withOpacity(0.3),
         child: Center(
             child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor)));
+                color: Theme
+                    .of(context)
+                    .primaryColor)));
   }
 }
 
@@ -30,7 +32,9 @@ class PaginationProgress extends StatelessWidget {
             width: 16,
             height: 16,
             child: CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             )),
       ),
     );

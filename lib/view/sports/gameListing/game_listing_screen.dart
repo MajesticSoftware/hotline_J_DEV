@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/app_strings.dart';
 import 'package:hotlines/utils/deep_linking.dart';
+import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,8 @@ class SelectGameScreen extends StatelessWidget {
 
   final GameListingController gameListingController =
       Get.put(GameListingController());
+  final GameDetailsController gameDetailsController =
+      Get.put(GameDetailsController());
 
   @override
   Widget build(BuildContext context) {
@@ -512,6 +515,12 @@ class SelectGameScreen extends StatelessWidget {
                                           (spotList(controller)[index].status !=
                                               'postponed'),
                                       child: GameWidget(
+                                        flameNumber: controller.flameNumber(
+                                            index,
+                                            controller.nflSportEventsList),
+                                        isShowFlame: controller.isShowFlameIcon(
+                                            index,
+                                            controller.nflSportEventsList),
                                         isShowWeather:
                                             controller.sportKey == "NBA" ||
                                                 controller.sportKey == "NCAAB",
@@ -619,6 +628,10 @@ class SelectGameScreen extends StatelessWidget {
                                         controller.sportKey != "NFL") ||
                                     (competitors.status != 'postponed'),
                                 child: GameWidget(
+                                  flameNumber: controller.flameNumber(
+                                      index, controller.searchList),
+                                  isShowFlame: controller.isShowFlameIcon(
+                                      index, controller.searchList),
                                   onTap: () {
                                     controller.searchGameOnClick(
                                         context, index);

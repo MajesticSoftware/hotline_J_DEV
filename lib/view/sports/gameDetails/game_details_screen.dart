@@ -35,7 +35,7 @@ class SportDetailsScreen extends StatefulWidget {
 
 class _SportDetailsScreenState extends State<SportDetailsScreen>
     with SingleTickerProviderStateMixin {
-  final GameDetailsController gameDetailsController = Get.find();
+  final GameDetailsController gameDetailsController = Get.put(GameDetailsController());
 
   TabController? _tabController;
 
@@ -68,36 +68,36 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     } else {
       homeTeam = widget.gameDetails.competitors[1];
     }
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: commonAppBarWidget(context, isDark),
-      body: GetBuilder<GameDetailsController>(initState: (state) async {
-        await gameDetailsController.getResponse(
-            isLoad: true,
-            gameDetails: widget.gameDetails,
-            sportKey: widget.sportKey,
-            date: widget.date,
-            hotLinesDate: widget.gameDetails.scheduled ?? "",
-            awayTeam: awayTeam,
-            homeTeam: homeTeam,
-            sportId: widget.sportId);
-      }, builder: (con) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            return await gameDetailsController.getResponse(
-                isLoad: false,
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: commonAppBarWidget(context, isDark,gameDetailsController),
+          body: GetBuilder<GameDetailsController>(initState: (state) async {
+            await gameDetailsController.getResponse(
+                isLoad: true,
                 gameDetails: widget.gameDetails,
-                hotLinesDate: widget.gameDetails.scheduled ?? "",
                 sportKey: widget.sportKey,
                 date: widget.date,
+                hotLinesDate: widget.gameDetails.scheduled ?? "",
                 awayTeam: awayTeam,
                 homeTeam: homeTeam,
                 sportId: widget.sportId);
-          },
-          color: Theme.of(context).disabledColor,
-          child: Stack(
-            children: [
-              Column(
+          }, builder: (con) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                return await gameDetailsController.getResponse(
+                    isLoad: false,
+                    gameDetails: widget.gameDetails,
+                    hotLinesDate: widget.gameDetails.scheduled ?? "",
+                    sportKey: widget.sportKey,
+                    date: widget.date,
+                    awayTeam: awayTeam,
+                    homeTeam: homeTeam,
+                    sportId: widget.sportId);
+              },
+              color: Theme.of(context).disabledColor,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -213,13 +213,13 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                   ))
                 ],
               ),
-              Obx(() => gameDetailsController.isLoading.value
-                  ? const AppProgress()
-                  : const SizedBox())
-            ],
-          ),
-        );
-      }),
+            );
+          }),
+        ),
+        Obx(() => gameDetailsController.isLoading.value
+            ? const AppProgress()
+            : const SizedBox())
+      ],
     );
   }
 }

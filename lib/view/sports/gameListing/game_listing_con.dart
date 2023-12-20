@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
+import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 
 import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
@@ -15,6 +16,7 @@ import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
+import '../../../model/nfl_rank_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 
@@ -75,6 +77,72 @@ class GameListingController extends GetxController {
         await getResponse(true, sportKey);
       },
     );
+  }
+
+  bool isShowFlameIcon(index, List<SportEvents> sportList) {
+    if (sportKey == 'NFL') {
+      if (((sportList[index].homePointDefenseRank ?? 0) -
+                  (sportList[index].awayPointOffenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homePointDefenseRank ?? 0) -
+                  (sportList[index].awayPointOffenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homePointOffenseRank ?? 0) -
+                  (sportList[index].awayPointDefenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homePointOffenseRank ?? 0) -
+                  (sportList[index].awayPointDefenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homeRushingDefenseRank ?? 0) -
+                  (sportList[index].awayRushingOffenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homeRushingDefenseRank ?? 0) -
+                  (sportList[index].awayRushingOffenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homeRushingOffenseRank ?? 0) -
+                  (sportList[index].awayRushingDefenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homeRushingOffenseRank ?? 0) -
+                  (sportList[index].awayRushingDefenseRank ?? 0)) <=
+              -25) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  num flam = 0;
+
+  num flameNumber(index, List<SportEvents> sportList) {
+    if (sportKey == 'NFL') {
+      if (((sportList[index].homePointDefenseRank ?? 0) -
+                  (sportList[index].awayPointOffenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homePointDefenseRank ?? 0) -
+                  (sportList[index].awayPointOffenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homePointOffenseRank ?? 0) -
+                  (sportList[index].awayPointDefenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homePointOffenseRank ?? 0) -
+                  (sportList[index].awayPointDefenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homeRushingDefenseRank ?? 0) -
+                  (sportList[index].awayRushingOffenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homeRushingDefenseRank ?? 0) -
+                  (sportList[index].awayRushingOffenseRank ?? 0)) <=
+              -25 ||
+          ((sportList[index].homeRushingOffenseRank ?? 0) -
+                  (sportList[index].awayRushingDefenseRank ?? 0)) >=
+              25 ||
+          ((sportList[index].homeRushingOffenseRank ?? 0) -
+                  (sportList[index].awayRushingDefenseRank ?? 0)) <=
+              -25) {
+        return flam + 1;
+      }
+    }
+    return flam;
   }
 
   tabClick(BuildContext context, int index) {
@@ -1274,6 +1342,26 @@ class GameListingController extends GetxController {
                     key: sportKey,
                     gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
                     index: i);
+                for (var team in nflSportEventsList[i].competitors) {
+                  Competitors? homeTeam;
+                  Competitors? awayTeam;
+                  if (team.qualifier == "home") {
+                    homeTeam = team;
+                  } else if (team.qualifier == "away") {
+                    awayTeam = team;
+                  }
+                  nflGameRankApi(
+                    gameDetails: nflSportEventsList[i],
+                    awayTeamId: awayTeam?.abbreviation == 'LV'
+                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                        : replaceId(awayTeam?.uuids ?? ''),
+                    homeTeamId: homeTeam?.abbreviation == 'LV'
+                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                        : replaceId(homeTeam?.uuids ?? ''),
+                    isLoad: false,
+                    sportKey: sportKey,
+                  );
+                }
               }
             }
           }
@@ -1389,6 +1477,53 @@ class GameListingController extends GetxController {
         });
       }
     });
+  }
+
+  ///NFL GAME RANK API
+  Future nflGameRankApi(
+      {String awayTeamId = '',
+      String homeTeamId = '',
+      required SportEvents gameDetails,
+      bool isLoad = false,
+      String sportKey = ''}) async {
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nflGameRankApi();
+    try {
+      if (result.status) {
+        NFLGameRankModel response = NFLGameRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          response.data?.forEach((team) {
+            if (awayTeamId == replaceId(team.teamId ?? "")) {
+              gameDetails.awayPointOffenseRank = team.pointOffenceRank ?? 0;
+              gameDetails.awayPointDefenseRank = team.pointsDefenseRank ?? 0;
+              gameDetails.awayRushingOffenseRank = team.rushingOffenseRank ?? 0;
+              gameDetails.awayRushingDefenseRank = team.rushingDefenseRank ?? 0;
+              gameDetails.awayPointOffense = team.pointsOffense ?? 0;
+              gameDetails.awayPointDefense = team.pointsDefense ?? 0;
+              gameDetails.awayRushingOffense = team.rushingOffense ?? 0;
+              gameDetails.awayRushingDefense = team.rushingDefense ?? 0;
+            }
+            if (homeTeamId == replaceId(team.teamId ?? "")) {
+              gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
+              gameDetails.homePointDefenseRank = team.pointsDefenseRank ?? 0;
+              gameDetails.homeRushingOffenseRank = team.rushingOffenseRank ?? 0;
+              gameDetails.homeRushingDefenseRank = team.rushingDefenseRank ?? 0;
+              gameDetails.homePointOffense = team.pointsOffense ?? 0;
+              gameDetails.homePointDefense = team.pointsDefense ?? 0;
+              gameDetails.homeRushingOffense = team.rushingOffense ?? 0;
+              gameDetails.homeRushingDefense = team.rushingDefense ?? 0;
+            }
+          });
+        }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
   }
 
   getGameListingForMLBRes(bool isLoad,

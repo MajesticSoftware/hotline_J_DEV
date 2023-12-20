@@ -32,6 +32,8 @@ class GameWidget extends StatelessWidget {
       required this.isLive,
       required this.weather,
       required this.temp,
+      required this.isShowFlame,
+      required this.flameNumber,
       required this.awayTeamSpread,
       required this.awayTeamMoneyLine,
       required this.awayTeamOU,
@@ -57,9 +59,11 @@ class GameWidget extends StatelessWidget {
   final String homeTeamOU;
   final String dateTime;
   final bool isLive;
+  final bool isShowFlame;
   final int weather;
   final bool isShowWeather;
   final num temp;
+  final num flameNumber;
   final void Function()? onTap;
 
   @override
@@ -288,6 +292,22 @@ class GameWidget extends StatelessWidget {
                             )
                           : const SizedBox(),
                       5.w.H(),
+                    Visibility(visible:!isShowFlame ,replacement: Column(
+                      children: [
+                        SvgPicture.asset(
+                            Assets.assetsImagesFire, fit: BoxFit.contain,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * .028).paddingSymmetric(vertical: 10.h),
+                        '$flameNumber'.appCommonText(
+                            color: Theme.of(context).highlightColor,
+                            weight: FontWeight.w600,
+                            size: MediaQuery.of(context).size.height *
+                                .018
+                        )
+                      ],
+                    ),child: Column(children: [
                       getWeatherIcon(weather, context,
                           MediaQuery.of(context).size.height * .035),
                       Row(
@@ -306,7 +326,7 @@ class GameWidget extends StatelessWidget {
                                 fontSize: temp == 32
                                     ? MediaQuery.of(context).size.height * .014
                                     : MediaQuery.of(context).size.height *
-                                        .024),
+                                    .024),
                           ),
                           Text(
                             '°F',
@@ -318,6 +338,7 @@ class GameWidget extends StatelessWidget {
                           ),
                         ],
                       )
+                    ],))
                     ],
                   ),
                 ),

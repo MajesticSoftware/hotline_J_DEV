@@ -20,7 +20,8 @@ import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
 import 'game_details_controller.dart';
 
-PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
+PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
+    GameDetailsController con) {
   return PreferredSize(
       preferredSize: Size.fromHeight(125.w),
       child: AnimatedContainer(
@@ -38,6 +39,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   onTap: () {
+                    con.isTeamReportTab = true;
                     Get.back();
                   },
                   child: SvgPicture.asset(
@@ -51,111 +53,6 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark) {
                 child: SvgPicture.asset(Assets.imagesLogo,
                     height: 34.w, fit: BoxFit.contain),
               ),
-              /*('${awayTeam?.abbreviation} @ ${homeTeam?.abbreviation}')
-                      .appCommonText(
-                          color: whiteColor,
-                          size: MediaQuery.of(context).size.height * .024,
-                          weight: FontWeight.w700),*/ /*
-         Container(
-                    height: MediaQuery.of(context).size.height * .033,
-                    // width: MediaQuery.of(context).size.width * .099,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.width * .005),
-                        border: Border.all(
-                            color: isDark || con.isDarkMode
-                                ? blackColor
-                                : Colors.transparent,
-                            width: 2),
-                        color: isDark || con.isDarkMode
-                            ? blackColor
-                            : dividerColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            PreferenceManager.setIsDarkMod(false);
-                            Get.changeThemeMode(ThemeMode.light);
-                            con.isDarkMode = false;
-                            isDark = false;
-                            con.update();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.all(
-                                MediaQuery.of(context).size.width * .002),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .039,
-                              height: MediaQuery.of(context).size.height * .04,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(
-                                          MediaQuery.of(context).size.width *
-                                              .005)),
-                                  color: isDark || con.isDarkMode
-                                      ? blackColor
-                                      : whiteColor),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    Assets.imagesSunLight,
-                                    // ignore: deprecated_member_use
-                                    color: isDark || con.isDarkMode
-                                        ? darkSunColor
-                                        : blackColor,
-                                    width:
-                                        MediaQuery.of(context).size.width * .02,
-                                    height: MediaQuery.of(context).size.height *
-                                        .02,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            PreferenceManager.setIsDarkMod(true);
-                            Get.changeThemeMode(ThemeMode.dark);
-                            con.isDarkMode = true;
-                            isDark = true;
-                            con.update();
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .039,
-                            height: MediaQuery.of(context).size.height * .04,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.horizontal(
-                                    right: Radius.circular(
-                                        MediaQuery.of(context).size.width *
-                                            .005)),
-                                color: isDark || con.isDarkMode
-                                    ? darkBackGroundColor
-                                    : dividerColor),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  Assets.imagesMoon,
-                                  // ignore: deprecated_member_use
-                                  color: isDark || con.isDarkMode
-                                      ? whiteColor
-                                      : greyDarkColor,
-                                  width:
-                                      MediaQuery.of(context).size.width * .02,
-                                  height:
-                                      MediaQuery.of(context).size.height * .02,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )*/
               Expanded(
                 child: SvgPicture.asset(
                   Assets.imagesBackArrow,
@@ -663,19 +560,6 @@ Widget teamReportNFL(BuildContext context,
       child: StickyHeader(
           header: Column(
             children: [
-              /*    TabCard(
-                  title: 'Team Stats',
-                  awayTeam: awayTeam,
-                  isSelected: con.isTeamReportTab,
-                  gameDetails: gameDetails,
-                  homeTeam: homeTeam,
-                  awayOnTap: () {
-                    con.isTeamReportTab = true;
-                  },
-                  homeOnTap: () {
-                    con.isTeamReportTab = false;
-                  }),*/
-
               HeaderTab(
                 awayOnTap: () {
                   con.isTeamReportTab = true;
@@ -728,7 +612,6 @@ Padding quarterBacks(BuildContext context,
             .size
             .height * .02),
     child: Container(
-      // height: MediaQuery.of(context).size.height * .227,
       decoration: BoxDecoration(
           borderRadius:
           BorderRadius.circular(MediaQuery
@@ -741,27 +624,8 @@ Padding quarterBacks(BuildContext context,
       child: StickyHeader(
           header: Column(
             children: [
-              /*  TabCard(
-                  title: 'QBs',
-                  awayTeam: awayTeam,
-                  isSelected: con.isQuarterBacksTab,
-                  gameDetails: gameDetails,
-                  homeTeam: homeTeam,
-                  awayOnTap: () {
-                    con.isQuarterBacksTab = true;
-                  },
-                  homeOnTap: () {
-                    con.isQuarterBacksTab = false;
-                  }),*/
               HeaderTab(
                 title: 'QBs',
-                // awayOnTap: () {
-                //   con.isQuarterBacksTab = true;
-                // },
-                // homeOnTap: () {
-                //   con.isQuarterBacksTab = false;
-                // },
-                // isSelected: con.isQuarterBacksTab,
                 isSelected: con.isTeamReportTab,
                 gameDetails: gameDetails,
                 homeText: !con.isTeamReportTab
@@ -810,10 +674,12 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
               children: [
                 Expanded(
                   child: Container(
-                    color: index <= 1 && sportKey == "NFL" ?
-                    (offensePointColor >= 25 || offensePointColor <= -25)
-                        ? Colors.red
-                        : Colors.orange : Colors.transparent,
+                    // color: index <= 1 && sportKey == "NFL"
+                    //     ?
+                    // (offensePointColor >= 25 || offensePointColor <= -25)
+                    //     ? Colors.red
+                    //     : Colors.orange
+                    //     : Colors.transparent,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -878,7 +744,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                       22) && (int.parse(
                                       con.nflAwayOffensiveRank[index]
                                           .toString()) >
-                                      11)) ? Colors.yellowAccent : redColor)
+                                      11)) ? yellowColor : redColor)
                                       : (con
                                       .nflAwayDefensiveRank.isEmpty ? Colors
                                       .transparent : con
@@ -894,7 +760,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                       22) && (int.parse(
                                       con.nflAwayDefensiveRank[index]
                                           .toString()) >
-                                      11)) ? Colors.yellowAccent : redColor),
+                                      11)) ? yellowColor : redColor),
                                   weight: FontWeight.w800,
                                   align: TextAlign.center,
                                   size: MediaQuery
@@ -927,18 +793,18 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                   height: MediaQuery
                       .of(context)
                       .size
-                      .height * .04,
+                      .height * .043,
                   color: Theme
                       .of(context)
                       .indicatorColor,
                 ),
                 Expanded(
                   child: Container(
-                    color: (index <= 1 && sportKey == "NFL") ?
-                    (offensePointColor >= 25 || offensePointColor <= -25)
-                        ? Colors
-                        .red
-                        : Colors.orange : Colors.transparent,
+                    // color: (index <= 1 && sportKey == "NFL") ?
+                    // (offensePointColor >= 25 || offensePointColor <= -25)
+                    //     ? Colors
+                    //     .red
+                    //     : Colors.orange : Colors.transparent,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1002,7 +868,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                     11) && (int.parse(
                                     con.nflHomeDefensiveRank[index]
                                         .toString()) <=
-                                    22)) ? Colors.yellowAccent : redColor)
+                                    22)) ? yellowColor : redColor)
                                     : (con
                                     .nflHomeOffensiveRank.isEmpty ? Colors
                                     .transparent : con
@@ -1016,7 +882,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                     22) && (int.parse(
                                     con.nflHomeOffensiveRank[index]
                                         .toString()) >
-                                    11)) ? Colors.yellowAccent : redColor),
+                                    11)) ? yellowColor : redColor),
 
                                 weight: FontWeight.w800,
                                 align: TextAlign.center,
@@ -1048,9 +914,10 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                 ),
               ],
             ),
-            (index <= 1 && sportKey == "NFL") ?
+            (index <= 1 && sportKey == "NFL") &&
+                ((offensePointColor >= 25 || offensePointColor <= -25) &&
+                    offensePointColor != 0) ?
             Positioned(
-
               child: InkWell(
                 highlightColor: Colors.transparent,
                 splashFactory: NoSplash.splashFactory,
@@ -1252,7 +1119,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
           Expanded(
             child: Column(
               children: [
-                (con.awayQb.isEmpty || con.homeQb.isEmpty
+                (con.awayQb.isEmpty || con.awayDefense.isEmpty
                     ? "0"
                 // : con.isQuarterBacksTab
                     : con.isTeamReportTab
@@ -1300,7 +1167,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
           Expanded(
             child: Column(
               children: [
-                (con.awayDefense.isEmpty || con.homeDefense.isEmpty
+                (con.homeQb.isEmpty || con.homeDefense.isEmpty
                     ? "0"
                     : con.isTeamReportTab
                 // : !con.isQuarterBacksTab
