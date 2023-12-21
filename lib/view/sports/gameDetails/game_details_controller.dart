@@ -1056,6 +1056,11 @@ class GameDetailsController extends GetxController {
 
   List<StartingQBModel> qbsList = [
     StartingQBModel(
+      playerId: "7738fea8-7ea2-4c4c-b589-bca90b070819",
+      playerName: "Nick Mullens",
+      teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    ),
+    StartingQBModel(
       playerId: "f2f29019-7306-4b1c-a9d8-e9f802cb06e0",
       playerName: "Jake Browning",
       teamId: "ad4ae08f-d808-42d5-a1e6-e9bc4e34d123",
@@ -1085,11 +1090,11 @@ class GameDetailsController extends GetxController {
       playerName: "Joe Flacco",
       teamId: "d5a2eb42-8065-4174-ab79-0a6fa820e35e",
     ),
-    StartingQBModel(
-      playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
-      playerName: "Joshua Dobbs",
-      teamId: "33405046-04ee-4058-a950-d606f8c30852",
-    ),
+    // StartingQBModel(
+    //   playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
+    //   playerName: "Joshua Dobbs",
+    //   teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    // ),
     StartingQBModel(
       playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
       playerName: "Aidan O'Connell",
@@ -1110,6 +1115,17 @@ class GameDetailsController extends GetxController {
       playerName: "Bailey Zappe",
       teamId: "97354895-8c77-4fd4-a860-32e62ea7382a",
     ),
+    StartingQBModel(
+      playerId: "af291d43-a51f-44ce-b8ac-430ec68c78c8",
+      playerName: "Easton Stick",
+      teamId: "1f6dcffb-9823-43cd-9ff4-e7a8466749b5",
+    ),
+    StartingQBModel(
+      playerId: "2c259733-ec2c-4e3c-bb7b-34dc0d37dc34",
+      playerName: "Taylor Heinicke",
+      teamId: "e6aa13a4-0055-48a9-bc41-be28dc106929",
+    ),
+
   ];
 
   Future depthChartResponse(

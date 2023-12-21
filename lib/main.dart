@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:hotlines/view/main/app_starting_screen.dart';
+import 'package:hotlines/view/main/splash_screen.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
@@ -42,14 +43,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             initialBinding: BaseBindings(),
-            home: PreferenceManager.getSkipLogin() ?? false
-                ? (PreferenceManager.getIsFirstLoaded() == null ||
-                        !PreferenceManager.getIsFirstLoaded())
-                    ? const AppStartScreen()
-                    : SelectGameScreen()
-                : PreferenceManager.getIsLogin() ?? false
-                    ? SelectGameScreen()
-                    : LogInScreen());
+            home: const SplashScreen());
       },
     );
   }
