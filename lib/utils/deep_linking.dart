@@ -38,7 +38,7 @@ class DeepLinkingUtils {
             tags: ['one', 'two', 'three']));
     if (response.success) {
       if (context.mounted) {
-        shareLink(response.result);
+        shareLink(response.result,context);
       }
     } else {
       showAppSnackBar(

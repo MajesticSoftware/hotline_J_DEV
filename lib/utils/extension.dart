@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hotlines/extras/extras.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -26,9 +27,19 @@ extension AddSpace on num {
 }
 
 shareLink(
-  String link,
+  String link,BuildContext context
 ) async {
-  await Share.share(link);
+
+  if( mobileView.size.shortestSide < 600){
+    await Share.share(link);
+  }
+ else{
+    final box = context.findRenderObject() as RenderBox?;
+
+    await Share.share(link,
+
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  }
 }
 
 String dateWidget(String down) {

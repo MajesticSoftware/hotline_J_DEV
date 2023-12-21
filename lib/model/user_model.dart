@@ -1,23 +1,23 @@
 class UserModel {
-  UserData? data;
-  String? msg;
   bool? status;
+  String? msg;
+  UserData? data;
 
-  UserModel({this.data, this.msg, this.status});
+  UserModel({this.status, this.msg, this.data});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? UserData.fromJson(json['data']) : null;
-    msg = json['msg'];
     status = json['status'];
+    msg = json['msg'];
+    data = json['data'] != null ? UserData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['msg'] = msg;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
-    data['msg'] = msg;
-    data['status'] = status;
     return data;
   }
 }
@@ -39,24 +39,38 @@ class UserData {
   String? clientSecret;
   String? accessToken;
   String? authorizationCode;
+  String? receiptUrl;
+  String? isSubscriptionActivated;
+  String? originalTransactionId;
+  String? subscriptionProduct;
+  String? isAndroidPurchased;
+  String? subscriptionEndDate;
+  String? subscriptionStartDate;
 
   UserData(
       {this.userId,
-      this.userToken,
-      this.authToken,
-      this.userName,
-      this.userEmail,
-      this.userPassword,
-      this.userProfilePic,
-      this.loginType,
-      this.appleSocialId,
-      this.googleSocialId,
-      this.favouriteSport,
-      this.isLoggedOut,
-      this.verifyForgotCode,
-      this.clientSecret,
-      this.accessToken,
-      this.authorizationCode});
+        this.userToken,
+        this.authToken,
+        this.userName,
+        this.userEmail,
+        this.userPassword,
+        this.userProfilePic,
+        this.loginType,
+        this.appleSocialId,
+        this.googleSocialId,
+        this.favouriteSport,
+        this.isLoggedOut,
+        this.verifyForgotCode,
+        this.clientSecret,
+        this.accessToken,
+        this.authorizationCode,
+        this.receiptUrl,
+        this.isSubscriptionActivated,
+        this.originalTransactionId,
+        this.subscriptionProduct,
+        this.isAndroidPurchased,
+        this.subscriptionEndDate,
+        this.subscriptionStartDate});
 
   UserData.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
@@ -75,6 +89,13 @@ class UserData {
     clientSecret = json['client_secret'];
     accessToken = json['access_token'];
     authorizationCode = json['authorization_code'];
+    receiptUrl = json['receipt_url'];
+    isSubscriptionActivated = json['is_subscription_activated'];
+    originalTransactionId = json['original_transaction_id'];
+    subscriptionProduct = json['subscription_product'];
+    isAndroidPurchased = json['is_android_purchased'];
+    subscriptionEndDate = json['subscription_end_date'];
+    subscriptionStartDate = json['subscription_start_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -95,6 +116,13 @@ class UserData {
     data['client_secret'] = clientSecret;
     data['access_token'] = accessToken;
     data['authorization_code'] = authorizationCode;
+    data['receipt_url'] = receiptUrl;
+    data['is_subscription_activated'] = isSubscriptionActivated;
+    data['original_transaction_id'] = originalTransactionId;
+    data['subscription_product'] = subscriptionProduct;
+    data['is_android_purchased'] = isAndroidPurchased;
+    data['subscription_end_date'] = subscriptionEndDate;
+    data['subscription_start_date'] = subscriptionStartDate;
     return data;
   }
 }

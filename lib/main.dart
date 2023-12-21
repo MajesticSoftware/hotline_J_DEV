@@ -12,6 +12,7 @@ import 'package:hotlines/view/main/splash_screen.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/theme/app_theam.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
+import 'package:hotlines/view/subscription/subscription_controller.dart';
 import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
@@ -54,5 +55,6 @@ class BaseBindings extends Bindings {
   void dependencies() {
     Get.lazyPut(() => GameDetailsController(), fenix: true);
     Get.lazyPut(() => GameListingController(), fenix: true);
+    Get.lazyPut(() => SubscriptionController(), fenix: true);
   }
 }

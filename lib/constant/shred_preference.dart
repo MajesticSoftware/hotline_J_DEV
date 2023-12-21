@@ -175,5 +175,83 @@ class PreferenceManager {
     setDeviceVersion(packageInfo.version);
   }
 
+  ///SUBSCRIPTION
+
+  static Future setAutoRenewalSub(bool autoRenewalSub) async {
+    await getStorage.write("IS_AUTO_RENEWAL_SUB", autoRenewalSub);
+  }
+
+  static getAutoRenewalSub() {
+    return getStorage.read("IS_AUTO_RENEWAL_SUB");
+  }
+
+  static Future setSubscriptionProduct(String subscriptionProduct) async {
+    await getStorage.write("SUBSCRIPTION_PRODUCT", subscriptionProduct);
+  }
+
+  static getSubscriptionProduct() {
+    return getStorage.read("SUBSCRIPTION_PRODUCT");
+  }
+
+  static Future setSubscriptionStartDate(String subscriptionStartDate) async {
+    await getStorage.write("SUBSCRIPTION_START_DATE", subscriptionStartDate);
+  }
+
+  static getSubscriptionStartDate() {
+    return getStorage.read("SUBSCRIPTION_START_DATE");
+  }
+
+  static Future setSubscriptionEndDate(String subscriptionEndDate) async {
+    await getStorage.write("SUBSCRIPTION_END_DATE", subscriptionEndDate);
+  }
+
+  static getSubscriptionEndDate() {
+    return getStorage.read("SUBSCRIPTION_END_DATE");
+  }
+
+  static Future setSubscriptionRecUrl(String subscriptionRecUrl) async {
+    await getStorage.write("RECEIPT_URL", subscriptionRecUrl);
+  }
+
+  static getSubscriptionRecUrl() {
+    return getStorage.read("RECEIPT_URL");
+  }
+
+  static Future setSubscriptionActive(String subscriptionActive) async {
+    await getStorage.write("IS_SUBSCRIPTION_ACTIVATED", subscriptionActive);
+  }
+
+  static getSubscriptionActive() {
+    return getStorage.read("IS_SUBSCRIPTION_ACTIVATED");
+  }
+
+  static Future setSubscriptionAndroid(String subscriptionAndroid) async {
+    await getStorage.write("IS_ANDROID_PURCHASED", subscriptionAndroid);
+  }
+
+  static getSubscriptionAndroid() {
+    return getStorage.read("IS_ANDROID_PURCHASED");
+  }
+
+  static Future setOriginalTransactionId(String originalTransactionId) async {
+    await getStorage.write("originalTransactionId", originalTransactionId);
+  }
+
+  static getOriginalTransactionId() {
+    return getStorage.read("originalTransactionId");
+  }
+
+  saveSubscription(UserData userData) {
+    setSubscriptionRecUrl(userData.receiptUrl ?? "");
+    setOriginalTransactionId(userData.originalTransactionId ?? "");
+    setSubscriptionStartDate(userData.subscriptionStartDate ?? '');
+    setSubscriptionEndDate(userData.subscriptionEndDate ?? "");
+    setSubscriptionProduct(userData.subscriptionProduct ?? "");
+    setSubscriptionAndroid(userData.isAndroidPurchased ?? "");
+    // preferences.putString(LAST_ACTIVE_DATE, userData.lastActiveDate);
+    setSubscriptionActive(userData.isSubscriptionActivated ?? "");
+    // setAutoRenewalSub(userData.isAutoRenewalSubscription??"");
+  }
+
   static clearData() async => GetStorage().erase();
 }

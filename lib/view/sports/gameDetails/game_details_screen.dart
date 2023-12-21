@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/subscription/subscription_controller.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../constant/shred_preference.dart';
@@ -36,7 +37,7 @@ class SportDetailsScreen extends StatefulWidget {
 class _SportDetailsScreenState extends State<SportDetailsScreen>
     with SingleTickerProviderStateMixin {
   final GameDetailsController gameDetailsController = Get.put(GameDetailsController());
-
+final SubscriptionController subscriptionController=Get.put(SubscriptionController());
   TabController? _tabController;
 
   @override
@@ -158,7 +159,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         widget.gameDetails,
                                         awayTeam,
                                         homeTeam,
-                                        widget.sportKey),
+                                        widget.sportKey,subscriptionController),
                                 widget.sportKey == 'MLB'
                                     ? playerStatWidget(
                                         context,
