@@ -79,71 +79,7 @@ class GameListingController extends GetxController {
     );
   }
 
-  bool isShowFlameIcon(index, List<SportEvents> sportList) {
-    if (sportKey == 'NFL') {
-      if (((sportList[index].homePointDefenseRank ?? 0) -
-                  (sportList[index].awayPointOffenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homePointDefenseRank ?? 0) -
-                  (sportList[index].awayPointOffenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homePointOffenseRank ?? 0) -
-                  (sportList[index].awayPointDefenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homePointOffenseRank ?? 0) -
-                  (sportList[index].awayPointDefenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homeRushingDefenseRank ?? 0) -
-                  (sportList[index].awayRushingOffenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homeRushingDefenseRank ?? 0) -
-                  (sportList[index].awayRushingOffenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homeRushingOffenseRank ?? 0) -
-                  (sportList[index].awayRushingDefenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homeRushingOffenseRank ?? 0) -
-                  (sportList[index].awayRushingDefenseRank ?? 0)) <=
-              -25) {
-        return true;
-      }
-    }
-    return false;
-  }
 
-  num flam = 0;
-
-  num flameNumber(index, List<SportEvents> sportList) {
-    if (sportKey == 'NFL') {
-      if (((sportList[index].homePointDefenseRank ?? 0) -
-                  (sportList[index].awayPointOffenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homePointDefenseRank ?? 0) -
-                  (sportList[index].awayPointOffenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homePointOffenseRank ?? 0) -
-                  (sportList[index].awayPointDefenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homePointOffenseRank ?? 0) -
-                  (sportList[index].awayPointDefenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homeRushingDefenseRank ?? 0) -
-                  (sportList[index].awayRushingOffenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homeRushingDefenseRank ?? 0) -
-                  (sportList[index].awayRushingOffenseRank ?? 0)) <=
-              -25 ||
-          ((sportList[index].homeRushingOffenseRank ?? 0) -
-                  (sportList[index].awayRushingDefenseRank ?? 0)) >=
-              25 ||
-          ((sportList[index].homeRushingOffenseRank ?? 0) -
-                  (sportList[index].awayRushingDefenseRank ?? 0)) <=
-              -25) {
-        return flam + 1;
-      }
-    }
-    return flam;
-  }
 
   tabClick(BuildContext context, int index) {
     searchCon.clear();
@@ -1350,6 +1286,7 @@ class GameListingController extends GetxController {
                   } else if (team.qualifier == "away") {
                     awayTeam = team;
                   }
+
                   nflGameRankApi(
                     gameDetails: nflSportEventsList[i],
                     awayTeamId: awayTeam?.abbreviation == 'LV'

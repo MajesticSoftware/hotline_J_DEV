@@ -22,10 +22,11 @@ import '../../../model/game_listing.dart';
 import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
+import '../../widgets/common_dialog.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
-    GameDetailsController con) {
+    GameDetailsController con,/*SubscriptionController subscriptionController*/) {
   return PreferredSize(
       preferredSize: Size.fromHeight(125.w),
       child: AnimatedContainer(
@@ -58,12 +59,39 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                     height: 34.w, fit: BoxFit.contain),
               ),
               Expanded(
-                child: SvgPicture.asset(
-                  Assets.imagesBackArrow,
-                  // ignore: deprecated_member_use
-                  color: Colors.transparent,
-                  height: 20.w,
-                  alignment: Alignment.centerLeft,
+                child: InkWell(
+                  highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,
+                  onTap: () {
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) {
+                    //     return exitApp(
+                    //       context,isLogOut: false,
+                    //       title: 'Subscriptions',
+                    //       subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
+                    //       onTap: () async {
+                    //         if(PreferenceManager.getIsLogin()){
+                    //           if (subscriptionController.products.isEmpty) {
+                    //             null;
+                    //           } else {
+                    //             await subscriptionController.buyProduct(
+                    //                 subscriptionController.products[0]);
+                    //           }
+                    //         }else{
+                    //
+                    //           showAppSnackBar('You have to login for Subscription!');
+                    //         }
+                    //       },
+                    //     );
+                    //   },
+                    // );
+                  },
+                  child: SvgPicture.asset(
+                      Assets.assetsImagesFire, fit: BoxFit.contain,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * .03,alignment: Alignment.centerRight,color: Colors.transparent,),
                 ),
               ),
             ],
@@ -544,7 +572,7 @@ Widget teamReportNFL(BuildContext context,
     SportEvents gameDetails,
     Competitors? awayTeam,
     Competitors? homeTeam,
-    String sportKey,SubscriptionController subscriptionController) {
+    String sportKey) {
   return Padding(
     padding: EdgeInsets.all(MediaQuery
         .of(context)
@@ -588,7 +616,7 @@ Widget teamReportNFL(BuildContext context,
               sportKey == "NBA" || sportKey == "NCAAB"
                   ? nbaOffenseDefenseData(con, context)
                   : nflOffenseDefenseData(
-                  con, context, sportKey, awayTeam, homeTeam,subscriptionController),
+                  con, context, sportKey, awayTeam, homeTeam),
             ],
           )),
     ),
@@ -654,7 +682,7 @@ Padding quarterBacks(BuildContext context,
 }
 
 Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
-    String sportKey, Competitors? awayTeam, Competitors? homeTeam,SubscriptionController subscriptionController) {
+    String sportKey, Competitors? awayTeam, Competitors? homeTeam) {
   return Stack(
     alignment: Alignment.topCenter,
     children: [
@@ -680,114 +708,106 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        // color: index <= 1 && sportKey == "NFL"
-                        //     ?
-                        // (offensePointColor >= 25 || offensePointColor <= -25)
-                        //     ? Colors.red
-                        //     : Colors.orange
-                        //     : Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-
-                                  (con.isTeamReportTab
-                                      ? ((num.tryParse(
-                                      con.nflAwayOffensiveList.isEmpty
-                                          ? '0'
-                                          : con.nflAwayOffensiveList[index])) ??
-                                      con.nflAwayOffensiveList[index])
-                                      .toString()
-                                      : ((num.tryParse(
-                                      con.nflAwayDefensiveList.isEmpty
-                                          ? '0'
-                                          : con.nflAwayDefensiveList[index])) ??
-                                      con.nflAwayDefensiveList[index])
-                                      .toString())
-                                      .appCommonText(
-                                      color: Theme
-                                          .of(context)
-                                          .highlightColor,
-                                      weight: FontWeight.w700,
-                                      align: TextAlign.center,
-                                      size: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height * .014),
-                                  sportKey == "NFL" ? (con.isTeamReportTab
-                                      ? (con.nflAwayOffensiveRank.isEmpty
-                                      ? '0'
-                                      : ' (${dateWidget(
-                                      con.nflAwayOffensiveRank[index])})')
-                                      .toString()
-                                      : (con.nflAwayDefensiveRank.isEmpty
-                                      ? '0'
-                                      : ' (${dateWidget(
-                                      con.nflAwayDefensiveRank[index])})')
-                                      .toString())
-                                      .appCommonText(
-                                      color: con.isTeamReportTab
-                                          ? (con
-                                          .nflAwayOffensiveRank.isEmpty ? Colors
-                                          .transparent : con
-                                          .nflAwayOffensiveRank[index] == "0"
-                                          ? Colors
-                                          .transparent
-                                          : (num.tryParse(
-                                          con.nflAwayOffensiveRank[index]
-                                              .toString()) ?? 0) <=
-                                          11 ? Colors.green : (((int.tryParse(
-                                          con.nflAwayOffensiveRank[index]
-                                              .toString()) ?? 0) <=
-                                          22) && ((int.tryParse(
-                                          con.nflAwayOffensiveRank[index]
-                                              .toString()) ?? 0) >
-                                          11)) ? yellowColor : redColor)
-                                          : (con
-                                          .nflAwayDefensiveRank.isEmpty ? Colors
-                                          .transparent : con
-                                          .nflAwayDefensiveRank[index] == "0"
-                                          ? Colors
-                                          .transparent
-                                          : (num.tryParse(
-                                          con.nflAwayDefensiveRank[index]
-                                              .toString()) ?? 0) <=
-                                          11 ? Colors.green : (((int.tryParse(
-                                          con.nflAwayDefensiveRank[index]
-                                              .toString()) ?? 0) <=
-                                          22) && ((int.tryParse(
-                                          con.nflAwayDefensiveRank[index]
-                                              .toString()) ?? 0) >
-                                          11)) ? yellowColor : redColor),
-                                      weight: FontWeight.w800,
-                                      align: TextAlign.center,
-                                      size: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height * .014) : const SizedBox(),
-                                ]),
-                            (con.isTeamReportTab
-                                ? con.offensive[index]
-                                : con.defensive[index])
-                                .toString()
-                                .appCommonText(
-                                color: darkGreyColor,
-                                align: TextAlign.center,
-                                weight: FontWeight.w600,
-                                size: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * .012),
-                          ],
-                        ).paddingSymmetric(
-                            vertical: MediaQuery
-                                .of(context)
-                                .size
-                                .height * .003),
-                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                (con.isTeamReportTab
+                                    ? ((num.tryParse(
+                                    con.nflAwayOffensiveList.isEmpty
+                                        ? '0'
+                                        : con.nflAwayOffensiveList[index])) ??
+                                    con.nflAwayOffensiveList[index])
+                                    .toString()
+                                    : ((num.tryParse(
+                                    con.nflAwayDefensiveList.isEmpty
+                                        ? '0'
+                                        : con.nflAwayDefensiveList[index])) ??
+                                    con.nflAwayDefensiveList[index])
+                                    .toString())
+                                    .appCommonText(
+                                    color: Theme
+                                        .of(context)
+                                        .highlightColor,
+                                    weight: FontWeight.w700,
+                                    align: TextAlign.center,
+                                    size: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * .014),
+                              /*  sportKey == "NFL"&&PreferenceManager.getSubscriptionRecUrl()!=null ?
+                                (con.isTeamReportTab
+                                    ? (con.nflAwayOffensiveRank.isEmpty
+                                    ? '0'
+                                    : ' (${dateWidget(
+                                    con.nflAwayOffensiveRank[index])})')
+                                    .toString()
+                                    : (con.nflAwayDefensiveRank.isEmpty
+                                    ? '0'
+                                    : ' (${dateWidget(
+                                    con.nflAwayDefensiveRank[index])})')
+                                    .toString())
+                                    .appCommonText(
+                                    color: con.isTeamReportTab
+                                        ? (con
+                                        .nflAwayOffensiveRank.isEmpty ? Colors
+                                        .transparent : con
+                                        .nflAwayOffensiveRank[index] == "0"
+                                        ? Colors
+                                        .transparent
+                                        : (num.tryParse(
+                                        con.nflAwayOffensiveRank[index]
+                                            .toString()) ?? 0) <=
+                                        11 ? Colors.green : (((int.tryParse(
+                                        con.nflAwayOffensiveRank[index]
+                                            .toString()) ?? 0) <=
+                                        22) && ((int.tryParse(
+                                        con.nflAwayOffensiveRank[index]
+                                            .toString()) ?? 0) >
+                                        11)) ? yellowColor : redColor)
+                                        : (con
+                                        .nflAwayDefensiveRank.isEmpty ? Colors
+                                        .transparent : con
+                                        .nflAwayDefensiveRank[index] == "0"
+                                        ? Colors
+                                        .transparent
+                                        : (num.tryParse(
+                                        con.nflAwayDefensiveRank[index]
+                                            .toString()) ?? 0) <=
+                                        11 ? Colors.green : (((int.tryParse(
+                                        con.nflAwayDefensiveRank[index]
+                                            .toString()) ?? 0) <=
+                                        22) && ((int.tryParse(
+                                        con.nflAwayDefensiveRank[index]
+                                            .toString()) ?? 0) >
+                                        11)) ? yellowColor : redColor),
+                                    weight: FontWeight.w800,
+                                    align: TextAlign.center,
+                                    size: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * .014) : const SizedBox(),*/
+                              ]),
+                          (con.isTeamReportTab
+                              ? con.offensive[index]
+                              : con.defensive[index])
+                              .toString()
+                              .appCommonText(
+                              color: darkGreyColor,
+                              align: TextAlign.center,
+                              weight: FontWeight.w600,
+                              size: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * .012),
+                        ],
+                      ).paddingSymmetric(
+                          vertical: MediaQuery
+                              .of(context)
+                              .size
+                              .height * .003),
                     ),
                     Container(
                       width: 1,
@@ -800,133 +820,114 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                           .indicatorColor,
                     ),
                     Expanded(
-                      child: Container(
-                        // color: (index <= 1 && sportKey == "NFL") ?
-                        // (offensePointColor >= 25 || offensePointColor <= -25)
-                        //     ? Colors
-                        //     .red
-                        //     : Colors.orange : Colors.transparent,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
 
-                                (con.isTeamReportTab
-                                    ? ((num.tryParse(
-                                    con.nflHomeDefensiveList.isEmpty
-                                        ? '0'
-                                        : con.nflHomeDefensiveList[index])) ??
-                                    con.nflHomeDefensiveList[index])
-                                    .toString()
-                                    : ((num.tryParse(
-                                    con.nflHomeOffensiveList.isEmpty
-                                        ? '0'
-                                        : con.nflHomeOffensiveList[index])) ??
-                                    con.nflHomeOffensiveList[index])
-                                    .toString())
-                                    .appCommonText(
-                                    color: Theme
-                                        .of(context)
-                                        .highlightColor,
-                                    weight: FontWeight.w700,
-                                    align: TextAlign.center,
-                                    size: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * .014),
-                                sportKey == "NFL" ? (con.isTeamReportTab
-                                    ? (con.nflHomeDefensiveRank.isEmpty
-                                    ? '0'
-                                    : ' (${dateWidget(
-                                    con.nflHomeDefensiveRank[index])})')
-                                    .toString()
-                                    : (con.nflHomeOffensiveRank.isEmpty
-                                    ? '0'
-                                    : ' (${dateWidget(
-                                    con.nflHomeOffensiveRank[index])})')
-                                    .toString())
-                                    .appCommonText(
-                                    color: con.isTeamReportTab
-                                        ? (con
-                                        .nflHomeOffensiveRank.isEmpty ? Colors
-                                        .transparent : con
-                                        .nflHomeDefensiveRank[index] == "0"
-                                        ? Colors
-                                        .transparent
-                                        : (num.tryParse(
-                                        con.nflHomeDefensiveRank[index]
-                                            .toString()) ?? 0) <=
-                                        11 ? Colors.green : (((int.tryParse(
-                                        con.nflHomeDefensiveRank[index]
-                                            .toString()) ?? 0) <=
-                                        22) && ((int.tryParse(
-                                        con.nflHomeDefensiveRank[index]
-                                            .toString()) ?? 0) >
-                                        11)) ? yellowColor : redColor)
-                                        : (con
-                                        .nflHomeOffensiveRank.isEmpty ? Colors
-                                        .transparent : con
-                                        .nflHomeOffensiveRank[index] == "0"
-                                        ? Colors
-                                        .transparent
-                                        : (num.tryParse(
-                                        con.nflHomeOffensiveRank[index]
-                                            .toString()) ?? 0) <=
-                                        11 ? Colors.green : (((int.tryParse(
-                                        con.nflHomeOffensiveRank[index]
-                                            .toString()) ?? 0) <=
-                                        22) && ((int.tryParse(
-                                        con.nflHomeOffensiveRank[index]
-                                            .toString()) ?? 0) >
-                                        11)) ? yellowColor : redColor),
+                              (con.isTeamReportTab
+                                  ? ((num.tryParse(
+                                  con.nflHomeDefensiveList.isEmpty
+                                      ? '0'
+                                      : con.nflHomeDefensiveList[index])) ??
+                                  con.nflHomeDefensiveList[index])
+                                  .toString()
+                                  : ((num.tryParse(
+                                  con.nflHomeOffensiveList.isEmpty
+                                      ? '0'
+                                      : con.nflHomeOffensiveList[index])) ??
+                                  con.nflHomeOffensiveList[index])
+                                  .toString())
+                                  .appCommonText(
+                                  color: Theme
+                                      .of(context)
+                                      .highlightColor,
+                                  weight: FontWeight.w700,
+                                  align: TextAlign.center,
+                                  size: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * .014),
+                             /* sportKey == "NFL" &&PreferenceManager.getSubscriptionRecUrl()!=null? (con.isTeamReportTab
+                                  ? (con.nflHomeDefensiveRank.isEmpty
+                                  ? '0'
+                                  : ' (${dateWidget(
+                                  con.nflHomeDefensiveRank[index])})')
+                                  .toString()
+                                  : (con.nflHomeOffensiveRank.isEmpty
+                                  ? '0'
+                                  : ' (${dateWidget(
+                                  con.nflHomeOffensiveRank[index])})')
+                                  .toString())
+                                  .appCommonText(
+                                  color: con.isTeamReportTab
+                                      ? (con
+                                      .nflHomeOffensiveRank.isEmpty ? Colors
+                                      .transparent : con
+                                      .nflHomeDefensiveRank[index] == "0"
+                                      ? Colors
+                                      .transparent
+                                      : (num.tryParse(
+                                      con.nflHomeDefensiveRank[index]
+                                          .toString()) ?? 0) <=
+                                      11 ? Colors.green : (((int.tryParse(
+                                      con.nflHomeDefensiveRank[index]
+                                          .toString()) ?? 0) <=
+                                      22) && ((int.tryParse(
+                                      con.nflHomeDefensiveRank[index]
+                                          .toString()) ?? 0) >
+                                      11)) ? yellowColor : redColor)
+                                      : (con
+                                      .nflHomeOffensiveRank.isEmpty ? Colors
+                                      .transparent : con
+                                      .nflHomeOffensiveRank[index] == "0"
+                                      ? Colors
+                                      .transparent
+                                      : (num.tryParse(
+                                      con.nflHomeOffensiveRank[index]
+                                          .toString()) ?? 0) <=
+                                      11 ? Colors.green : (((int.tryParse(
+                                      con.nflHomeOffensiveRank[index]
+                                          .toString()) ?? 0) <=
+                                      22) && ((int.tryParse(
+                                      con.nflHomeOffensiveRank[index]
+                                          .toString()) ?? 0) >
+                                      11)) ? yellowColor : redColor),
 
-                                    weight: FontWeight.w800,
-                                    align: TextAlign.center,
-                                    size: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * .014) : const SizedBox(),
-                              ],
-                            ),
-                            (con.isTeamReportTab
-                                ? con.defensive[index]
-                                : con.offensive[index])
-                                .toString()
-                                .appCommonText(
-                                color: darkGreyColor,
-                                align: TextAlign.center,
-                                weight: FontWeight.w600,
-                                size: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * .012),
-                          ],
-                        ).paddingSymmetric(
-                            vertical: MediaQuery
-                                .of(context)
-                                .size
-                                .height * .003),
-                      ),
+                                  weight: FontWeight.w800,
+                                  align: TextAlign.center,
+                                  size: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * .014) : const SizedBox(),*/
+                            ],
+                          ),
+                          (con.isTeamReportTab
+                              ? con.defensive[index]
+                              : con.offensive[index])
+                              .toString()
+                              .appCommonText(
+                              color: darkGreyColor,
+                              align: TextAlign.center,
+                              weight: FontWeight.w600,
+                              size: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * .012),
+                        ],
+                      ).paddingSymmetric(
+                          vertical: MediaQuery
+                              .of(context)
+                              .size
+                              .height * .003),
                     ),
                   ],
                 ),
-                Visibility(
-                    visible: index <= 1 && sportKey == "NFL"&&PreferenceManager.getSubscriptionRecUrl()==null, child: Container(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * .045,
-                  color: Theme
-                      .of(context)
-                      .primaryColor
-                      .withOpacity(.97),
-                )),
-                (index <= 1 && sportKey == "NFL") &&
-                    ((offensePointColor >= 25 || offensePointColor <= -25) &&
-                        offensePointColor != 0) ?
+               /* (index <= 1 && sportKey == "NFL") &&PreferenceManager.getSubscriptionRecUrl()!=null&&
+                    ((offensePointColor >= 15 || offensePointColor <= -15) ) ?
 
                 Positioned(
                   child: InkWell(
@@ -953,49 +954,25 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                           con.nflHomeOffensiveRank[index])}')
                       );
                     },
-                    child: SvgPicture.asset(
-                        Assets.assetsImagesFire, fit: BoxFit.contain,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * .028),
+                    child: CircleAvatar(
+                      backgroundColor: (offensePointColor >= 25 || offensePointColor <= -25)?Colors.red:Colors.orange,
+                      radius: 25.r,
+                      child: SvgPicture.asset(
+                          Assets.assetsImagesFire, fit: BoxFit.contain,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * .028),
+                    ),
                   ),
-                ) : const SizedBox(),
+                ) : const SizedBox(),*/
               ],
             );
           },
           separatorBuilder: (context, index) {
-            return index <= 1 && sportKey == "NFL"&&PreferenceManager.getSubscriptionRecUrl()==null
-                ? const SizedBox()
-                : commonDivider(context);
+            return commonDivider(context);
           },
           itemCount: con.defensive.length),
-      Visibility(visible: sportKey == "NFL"&&PreferenceManager.getSubscriptionRecUrl()==null, child: Column(
-        children: [
-          15.h.H(),
-          Icon(Icons.lock_outline_rounded, size: 28.h,color: Theme.of(context).secondaryHeaderColor,),
-          5.h.H(),
-          GestureDetector(
-            onTap: () async {
-              if (subscriptionController.products.isEmpty) {
-                null;
-              } else {
-              // log('subscriptionController.products[0]---${subscriptionController.products.length}');
-                await subscriptionController.buyProduct(
-                    subscriptionController.products[0]);
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: yellowColor,borderRadius: BorderRadius.circular(5.r)
-              ),
-              child: "Subscription".appCommonText(
-                  size: 16.h, color: Theme.of(context).secondaryHeaderColor,weight: FontWeight.bold
-              ).paddingSymmetric(vertical: 5.h,horizontal: 15.h),
-            ),
-          )
-        ],
-      )),
     ],
   );
 }

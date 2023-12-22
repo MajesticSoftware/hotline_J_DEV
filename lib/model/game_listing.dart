@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'nba_statics_model.dart' as pro;
 import 'nfl_statics_model.dart';
 
@@ -58,6 +60,7 @@ class Sport {
 class SportEvents {
   String? id;
   String currentTime = "";
+  num flamValue = 0;
   String? scheduled;
   bool? startTimeTbd;
   String? status;
@@ -138,27 +141,29 @@ class SportEvents {
   List homeTeamInjuredPlayer = [];
   num temp = 273.15;
   int weather = 805;
+
   SportEvents({
     this.id,
     this.scheduled,
+    this.flamValue = 0,
     this.startTimeTbd,
     this.status,
-    this.awayPointOffenseRank=0,
-    this.awayPointDefenseRank=0,
-    this.awayRushingOffenseRank=0,
-    this.awayRushingDefenseRank=0,
-    this.homePointOffenseRank=0,
-    this.homePointDefenseRank=0,
-    this.homeRushingOffenseRank=0,
-    this.homeRushingDefenseRank=0,
-    this.awayPointOffense=0,
-    this.awayPointDefense=0,
-    this.awayRushingOffense=0,
-    this.awayRushingDefense=0,
-    this.homePointOffense=0,
-    this.homePointDefense=0,
-    this.homeRushingOffense=0,
-    this.homeRushingDefense=0,
+    this.awayPointOffenseRank = 0,
+    this.awayPointDefenseRank = 0,
+    this.awayRushingOffenseRank = 0,
+    this.awayRushingDefenseRank = 0,
+    this.homePointOffenseRank = 0,
+    this.homePointDefenseRank = 0,
+    this.homeRushingOffenseRank = 0,
+    this.homeRushingDefenseRank = 0,
+    this.awayPointOffense = 0,
+    this.awayPointDefense = 0,
+    this.awayRushingOffense = 0,
+    this.awayRushingDefense = 0,
+    this.homePointOffense = 0,
+    this.homePointDefense = 0,
+    this.homeRushingOffense = 0,
+    this.homeRushingDefense = 0,
     this.tournamentRound,
     this.season,
     this.tournament,
@@ -216,8 +221,52 @@ class SportEvents {
     this.awayRunningBackPlayer = const [],
     this.homeRunningBackPlayer = const [],
   });
+
   num get tmpInFahrenheit {
     return ((((temp) - 273.15) * (9 / 5))) + 32;
+  }
+
+  num get getFlameValue {
+    bool condition1 =
+        (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) >= 15) ||
+            (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) <=
+                -15);
+    bool condition2 =
+        (((homePointOffenseRank ?? 0) - (awayPointDefenseRank ?? 0)) >= 15) ||
+            (((homePointOffenseRank ?? 0) - (awayPointDefenseRank ?? 0)) <=
+                -15);
+    bool condition3 =
+        (((homeRushingDefenseRank ?? 0) - (awayRushingOffenseRank ?? 0)) >=
+                15) ||
+            (((homeRushingDefenseRank ?? 0) - (awayRushingOffenseRank ?? 0)) <=
+                -15);
+    bool condition4 =
+        (((homeRushingOffenseRank ?? 0) - (awayRushingDefenseRank ?? 0)) >=
+                15) ||
+            (((homeRushingOffenseRank ?? 0) - (awayRushingDefenseRank ?? 0)) <=
+                -15);
+    if ((condition1 && condition2 && condition3) ||
+        (condition2 && condition3 && condition4) ||
+        (condition3 && condition4 && condition1) ||
+        (condition2 && condition4 && condition1)) {
+      return flamValue + 3;
+    }
+    if (condition1 && condition2 && condition3 && condition4) {
+      return flamValue + 4;
+    }
+    if ((condition1 && condition2) ||
+        (condition1 && condition3) ||
+        (condition1 && condition4) ||
+        (condition2 && condition3) ||
+        (condition2 && condition4) ||
+        (condition3 && condition4)) {
+      return flamValue + 2;
+    }
+
+    if (condition1 || condition2 || condition3 || condition4) {
+      return flamValue + 1;
+    }
+    return flamValue;
   }
 
   String get gameHomeLogoLink {

@@ -298,14 +298,16 @@ class DialogWidget {
 }
 
 Widget exitApp(BuildContext context,
-    {void Function()? onTap, String subtitle = '', String title = ''}) {
+    {void Function()? onTap, String subtitle = '', String title = '',bool isLogOut=true}) {
   return AlertDialog(
     title: title.appCommonText(
         color: blackColor, weight: FontWeight.bold, size: 24),
     content: subtitle.appCommonText(
         color: blackColor.withOpacity(0.8), weight: FontWeight.w600, size: 16),
+   // actionsPadding: const EdgeInsets.only(bottom: 20),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    actions: <Widget>[
+    actionsAlignment: MainAxisAlignment.center,
+    actions: isLogOut?<Widget>[
       Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -352,6 +354,22 @@ Widget exitApp(BuildContext context,
             ],
           ),
         ),
+      ),
+    ]:[
+      GestureDetector(
+        onTap: onTap,
+        child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Theme.of(context).secondaryHeaderColor),
+            child: Padding(
+              padding:  EdgeInsets.symmetric(
+                  horizontal: 80.h, vertical: 10),
+              child: 'Subscriptions'.appCommonText(
+                  color: whiteColor,
+                  weight: FontWeight.w700,
+                  size: 18),
+            )),
       ),
     ],
   );
