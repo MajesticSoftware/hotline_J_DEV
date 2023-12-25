@@ -10,16 +10,17 @@ import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 import 'package:intl/intl.dart';
+
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
 import '../../../extras/request_constants.dart';
 import '../../../generated/assets.dart';
 import '../../../model/game_listing.dart';
 import '../../../theme/helper.dart';
+import '../../../theme/theme.dart';
 import '../../../utils/animated_search.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
-import '../../../theme/theme.dart';
 import '../../change_password/change_pass_screen.dart';
 import '../../profile_module/profile_screen.dart';
 import '../../term_of_service/privacy_policy.dart';
@@ -515,8 +516,19 @@ class SelectGameScreen extends StatelessWidget {
                                           (spotList(controller)[index].status !=
                                               'postponed'),
                                       child: GameWidget(
-                                        flameNumber:  controller.sportKey=="NFL"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/?controller.nflSportEventsList[index].getFlameValue:0,
-                                        isShowFlame: controller.sportKey=="NFL" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/? controller.nflSportEventsList[index].getFlameValue!=0:false,
+                                        flameNumber: controller.sportKey ==
+                                                "NFL" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                            ? controller
+                                                .nflSportEventsList[index]
+                                                .getFlameValue
+                                            : 0,
+                                        isShowFlame: controller.sportKey ==
+                                                "NFL" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                            ? controller
+                                                    .nflSportEventsList[index]
+                                                    .getFlameValue !=
+                                                0
+                                            : false,
                                         isShowWeather:
                                             controller.sportKey == "NBA" ||
                                                 controller.sportKey == "NCAAB",
@@ -624,8 +636,17 @@ class SelectGameScreen extends StatelessWidget {
                                         controller.sportKey != "NFL") ||
                                     (competitors.status != 'postponed'),
                                 child: GameWidget(
-                                  flameNumber:   controller.sportKey=="NFL"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/?controller.searchList[index].getFlameValue:0,
-                                  isShowFlame: controller.sportKey=="NFL"  /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/ ? controller.searchList[index].getFlameValue!=0:false,
+                                  flameNumber: controller.sportKey ==
+                                          "NFL" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                      ? controller
+                                          .searchList[index].getFlameValue
+                                      : 0,
+                                  isShowFlame: controller.sportKey ==
+                                          "NFL" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                      ? controller.searchList[index]
+                                              .getFlameValue !=
+                                          0
+                                      : false,
                                   onTap: () {
                                     controller.searchGameOnClick(
                                         context, index);

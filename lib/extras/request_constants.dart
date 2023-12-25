@@ -52,6 +52,7 @@ class MethodNames {
   static const checkSocialLogin = "checkSocialLogin";
   static const login = "userLogin";
   static const getNFLGameOffenseRank = "getNFLGameOffenseRank";
+  static const getNFLQBSRank = "getNFLQBSRank";
   static const updateUserDetails = "updateUserDetails";
   static const changePassword = "changePassword";
   static const forgotPassword = "forgotPassword";

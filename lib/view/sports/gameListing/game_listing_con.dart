@@ -16,6 +16,7 @@ import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
+import '../../../model/nfl_qbs_rank_model.dart';
 import '../../../model/nfl_rank_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
@@ -1297,6 +1298,17 @@ class GameListingController extends GetxController {
                     isLoad: false,
                     sportKey: sportKey,
                   );
+                  getNFLQBSRank(
+                    gameDetails: nflSportEventsList[i],
+                    awayTeamId: awayTeam?.abbreviation == 'LV'
+                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                        : replaceId(awayTeam?.uuids ?? ''),
+                    homeTeamId: homeTeam?.abbreviation == 'LV'
+                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                        : replaceId(homeTeam?.uuids ?? ''),
+                    isLoad: false,
+                    sportKey: sportKey,
+                  );
                 }
               }
             }
@@ -1495,6 +1507,13 @@ class GameListingController extends GetxController {
                 (gameDetails.awayFieldGoalDefenseRank ?? 0).toString(),
                 (gameDetails.awayTernOverDefenseRank ?? 0).toString(),
               ];
+              gameDetails.awayQbDefenseRank = [
+                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayRushingDefenseRank ?? 0).toString(),
+                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayInterceptionDefenseRank ?? 0).toString(),
+              ];
             }
             if (homeTeamId == replaceId(team.teamId ?? "")) {
               gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
@@ -1561,9 +1580,63 @@ class GameListingController extends GetxController {
                 (gameDetails.homeFieldGoalDefenseRank ?? 0).toString(),
                 (gameDetails.homeTernOverDefenseRank ?? 0).toString(),
               ];
+              gameDetails.homeQbDefenseRank = [
+                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
+                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homeInterceptionDefenseRank ?? 0).toString(),
+              ];
             }
           });
         }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
+  }
+
+  Future getNFLQBSRank({String awayTeamId = '',
+    String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getNFLQBSRank();
+    try {
+      if (result.status) {
+        NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          response.data?.forEach((element) {
+            if (homeTeamId == element.teamId) {
+              gameDetails.homePlayerName=element.playerName??"";
+              gameDetails.homePlayerId=element.playerId??"";
+              gameDetails.homeQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }if (awayTeamId == element.teamId) {
+              gameDetails.awayPlayerName=element.playerName??"";
+              gameDetails.awayPlayerId=element.playerId??"";
+              gameDetails.awayQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }
+          });
+        }
+
       } else {
         isLoading.value = false;
       }

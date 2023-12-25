@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'nba_statics_model.dart' as pro;
 import 'nfl_statics_model.dart';
 
@@ -60,7 +58,6 @@ class Sport {
 class SportEvents {
   String? id;
   String currentTime = "";
-  num flamValue = 0;
   String? scheduled;
   bool? startTimeTbd;
   String? status;
@@ -68,6 +65,12 @@ class SportEvents {
   List<String> nflHomeDefensiveRank = [];
   List<String> nflAwayOffensiveRank = [];
   List<String> nflAwayDefensiveRank = [];
+  List<String> awayQbRank = [];
+  List<String> awayQbDefenseRank = [];
+
+  List<String> homeQbRank = [];
+  List<String> homeQbDefenseRank = [];
+
   num? awayPointOffenseRank;
   num? awayPointDefenseRank;
   num? awayRushingOffenseRank;
@@ -132,6 +135,7 @@ class SportEvents {
   num? homeFieldGoalDefenseRank;
   num? homeTernOverOffenseRank;
   num? homeTernOverDefenseRank;
+  num? homeInterceptionDefenseRank;
   num? awayPassingYardOffenseRank;
   num? awayPassingYardDefenseRank;
   num? awayRushingTDSOffenseRank;
@@ -148,6 +152,7 @@ class SportEvents {
   num? awayFieldGoalDefenseRank;
   num? awayTernOverOffenseRank;
   num? awayTernOverDefenseRank;
+  num? awayInterceptionDefenseRank;
   TournamentRound? tournamentRound;
   Season? season;
   Tournament? tournament;
@@ -213,13 +218,16 @@ class SportEvents {
   SportEvents({
     this.id,
     this.scheduled,
-    this.flamValue = 0,
     this.startTimeTbd,
     this.status,
-  this.nflHomeOffensiveRank =const [],
-  this.nflHomeDefensiveRank =const [],
-  this.nflAwayOffensiveRank =const [],
-  this.nflAwayDefensiveRank =const [],
+    this.nflHomeOffensiveRank = const [],
+    this.nflHomeDefensiveRank = const [],
+    this.nflAwayOffensiveRank = const [],
+    this.nflAwayDefensiveRank = const [],
+    this.awayQbRank = const [],
+    this.homeQbRank = const [],
+    this.awayQbDefenseRank = const [],
+    this.homeQbDefenseRank = const [],
     this.awayPointOffenseRank = 0,
     this.awayPointDefenseRank = 0,
     this.awayRushingOffenseRank = 0,
@@ -236,70 +244,72 @@ class SportEvents {
     this.homePointDefense = 0,
     this.homeRushingOffense = 0,
     this.homeRushingDefense = 0,
-    this.homePassingYardOffense=0,
-    this.homePassingYardDefense=0,
-    this.homeRushingTDSOffense=0,
-    this.homeRushingTDSDefence=0,
-    this.homePassingTDSOffense=0,
-    this.homePassingTDSDefence=0,
-    this.homeRedZonEfficiencyOffence=0,
-    this.homeOpponentRedZonEfficiency=0,
-    this.homeThirdDownOffence=0,
-    this.homeOpponentThirdDown=0,
-    this.homeFourthDownOffense=0,
-    this.homeOpponentFourthDown=0,
-    this.homeFieldGoalOffense=0,
-    this.homeFieldGoalDefense=0,
-    this.homeTernOverOffense=0,
-    this.homeTernOverDefense=0,
-    this.awayPassingYardOffense=0,
-    this.awayPassingYardDefense=0,
-    this.awayRushingTDSOffense=0,
-    this.awayRushingTDSDefence=0,
-    this.awayPassingTDSOffense=0,
-    this.awayPassingTDSDefence=0,
-    this.awayRedZonEfficiencyOffence=0,
-    this.awayOpponentRedZonEfficiency=0,
-    this.awayThirdDownOffence=0,
-    this.awayOpponentThirdDown=0,
-    this.awayFourthDownOffense=0,
-    this.awayOpponentFourthDown=0,
-    this.awayFieldGoalOffense=0,
-    this.awayFieldGoalDefense=0,
-    this.awayTernOverOffense=0,
-    this.awayTernOverDefense=0,
-    this.homePassingYardOffenseRank=0,
-    this.homePassingYardDefenseRank=0,
-    this.homeRushingTDSOffenseRank=0,
-    this.homeRushingTDSDefenceRank=0,
-    this.homePassingTDSOffenseRank=0,
-    this.homePassingTDSDefenceRank=0,
-    this.homeRedZonEfficiencyOffenceRank=0,
-    this.homeOpponentRedZonEfficiencyRank=0,
-    this.homeThirdDownOffenceRank=0,
-    this.homeOpponentThirdDownRank=0,
-    this.homeFourthDownOffenseRank=0,
-    this.homeOpponentFourthDownRank=0,
-    this.homeFieldGoalOffenseRank=0,
-    this.homeFieldGoalDefenseRank=0,
-    this.homeTernOverOffenseRank=0,
-    this.homeTernOverDefenseRank=0,
-    this.awayPassingYardOffenseRank=0,
-    this.awayPassingYardDefenseRank=0,
-    this.awayRushingTDSOffenseRank=0,
-    this.awayRushingTDSDefenceRank=0,
-    this.awayPassingTDSOffenseRank=0,
-    this.awayPassingTDSDefenceRank=0,
-    this.awayRedZonEfficiencyOffenceRank=0,
-    this.awayOpponentRedZonEfficiencyRank=0,
-    this.awayThirdDownOffenceRank=0,
-    this.awayOpponentThirdDownRank=0,
-    this.awayFourthDownOffenseRank=0,
-    this.awayOpponentFourthDownRank=0,
-    this.awayFieldGoalOffenseRank=0,
-    this.awayFieldGoalDefenseRank=0,
-    this.awayTernOverOffenseRank=0,
-    this.awayTernOverDefenseRank=0,
+    this.homePassingYardOffense = 0,
+    this.homePassingYardDefense = 0,
+    this.homeRushingTDSOffense = 0,
+    this.homeRushingTDSDefence = 0,
+    this.homePassingTDSOffense = 0,
+    this.homePassingTDSDefence = 0,
+    this.homeRedZonEfficiencyOffence = 0,
+    this.homeOpponentRedZonEfficiency = 0,
+    this.homeThirdDownOffence = 0,
+    this.homeOpponentThirdDown = 0,
+    this.homeFourthDownOffense = 0,
+    this.homeOpponentFourthDown = 0,
+    this.homeFieldGoalOffense = 0,
+    this.homeFieldGoalDefense = 0,
+    this.homeTernOverOffense = 0,
+    this.homeTernOverDefense = 0,
+    this.awayPassingYardOffense = 0,
+    this.awayPassingYardDefense = 0,
+    this.awayRushingTDSOffense = 0,
+    this.awayRushingTDSDefence = 0,
+    this.awayPassingTDSOffense = 0,
+    this.awayPassingTDSDefence = 0,
+    this.awayRedZonEfficiencyOffence = 0,
+    this.awayOpponentRedZonEfficiency = 0,
+    this.awayThirdDownOffence = 0,
+    this.awayOpponentThirdDown = 0,
+    this.awayFourthDownOffense = 0,
+    this.awayOpponentFourthDown = 0,
+    this.awayFieldGoalOffense = 0,
+    this.awayFieldGoalDefense = 0,
+    this.awayTernOverOffense = 0,
+    this.awayTernOverDefense = 0,
+    this.homePassingYardOffenseRank = 0,
+    this.homePassingYardDefenseRank = 0,
+    this.homeRushingTDSOffenseRank = 0,
+    this.homeRushingTDSDefenceRank = 0,
+    this.homePassingTDSOffenseRank = 0,
+    this.homePassingTDSDefenceRank = 0,
+    this.homeRedZonEfficiencyOffenceRank = 0,
+    this.homeOpponentRedZonEfficiencyRank = 0,
+    this.homeThirdDownOffenceRank = 0,
+    this.homeOpponentThirdDownRank = 0,
+    this.homeFourthDownOffenseRank = 0,
+    this.homeOpponentFourthDownRank = 0,
+    this.homeFieldGoalOffenseRank = 0,
+    this.homeFieldGoalDefenseRank = 0,
+    this.homeTernOverOffenseRank = 0,
+    this.homeTernOverDefenseRank = 0,
+    this.awayPassingYardOffenseRank = 0,
+    this.awayPassingYardDefenseRank = 0,
+    this.awayRushingTDSOffenseRank = 0,
+    this.awayRushingTDSDefenceRank = 0,
+    this.awayPassingTDSOffenseRank = 0,
+    this.awayPassingTDSDefenceRank = 0,
+    this.awayRedZonEfficiencyOffenceRank = 0,
+    this.awayOpponentRedZonEfficiencyRank = 0,
+    this.awayThirdDownOffenceRank = 0,
+    this.awayOpponentThirdDownRank = 0,
+    this.awayFourthDownOffenseRank = 0,
+    this.awayOpponentFourthDownRank = 0,
+    this.awayFieldGoalOffenseRank = 0,
+    this.awayFieldGoalDefenseRank = 0,
+    this.awayTernOverOffenseRank = 0,
+    this.awayTernOverDefenseRank = 0,
+    this.awayInterceptionDefenseRank = 0,
+    this.homeInterceptionDefenseRank = 0,
     this.tournamentRound,
     this.season,
     this.tournament,
@@ -361,66 +371,56 @@ class SportEvents {
   num get tmpInFahrenheit {
     return ((((temp) - 273.15) * (9 / 5))) + 32;
   }
-List<int> flameValues=[];
+
+  List<int> flameValues = [];
+
   num get getFlameValue {
-   /* for (int index=0;index<=10;index++) {
-      int condition1 = ((int.tryParse(
-          nflHomeDefensiveRank.isEmpty ? "0" :
-          nflHomeDefensiveRank[index]) ?? 0) - (int.tryParse(
-          nflAwayOffensiveRank.isEmpty ? "0" :
-          nflAwayOffensiveRank[index]) ?? 0));
+    num flamValue = 0;
+    for (int index = 0; index <= 9; index++) {
+      int condition1 = ((int.tryParse(nflHomeDefensiveRank.isEmpty
+                  ? "0"
+                  : nflHomeDefensiveRank[index]) ??
+              0) -
+          (int.tryParse(nflAwayOffensiveRank.isEmpty
+                  ? "0"
+                  : nflAwayOffensiveRank[index]) ??
+              0));
 
-          int condition2= (int.tryParse(nflHomeOffensiveRank.isEmpty ? "0" :
-          nflHomeOffensiveRank[index]) ?? 0) - (int.tryParse(
-      nflAwayDefensiveRank.isEmpty ? "0" :         nflAwayDefensiveRank[index]) ?? 0);
+      int condition2 = (int.tryParse(nflHomeOffensiveRank.isEmpty
+                  ? "0"
+                  : nflHomeOffensiveRank[index]) ??
+              0) -
+          (int.tryParse(nflAwayDefensiveRank.isEmpty
+                  ? "0"
+                  : nflAwayDefensiveRank[index]) ??
+              0);
 
-     if ((condition1 >= 15 || condition1 <= -15)||(condition2 >= 15 || condition2 <= -15)){
-       flameValues.add(1);
-       flamValue=flameValues.length;
-       return flamValue;
-     }
-
-    }*/
-    bool condition1 =
-        (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) >= 15) ||
-            (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) <=
-                -15);
-    bool condition2 =
-        (((homePointOffenseRank ?? 0) - (awayPointDefenseRank ?? 0)) >= 15) ||
-            (((homePointOffenseRank ?? 0) - (awayPointDefenseRank ?? 0)) <=
-                -15);
-    bool condition3 =
-        (((homeRushingDefenseRank ?? 0) - (awayRushingOffenseRank ?? 0)) >=
-                15) ||
-            (((homeRushingDefenseRank ?? 0) - (awayRushingOffenseRank ?? 0)) <=
-                -15);
-    bool condition4 =
-        (((homeRushingOffenseRank ?? 0) - (awayRushingDefenseRank ?? 0)) >=
-                15) ||
-            (((homeRushingOffenseRank ?? 0) - (awayRushingDefenseRank ?? 0)) <=
-                -15);
-
-
-    if ((condition1 && condition2 && condition3) ||
-        (condition2 && condition3 && condition4) ||
-        (condition3 && condition4 && condition1) ||
-        (condition2 && condition4 && condition1)) {
-      return flamValue + 3;
+      if (condition1 >= 15 || condition1 <= -15) {
+        flamValue += 1;
+      }
+      if (condition2 >= 15 || condition2 <= -15) {
+        flamValue += 1;
+      }
     }
-    if (condition1 && condition2 && condition3 && condition4) {
-      return flamValue + 4;
-    }
-    if ((condition1 && condition2) ||
-        (condition1 && condition3) ||
-        (condition1 && condition4) ||
-        (condition2 && condition3) ||
-        (condition2 && condition4) ||
-        (condition3 && condition4)) {
-      return flamValue + 2;
-    }
+    for (int index = 0; index < 5; index++) {
+      int condition3 = (int.tryParse(homeQbDefenseRank.isEmpty
+                  ? "0"
+                  : homeQbDefenseRank[index]) ??
+              0) -
+          (int.tryParse(awayQbRank.isEmpty ? "0" : awayQbRank[index]) ?? 0);
 
-    if (condition1 || condition2 || condition3 || condition4) {
-      return flamValue + 1;
+      int condition4 =
+          (int.tryParse(homeQbRank.isEmpty ? "0" : homeQbRank[index]) ?? 0) -
+              (int.tryParse(awayQbDefenseRank.isEmpty
+                      ? "0"
+                      : awayQbDefenseRank[index]) ??
+                  0);
+      if (condition3 >= 15 || condition3 <= -15) {
+        flamValue += 1;
+      }
+      if (condition4 >= 15 || condition4 <= -15) {
+        flamValue += 1;
+      }
     }
     return flamValue;
   }

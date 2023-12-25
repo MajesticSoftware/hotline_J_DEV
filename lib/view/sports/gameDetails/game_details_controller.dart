@@ -15,6 +15,7 @@ import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
+import '../../../model/nfl_qbs_rank_model.dart';
 import '../../../model/nfl_rank_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
@@ -28,8 +29,12 @@ import '../../../theme/helper.dart';
 class GameDetailsController extends GetxController {
   List<String> awayQb = [];
   List<String> homeQb = [];
+  List<String> awayQbRank = [];
+  List<String> homeQbRank = [];
   List<String> homeDefense = [];
   List<String> awayDefense = [];
+  List<String> homeDefenseRank = [];
+  List<String> awayDefenseRank = [];
 
   List offensive = [
     'Points Per Game',
@@ -42,6 +47,17 @@ class GameDetailsController extends GetxController {
     '4th Down Efficiency',
     'Field goal Percentage',
     'Turnovers / Game',
+  ];List shortOffensive = [
+    'PPG',
+    'RYG',
+    'PYG',
+    'RTG',
+    'PTG',
+    'RE',
+    '3rdDE',
+    '4thDE',
+    'FGP',
+    'TG',
   ];
   List nbaOffensive = [
     'Points/Game',
@@ -82,6 +98,17 @@ class GameDetailsController extends GetxController {
     'Opponent 4th Down Efficiency',
     'Field goal Percentage',
     'Turnovers Created/ Game'
+  ]; List shortFormDefensive = [
+    'PAGame',
+    'RYAG',
+    'PYAG',
+    'RTAG',
+    'PTAG',
+    'ORE',
+    'O3rDE',
+    'O4thDE',
+    'FGP',
+    'TCG'
   ];
   List nbaDefensive = [
     'Points Allowed/Game',
@@ -135,6 +162,12 @@ class GameDetailsController extends GetxController {
     'Rushing Yards/Game',
     'Rushing TDs/Game',
     'Interceptions/Game',
+  ];List teamQuarterBacksShortForm = [
+    'PYG',
+    'PTG',
+    'RYG',
+    'RTG',
+    'I',
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
@@ -142,6 +175,12 @@ class GameDetailsController extends GetxController {
     'Rushing Yards Allowed/Game',
     'Rushing TDs Allowed/Game',
     'Interceptions/Game',
+  ];List teamQuarterBacksDefenceShortForm = [
+    'PYAG',
+    'PTAG',
+    'RYAG',
+    'RTAG',
+    'IG',
   ];
 
   /*bool _isQuarterBacksTab = true;
@@ -1057,6 +1096,12 @@ class GameDetailsController extends GetxController {
                     "0") /
                     totalGame)
                     .toStringAsFixed(2),
+              ];homeDefenseRank = [
+                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
+                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homeInterceptionDefenseRank ?? 0).toString(),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -1376,6 +1421,7 @@ class GameDetailsController extends GetxController {
               gameDetails.awayFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
               gameDetails.awayTernOverOffenseRank=team.ternoverOffenseRank??0;
               gameDetails.awayTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.awayInterceptionDefenseRank=team.interceptionDefenseRank??0;
             }
             if (homeTeamId == replaceId(team.teamId ?? "")) {
               gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
@@ -1418,9 +1464,71 @@ class GameDetailsController extends GetxController {
               gameDetails.homeFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
               gameDetails.homeTernOverOffenseRank=team.ternoverOffenseRank??0;
               gameDetails.homeTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.homeInterceptionDefenseRank=team.interceptionDefenseRank??0;
             }
           });
         }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
+  }
+
+
+  Future getNFLQBSRank({String awayTeamId = '',
+    String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getNFLQBSRank();
+    try {
+      if (result.status) {
+        NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          response.data?.forEach((element) {
+            if (homeTeamId == element.teamId) {
+              gameDetails.homePlayerName=element.playerName??"";
+              gameDetails.homePlayerId=element.playerId??"";
+              homeQb = [
+                (element.passingYardOffense??0).toString(),
+                (element.passingTDSOffense??0).toString(),
+                (element.rushingYardOffense??0).toString(),
+                (element.rushingTDsOffense??0).toString(),
+                (element.interceptionOffense??0).toString(),
+              ];
+           homeQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }if (awayTeamId == element.teamId) {
+              gameDetails.awayPlayerName=element.playerName??"";
+              gameDetails.awayPlayerId=element.playerId??"";
+              awayQb = [
+                (element.passingYardOffense??0).toString(),
+                (element.passingTDSOffense??0).toString(),
+                (element.rushingYardOffense??0).toString(),
+                (element.rushingTDsOffense??0).toString(),
+                (element.interceptionOffense??0).toString(),
+              ];awayQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }
+          });
+        }
+
       } else {
         isLoading.value = false;
       }
@@ -1639,6 +1747,13 @@ class GameDetailsController extends GetxController {
                     totalGame)
                     .toStringAsFixed(2)),
                 // (offenciveData?.defense?.interceptions ?? "0").toString(),
+              ];
+              awayDefenseRank = [
+                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayRushingDefenseRank ?? 0).toString(),
+                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayInterceptionDefenseRank ?? 0).toString(),
               ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
@@ -2367,7 +2482,16 @@ class GameDetailsController extends GetxController {
         isLoad: false,
         sportKey: sportKey,
       );
-      depthChartResponse(
+      getNFLQBSRank(gameDetails: gameDetails,
+        awayTeamId: awayTeam?.abbreviation == 'LV'
+            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+            : replaceId(awayTeam?.uuids ?? ''),
+        homeTeamId: homeTeam?.abbreviation == 'LV'
+            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+            : replaceId(homeTeam?.uuids ?? ''),
+        isLoad: false,
+        sportKey: sportKey,);
+      /*depthChartResponse(
           gameDetails: gameDetails,
           isLoad: false,
           sportKey: sportKey,
@@ -2390,7 +2514,7 @@ class GameDetailsController extends GetxController {
               playerId: gameDetails.awayPlayerId,
               isLoad: isLoad);
         }
-      });
+      });*/
       nflStaticsAwayTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,

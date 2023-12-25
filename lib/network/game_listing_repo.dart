@@ -307,12 +307,27 @@ class GameListingRepo {
     bool status = false;
     ResponseItem result;
     dynamic data;
-
     String message = "";
-
-
-
     var queryParameters = {RequestParam.service: MethodNames.getNFLGameOffenseRank};
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.postRequest(requestUrl, {}, false);
+
+    status = result.status;
+
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+  ///NFL QBS RANK
+Future<ResponseItem> getNFLQBSRank() async {
+    bool status = false;
+    ResponseItem result;
+    dynamic data;
+    String message = "";
+    var queryParameters = {RequestParam.service: MethodNames.getNFLQBSRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
