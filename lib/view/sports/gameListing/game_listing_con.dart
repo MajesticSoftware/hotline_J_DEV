@@ -1286,7 +1286,6 @@ class GameListingController extends GetxController {
                   } else if (team.qualifier == "away") {
                     awayTeam = team;
                   }
-
                   nflGameRankApi(
                     gameDetails: nflSportEventsList[i],
                     awayTeamId: awayTeam?.abbreviation == 'LV'
@@ -1440,6 +1439,62 @@ class GameListingController extends GetxController {
               gameDetails.awayPointDefense = team.pointsDefense ?? 0;
               gameDetails.awayRushingOffense = team.rushingOffense ?? 0;
               gameDetails.awayRushingDefense = team.rushingDefense ?? 0;
+              gameDetails.awayPassingYardOffense=team.passingYardOffense??0;
+              gameDetails.awayPassingYardDefense=team.passingYardDefense??0;
+              gameDetails.awayRushingTDSOffense=team.rushingTDSOffense??0;
+              gameDetails.awayRushingTDSDefence=team.rushingTDSDefence??0;
+              gameDetails.awayPassingTDSOffense=team.passingTDSOffense??0;
+              gameDetails.awayPassingTDSDefence=team.passingTDSDefence??0;
+              gameDetails.awayRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
+              gameDetails.awayOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
+              gameDetails.awayThirdDownOffence=team.thirdDownOffence??0;
+              gameDetails.awayOpponentThirdDown=team.opponentThirdDown??0;
+              gameDetails.awayFourthDownOffense=team.fourthDownOffense??0;
+              gameDetails.awayOpponentFourthDown=team.opponentFourtDown??0;
+              gameDetails.awayFieldGoalOffense=team.fieldGoalOffense??0;
+              gameDetails.awayFieldGoalDefense=team.fieldGoalDefense??0;
+              gameDetails.awayTernOverOffense=team.ternoverOffense??0;
+              gameDetails.awayTernOverDefense=team.ternoverDefense??0;
+              gameDetails.awayPassingYardOffenseRank=team.passingYardOffenseRank??0;
+              gameDetails.awayPassingYardDefenseRank=team.passingYardDefenseRank??0;
+              gameDetails.awayRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
+              gameDetails.awayRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
+              gameDetails.awayPassingTDSOffenseRank=team.passingTDSOffenseRank??0;
+              gameDetails.awayPassingTDSDefenceRank=team.passingTDSDefenceRank??0;
+              gameDetails.awayRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
+              gameDetails.awayOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
+              gameDetails.awayThirdDownOffenceRank=team.thirdDownOffenceRank??0;
+              gameDetails.awayOpponentThirdDownRank=team.opponentThirdDownRank??0;
+              gameDetails.awayFourthDownOffenseRank=team.fourthDownOffenseRank??0;
+              gameDetails.awayOpponentFourthDownRank=team.opponentFourtDownRank??0;
+              gameDetails.awayFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
+              gameDetails.awayFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
+              gameDetails.awayTernOverOffenseRank=team.ternoverOffenseRank??0;
+              gameDetails.awayTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.nflAwayOffensiveRank = [
+                (gameDetails.awayPointOffenseRank ?? 0).toString(),
+                (gameDetails.awayRushingOffenseRank ?? 0).toString(),
+                (gameDetails.awayPassingYardOffenseRank ?? 0).toString(),
+                (gameDetails.awayRushingTDSOffenseRank ?? 0).toString(),
+                (gameDetails.awayPassingTDSOffenseRank ?? 0).toString(),
+                (gameDetails.awayRedZonEfficiencyOffenceRank ?? 0).toString(),
+                (gameDetails.awayThirdDownOffenceRank ?? 0).toString(),
+                (gameDetails.awayFourthDownOffenseRank?? 0).toString(),
+                (gameDetails.awayFieldGoalOffenseRank ?? 0).toString(),
+                (gameDetails.awayTernOverOffenseRank ?? 0).toString(),
+              ];
+              gameDetails.nflAwayDefensiveRank = [
+                (gameDetails.awayPointDefenseRank).toString(),
+                (gameDetails.awayRushingDefenseRank).toString(),
+                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.awayOpponentRedZonEfficiencyRank ?? 0).toString(),
+                (gameDetails.awayOpponentThirdDownRank ?? 0).toString(),
+                (gameDetails.awayOpponentFourthDownRank?? 0).toString(),
+                (gameDetails.awayFieldGoalDefenseRank ?? 0).toString(),
+                (gameDetails.awayTernOverDefenseRank ?? 0).toString(),
+              ];
             }
             if (homeTeamId == replaceId(team.teamId ?? "")) {
               gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
@@ -1450,6 +1505,62 @@ class GameListingController extends GetxController {
               gameDetails.homePointDefense = team.pointsDefense ?? 0;
               gameDetails.homeRushingOffense = team.rushingOffense ?? 0;
               gameDetails.homeRushingDefense = team.rushingDefense ?? 0;
+              gameDetails.homePassingYardOffense=team.passingYardOffense??0;
+              gameDetails.homePassingYardDefense=team.passingYardDefense??0;
+              gameDetails.homeRushingTDSOffense=team.rushingTDSOffense??0;
+              gameDetails.homeRushingTDSDefence=team.rushingTDSDefence??0;
+              gameDetails.homePassingTDSOffense=team.passingTDSOffense??0;
+              gameDetails.homePassingTDSDefence=team.passingTDSDefence??0;
+              gameDetails.homeRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
+              gameDetails.homeOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
+              gameDetails.homeThirdDownOffence=team.thirdDownOffence??0;
+              gameDetails.homeOpponentThirdDown=team.opponentThirdDown??0;
+              gameDetails.homeFourthDownOffense=team.fourthDownOffense??0;
+              gameDetails.homeOpponentFourthDown=team.opponentFourtDown??0;
+              gameDetails.homeFieldGoalOffense=team.fieldGoalOffense??0;
+              gameDetails.homeFieldGoalDefense=team.fieldGoalDefense??0;
+              gameDetails.homeTernOverOffense=team.ternoverOffense??0;
+              gameDetails.homeTernOverDefense=team.ternoverDefense??0;
+              gameDetails.homePassingYardOffenseRank=team.passingYardOffenseRank??0;
+              gameDetails.homePassingYardDefenseRank=team.passingYardDefenseRank??0;
+              gameDetails.homeRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
+              gameDetails.homeRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
+              gameDetails.homePassingTDSOffenseRank=team.passingTDSOffenseRank??0;
+              gameDetails.homePassingTDSDefenceRank=team.passingTDSDefenceRank??0;
+              gameDetails.homeRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
+              gameDetails.homeOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
+              gameDetails.homeThirdDownOffenceRank=team.thirdDownOffenceRank??0;
+              gameDetails.homeOpponentThirdDownRank=team.opponentThirdDownRank??0;
+              gameDetails.homeFourthDownOffenseRank=team.fourthDownOffenseRank??0;
+              gameDetails.homeOpponentFourthDownRank=team.opponentFourtDownRank??0;
+              gameDetails.homeFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
+              gameDetails.homeFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
+              gameDetails.homeTernOverOffenseRank=team.ternoverOffenseRank??0;
+              gameDetails.homeTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.nflHomeOffensiveRank = [
+                (gameDetails.homePointOffenseRank ?? 0).toString(),
+                (gameDetails.homeRushingOffenseRank ?? 0).toString(),
+                (gameDetails.homePassingYardOffenseRank ?? 0).toString(),
+                (gameDetails.homeRushingTDSOffenseRank ?? 0).toString(),
+                (gameDetails.homePassingTDSOffenseRank ?? 0).toString(),
+                (gameDetails.homeRedZonEfficiencyOffenceRank ?? 0).toString(),
+                (gameDetails.homeThirdDownOffenceRank ?? 0).toString(),
+                (gameDetails.homeFourthDownOffenseRank?? 0).toString(),
+                (gameDetails.homeFieldGoalOffenseRank ?? 0).toString(),
+                (gameDetails.homeTernOverOffenseRank ?? 0).toString(),
+              ];
+              gameDetails.nflHomeDefensiveRank = [
+                (gameDetails.homePointDefenseRank ?? 0).toString(),
+                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
+                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
+                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
+                (gameDetails.homeOpponentRedZonEfficiencyRank ?? 0).toString(),
+                (gameDetails.homeOpponentThirdDownRank ?? 0).toString(),
+                (gameDetails.homeOpponentFourthDownRank?? 0).toString(),
+                (gameDetails.homeFieldGoalDefenseRank ?? 0).toString(),
+                (gameDetails.homeTernOverDefenseRank ?? 0).toString(),
+              ];
             }
           });
         }

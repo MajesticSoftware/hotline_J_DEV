@@ -64,6 +64,10 @@ class SportEvents {
   String? scheduled;
   bool? startTimeTbd;
   String? status;
+  List<String> nflHomeOffensiveRank = [];
+  List<String> nflHomeDefensiveRank = [];
+  List<String> nflAwayOffensiveRank = [];
+  List<String> nflAwayDefensiveRank = [];
   num? awayPointOffenseRank;
   num? awayPointDefenseRank;
   num? awayRushingOffenseRank;
@@ -80,6 +84,70 @@ class SportEvents {
   num? homePointDefense;
   num? homeRushingOffense;
   num? homeRushingDefense;
+  num? homePassingYardOffense;
+  num? homePassingYardDefense;
+  num? homeRushingTDSOffense;
+  num? homeRushingTDSDefence;
+  num? homePassingTDSOffense;
+  num? homePassingTDSDefence;
+  num? homeRedZonEfficiencyOffence;
+  num? homeOpponentRedZonEfficiency;
+  num? homeThirdDownOffence;
+  num? homeOpponentThirdDown;
+  num? homeFourthDownOffense;
+  num? homeOpponentFourthDown;
+  num? homeFieldGoalOffense;
+  num? homeFieldGoalDefense;
+  num? homeTernOverOffense;
+  num? homeTernOverDefense;
+  num? awayPassingYardOffense;
+  num? awayPassingYardDefense;
+  num? awayRushingTDSOffense;
+  num? awayRushingTDSDefence;
+  num? awayPassingTDSOffense;
+  num? awayPassingTDSDefence;
+  num? awayRedZonEfficiencyOffence;
+  num? awayOpponentRedZonEfficiency;
+  num? awayThirdDownOffence;
+  num? awayOpponentThirdDown;
+  num? awayFourthDownOffense;
+  num? awayOpponentFourthDown;
+  num? awayFieldGoalOffense;
+  num? awayFieldGoalDefense;
+  num? awayTernOverOffense;
+  num? awayTernOverDefense;
+  num? homePassingYardOffenseRank;
+  num? homePassingYardDefenseRank;
+  num? homeRushingTDSOffenseRank;
+  num? homeRushingTDSDefenceRank;
+  num? homePassingTDSOffenseRank;
+  num? homePassingTDSDefenceRank;
+  num? homeRedZonEfficiencyOffenceRank;
+  num? homeOpponentRedZonEfficiencyRank;
+  num? homeThirdDownOffenceRank;
+  num? homeOpponentThirdDownRank;
+  num? homeFourthDownOffenseRank;
+  num? homeOpponentFourthDownRank;
+  num? homeFieldGoalOffenseRank;
+  num? homeFieldGoalDefenseRank;
+  num? homeTernOverOffenseRank;
+  num? homeTernOverDefenseRank;
+  num? awayPassingYardOffenseRank;
+  num? awayPassingYardDefenseRank;
+  num? awayRushingTDSOffenseRank;
+  num? awayRushingTDSDefenceRank;
+  num? awayPassingTDSOffenseRank;
+  num? awayPassingTDSDefenceRank;
+  num? awayRedZonEfficiencyOffenceRank;
+  num? awayOpponentRedZonEfficiencyRank;
+  num? awayThirdDownOffenceRank;
+  num? awayOpponentThirdDownRank;
+  num? awayFourthDownOffenseRank;
+  num? awayOpponentFourthDownRank;
+  num? awayFieldGoalOffenseRank;
+  num? awayFieldGoalDefenseRank;
+  num? awayTernOverOffenseRank;
+  num? awayTernOverDefenseRank;
   TournamentRound? tournamentRound;
   Season? season;
   Tournament? tournament;
@@ -148,6 +216,10 @@ class SportEvents {
     this.flamValue = 0,
     this.startTimeTbd,
     this.status,
+  this.nflHomeOffensiveRank =const [],
+  this.nflHomeDefensiveRank =const [],
+  this.nflAwayOffensiveRank =const [],
+  this.nflAwayDefensiveRank =const [],
     this.awayPointOffenseRank = 0,
     this.awayPointDefenseRank = 0,
     this.awayRushingOffenseRank = 0,
@@ -164,6 +236,70 @@ class SportEvents {
     this.homePointDefense = 0,
     this.homeRushingOffense = 0,
     this.homeRushingDefense = 0,
+    this.homePassingYardOffense=0,
+    this.homePassingYardDefense=0,
+    this.homeRushingTDSOffense=0,
+    this.homeRushingTDSDefence=0,
+    this.homePassingTDSOffense=0,
+    this.homePassingTDSDefence=0,
+    this.homeRedZonEfficiencyOffence=0,
+    this.homeOpponentRedZonEfficiency=0,
+    this.homeThirdDownOffence=0,
+    this.homeOpponentThirdDown=0,
+    this.homeFourthDownOffense=0,
+    this.homeOpponentFourthDown=0,
+    this.homeFieldGoalOffense=0,
+    this.homeFieldGoalDefense=0,
+    this.homeTernOverOffense=0,
+    this.homeTernOverDefense=0,
+    this.awayPassingYardOffense=0,
+    this.awayPassingYardDefense=0,
+    this.awayRushingTDSOffense=0,
+    this.awayRushingTDSDefence=0,
+    this.awayPassingTDSOffense=0,
+    this.awayPassingTDSDefence=0,
+    this.awayRedZonEfficiencyOffence=0,
+    this.awayOpponentRedZonEfficiency=0,
+    this.awayThirdDownOffence=0,
+    this.awayOpponentThirdDown=0,
+    this.awayFourthDownOffense=0,
+    this.awayOpponentFourthDown=0,
+    this.awayFieldGoalOffense=0,
+    this.awayFieldGoalDefense=0,
+    this.awayTernOverOffense=0,
+    this.awayTernOverDefense=0,
+    this.homePassingYardOffenseRank=0,
+    this.homePassingYardDefenseRank=0,
+    this.homeRushingTDSOffenseRank=0,
+    this.homeRushingTDSDefenceRank=0,
+    this.homePassingTDSOffenseRank=0,
+    this.homePassingTDSDefenceRank=0,
+    this.homeRedZonEfficiencyOffenceRank=0,
+    this.homeOpponentRedZonEfficiencyRank=0,
+    this.homeThirdDownOffenceRank=0,
+    this.homeOpponentThirdDownRank=0,
+    this.homeFourthDownOffenseRank=0,
+    this.homeOpponentFourthDownRank=0,
+    this.homeFieldGoalOffenseRank=0,
+    this.homeFieldGoalDefenseRank=0,
+    this.homeTernOverOffenseRank=0,
+    this.homeTernOverDefenseRank=0,
+    this.awayPassingYardOffenseRank=0,
+    this.awayPassingYardDefenseRank=0,
+    this.awayRushingTDSOffenseRank=0,
+    this.awayRushingTDSDefenceRank=0,
+    this.awayPassingTDSOffenseRank=0,
+    this.awayPassingTDSDefenceRank=0,
+    this.awayRedZonEfficiencyOffenceRank=0,
+    this.awayOpponentRedZonEfficiencyRank=0,
+    this.awayThirdDownOffenceRank=0,
+    this.awayOpponentThirdDownRank=0,
+    this.awayFourthDownOffenseRank=0,
+    this.awayOpponentFourthDownRank=0,
+    this.awayFieldGoalOffenseRank=0,
+    this.awayFieldGoalDefenseRank=0,
+    this.awayTernOverOffenseRank=0,
+    this.awayTernOverDefenseRank=0,
     this.tournamentRound,
     this.season,
     this.tournament,
@@ -225,8 +361,26 @@ class SportEvents {
   num get tmpInFahrenheit {
     return ((((temp) - 273.15) * (9 / 5))) + 32;
   }
-
+List<int> flameValues=[];
   num get getFlameValue {
+   /* for (int index=0;index<=10;index++) {
+      int condition1 = ((int.tryParse(
+          nflHomeDefensiveRank.isEmpty ? "0" :
+          nflHomeDefensiveRank[index]) ?? 0) - (int.tryParse(
+          nflAwayOffensiveRank.isEmpty ? "0" :
+          nflAwayOffensiveRank[index]) ?? 0));
+
+          int condition2= (int.tryParse(nflHomeOffensiveRank.isEmpty ? "0" :
+          nflHomeOffensiveRank[index]) ?? 0) - (int.tryParse(
+      nflAwayDefensiveRank.isEmpty ? "0" :         nflAwayDefensiveRank[index]) ?? 0);
+
+     if ((condition1 >= 15 || condition1 <= -15)||(condition2 >= 15 || condition2 <= -15)){
+       flameValues.add(1);
+       flamValue=flameValues.length;
+       return flamValue;
+     }
+
+    }*/
     bool condition1 =
         (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) >= 15) ||
             (((homePointDefenseRank ?? 0) - (awayPointOffenseRank ?? 0)) <=
@@ -245,6 +399,8 @@ class SportEvents {
                 15) ||
             (((homeRushingOffenseRank ?? 0) - (awayRushingDefenseRank ?? 0)) <=
                 -15);
+
+
     if ((condition1 && condition2 && condition3) ||
         (condition2 && condition3 && condition4) ||
         (condition3 && condition4 && condition1) ||

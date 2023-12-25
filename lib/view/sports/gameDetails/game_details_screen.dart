@@ -37,7 +37,7 @@ class SportDetailsScreen extends StatefulWidget {
 class _SportDetailsScreenState extends State<SportDetailsScreen>
     with SingleTickerProviderStateMixin {
   final GameDetailsController gameDetailsController = Get.put(GameDetailsController());
-// final SubscriptionController subscriptionController=Get.put(SubscriptionController());
+final SubscriptionController subscriptionController=Get.put(SubscriptionController());
   TabController? _tabController;
 
   @override
@@ -73,7 +73,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
       children: [
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: commonAppBarWidget(context, isDark,gameDetailsController,/*subscriptionController*/),
+          appBar: commonAppBarWidget(context, isDark,gameDetailsController,subscriptionController),
           body: GetBuilder<GameDetailsController>(initState: (state) async {
             await gameDetailsController.getResponse(
                 isLoad: true,

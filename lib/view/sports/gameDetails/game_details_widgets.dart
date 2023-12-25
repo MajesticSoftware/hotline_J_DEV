@@ -26,7 +26,7 @@ import '../../widgets/common_dialog.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
-    GameDetailsController con,/*SubscriptionController subscriptionController*/) {
+    GameDetailsController con,SubscriptionController subscriptionController) {
   return PreferredSize(
       preferredSize: Size.fromHeight(125.w),
       child: AnimatedContainer(
@@ -62,36 +62,36 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                 child: InkWell(
                   highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,
                   onTap: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return exitApp(
-                    //       context,isLogOut: false,
-                    //       title: 'Subscriptions',
-                    //       subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
-                    //       onTap: () async {
-                    //         if(PreferenceManager.getIsLogin()){
-                    //           if (subscriptionController.products.isEmpty) {
-                    //             null;
-                    //           } else {
-                    //             await subscriptionController.buyProduct(
-                    //                 subscriptionController.products[0]);
-                    //           }
-                    //         }else{
-                    //
-                    //           showAppSnackBar('You have to login for Subscription!');
-                    //         }
-                    //       },
-                    //     );
-                    //   },
-                    // );
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return exitApp(
+                          context,isLogOut: false,
+                          title: 'Subscriptions',
+                          subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
+                          onTap: () async {
+                            if(PreferenceManager.getIsLogin()){
+                              if (subscriptionController.products.isEmpty) {
+                                null;
+                              } else {
+                                await subscriptionController.buyProduct(
+                                    subscriptionController.products[0]);
+                              }
+                            }else{
+
+                              showAppSnackBar('You have to login for Subscription!');
+                            }
+                          },
+                        );
+                      },
+                    );
                   },
                   child: SvgPicture.asset(
                       Assets.assetsImagesFire, fit: BoxFit.contain,
                       height: MediaQuery
                           .of(context)
                           .size
-                          .height * .03,alignment: Alignment.centerRight,color: Colors.transparent,),
+                          .height * .03,alignment: Alignment.centerRight,),
                 ),
               ),
             ],
@@ -737,7 +737,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                         .of(context)
                                         .size
                                         .height * .014),
-                              /*  sportKey == "NFL"&&PreferenceManager.getSubscriptionRecUrl()!=null ?
+                                sportKey == "NFL"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/ ?
                                 (con.isTeamReportTab
                                     ? (con.nflAwayOffensiveRank.isEmpty
                                     ? '0'
@@ -788,7 +788,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                     size: MediaQuery
                                         .of(context)
                                         .size
-                                        .height * .014) : const SizedBox(),*/
+                                        .height * .014) : const SizedBox(),
                               ]),
                           (con.isTeamReportTab
                               ? con.offensive[index]
@@ -851,7 +851,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                       .of(context)
                                       .size
                                       .height * .014),
-                             /* sportKey == "NFL" &&PreferenceManager.getSubscriptionRecUrl()!=null? (con.isTeamReportTab
+                              sportKey == "NFL"/* &&PreferenceManager.getSubscriptionRecUrl()!=null*/? (con.isTeamReportTab
                                   ? (con.nflHomeDefensiveRank.isEmpty
                                   ? '0'
                                   : ' (${dateWidget(
@@ -902,7 +902,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                   size: MediaQuery
                                       .of(context)
                                       .size
-                                      .height * .014) : const SizedBox(),*/
+                                      .height * .014) : const SizedBox(),
                             ],
                           ),
                           (con.isTeamReportTab
@@ -926,7 +926,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                     ),
                   ],
                 ),
-               /* (index <= 1 && sportKey == "NFL") &&PreferenceManager.getSubscriptionRecUrl()!=null&&
+                (sportKey == "NFL") /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/&&
                     ((offensePointColor >= 15 || offensePointColor <= -15) ) ?
 
                 Positioned(
@@ -965,7 +965,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                               .height * .028),
                     ),
                   ),
-                ) : const SizedBox(),*/
+                ) : const SizedBox(),
               ],
             );
           },
