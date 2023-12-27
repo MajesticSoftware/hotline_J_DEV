@@ -4,38 +4,22 @@ import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
-
 import 'package:hotlines/utils/utils.dart';
-
 import '../../../constant/constant.dart';
-import '../../../model/depth_chart_model.dart';
 import '../../../model/game_model.dart';
-
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
-import '../../../model/nfl_qbs_rank_model.dart';
-import '../../../model/nfl_rank_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
-import '../../../model/player_profile_nfl_model.dart';
 import '../../../model/response_item.dart';
 import '../../../model/team_record_model.dart';
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
-  List<String> awayQb = [];
-  List<String> homeQb = [];
-  List<String> awayQbRank = [];
-  List<String> homeQbRank = [];
-  List<String> homeDefense = [];
-  List<String> awayDefense = [];
-  List<String> homeDefenseRank = [];
-  List<String> awayDefenseRank = [];
-
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',
@@ -47,7 +31,8 @@ class GameDetailsController extends GetxController {
     '4th Down Efficiency',
     'Field goal Percentage',
     'Turnovers / Game',
-  ];List shortOffensive = [
+  ];
+  List shortOffensive = [
     'PPG',
     'RYG',
     'PYG',
@@ -72,6 +57,33 @@ class GameDetailsController extends GetxController {
     '3P made / att / % (Per Game)',
     'True Shooting',
     'Team per Off',
+  ];
+  List shortOffensiveNBA = [
+    'PG',
+    'RG',
+    'AG',
+    'SG',
+    'BG',
+    'TTG',
+    'FG',
+    'FGG',
+    'FTG',
+    '3PG',
+    'TS',
+    'TO',
+  ];List shortDefensiveNBA = [
+    'PAG',
+    'ORG',
+    'OAG',
+    'OSG',
+    'OBG',
+    'OTTG',
+    'OFG',
+    'OFGG',
+    'OFTG',
+    'O3PG',
+    'OTS',
+    'TD',
   ];
   List hittingMLB = [
     'Runs Scored/Game',
@@ -98,7 +110,8 @@ class GameDetailsController extends GetxController {
     'Opponent 4th Down Efficiency',
     'Field goal Percentage',
     'Turnovers Created/ Game'
-  ]; List shortFormDefensive = [
+  ];
+  List shortFormDefensive = [
     'PAGame',
     'RYAG',
     'PYAG',
@@ -162,12 +175,13 @@ class GameDetailsController extends GetxController {
     'Rushing Yards/Game',
     'Rushing TDs/Game',
     'Interceptions/Game',
-  ];List teamQuarterBacksShortForm = [
+  ];
+  List teamQuarterBacksShortForm = [
     'PYG',
     'PTG',
     'RYG',
     'RTG',
-    'I',
+    'IG',
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
@@ -175,7 +189,8 @@ class GameDetailsController extends GetxController {
     'Rushing Yards Allowed/Game',
     'Rushing TDs Allowed/Game',
     'Interceptions/Game',
-  ];List teamQuarterBacksDefenceShortForm = [
+  ];
+  List teamQuarterBacksDefenceShortForm = [
     'PYAG',
     'PTAG',
     'RYAG',
@@ -183,43 +198,6 @@ class GameDetailsController extends GetxController {
     'IG',
   ];
 
-  /*bool _isQuarterBacksTab = true;
-
-  bool get isQuarterBacksTab => _isQuarterBacksTab;
-
-  set isQuarterBacksTab(bool value) {
-    _isQuarterBacksTab = value;
-    update();
-  }
-
-  bool _isInjuriesTab = true;
-
-  bool get isInjuriesTab => _isInjuriesTab;
-
-  set isInjuriesTab(bool value) {
-    _isInjuriesTab = value;
-    update();
-  }
-
-  bool _isTab = true;
-
-  bool get isTab => _isTab;
-
-  set isTab(bool value) {
-    _isTab = value;
-
-    update();
-  }
-
-  bool _isTab1 = true;
-
-  bool get isTab1 => _isTab1;
-
-  set isTab1(bool value) {
-    _isTab1 = value;
-
-    update();
-  }*/
 
   bool _isTeamReportTab = true;
 
@@ -393,8 +371,8 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  Future profileHomeTeamResponse(
-      {String playerId = '', String sportKey = '', bool isLoad = false}) async {
+  /*Future profileHomeTeamResponse(
+      {String playerId = '', String sportKey = '', bool isLoad = false,required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
@@ -414,7 +392,7 @@ class GameDetailsController extends GetxController {
                 if (element.teams != null) {
                   element.teams?.forEach((static) {
                     num totalPlay = static.statistics?.gamesPlayed ?? 1;
-                    homeQb = [
+                    gameDetails.homeQb = [
                       ((int.parse(static.statistics?.passing?.yards
                           .toString() ??
                           "0") /
@@ -464,7 +442,7 @@ class GameDetailsController extends GetxController {
   }
 
   Future profileAwayTeamResponse(
-      {String playerId = '', String sportKey = '', bool isLoad = false}) async {
+      {String playerId = '', String sportKey = '', bool isLoad = false,required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
@@ -484,7 +462,7 @@ class GameDetailsController extends GetxController {
                 if (element.teams != null) {
                   element.teams?.forEach((static) {
                     num totalPlay = static.statistics?.gamesPlayed ?? 1;
-                    awayQb = [
+                    gameDetails.awayQb = [
                       ((int.parse(static.statistics?.passing?.yards
                           .toString() ??
                           "0") /
@@ -531,7 +509,7 @@ class GameDetailsController extends GetxController {
       );
     }
     update();
-  }
+  }*/
 
   Future profileAwayResponse(
       {String awayTeamId = '', bool isLoad = false}) async {
@@ -878,14 +856,7 @@ class GameDetailsController extends GetxController {
   }
 
   ///NFL STATICS
-  List<String> nflHomeOffensiveList = [];
-  List<String> nflHomeDefensiveList = [];
-  List<String> nflAwayOffensiveList = [];
-  List<String> nflAwayDefensiveList = [];
-  List<String> nflHomeOffensiveRank = [];
-  List<String> nflHomeDefensiveRank = [];
-  List<String> nflAwayOffensiveRank = [];
-  List<String> nflAwayDefensiveRank = [];
+
   List<RunningBacks> runningBacksAwayList = [];
   List<RunningBacks> runningBacksHomeList = [];
 
@@ -913,171 +884,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-              String offensivePoint = ((((int.parse(
-                  offenciveData?.touchdowns?.total.toString() ??
-                      "0") *
-                  6) +
-                  (int.parse(
-                      offenciveData?.fieldGoals?.made.toString() ??
-                          "0") *
-                      3) +
-                  (int.parse(offenciveData?.extraPoints?.kicks?.made
-                      .toString() ??
-                      "0") *
-                      1)) /
-                  totalGame)
-                  .toStringAsFixed(2));
-              nflHomeOffensiveRank = [
-                (gameDetails.homePointOffenseRank ?? 0).toString(),
-                (gameDetails.homeRushingOffenseRank ?? 0).toString(),
-               (gameDetails.homePassingYardOffenseRank ?? 0).toString(),
-               (gameDetails.homeRushingTDSOffenseRank ?? 0).toString(),
-               (gameDetails.homePassingTDSOffenseRank ?? 0).toString(),
-               (gameDetails.homeRedZonEfficiencyOffenceRank ?? 0).toString(),
-               (gameDetails.homeThirdDownOffenceRank ?? 0).toString(),
-               (gameDetails.homeFourthDownOffenseRank?? 0).toString(),
-               (gameDetails.homeFieldGoalOffenseRank ?? 0).toString(),
-               (gameDetails.homeTernOverOffenseRank ?? 0).toString(),
-              ];
-              nflHomeOffensiveList = [
-                sportKey == "NFL"
-                    ? gameDetails.homePointOffense.toString()
-                    : offensivePoint,
-                sportKey == "NFL"
-                    ? gameDetails.homeRushingOffense.toString()
-                    : ((int.parse(offenciveData?.rushing?.yards.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homePassingYardOffense.toString()
-                    :((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homeRushingTDSOffense.toString()
-                    : ((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.homePassingTDSOffense.toString()
-                    :((int.parse(offenciveData?.passing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.homeRedZonEfficiencyOffence.toString()
-                    :'${(double.parse(
-                    (offenciveData?.efficiency?.redzone?.pct ?? "0").toString())
-                    .toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeThirdDownOffence.toString()
-                    : '${(double.parse(
-                    (offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeFourthDownOffense.toString()
-                    :'${(double.parse(
-                    (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeFieldGoalOffense.toString()
-                    :(double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
-                    (offenciveData?.fieldGoals?.attempts ?? 0) *
-                    100)
-                    .toString())
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homeTernOverOffense.toString()
-                    : (((offenciveData?.interceptions?.interceptions ?? 0) +
-                    (offenciveData?.fumbles?.lostFumbles ?? 0)) /
-                    totalGame)
-                    .toStringAsFixed(1)
-              ];
-              String defensivePoint = ((((int.parse(
-                  defenciveData?.touchdowns?.total.toString() ??
-                      "0") *
-                  6) +
-                  (int.parse(
-                      defenciveData?.fieldGoals?.made.toString() ??
-                          "0") *
-                      3) +
-                  (int.parse(defenciveData?.extraPoints?.kicks?.made
-                      .toString() ??
-                      "0") *
-                      1)) /
-                  totalGame)
-                  .toStringAsFixed(2));
-              nflHomeDefensiveRank = [
-                (gameDetails.homePointDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
-                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeOpponentRedZonEfficiencyRank ?? 0).toString(),
-                (gameDetails.homeOpponentThirdDownRank ?? 0).toString(),
-                (gameDetails.homeOpponentFourthDownRank?? 0).toString(),
-                (gameDetails.homeFieldGoalDefenseRank ?? 0).toString(),
-                (gameDetails.homeTernOverDefenseRank ?? 0).toString(),
-              ];
-              nflHomeDefensiveList = [
-                sportKey == "NFL"
-                    ? gameDetails.homePointDefense.toString()
-                    : defensivePoint,
-                sportKey == "NFL"
-                    ? gameDetails.homeRushingDefense.toString()
-                    : ((int.parse(defenciveData?.rushing?.yards.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homePassingYardDefense.toString()
-                    :((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homeRushingTDSDefence.toString()
-                    :((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.homePassingTDSDefence.toString()
-                    :((int.parse(defenciveData?.passing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.homeOpponentRedZonEfficiency.toString()
-                    :'${(double.parse(
-                    (defenciveData?.efficiency?.redzone?.pct ?? "0").toString())
-                    .toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeOpponentThirdDown.toString()
-                    :'${(double.parse(
-                    (defenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeOpponentFourthDown.toString()
-                    :'${(double.parse(
-                    (defenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.homeFieldGoalDefense.toString()
-                    : (double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
-                    (defenciveData?.fieldGoals?.attempts ?? 0) *
-                    100)
-                    .toString())
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.homeTernOverDefense.toString()
-                    : (((defenciveData?.defense?.interceptions ?? 0) +
-                    (defenciveData?.defense?.fumbleRecoveries ?? 0)) /
-                    totalGame)
-                    .toStringAsFixed(1)
-              ];
-              homeDefense = [
+              gameDetails.homeDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                     totalGame)
                     .toStringAsFixed(1)),
@@ -1096,12 +903,6 @@ class GameDetailsController extends GetxController {
                     "0") /
                     totalGame)
                     .toStringAsFixed(2),
-              ];homeDefenseRank = [
-                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeInterceptionDefenseRank ?? 0).toString(),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
@@ -1115,13 +916,13 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
-                  if (sportKey == "NCAA") {
+                 /* if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
                       if (gameStartNum == player.gamesStarted) {
                         num totalPlay = player.gamesPlayed ?? 1;
-                        homeQb = [
+                        gameDetails.homeQb = [
                           ((int.parse(player.passing?.yards.toString() ?? "0") /
                               totalPlay)
                               .toStringAsFixed(1)),
@@ -1148,7 +949,7 @@ class GameDetailsController extends GetxController {
                             (player.name ?? "").toString();
                       }
                     }
-                  }
+                  }*/
                 });
               }
               gameDetails.homeRunningBackPlayer.sort((a, b) =>
@@ -1181,7 +982,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<StartingQBModel> qbsList = [
+/*  List<StartingQBModel> qbsList = [
     StartingQBModel(
       playerId: "7738fea8-7ea2-4c4c-b589-bca90b070819",
       playerName: "Nick Mullens",
@@ -1364,17 +1165,17 @@ class GameDetailsController extends GetxController {
       }
     }
     update();
-  }
+  }*/
 
   ///NFL GAME RANK API
-  Future nflGameRankApi({String awayTeamId = '',
+/*  Future nflGameRankApi({String awayTeamId = '',
     String homeTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
     String sportKey = ''}) async {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().nflGameRankApi();
+    result = await GameListingRepo().nflGameRankApi(sportKey);
     try {
       if (result.status) {
         NFLGameRankModel response = NFLGameRankModel.fromJson(result.toJson());
@@ -1476,17 +1277,17 @@ class GameDetailsController extends GetxController {
       showAppSnackBar(errorText);
     }
     update();
-  }
+  }*/
 
 
-  Future getNFLQBSRank({String awayTeamId = '',
+ /* Future getNFLQBSRank({String awayTeamId = '',
     String homeTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
     String sportKey = ''}) async {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().getNFLQBSRank();
+    result = await GameListingRepo().getNFLQBSRank(sportKey);
     try {
       if (result.status) {
         NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
@@ -1495,14 +1296,14 @@ class GameDetailsController extends GetxController {
             if (homeTeamId == element.teamId) {
               gameDetails.homePlayerName=element.playerName??"";
               gameDetails.homePlayerId=element.playerId??"";
-              homeQb = [
+              gameDetails.homeQb = [
                 (element.passingYardOffense??0).toString(),
                 (element.passingTDSOffense??0).toString(),
                 (element.rushingYardOffense??0).toString(),
                 (element.rushingTDsOffense??0).toString(),
                 (element.interceptionOffense??0).toString(),
               ];
-           homeQbRank = [
+              gameDetails.homeQbRank = [
                 (element.passingYardOffenseRank??0).toString(),
                 (element.passingTDSOffenseRank??0).toString(),
                 (element.rushingTDsOffenseRank??0).toString(),
@@ -1512,13 +1313,13 @@ class GameDetailsController extends GetxController {
             }if (awayTeamId == element.teamId) {
               gameDetails.awayPlayerName=element.playerName??"";
               gameDetails.awayPlayerId=element.playerId??"";
-              awayQb = [
+              gameDetails.awayQb = [
                 (element.passingYardOffense??0).toString(),
                 (element.passingTDSOffense??0).toString(),
                 (element.rushingYardOffense??0).toString(),
                 (element.rushingTDsOffense??0).toString(),
                 (element.interceptionOffense??0).toString(),
-              ];awayQbRank = [
+              ];gameDetails.awayQbRank = [
                 (element.passingYardOffenseRank??0).toString(),
                 (element.passingTDSOffenseRank??0).toString(),
                 (element.rushingTDsOffenseRank??0).toString(),
@@ -1537,13 +1338,12 @@ class GameDetailsController extends GetxController {
       showAppSnackBar(errorText);
     }
     update();
-  }
+  }*/
 
   Future nflStaticsAwayTeamResponse({String awayTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
     String sportKey = ''}) async {
-    // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
@@ -1563,171 +1363,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-              String offensivePoint = ((((int.parse(
-                  offenciveData?.touchdowns?.total.toString() ??
-                      "0") *
-                  6) +
-                  (int.parse(
-                      offenciveData?.fieldGoals?.made.toString() ??
-                          "0") *
-                      3) +
-                  (int.parse(offenciveData?.extraPoints?.kicks?.made
-                      .toString() ??
-                      "0") *
-                      1)) /
-                  totalGame)
-                  .toStringAsFixed(2));
-              nflAwayOffensiveRank = [
-                (gameDetails.awayPointOffenseRank ?? 0).toString(),
-                (gameDetails.awayRushingOffenseRank ?? 0).toString(),
-                (gameDetails.awayPassingYardOffenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.awayRedZonEfficiencyOffenceRank ?? 0).toString(),
-                (gameDetails.awayThirdDownOffenceRank ?? 0).toString(),
-                (gameDetails.awayFourthDownOffenseRank?? 0).toString(),
-                (gameDetails.awayFieldGoalOffenseRank ?? 0).toString(),
-                (gameDetails.awayTernOverOffenseRank ?? 0).toString(),
-              ];
-              nflAwayOffensiveList = [
-                sportKey == "NFL"
-                    ? gameDetails.awayPointOffense.toString()
-                    : offensivePoint,
-                sportKey == "NFL"
-                    ? gameDetails.awayRushingOffense.toString()
-                    : ((int.parse(offenciveData?.rushing?.yards.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayPassingYardOffense.toString()
-                    :((int.parse(offenciveData?.passing?.yards.toString() ?? "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayRushingTDSOffense.toString()
-                    :((int.parse(offenciveData?.rushing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.awayPassingTDSOffense.toString()
-                    : ((int.parse(offenciveData?.passing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.awayRedZonEfficiencyOffence.toString()
-                    :'${(double.parse(
-                    (offenciveData?.efficiency?.redzone?.pct ?? "0").toString())
-                    .toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayThirdDownOffence.toString()
-                    : '${(double.parse(
-                    (offenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayFourthDownOffense.toString()
-                    : '${(double.parse(
-                    (offenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayFieldGoalOffense.toString()
-                    :(double.parse(((offenciveData?.fieldGoals?.made ?? 0) /
-                    (offenciveData?.fieldGoals?.attempts ?? 0) *
-                    100)
-                    .toString())
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayTernOverOffense.toString()
-                    :(((offenciveData?.interceptions?.interceptions ?? 0) +
-                    (offenciveData?.fumbles?.lostFumbles ?? 0)) /
-                    totalGame)
-                    .toStringAsFixed(1)
-              ];
-              String defensivePoint = ((((int.parse(
-                  defenciveData?.touchdowns?.total.toString() ??
-                      "0") *
-                  6) +
-                  (int.parse(
-                      defenciveData?.fieldGoals?.made.toString() ??
-                          "0") *
-                      3) +
-                  (int.parse(defenciveData?.extraPoints?.kicks?.made
-                      .toString() ??
-                      "0") *
-                      1)) /
-                  totalGame)
-                  .toStringAsFixed(2));
-              nflAwayDefensiveRank = [
-                (gameDetails.awayPointDefenseRank).toString(),
-                (gameDetails.awayRushingDefenseRank).toString(),
-                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayOpponentRedZonEfficiencyRank ?? 0).toString(),
-                (gameDetails.awayOpponentThirdDownRank ?? 0).toString(),
-                (gameDetails.awayOpponentFourthDownRank?? 0).toString(),
-                (gameDetails.awayFieldGoalDefenseRank ?? 0).toString(),
-                (gameDetails.awayTernOverDefenseRank ?? 0).toString(),
-              ];
-              nflAwayDefensiveList = [
-                sportKey == "NFL"
-                    ? gameDetails.awayPointDefense.toString()
-                    : defensivePoint,
-                sportKey == "NFL"
-                    ? gameDetails.awayRushingDefense.toString()
-                    : ((int.parse(defenciveData?.rushing?.yards.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayPassingYardDefense.toString()
-                    :((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
-                    totalGame)
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayRushingTDSDefence.toString()
-                    : ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.awayPassingTDSDefence.toString()
-                    :((int.parse(defenciveData?.passing?.touchdowns.toString() ??
-                    "0") /
-                    totalGame)
-                    .toStringAsFixed(2)),
-                sportKey == "NFL"
-                    ? gameDetails.awayOpponentRedZonEfficiency.toString()
-                    :'${(double.parse(
-                    (defenciveData?.efficiency?.redzone?.pct ?? "0").toString())
-                    .toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayOpponentThirdDown.toString()
-                    :'${(double.parse(
-                    (defenciveData?.efficiency?.thirddown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayOpponentFourthDown.toString()
-                    : '${(double.parse(
-                    (defenciveData?.efficiency?.fourthdown?.pct ?? "0")
-                        .toString()).toStringAsFixed(1))}%',
-                sportKey == "NFL"
-                    ? gameDetails.awayFieldGoalDefense.toString()
-                    :(double.parse(((defenciveData?.fieldGoals?.made ?? 0) /
-                    (defenciveData?.fieldGoals?.attempts ?? 0) *
-                    100)
-                    .toString())
-                    .toStringAsFixed(1)),
-                sportKey == "NFL"
-                    ? gameDetails.awayTernOverDefense.toString()
-                    :(((defenciveData?.defense?.interceptions ?? 0) +
-                    (defenciveData?.defense?.fumbleRecoveries ?? 0)) /
-                    totalGame)
-                    .toStringAsFixed(1)
-              ];
-              awayDefense = [
+              gameDetails.awayDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                     totalGame)
                     .toStringAsFixed(1)),
@@ -1748,13 +1384,6 @@ class GameDetailsController extends GetxController {
                     .toStringAsFixed(2)),
                 // (offenciveData?.defense?.interceptions ?? "0").toString(),
               ];
-              awayDefenseRank = [
-                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayRushingDefenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayInterceptionDefenseRank ?? 0).toString(),
-              ];
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
               if (response.players != null) {
@@ -1766,13 +1395,13 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
-                  if (sportKey == "NCAA") {
+                 /* if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
                       if (gameStartNum == player.gamesStarted) {
                         num totalPlay = player.gamesPlayed ?? 1;
-                        awayQb = [
+                        gameDetails.awayQb = [
                           ((int.parse(player.passing?.yards.toString() ?? "0") /
                               totalPlay)
                               .toStringAsFixed(1)),
@@ -1800,7 +1429,7 @@ class GameDetailsController extends GetxController {
                             (player.name ?? "").toString();
                       }
                     }
-                  }
+                  }*/
                 });
               }
               gameDetails.awayRunningBackPlayer.sort((a, b) =>
@@ -1814,9 +1443,6 @@ class GameDetailsController extends GetxController {
         }
       } else {
         isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
       }
     } catch (e) {
       isLoading.value = false;
@@ -2121,8 +1747,7 @@ class GameDetailsController extends GetxController {
 
   ///NBA STATICS API
 
-  List<String> nbaAwayOffensiveList = [];
-  List<String> nbaAwayDefensiveList = [];
+
 
   Future staticsAwayNBA({
     String awayId = '',
@@ -2139,9 +1764,10 @@ class GameDetailsController extends GetxController {
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+      if(key=="NCAAB"){
         if (response.ownRecord != null) {
           var nbaOffensiveAverage = response.ownRecord?.average;
-          nbaAwayOffensiveList = [
+          gameDetails.nbaAwayOffensiveList = [
             ((nbaOffensiveAverage?.points ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
             ((nbaOffensiveAverage?.assists ?? 0).toStringAsFixed(1)),
@@ -2168,7 +1794,7 @@ class GameDetailsController extends GetxController {
         }
         if (response.opponents != null) {
           var nbaDefensiveAverage = response.opponents?.average;
-          nbaAwayDefensiveList = [
+          gameDetails.nbaAwayDefensiveList = [
             ((nbaDefensiveAverage?.points ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
             ((nbaDefensiveAverage?.assists ?? 0).toStringAsFixed(1)),
@@ -2193,6 +1819,7 @@ class GameDetailsController extends GetxController {
             '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
           ];
         }
+      }
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.awayRushingPlayer.add(player);
@@ -2214,80 +1841,81 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<String> nbaHomeOffensiveList = [];
-  List<String> nbaHomeDefensiveList = [];
+
 
   Future staticsHomeNBA({
     String homeId = '',
     bool isLoad = false,
     required SportEvents gameDetails,
-    String key = '',
+    String sportKey = '',
   }) async {
     gameDetails.homeRushingPlayer.clear();
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result =
-    await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: homeId);
+    await GameListingRepo().nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
 
-        if (response.ownRecord != null) {
-          var nbaOffensiveAverage = response.ownRecord?.average;
-          nbaHomeOffensiveList = [
-            ((nbaOffensiveAverage?.points ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-            '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.freeThrowsPct ?? 0) * (100)).round()}%',
-            '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.threePointsPct ?? 0) * (100)).round()}%',
-            '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100))
-                .round()}%',
-            '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-          ];
-        }
-        if (response.opponents != null) {
-          var nbaDefensiveAverage = response.opponents?.average;
-          nbaHomeDefensiveList = [
-            ((nbaDefensiveAverage?.points ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-            '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.freeThrowsPct ?? 0) * (100)).round()}%',
-            '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.threePointsPct ?? 0) * (100)).round()}%',
-            '${((response.opponents?.total?.trueShootingPct ?? 0) * (100))
-                .round()}%',
-            '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-          ];
-        }
+        if(sportKey=="NCAAB"){
+          if (response.ownRecord != null) {
+            var nbaOffensiveAverage = response.ownRecord?.average;
+            gameDetails.nbaHomeOffensiveList = [
+              ((nbaOffensiveAverage?.points ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.assists ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.steals ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
+              ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
+              '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
+                  ?.fieldGoalsPct ?? 0) * (100)).round()}%',
+              '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
+                  ?.freeThrowsPct ?? 0) * (100)).round()}%',
+              '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
+                  ?.threePointsPct ?? 0) * (100)).round()}%',
+              '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100))
+                  .round()}%',
+              '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
+            ];
+          }
+          if (response.opponents != null) {
+            var nbaDefensiveAverage = response.opponents?.average;
+            gameDetails.nbaHomeDefensiveList = [
+              ((nbaDefensiveAverage?.points ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.assists ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.steals ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
+              ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
+              '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.opponents?.total
+                  ?.fieldGoalsPct ?? 0) * (100)).round()}%',
+              '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.opponents?.total
+                  ?.freeThrowsPct ?? 0) * (100)).round()}%',
+              '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
+                  1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0)
+                  .toStringAsFixed(1)} / ${((response.opponents?.total
+                  ?.threePointsPct ?? 0) * (100)).round()}%',
+              '${((response.opponents?.total?.trueShootingPct ?? 0) * (100))
+                  .round()}%',
+              '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
+            ];
+          }
 
+        }
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.homeRushingPlayer.add(player);
@@ -2471,50 +2099,6 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
-      nflGameRankApi(
-        gameDetails: gameDetails,
-        awayTeamId: awayTeam?.abbreviation == 'LV'
-            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-            : replaceId(awayTeam?.uuids ?? ''),
-        homeTeamId: homeTeam?.abbreviation == 'LV'
-            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-            : replaceId(homeTeam?.uuids ?? ''),
-        isLoad: false,
-        sportKey: sportKey,
-      );
-      getNFLQBSRank(gameDetails: gameDetails,
-        awayTeamId: awayTeam?.abbreviation == 'LV'
-            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-            : replaceId(awayTeam?.uuids ?? ''),
-        homeTeamId: homeTeam?.abbreviation == 'LV'
-            ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-            : replaceId(homeTeam?.uuids ?? ''),
-        isLoad: false,
-        sportKey: sportKey,);
-      /*depthChartResponse(
-          gameDetails: gameDetails,
-          isLoad: false,
-          sportKey: sportKey,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''))
-          .then((value) {
-        if (gameDetails.homePlayerId.isNotEmpty) {
-          profileHomeTeamResponse(
-              sportKey: sportKey,
-              playerId: gameDetails.homePlayerId,
-              isLoad: isLoad);
-        }
-        if (gameDetails.awayPlayerId.isNotEmpty) {
-          profileAwayTeamResponse(
-              sportKey: sportKey,
-              playerId: gameDetails.awayPlayerId,
-              isLoad: isLoad);
-        }
-      });*/
       nflStaticsAwayTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,
@@ -2559,40 +2143,12 @@ class GameDetailsController extends GetxController {
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;
-      depthChartResponse(
-          gameDetails: gameDetails,
-          isLoad: false,
-          sportKey: sportKey,
-          awayTeamId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''))
-          .then((value) {
-        if (gameDetails.homePlayerId.isNotEmpty) {
-          profileHomeTeamResponse(
-              sportKey: sportKey,
-              playerId: gameDetails.homePlayerId,
-              isLoad: isLoad);
-        }
-        if (gameDetails.awayPlayerId.isNotEmpty) {
-          profileAwayTeamResponse(
-              sportKey: sportKey,
-              playerId: gameDetails.awayPlayerId,
-              isLoad: isLoad);
-        }
-      });
       recordsOfNCAAAndNFL(
           isLoad: false,
           sportEvent: gameDetails,
           key: sportKey,
-          awayId: awayTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(awayTeam?.uuids ?? ''),
-          homeId: homeTeam?.abbreviation == 'LV'
-              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-              : replaceId(homeTeam?.uuids ?? ''));
+          awayId:  replaceId(awayTeam?.uuids ?? ''),
+          homeId:replaceId(homeTeam?.uuids ?? ''));
       nflStaticsAwayTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,
@@ -2617,10 +2173,11 @@ class GameDetailsController extends GetxController {
         key: sportKey,
         awayId: replaceId(awayTeam?.uuids ?? ''),
       );
+
       staticsHomeNBA(
         gameDetails: gameDetails,
         isLoad: isLoad,
-        key: sportKey,
+        sportKey: sportKey,
         homeId: replaceId(homeTeam?.uuids ?? ''),
       );
       recordsOfNCAAAndNFL(

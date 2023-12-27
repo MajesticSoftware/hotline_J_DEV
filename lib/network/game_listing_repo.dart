@@ -303,12 +303,12 @@ class GameListingRepo {
   }
 
   ///NFL GAME RANK API
-  Future<ResponseItem> nflGameRankApi() async {
+  Future<ResponseItem> nflGameRankApi(String sportKey) async {
     bool status = false;
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters = {RequestParam.service: MethodNames.getNFLGameOffenseRank};
+    var queryParameters =sportKey=="NFL"? {RequestParam.service: MethodNames.getNFLGameOffenseRank}: {RequestParam.service: MethodNames.getNCAAFGameOffenseRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -322,12 +322,12 @@ class GameListingRepo {
   }
 
   ///NFL QBS RANK
-Future<ResponseItem> getNFLQBSRank() async {
+Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     bool status = false;
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters = {RequestParam.service: MethodNames.getNFLQBSRank};
+    var queryParameters = sportKey=="NFL"?{RequestParam.service: MethodNames.getNFLQBSRank}: {RequestParam.service: MethodNames.getNCAAFQBSRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -340,7 +340,24 @@ Future<ResponseItem> getNFLQBSRank() async {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+///NBA GAME RANK
+  Future<ResponseItem> nbaGameRankApi(String sportKey) async {
+    bool status = false;
+    ResponseItem result;
+    dynamic data;
+    String message = "";
+    var queryParameters ={RequestParam.service: MethodNames.getNBAGameOffenseRank};
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.postRequest(requestUrl, {}, false);
 
+    status = result.status;
+
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
 
 
   ///OTHER APIS--LOGOS

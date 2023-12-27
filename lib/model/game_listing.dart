@@ -61,98 +61,30 @@ class SportEvents {
   String? scheduled;
   bool? startTimeTbd;
   String? status;
+  List<String> nbaAwayOffensiveList = [];
+  List<String> nbaAwayDefensiveList = [];
+  List<String> nbaHomeOffensiveList = [];
+  List<String> nbaHomeDefensiveList = [];
+  List<String> nbaAwayOffensiveRank = [];
+  List<String> nbaAwayDefensiveRank = [];
+  List<String> nbaHomeOffensiveRank = [];
+  List<String> nbaHomeDefensiveRank = [];
+  List<String> nflHomeOffensiveList = [];
+  List<String> nflHomeDefensiveList = [];
+  List<String> nflAwayOffensiveList = [];
+  List<String> nflAwayDefensiveList = [];
   List<String> nflHomeOffensiveRank = [];
   List<String> nflHomeDefensiveRank = [];
   List<String> nflAwayOffensiveRank = [];
   List<String> nflAwayDefensiveRank = [];
+  List<String> homeDefense = const [];
+  List<String> awayDefense = const [];
+  List<String> awayQb = const [];
+  List<String> homeQb = const [];
   List<String> awayQbRank = [];
   List<String> awayQbDefenseRank = [];
-
   List<String> homeQbRank = [];
   List<String> homeQbDefenseRank = [];
-
-  num? awayPointOffenseRank;
-  num? awayPointDefenseRank;
-  num? awayRushingOffenseRank;
-  num? awayRushingDefenseRank;
-  num? homePointOffenseRank;
-  num? homePointDefenseRank;
-  num? homeRushingOffenseRank;
-  num? homeRushingDefenseRank;
-  num? awayPointOffense;
-  num? awayPointDefense;
-  num? awayRushingOffense;
-  num? awayRushingDefense;
-  num? homePointOffense;
-  num? homePointDefense;
-  num? homeRushingOffense;
-  num? homeRushingDefense;
-  num? homePassingYardOffense;
-  num? homePassingYardDefense;
-  num? homeRushingTDSOffense;
-  num? homeRushingTDSDefence;
-  num? homePassingTDSOffense;
-  num? homePassingTDSDefence;
-  num? homeRedZonEfficiencyOffence;
-  num? homeOpponentRedZonEfficiency;
-  num? homeThirdDownOffence;
-  num? homeOpponentThirdDown;
-  num? homeFourthDownOffense;
-  num? homeOpponentFourthDown;
-  num? homeFieldGoalOffense;
-  num? homeFieldGoalDefense;
-  num? homeTernOverOffense;
-  num? homeTernOverDefense;
-  num? awayPassingYardOffense;
-  num? awayPassingYardDefense;
-  num? awayRushingTDSOffense;
-  num? awayRushingTDSDefence;
-  num? awayPassingTDSOffense;
-  num? awayPassingTDSDefence;
-  num? awayRedZonEfficiencyOffence;
-  num? awayOpponentRedZonEfficiency;
-  num? awayThirdDownOffence;
-  num? awayOpponentThirdDown;
-  num? awayFourthDownOffense;
-  num? awayOpponentFourthDown;
-  num? awayFieldGoalOffense;
-  num? awayFieldGoalDefense;
-  num? awayTernOverOffense;
-  num? awayTernOverDefense;
-  num? homePassingYardOffenseRank;
-  num? homePassingYardDefenseRank;
-  num? homeRushingTDSOffenseRank;
-  num? homeRushingTDSDefenceRank;
-  num? homePassingTDSOffenseRank;
-  num? homePassingTDSDefenceRank;
-  num? homeRedZonEfficiencyOffenceRank;
-  num? homeOpponentRedZonEfficiencyRank;
-  num? homeThirdDownOffenceRank;
-  num? homeOpponentThirdDownRank;
-  num? homeFourthDownOffenseRank;
-  num? homeOpponentFourthDownRank;
-  num? homeFieldGoalOffenseRank;
-  num? homeFieldGoalDefenseRank;
-  num? homeTernOverOffenseRank;
-  num? homeTernOverDefenseRank;
-  num? homeInterceptionDefenseRank;
-  num? awayPassingYardOffenseRank;
-  num? awayPassingYardDefenseRank;
-  num? awayRushingTDSOffenseRank;
-  num? awayRushingTDSDefenceRank;
-  num? awayPassingTDSOffenseRank;
-  num? awayPassingTDSDefenceRank;
-  num? awayRedZonEfficiencyOffenceRank;
-  num? awayOpponentRedZonEfficiencyRank;
-  num? awayThirdDownOffenceRank;
-  num? awayOpponentThirdDownRank;
-  num? awayFourthDownOffenseRank;
-  num? awayOpponentFourthDownRank;
-  num? awayFieldGoalOffenseRank;
-  num? awayFieldGoalDefenseRank;
-  num? awayTernOverOffenseRank;
-  num? awayTernOverDefenseRank;
-  num? awayInterceptionDefenseRank;
   TournamentRound? tournamentRound;
   Season? season;
   Tournament? tournament;
@@ -220,96 +152,30 @@ class SportEvents {
     this.scheduled,
     this.startTimeTbd,
     this.status,
+    this.nbaAwayOffensiveList = const [],
+    this.nbaAwayDefensiveList = const [],
+    this.nbaHomeOffensiveList = const [],
+    this.nbaHomeDefensiveList = const [],
+    this.nbaAwayOffensiveRank = const [],
+    this.nbaAwayDefensiveRank = const [],
+    this.nbaHomeOffensiveRank = const [],
+    this.nbaHomeDefensiveRank = const [],
     this.nflHomeOffensiveRank = const [],
     this.nflHomeDefensiveRank = const [],
     this.nflAwayOffensiveRank = const [],
     this.nflAwayDefensiveRank = const [],
+    this.nflHomeOffensiveList = const [],
+    this.nflHomeDefensiveList = const [],
+    this.nflAwayOffensiveList = const [],
+    this.nflAwayDefensiveList = const [],
+    this.homeDefense = const [],
+    this.awayDefense = const [],
+    this.awayQb = const [],
+    this.homeQb = const [],
     this.awayQbRank = const [],
     this.homeQbRank = const [],
     this.awayQbDefenseRank = const [],
     this.homeQbDefenseRank = const [],
-    this.awayPointOffenseRank = 0,
-    this.awayPointDefenseRank = 0,
-    this.awayRushingOffenseRank = 0,
-    this.awayRushingDefenseRank = 0,
-    this.homePointOffenseRank = 0,
-    this.homePointDefenseRank = 0,
-    this.homeRushingOffenseRank = 0,
-    this.homeRushingDefenseRank = 0,
-    this.awayPointOffense = 0,
-    this.awayPointDefense = 0,
-    this.awayRushingOffense = 0,
-    this.awayRushingDefense = 0,
-    this.homePointOffense = 0,
-    this.homePointDefense = 0,
-    this.homeRushingOffense = 0,
-    this.homeRushingDefense = 0,
-    this.homePassingYardOffense = 0,
-    this.homePassingYardDefense = 0,
-    this.homeRushingTDSOffense = 0,
-    this.homeRushingTDSDefence = 0,
-    this.homePassingTDSOffense = 0,
-    this.homePassingTDSDefence = 0,
-    this.homeRedZonEfficiencyOffence = 0,
-    this.homeOpponentRedZonEfficiency = 0,
-    this.homeThirdDownOffence = 0,
-    this.homeOpponentThirdDown = 0,
-    this.homeFourthDownOffense = 0,
-    this.homeOpponentFourthDown = 0,
-    this.homeFieldGoalOffense = 0,
-    this.homeFieldGoalDefense = 0,
-    this.homeTernOverOffense = 0,
-    this.homeTernOverDefense = 0,
-    this.awayPassingYardOffense = 0,
-    this.awayPassingYardDefense = 0,
-    this.awayRushingTDSOffense = 0,
-    this.awayRushingTDSDefence = 0,
-    this.awayPassingTDSOffense = 0,
-    this.awayPassingTDSDefence = 0,
-    this.awayRedZonEfficiencyOffence = 0,
-    this.awayOpponentRedZonEfficiency = 0,
-    this.awayThirdDownOffence = 0,
-    this.awayOpponentThirdDown = 0,
-    this.awayFourthDownOffense = 0,
-    this.awayOpponentFourthDown = 0,
-    this.awayFieldGoalOffense = 0,
-    this.awayFieldGoalDefense = 0,
-    this.awayTernOverOffense = 0,
-    this.awayTernOverDefense = 0,
-    this.homePassingYardOffenseRank = 0,
-    this.homePassingYardDefenseRank = 0,
-    this.homeRushingTDSOffenseRank = 0,
-    this.homeRushingTDSDefenceRank = 0,
-    this.homePassingTDSOffenseRank = 0,
-    this.homePassingTDSDefenceRank = 0,
-    this.homeRedZonEfficiencyOffenceRank = 0,
-    this.homeOpponentRedZonEfficiencyRank = 0,
-    this.homeThirdDownOffenceRank = 0,
-    this.homeOpponentThirdDownRank = 0,
-    this.homeFourthDownOffenseRank = 0,
-    this.homeOpponentFourthDownRank = 0,
-    this.homeFieldGoalOffenseRank = 0,
-    this.homeFieldGoalDefenseRank = 0,
-    this.homeTernOverOffenseRank = 0,
-    this.homeTernOverDefenseRank = 0,
-    this.awayPassingYardOffenseRank = 0,
-    this.awayPassingYardDefenseRank = 0,
-    this.awayRushingTDSOffenseRank = 0,
-    this.awayRushingTDSDefenceRank = 0,
-    this.awayPassingTDSOffenseRank = 0,
-    this.awayPassingTDSDefenceRank = 0,
-    this.awayRedZonEfficiencyOffenceRank = 0,
-    this.awayOpponentRedZonEfficiencyRank = 0,
-    this.awayThirdDownOffenceRank = 0,
-    this.awayOpponentThirdDownRank = 0,
-    this.awayFourthDownOffenseRank = 0,
-    this.awayOpponentFourthDownRank = 0,
-    this.awayFieldGoalOffenseRank = 0,
-    this.awayFieldGoalDefenseRank = 0,
-    this.awayTernOverOffenseRank = 0,
-    this.awayTernOverDefenseRank = 0,
-    this.awayInterceptionDefenseRank = 0,
-    this.homeInterceptionDefenseRank = 0,
     this.tournamentRound,
     this.season,
     this.tournament,
@@ -403,9 +269,8 @@ class SportEvents {
       }
     }
     for (int index = 0; index < 5; index++) {
-      int condition3 = (int.tryParse(homeQbDefenseRank.isEmpty
-                  ? "0"
-                  : homeQbDefenseRank[index]) ??
+      int condition3 = (int.tryParse(
+                  homeQbDefenseRank.isEmpty ? "0" : homeQbDefenseRank[index]) ??
               0) -
           (int.tryParse(awayQbRank.isEmpty ? "0" : awayQbRank[index]) ?? 0);
 
@@ -414,6 +279,24 @@ class SportEvents {
               (int.tryParse(awayQbDefenseRank.isEmpty
                       ? "0"
                       : awayQbDefenseRank[index]) ??
+                  0);
+      if (condition3 >= 15 || condition3 <= -15) {
+        flamValue += 1;
+      }
+      if (condition4 >= 15 || condition4 <= -15) {
+        flamValue += 1;
+      }
+    } for (int index = 0; index < 12; index++) {
+      int condition3 = (int.tryParse(
+                  nbaHomeDefensiveRank.isEmpty ? "0" : nbaHomeDefensiveRank[index]) ??
+              0) -
+          (int.tryParse(nbaAwayOffensiveRank.isEmpty ? "0" : nbaAwayOffensiveRank[index]) ?? 0);
+
+      int condition4 =
+          (int.tryParse(nbaHomeOffensiveRank.isEmpty ? "0" : nbaHomeOffensiveRank[index]) ?? 0) -
+              (int.tryParse(nbaAwayDefensiveRank.isEmpty
+                      ? "0"
+                      : nbaAwayDefensiveRank[index]) ??
                   0);
       if (condition3 >= 15 || condition3 <= -15) {
         flamValue += 1;

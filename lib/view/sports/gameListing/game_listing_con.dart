@@ -15,6 +15,7 @@ import '../../../extras/constants.dart';
 import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
+import '../../../model/nba_rank_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/nfl_qbs_rank_model.dart';
 import '../../../model/nfl_rank_model.dart';
@@ -79,8 +80,6 @@ class GameListingController extends GetxController {
       },
     );
   }
-
-
 
   tabClick(BuildContext context, int index) {
     searchCon.clear();
@@ -1102,6 +1101,8 @@ class GameListingController extends GetxController {
                 sportId: sportId)
             .then((value) {
           getAllEventList(sportKey, isLoad);
+          nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+          getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
           if (i == 12) {
@@ -1263,8 +1264,10 @@ class GameListingController extends GetxController {
                 date: DateFormat('yyyy-MM-dd')
                     .format(DateTime.parse(date).add(Duration(days: i))),
                 sportId: sportId)
-            .then((value) {
+            .then((value) async {
           getAllEventList(sportKey, isLoad);
+          nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+          getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
           if (i == 5) {
             isPagination = false;
           }
@@ -1279,42 +1282,12 @@ class GameListingController extends GetxController {
                     key: sportKey,
                     gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
                     index: i);
-                for (var team in nflSportEventsList[i].competitors) {
-                  Competitors? homeTeam;
-                  Competitors? awayTeam;
-                  if (team.qualifier == "home") {
-                    homeTeam = team;
-                  } else if (team.qualifier == "away") {
-                    awayTeam = team;
-                  }
-                  nflGameRankApi(
-                    gameDetails: nflSportEventsList[i],
-                    awayTeamId: awayTeam?.abbreviation == 'LV'
-                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                        : replaceId(awayTeam?.uuids ?? ''),
-                    homeTeamId: homeTeam?.abbreviation == 'LV'
-                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                        : replaceId(homeTeam?.uuids ?? ''),
-                    isLoad: false,
-                    sportKey: sportKey,
-                  );
-                  getNFLQBSRank(
-                    gameDetails: nflSportEventsList[i],
-                    awayTeamId: awayTeam?.abbreviation == 'LV'
-                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                        : replaceId(awayTeam?.uuids ?? ''),
-                    homeTeamId: homeTeam?.abbreviation == 'LV'
-                        ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                        : replaceId(homeTeam?.uuids ?? ''),
-                    isLoad: false,
-                    sportKey: sportKey,
-                  );
-                }
               }
             }
           }
         });
       }
+
       if (nflTodayEventsList.isNotEmpty) {
         timerNFL = Timer.periodic(const Duration(seconds: 45), (t) {
           gameListingTodayApiRes(
@@ -1428,167 +1401,150 @@ class GameListingController extends GetxController {
   }
 
   ///NFL GAME RANK API
-  Future nflGameRankApi(
-      {String awayTeamId = '',
-      String homeTeamId = '',
-      required SportEvents gameDetails,
-      bool isLoad = false,
-      String sportKey = ''}) async {
+  Future nflGameRankApi({bool isLoad = false, String sportKey = ''}) async {
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().nflGameRankApi();
+    result = await GameListingRepo().nflGameRankApi(sportKey);
     try {
       if (result.status) {
         NFLGameRankModel response = NFLGameRankModel.fromJson(result.toJson());
         if (response.data != null) {
-          response.data?.forEach((team) {
-            if (awayTeamId == replaceId(team.teamId ?? "")) {
-              gameDetails.awayPointOffenseRank = team.pointOffenceRank ?? 0;
-              gameDetails.awayPointDefenseRank = team.pointsDefenseRank ?? 0;
-              gameDetails.awayRushingOffenseRank = team.rushingOffenseRank ?? 0;
-              gameDetails.awayRushingDefenseRank = team.rushingDefenseRank ?? 0;
-              gameDetails.awayPointOffense = team.pointsOffense ?? 0;
-              gameDetails.awayPointDefense = team.pointsDefense ?? 0;
-              gameDetails.awayRushingOffense = team.rushingOffense ?? 0;
-              gameDetails.awayRushingDefense = team.rushingDefense ?? 0;
-              gameDetails.awayPassingYardOffense=team.passingYardOffense??0;
-              gameDetails.awayPassingYardDefense=team.passingYardDefense??0;
-              gameDetails.awayRushingTDSOffense=team.rushingTDSOffense??0;
-              gameDetails.awayRushingTDSDefence=team.rushingTDSDefence??0;
-              gameDetails.awayPassingTDSOffense=team.passingTDSOffense??0;
-              gameDetails.awayPassingTDSDefence=team.passingTDSDefence??0;
-              gameDetails.awayRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
-              gameDetails.awayOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
-              gameDetails.awayThirdDownOffence=team.thirdDownOffence??0;
-              gameDetails.awayOpponentThirdDown=team.opponentThirdDown??0;
-              gameDetails.awayFourthDownOffense=team.fourthDownOffense??0;
-              gameDetails.awayOpponentFourthDown=team.opponentFourtDown??0;
-              gameDetails.awayFieldGoalOffense=team.fieldGoalOffense??0;
-              gameDetails.awayFieldGoalDefense=team.fieldGoalDefense??0;
-              gameDetails.awayTernOverOffense=team.ternoverOffense??0;
-              gameDetails.awayTernOverDefense=team.ternoverDefense??0;
-              gameDetails.awayPassingYardOffenseRank=team.passingYardOffenseRank??0;
-              gameDetails.awayPassingYardDefenseRank=team.passingYardDefenseRank??0;
-              gameDetails.awayRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
-              gameDetails.awayRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
-              gameDetails.awayPassingTDSOffenseRank=team.passingTDSOffenseRank??0;
-              gameDetails.awayPassingTDSDefenceRank=team.passingTDSDefenceRank??0;
-              gameDetails.awayRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
-              gameDetails.awayOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
-              gameDetails.awayThirdDownOffenceRank=team.thirdDownOffenceRank??0;
-              gameDetails.awayOpponentThirdDownRank=team.opponentThirdDownRank??0;
-              gameDetails.awayFourthDownOffenseRank=team.fourthDownOffenseRank??0;
-              gameDetails.awayOpponentFourthDownRank=team.opponentFourtDownRank??0;
-              gameDetails.awayFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
-              gameDetails.awayFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
-              gameDetails.awayTernOverOffenseRank=team.ternoverOffenseRank??0;
-              gameDetails.awayTernOverDefenseRank=team.ternoverDefenseRank??0;
-              gameDetails.nflAwayOffensiveRank = [
-                (gameDetails.awayPointOffenseRank ?? 0).toString(),
-                (gameDetails.awayRushingOffenseRank ?? 0).toString(),
-                (gameDetails.awayPassingYardOffenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.awayRedZonEfficiencyOffenceRank ?? 0).toString(),
-                (gameDetails.awayThirdDownOffenceRank ?? 0).toString(),
-                (gameDetails.awayFourthDownOffenseRank?? 0).toString(),
-                (gameDetails.awayFieldGoalOffenseRank ?? 0).toString(),
-                (gameDetails.awayTernOverOffenseRank ?? 0).toString(),
-              ];
-              gameDetails.nflAwayDefensiveRank = [
-                (gameDetails.awayPointDefenseRank).toString(),
-                (gameDetails.awayRushingDefenseRank).toString(),
-                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayOpponentRedZonEfficiencyRank ?? 0).toString(),
-                (gameDetails.awayOpponentThirdDownRank ?? 0).toString(),
-                (gameDetails.awayOpponentFourthDownRank?? 0).toString(),
-                (gameDetails.awayFieldGoalDefenseRank ?? 0).toString(),
-                (gameDetails.awayTernOverDefenseRank ?? 0).toString(),
-              ];
-              gameDetails.awayQbDefenseRank = [
-                (gameDetails.awayPassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.awayPassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayRushingDefenseRank ?? 0).toString(),
-                (gameDetails.awayRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.awayInterceptionDefenseRank ?? 0).toString(),
-              ];
+          for (var element in (getSportEventList(sportKey))) {
+            Competitors? homeTeam;
+            Competitors? awayTeam;
+            if (element.competitors[0].qualifier == 'home') {
+              homeTeam = element.competitors[0];
+            } else {
+              awayTeam = element.competitors[0];
             }
-            if (homeTeamId == replaceId(team.teamId ?? "")) {
-              gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
-              gameDetails.homePointDefenseRank = team.pointsDefenseRank ?? 0;
-              gameDetails.homeRushingOffenseRank = team.rushingOffenseRank ?? 0;
-              gameDetails.homeRushingDefenseRank = team.rushingDefenseRank ?? 0;
-              gameDetails.homePointOffense = team.pointsOffense ?? 0;
-              gameDetails.homePointDefense = team.pointsDefense ?? 0;
-              gameDetails.homeRushingOffense = team.rushingOffense ?? 0;
-              gameDetails.homeRushingDefense = team.rushingDefense ?? 0;
-              gameDetails.homePassingYardOffense=team.passingYardOffense??0;
-              gameDetails.homePassingYardDefense=team.passingYardDefense??0;
-              gameDetails.homeRushingTDSOffense=team.rushingTDSOffense??0;
-              gameDetails.homeRushingTDSDefence=team.rushingTDSDefence??0;
-              gameDetails.homePassingTDSOffense=team.passingTDSOffense??0;
-              gameDetails.homePassingTDSDefence=team.passingTDSDefence??0;
-              gameDetails.homeRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
-              gameDetails.homeOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
-              gameDetails.homeThirdDownOffence=team.thirdDownOffence??0;
-              gameDetails.homeOpponentThirdDown=team.opponentThirdDown??0;
-              gameDetails.homeFourthDownOffense=team.fourthDownOffense??0;
-              gameDetails.homeOpponentFourthDown=team.opponentFourtDown??0;
-              gameDetails.homeFieldGoalOffense=team.fieldGoalOffense??0;
-              gameDetails.homeFieldGoalDefense=team.fieldGoalDefense??0;
-              gameDetails.homeTernOverOffense=team.ternoverOffense??0;
-              gameDetails.homeTernOverDefense=team.ternoverDefense??0;
-              gameDetails.homePassingYardOffenseRank=team.passingYardOffenseRank??0;
-              gameDetails.homePassingYardDefenseRank=team.passingYardDefenseRank??0;
-              gameDetails.homeRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
-              gameDetails.homeRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
-              gameDetails.homePassingTDSOffenseRank=team.passingTDSOffenseRank??0;
-              gameDetails.homePassingTDSDefenceRank=team.passingTDSDefenceRank??0;
-              gameDetails.homeRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
-              gameDetails.homeOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
-              gameDetails.homeThirdDownOffenceRank=team.thirdDownOffenceRank??0;
-              gameDetails.homeOpponentThirdDownRank=team.opponentThirdDownRank??0;
-              gameDetails.homeFourthDownOffenseRank=team.fourthDownOffenseRank??0;
-              gameDetails.homeOpponentFourthDownRank=team.opponentFourtDownRank??0;
-              gameDetails.homeFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
-              gameDetails.homeFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
-              gameDetails.homeTernOverOffenseRank=team.ternoverOffenseRank??0;
-              gameDetails.homeTernOverDefenseRank=team.ternoverDefenseRank??0;
-              gameDetails.nflHomeOffensiveRank = [
-                (gameDetails.homePointOffenseRank ?? 0).toString(),
-                (gameDetails.homeRushingOffenseRank ?? 0).toString(),
-                (gameDetails.homePassingYardOffenseRank ?? 0).toString(),
-                (gameDetails.homeRushingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.homePassingTDSOffenseRank ?? 0).toString(),
-                (gameDetails.homeRedZonEfficiencyOffenceRank ?? 0).toString(),
-                (gameDetails.homeThirdDownOffenceRank ?? 0).toString(),
-                (gameDetails.homeFourthDownOffenseRank?? 0).toString(),
-                (gameDetails.homeFieldGoalOffenseRank ?? 0).toString(),
-                (gameDetails.homeTernOverOffenseRank ?? 0).toString(),
-              ];
-              gameDetails.nflHomeDefensiveRank = [
-                (gameDetails.homePointDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
-                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeOpponentRedZonEfficiencyRank ?? 0).toString(),
-                (gameDetails.homeOpponentThirdDownRank ?? 0).toString(),
-                (gameDetails.homeOpponentFourthDownRank?? 0).toString(),
-                (gameDetails.homeFieldGoalDefenseRank ?? 0).toString(),
-                (gameDetails.homeTernOverDefenseRank ?? 0).toString(),
-              ];
-              gameDetails.homeQbDefenseRank = [
-                (gameDetails.homePassingYardDefenseRank ?? 0).toString(),
-                (gameDetails.homePassingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeRushingDefenseRank ?? 0).toString(),
-                (gameDetails.homeRushingTDSDefenceRank ?? 0).toString(),
-                (gameDetails.homeInterceptionDefenseRank ?? 0).toString(),
-              ];
+            if (element.competitors[1].qualifier == 'away') {
+              awayTeam = element.competitors[1];
+            } else {
+              homeTeam = element.competitors[1];
             }
-          });
+            response.data?.forEach((team) {
+              if ((awayTeam?.abbreviation == 'LV'
+                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                      : replaceId(awayTeam?.uuids ?? '')) ==
+                  replaceId(team.teamId ?? "")) {
+                element.nflAwayOffensiveRank = [
+                  (team.pointOffenceRank ?? 0).toString(),
+                  (team.rushingOffenseRank ?? 0).toString(),
+                  (team.passingYardOffenseRank ?? 0).toString(),
+                  (team.rushingTDSOffenseRank ?? 0).toString(),
+                  (team.passingTDSOffenseRank ?? 0).toString(),
+                  (team.redzonEfficiencyOffenceRank ?? 0).toString(),
+                  (team.thirdDownOffenceRank ?? 0).toString(),
+                  (team.fourthDownOffenseRank ?? 0).toString(),
+                  (team.fieldGoalOffenseRank ?? 0).toString(),
+                  (team.ternoverOffenseRank ?? 0).toString(),
+                ];
+                element.nflAwayOffensiveList = [
+                  (team.pointsOffense ?? 0).toString(),
+                  (team.rushingOffense ?? 0).toString(),
+                  (team.passingYardOffense ?? 0).toString(),
+                  (team.rushingTDSOffense ?? 0).toString(),
+                  (team.passingTDSOffense ?? 0).toString(),
+                  ('${team.redzonEfficiencyOffence ?? 0}%').toString(),
+                  ('${team.thirdDownOffence ?? 0}%').toString(),
+                  ('${team.fourthDownOffense ?? 0}%').toString(),
+                  (team.fieldGoalOffense ?? 0).toString(),
+                  (team.ternoverOffense ?? 0).toString(),
+                ];
+                element.nflAwayDefensiveRank = [
+                  (team.pointsDefenseRank ?? 0).toString(),
+                  (team.rushingDefenseRank ?? 0).toString(),
+                  (team.passingYardDefenseRank ?? 0).toString(),
+                  (team.rushingTDSDefenceRank ?? 0).toString(),
+                  (team.passingTDSDefenceRank ?? 0).toString(),
+                  (team.opponentRedzonEfficiencyRank ?? 0).toString(),
+                  (team.opponentThirdDownRank ?? 0).toString(),
+                  (team.opponentFourtDownRank ?? 0).toString(),
+                  (team.fieldGoalDefenseRank ?? 0).toString(),
+                  (team.ternoverDefenseRank ?? 0).toString(),
+                ];
+                element.nflAwayDefensiveList = [
+                  (team.pointsDefense ?? 0).toString(),
+                  (team.rushingDefense ?? 0).toString(),
+                  (team.passingYardDefense ?? 0).toString(),
+                  (team.rushingTDSDefence ?? 0).toString(),
+                  (team.passingTDSDefence ?? 0).toString(),
+                  ('${team.opponentRedzonEfficiency ?? 0}%').toString(),
+                  ('${team.opponentThirdDown ?? 0}%').toString(),
+                  ('${team.opponentFourtDown ?? 0}%').toString(),
+                  (team.fieldGoalDefense ?? 0).toString(),
+                  (team.ternoverDefense ?? 0).toString(),
+                ];
+                element.awayQbDefenseRank = [
+                  (team.passingYardDefenseRank ?? 0).toString(),
+                  (team.passingTDSDefenceRank ?? 0).toString(),
+                  (team.rushingDefenseRank ?? 0).toString(),
+                  (team.rushingTDSDefenceRank ?? 0).toString(),
+                  (team.interceptionDefenseRank ?? 0).toString(),
+                ];
+              }
+              if ((homeTeam?.abbreviation == 'LV'
+                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                      : replaceId(homeTeam?.uuids ?? '')) ==
+                  replaceId(team.teamId ?? "")) {
+                element.nflHomeOffensiveRank = [
+                  (team.pointOffenceRank ?? 0).toString(),
+                  (team.rushingOffenseRank ?? 0).toString(),
+                  (team.passingYardOffenseRank ?? 0).toString(),
+                  (team.rushingTDSOffenseRank ?? 0).toString(),
+                  (team.passingTDSOffenseRank ?? 0).toString(),
+                  (team.redzonEfficiencyOffenceRank ?? 0).toString(),
+                  (team.thirdDownOffenceRank ?? 0).toString(),
+                  (team.fourthDownOffenseRank ?? 0).toString(),
+                  (team.fieldGoalOffenseRank ?? 0).toString(),
+                  (team.ternoverOffenseRank ?? 0).toString(),
+                ];
+                element.nflHomeOffensiveList = [
+                  (team.pointsOffense ?? 0).toString(),
+                  (team.rushingOffense ?? 0).toString(),
+                  (team.passingYardOffense ?? 0).toString(),
+                  (team.rushingTDSOffense ?? 0).toString(),
+                  (team.passingTDSOffense ?? 0).toString(),
+                  ('${team.redzonEfficiencyOffence ?? 0}%').toString(),
+                  ('${team.thirdDownOffence ?? 0}%').toString(),
+                  ('${team.fourthDownOffense ?? 0}%').toString(),
+                  (team.fieldGoalOffense ?? 0).toString(),
+                  (team.ternoverOffense ?? 0).toString(),
+                ];
+                element.nflHomeDefensiveRank = [
+                  (team.pointsDefenseRank ?? 0).toString(),
+                  (team.rushingDefenseRank ?? 0).toString(),
+                  (team.passingYardDefenseRank ?? 0).toString(),
+                  (team.rushingTDSDefenceRank ?? 0).toString(),
+                  (team.passingTDSDefenceRank ?? 0).toString(),
+                  (team.opponentRedzonEfficiencyRank ?? 0).toString(),
+                  (team.opponentThirdDownRank ?? 0).toString(),
+                  (team.opponentFourtDownRank ?? 0).toString(),
+                  (team.fieldGoalDefenseRank ?? 0).toString(),
+                  (team.ternoverDefenseRank ?? 0).toString(),
+                ];
+                element.nflHomeDefensiveList = [
+                  (team.pointsDefense ?? 0).toString(),
+                  (team.rushingDefense ?? 0).toString(),
+                  (team.passingYardDefense ?? 0).toString(),
+                  (team.rushingTDSDefence ?? 0).toString(),
+                  (team.passingTDSDefence ?? 0).toString(),
+                  ('${team.opponentRedzonEfficiency ?? 0}%').toString(),
+                  ('${team.opponentThirdDown ?? 0}%').toString(),
+                  ('${team.opponentFourtDown ?? 0}%').toString(),
+                  (team.fieldGoalDefense ?? 0).toString(),
+                  (team.ternoverDefense ?? 0).toString(),
+                ];
+                element.homeQbDefenseRank = [
+                  (team.passingYardDefenseRank ?? 0).toString(),
+                  (team.passingTDSDefenceRank ?? 0).toString(),
+                  (team.rushingDefenseRank ?? 0).toString(),
+                  (team.rushingTDSDefenceRank ?? 0).toString(),
+                  (team.interceptionDefenseRank ?? 0).toString(),
+                ];
+              }
+            });
+          }
         }
       } else {
         isLoading.value = false;
@@ -1600,43 +1556,227 @@ class GameListingController extends GetxController {
     update();
   }
 
-  Future getNFLQBSRank({String awayTeamId = '',
-    String homeTeamId = '',
-    required SportEvents gameDetails,
-    bool isLoad = false,
-    String sportKey = ''}) async {
+  Future getNFLQBSRank({bool isLoad = false, String sportKey = ''}) async {
     ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().getNFLQBSRank();
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getNFLQBSRank(sportKey);
     try {
       if (result.status) {
         NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
         if (response.data != null) {
-          response.data?.forEach((element) {
-            if (homeTeamId == element.teamId) {
-              gameDetails.homePlayerName=element.playerName??"";
-              gameDetails.homePlayerId=element.playerId??"";
-              gameDetails.homeQbRank = [
-                (element.passingYardOffenseRank??0).toString(),
-                (element.passingTDSOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.interceptionOffenseRank??0).toString(),
-              ];
-            }if (awayTeamId == element.teamId) {
-              gameDetails.awayPlayerName=element.playerName??"";
-              gameDetails.awayPlayerId=element.playerId??"";
-              gameDetails.awayQbRank = [
-                (element.passingYardOffenseRank??0).toString(),
-                (element.passingTDSOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.interceptionOffenseRank??0).toString(),
-              ];
+          for (var sportData in (getSportEventList(sportKey))) {
+            Competitors? homeTeam;
+            Competitors? awayTeam;
+            if (sportData.competitors[0].qualifier == 'home') {
+              homeTeam = sportData.competitors[0];
+            } else {
+              awayTeam = sportData.competitors[0];
             }
-          });
+            if (sportData.competitors[1].qualifier == 'away') {
+              awayTeam = sportData.competitors[1];
+            } else {
+              homeTeam = sportData.competitors[1];
+            }
+            response.data?.forEach((element) {
+              if ((homeTeam?.abbreviation == 'LV'
+                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                      : replaceId(homeTeam?.uuids ?? '')) ==
+                  element.teamId) {
+                sportData.homePlayerName = element.playerName ?? "";
+                sportData.homePlayerId = element.playerId ?? "";
+                sportData.homeQbRank = [
+                  (element.passingYardOffenseRank ?? 0).toString(),
+                  (element.passingTDSOffenseRank ?? 0).toString(),
+                  (element.rushingYardOffenseRank ?? 0).toString(),
+                  (element.rushingTDsOffenseRank ?? 0).toString(),
+                  (element.interceptionOffenseRank ?? 0).toString(),
+                ];
+                sportData.homeQb = [
+                  (element.passingYardOffense ?? 0).toString(),
+                  (element.passingTDSOffense ?? 0).toString(),
+                  (element.rushingYardOffense ?? 0).toString(),
+                  (element.rushingTDsOffense ?? 0).toString(),
+                  (element.interceptionOffense ?? 0).toString(),
+                ];
+              }
+              if ((awayTeam?.abbreviation == 'LV'
+                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                      : replaceId(awayTeam?.uuids ?? '')) ==
+                  element.teamId) {
+                sportData.awayPlayerName = element.playerName ?? "";
+                sportData.awayPlayerId = element.playerId ?? "";
+                sportData.awayQbRank = [
+                  (element.passingYardOffenseRank ?? 0).toString(),
+                  (element.passingTDSOffenseRank ?? 0).toString(),
+                  (element.rushingYardOffenseRank ?? 0).toString(),
+                  (element.rushingTDsOffenseRank ?? 0).toString(),
+                  (element.interceptionOffenseRank ?? 0).toString(),
+                ];
+                sportData.awayQb = [
+                  (element.passingYardOffense ?? 0).toString(),
+                  (element.passingTDSOffense ?? 0).toString(),
+                  (element.rushingYardOffense ?? 0).toString(),
+                  (element.rushingTDsOffense ?? 0).toString(),
+                  (element.interceptionOffense ?? 0).toString(),
+                ];
+              }
+            });
+          }
         }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
+  }
 
+  ///NBA GAME RANK API
+  Future nbaGameRankApi({bool isLoad = false, String sportKey = ''}) async {
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaGameRankApi(sportKey);
+    try {
+      if (result.status) {
+        NBAGameRankModel response = NBAGameRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          for (var element in (getSportEventList(sportKey))) {
+            Competitors? homeTeam;
+            Competitors? awayTeam;
+            if (element.competitors[0].qualifier == 'home') {
+              homeTeam = element.competitors[0];
+            } else {
+              awayTeam = element.competitors[0];
+            }
+            if (element.competitors[1].qualifier == 'away') {
+              awayTeam = element.competitors[1];
+            } else {
+              homeTeam = element.competitors[1];
+            }
+            response.data?.forEach((team) {
+              if (replaceId(awayTeam?.uuids ?? '') ==
+                  replaceId(team.teamId ?? "")) {
+                element.nbaAwayOffensiveList = [
+                  team.pointOffense.toString(),
+                  team.reboundesOffense.toString(),
+                  team.assistOffense.toString(),
+                  team.stealsOffense.toString(),
+                  team.blocksOffense.toString(),
+                  team.turnOverOffense.toString(),
+                  team.foulsOffense.toString(),
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  team.trueShootingOffense.toString(),
+                  team.teamPerOffense.toString(),
+                ];
+                element.nbaAwayOffensiveRank = [
+                  (team.pointOffenseRank??0).toString(),
+                  (team.reboundesOffenseRank??0).toString(),
+                  (team.assistOffenseRank??0).toString(),
+                  (team.stealsOffenseRank??0).toString(),
+                  (team.blocksOffenseRank??0).toString(),
+                  (team.turnOverOffenseRank??0).toString(),
+                  (team.foulsOffenseRank??0).toString(),
+                  '${team.fgOffenseRank??0}',
+                  '${team.ftOffenseRank??0}',
+                  '${team.threePOffenseRank??0}',
+                  (team.trueShootingOffenseRank??0).toString(),
+                  (team.teamPerOffenseRank??0).toString(),
+                ];
+                element.nbaAwayDefensiveList = [
+                  team.pointDefense.toString(),
+                  team.reboundesDefense.toString(),
+                  team.assistDefense.toString(),
+                  team.stealsDefense.toString(),
+                  team.blocksDefense.toString(),
+                  team.turnOverDefense.toString(),
+                  team.foulsDefense.toString(),
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  team.trueShootingDefense.toString(),
+                  team.teamPerDefense.toString(),
+                ];
+                element.nbaAwayDefensiveRank = [
+                  (team.pointDefenseRank??0).toString(),
+                  (team.reboundesDefenseRank??0).toString(),
+                  (team.assistDefenseRank??0).toString(),
+                  (team.stealsDefenseRank??0).toString(),
+                  (team.blocksDefenseRank??0).toString(),
+                  (team.turnOverDefenseRank??0).toString(),
+                  (team.foulsDefenseRank??0).toString(),
+                  '${team.fgDefenseRank??0}',
+                  '${team.ftDefenseRank??0}',
+                  '${team.threePDefenseRank??0}',
+                  (team.trueShootingDefenseRank??0).toString(),
+                  (team.teamPerDefenseRank??0).toString(),
+                ];
+              }
+              if (replaceId(homeTeam?.uuids ?? '') ==
+                  replaceId(team.teamId ?? "")) {
+                element.nbaHomeOffensiveList = [
+                  team.pointOffense.toString(),
+                  team.reboundesOffense.toString(),
+                  team.assistOffense.toString(),
+                  team.stealsOffense.toString(),
+                  team.blocksOffense.toString(),
+                  team.turnOverOffense.toString(),
+                  team.foulsOffense.toString(),
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  team.trueShootingOffense.toString(),
+                  team.teamPerOffense.toString(),
+                ];
+                element.nbaHomeOffensiveRank = [
+                  (team.pointOffenseRank??0).toString(),
+                  (team.reboundesOffenseRank??0).toString(),
+                  (team.assistOffenseRank??0).toString(),
+                  (team.stealsOffenseRank??0).toString(),
+                  (team.blocksOffenseRank??0).toString(),
+                  (team.turnOverOffenseRank??0).toString(),
+                  (team.foulsOffenseRank??0).toString(),
+                  '${team.fgOffenseRank??0}',
+                  '${team.ftOffenseRank??0}',
+                  '${team.threePOffenseRank??0}',
+                  (team.trueShootingOffenseRank??0).toString(),
+                  (team.teamPerOffenseRank??0).toString(),
+                ];
+                element.nbaHomeDefensiveList = [
+                  team.pointDefense.toString(),
+                  team.reboundesDefense.toString(),
+                  team.assistDefense.toString(),
+                  team.stealsDefense.toString(),
+                  team.blocksDefense.toString(),
+                  team.turnOverDefense.toString(),
+                  team.foulsDefense.toString(),
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  team.trueShootingDefense.toString(),
+                  team.teamPerDefense.toString(),
+                ];
+                element.nbaHomeDefensiveRank = [
+                  (team.pointDefenseRank??0).toString(),
+                  (team.reboundesDefenseRank??0).toString(),
+                  (team.assistDefenseRank??0).toString(),
+                  (team.stealsDefenseRank??0).toString(),
+                  (team.blocksDefenseRank??0).toString(),
+                  (team.turnOverDefenseRank??0).toString(),
+                  (team.foulsDefenseRank??0).toString(),
+                  '${team.fgDefenseRank??0}',
+                  '${team.ftDefenseRank??0}',
+                  '${team.threePDefenseRank??0}',
+                  (team.trueShootingDefenseRank??0).toString(),
+                  (team.teamPerDefenseRank??0).toString(),
+                ];
+              }
+            });
+          }
+        }
       } else {
         isLoading.value = false;
       }
@@ -1836,6 +1976,7 @@ class GameListingController extends GetxController {
                 sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
+          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
           if (i == 3) {
             isPagination = false;
           }
