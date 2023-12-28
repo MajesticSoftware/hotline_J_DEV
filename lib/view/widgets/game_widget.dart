@@ -32,7 +32,6 @@ class GameWidget extends StatelessWidget {
       required this.isLive,
       required this.weather,
       required this.temp,
-      required this.isShowFlame,
       required this.flameNumber,
       required this.awayTeamSpread,
       required this.awayTeamMoneyLine,
@@ -59,7 +58,6 @@ class GameWidget extends StatelessWidget {
   final String homeTeamOU;
   final String dateTime;
   final bool isLive;
-  final bool isShowFlame;
   final int weather;
   final bool isShowWeather;
   final num temp;
@@ -223,7 +221,7 @@ class GameWidget extends StatelessWidget {
               ),
               10.w.W(),
               Visibility(
-                visible: isShowWeather,
+                visible: !isShowWeather,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -253,12 +251,28 @@ class GameWidget extends StatelessWidget {
                             ),
                           )
                         : const SizedBox(),
+                    Column(
+                      children: [
+                        SvgPicture.asset(
+                            Assets.assetsImagesFire, fit: BoxFit.contain,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * .028).paddingSymmetric(vertical: 10.h),
+                        '$flameNumber'.appCommonText(
+                            color: Theme.of(context).highlightColor,
+                            weight: FontWeight.w600,
+                            size: MediaQuery.of(context).size.height *
+                                .018
+                        )
+                      ],
+                    ),
                     5.w.H(),
                   ],
                 ),
               ),
               Visibility(
-                visible: !isShowWeather,
+                visible: isShowWeather,
                 child: Expanded(
                   flex: 1,
                   child: Column(
@@ -292,53 +306,38 @@ class GameWidget extends StatelessWidget {
                             )
                           : const SizedBox(),
                       5.w.H(),
-                    Visibility(visible:!isShowFlame ,replacement: Column(
-                      children: [
-                        SvgPicture.asset(
-                            Assets.assetsImagesFire, fit: BoxFit.contain,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * .028).paddingSymmetric(vertical: 10.h),
-                        '$flameNumber'.appCommonText(
+                    Column(children: [
+                                          getWeatherIcon(weather, context,
+                      MediaQuery.of(context).size.height * .035),
+                                          Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    textBaseline: TextBaseline.alphabetic,
+                    verticalDirection: VerticalDirection.up,
+                    children: [
+                      Text(
+                        temp == 32
+                            ? "TBD"
+                            : '  ${temp.toString().split('.').first}',
+                        style: GoogleFonts.nunitoSans(
                             color: Theme.of(context).highlightColor,
-                            weight: FontWeight.w600,
-                            size: MediaQuery.of(context).size.height *
-                                .018
-                        )
-                      ],
-                    ),child: Column(children: [
-                      getWeatherIcon(weather, context,
-                          MediaQuery.of(context).size.height * .035),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        textBaseline: TextBaseline.alphabetic,
-                        verticalDirection: VerticalDirection.up,
-                        children: [
-                          Text(
-                            temp == 32
-                                ? "TBD"
-                                : '  ${temp.toString().split('.').first}',
-                            style: GoogleFonts.nunitoSans(
-                                color: Theme.of(context).highlightColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: temp == 32
-                                    ? MediaQuery.of(context).size.height * .014
-                                    : MediaQuery.of(context).size.height *
-                                    .024),
-                          ),
-                          Text(
-                            '°F',
-                            style: GoogleFonts.nunitoSans(
-                              color: Theme.of(context).highlightColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: Get.height * .01,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],))
+                            fontWeight: FontWeight.w600,
+                            fontSize: temp == 32
+                                ? MediaQuery.of(context).size.height * .014
+                                : MediaQuery.of(context).size.height *
+                                .024),
+                      ),
+                      Text(
+                        '°F',
+                        style: GoogleFonts.nunitoSans(
+                          color: Theme.of(context).highlightColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: Get.height * .01,
+                        ),
+                      ),
+                    ],
+                                          )
+                                        ],)
                     ],
                   ),
                 ),

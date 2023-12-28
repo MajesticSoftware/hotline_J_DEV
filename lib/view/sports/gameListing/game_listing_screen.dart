@@ -516,25 +516,15 @@ class SelectGameScreen extends StatelessWidget {
                                           (spotList(controller)[index].status !=
                                               'postponed'),
                                       child: GameWidget(
-                                        flameNumber: controller.sportKey ==
-                                                "NFL" ||controller.sportKey ==
-                                            "NCAA"||controller.sportKey =="NBA"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                        flameNumber: controller.sportKey !=
+                                                "MLB" ||controller.sportKey ==
+                                            "NCAAB"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
                                             ?  spotList(controller)[index]
                                                 .getFlameValue
                                             : 0,
-                                        isShowFlame: controller.sportKey ==
-                                                "NFL"||controller.sportKey ==
-                                            "NCAA"||controller.sportKey =="NBA" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
-                                            ?
-                                                    spotList(controller)[index]
-                                                    .getFlameValue !=
-                                                0
-                                            : false,
                                         isShowWeather:
-                                       ( controller.sportKey =="NBA"&&spotList(controller)[index]
-                                            .getFlameValue ==
-                                            0)||
-                                                controller.sportKey == "NCAAB",
+                                        controller.sportKey == "MLB"
+                                                ,
                                         onTap: () {
                                           controller.gameOnClick(
                                               context, index);
@@ -644,20 +634,12 @@ class SelectGameScreen extends StatelessWidget {
                                       "NCAA" ||controller.sportKey =="NBA"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
                                       ? competitors.getFlameValue
                                       : 0,
-                                  isShowFlame: controller.sportKey ==
-                                          "NFL" ||controller.sportKey ==
-                                      "NCAA"||controller.sportKey =="NBA"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
-                                      ? competitors
-                                              .getFlameValue !=
-                                          0
-                                      : false,
                                   onTap: () {
                                     controller.searchGameOnClick(
                                         context, index);
                                   },
-                                  isShowWeather:( controller.sportKey =="NBA"&&competitors.getFlameValue ==
-                                      0)||
-                                      controller.sportKey == "NCAAB",
+                                  isShowWeather:
+                                      controller.sportKey == "MLB",
                                   awayTeamMoneyLine:
                                       competitors.awayMoneyLineValue,
                                   homeTeamMoneyLine:
