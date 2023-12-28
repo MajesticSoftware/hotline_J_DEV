@@ -478,7 +478,27 @@ class SelectGameScreen extends StatelessWidget {
             spotList(controller).isEmpty &&
                     !controller.isLoading.value &&
                     !controller.isPagination
-                ? const NoGameWidget()
+                ? Expanded(
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          'No Games'.appCommonText(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              size: Get.height * .022,
+                              weight: FontWeight.w800),
+                          (controller.sportKey == "MLB"
+                                  ? "'2024 season starts March 20th'"
+                                  : "")
+                              .appCommonText(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  size: Get.height * .02,
+                                  weight: FontWeight.w800)
+                        ],
+                      ),
+                    ),
+                  )
                 : controller.searchCon.text.isEmpty
                     ? Expanded(
                         child: RefreshIndicator(
@@ -517,14 +537,14 @@ class SelectGameScreen extends StatelessWidget {
                                               'postponed'),
                                       child: GameWidget(
                                         flameNumber: controller.sportKey !=
-                                                "MLB" ||controller.sportKey ==
-                                            "NCAAB"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
-                                            ?  spotList(controller)[index]
+                                                    "MLB" ||
+                                                controller.sportKey ==
+                                                    "NCAAB" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                            ? spotList(controller)[index]
                                                 .getFlameValue
                                             : 0,
                                         isShowWeather:
-                                        controller.sportKey == "MLB"
-                                                ,
+                                            controller.sportKey == "MLB",
                                         onTap: () {
                                           controller.gameOnClick(
                                               context, index);
@@ -629,17 +649,17 @@ class SelectGameScreen extends StatelessWidget {
                                         controller.sportKey != "NFL") ||
                                     (competitors.status != 'postponed'),
                                 child: GameWidget(
-                                  flameNumber: controller.sportKey ==
-                                          "NFL"||controller.sportKey ==
-                                      "NCAA" ||controller.sportKey =="NBA"/*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+                                  flameNumber: controller.sportKey == "NFL" ||
+                                          controller.sportKey == "NCAA" ||
+                                          controller.sportKey ==
+                                              "NBA" /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
                                       ? competitors.getFlameValue
                                       : 0,
                                   onTap: () {
                                     controller.searchGameOnClick(
                                         context, index);
                                   },
-                                  isShowWeather:
-                                      controller.sportKey == "MLB",
+                                  isShowWeather: controller.sportKey == "MLB",
                                   awayTeamMoneyLine:
                                       competitors.awayMoneyLineValue,
                                   homeTeamMoneyLine:
@@ -718,16 +738,20 @@ class SelectGameScreen extends StatelessWidget {
                                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                                         : competitors.awayTeamAbb == 'CSN'
                                             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                            : competitors.awayTeam ==
-                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                : competitors.awayTeam == 'CSB'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                            : competitors.awayTeamAbb == 'CSB'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+                                                : competitors.awayTeam ==
+                                                        'Louisiana-Lafayette Ragin Cajuns'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
                                                     : competitors.awayTeam ==
-                                                            'Sam Houston State Bearkats'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                            'CSB'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
                                                         : competitors
-                                                            .gameLogoAwayLink;
+                                                                    .awayTeam ==
+                                                                'Sam Houston State Bearkats'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                            : competitors
+                                                                .gameLogoAwayLink;
   }
 
   String homeLogo(
@@ -751,18 +775,22 @@ class SelectGameScreen extends StatelessWidget {
                                     ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                                     : competitors.homeTeamAbb == 'QUC'
                                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                        : competitors.homeTeamAbb == 'GC'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                                            : competitors.homeTeamAbb == 'CSB'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                : competitors.homeTeam ==
-                                                        'Louisiana-Lafayette Ragin Cajuns'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                        : competitors.homeTeamAbb == 'CSB'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+                                            : competitors.homeTeamAbb == 'GC'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                : competitors.homeTeamAbb ==
+                                                        'CSB'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
                                                     : competitors.homeTeam ==
-                                                            'Sam Houston State Bearkats'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                            'Louisiana-Lafayette Ragin Cajuns'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
                                                         : competitors
-                                                            .gameHomeLogoLink;
+                                                                    .homeTeam ==
+                                                                'Sam Houston State Bearkats'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                            : competitors
+                                                                .gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

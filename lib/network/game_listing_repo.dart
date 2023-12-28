@@ -346,7 +346,7 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters ={RequestParam.service: MethodNames.getNBAGameOffenseRank};
+    var queryParameters ={RequestParam.service: sportKey=="NBA"?MethodNames.getNBAGameOffenseRank: MethodNames.getNCAABGameOffenseRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -391,5 +391,20 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     return result;
   }
 
+  Future<ResponseItem> gameListingsWithLogoForNCAAB(String sportKey) async {
+    ResponseItem result;
+
+
+    Uri parameter;
+    Uri uri = Uri.parse(
+        'https://sports-information.p.rapidapi.com/${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : sportKey == 'NFL' ? 'nfl' : sportKey == 'NBA' ? "nba" : "mbb"}/team-list?group=2');
+    parameter = uri.replace();
+
+    result = await BaseApiHelper.getRequest(parameter, {
+      'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
+      'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
+    });
+    return result;
+  }
 
 }

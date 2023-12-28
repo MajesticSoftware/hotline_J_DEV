@@ -136,6 +136,19 @@ class GameDetailsController extends GetxController {
     'Opponent 3P made / att / % (Per Game)',
     'Opponent True Shooting',
     'Team per Def',
+  ];List nbaMobileDefensive = [
+    'Points Allowed/Game',
+    'Opp Rebounds/Game',
+    'Opp Assists/Game',
+    'Opp Steals/Game',
+    'Opp Blocks/Game',
+    'Opp Total Turnovers/Game',
+    'Opp Fouls/Game',
+    'Opp FG made / att / % (Per Game)',
+    'Opp FT made / att / % (Per Game)',
+    'Opp 3P made / att / % (Per Game)',
+    'Opp True Shooting',
+    'Team per Def',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -1764,62 +1777,7 @@ class GameDetailsController extends GetxController {
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
-      if(key=="NCAAB"){
-        if (response.ownRecord != null) {
-          var nbaOffensiveAverage = response.ownRecord?.average;
-          gameDetails.nbaAwayOffensiveList = [
-            ((nbaOffensiveAverage?.points ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-            ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-            '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.freeThrowsPct ?? 0) * (100)).round()}%',
-            '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                ?.threePointsPct ?? 0) * (100)).round()}%',
-            '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100))
-                .round()}%',
-            '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-          ];
-        }
-        if (response.opponents != null) {
-          var nbaDefensiveAverage = response.opponents?.average;
-          gameDetails.nbaAwayDefensiveList = [
-            ((nbaDefensiveAverage?.points ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-            ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-            '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-            '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.freeThrowsPct ?? 0) * (100)).round()}%',
-            '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0)
-                .toStringAsFixed(1)} / ${((response.opponents?.total
-                ?.threePointsPct ?? 0) * (100)).round()}%',
-            '${((response.opponents?.total?.trueShootingPct ?? 0) * (100))
-                .round()}%',
-            '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-          ];
-        }
-      }
+
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.awayRushingPlayer.add(player);
@@ -1859,63 +1817,7 @@ class GameDetailsController extends GetxController {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
 
-        if(sportKey=="NCAAB"){
-          if (response.ownRecord != null) {
-            var nbaOffensiveAverage = response.ownRecord?.average;
-            gameDetails.nbaHomeOffensiveList = [
-              ((nbaOffensiveAverage?.points ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-              ((nbaOffensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-              '${(nbaOffensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaOffensiveAverage?.fieldGoalsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                  ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-              '${(nbaOffensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaOffensiveAverage?.freeThrowsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                  ?.freeThrowsPct ?? 0) * (100)).round()}%',
-              '${(nbaOffensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaOffensiveAverage?.threePointsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.ownRecord?.total
-                  ?.threePointsPct ?? 0) * (100)).round()}%',
-              '${((response.ownRecord?.total?.trueShootingPct ?? 0) * (100))
-                  .round()}%',
-              '${(nbaOffensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-            ];
-          }
-          if (response.opponents != null) {
-            var nbaDefensiveAverage = response.opponents?.average;
-            gameDetails.nbaHomeDefensiveList = [
-              ((nbaDefensiveAverage?.points ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.rebounds ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.assists ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.steals ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.blocks ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.turnovers ?? 0).toStringAsFixed(1)),
-              ((nbaDefensiveAverage?.personalFouls ?? 0).toStringAsFixed(1)),
-              '${(nbaDefensiveAverage?.fieldGoalsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaDefensiveAverage?.fieldGoalsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.opponents?.total
-                  ?.fieldGoalsPct ?? 0) * (100)).round()}%',
-              '${(nbaDefensiveAverage?.freeThrowsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaDefensiveAverage?.freeThrowsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.opponents?.total
-                  ?.freeThrowsPct ?? 0) * (100)).round()}%',
-              '${(nbaDefensiveAverage?.threePointsMade ?? 0).toStringAsFixed(
-                  1)} / ${(nbaDefensiveAverage?.threePointsAtt ?? 0)
-                  .toStringAsFixed(1)} / ${((response.opponents?.total
-                  ?.threePointsPct ?? 0) * (100)).round()}%',
-              '${((response.opponents?.total?.trueShootingPct ?? 0) * (100))
-                  .round()}%',
-              '${(nbaDefensiveAverage?.efficiency ?? 0).toStringAsFixed(1)}%',
-            ];
-          }
 
-        }
         if (response.players != null) {
           response.players?.forEach((player) {
             gameDetails.homeRushingPlayer.add(player);

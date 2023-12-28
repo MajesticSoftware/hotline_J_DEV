@@ -68,7 +68,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                           title: 'Subscriptions',
                           subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
                           onTap: () async {
-                            if (PreferenceManager.getIsLogin()) {
+                            if (PreferenceManager.getIsLogin()??false) {
                               if (subscriptionController.products.isEmpty) {
                                 null;
                               } else {
@@ -1051,19 +1051,19 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
   return ListView.separated(
     itemBuilder: (context, index) {
       int offensePointColor = 0;
-      if (sportKey == "NBA") {
-        offensePointColor =
-        (con.isTeamReportTab ? ((gameDetails.nbaAwayOffensiveRank.isEmpty)
-            ? 0
-            : (int.parse(
-            gameDetails.nbaAwayOffensiveRank[index])) -
-            (gameDetails.nbaHomeDefensiveRank.isEmpty ? 0 : int.parse(
-                gameDetails.nbaHomeDefensiveRank[index]))) :
-       ( ((gameDetails.nbaHomeOffensiveRank.isEmpty) ? 0 : (int.parse(
-            gameDetails.nbaHomeOffensiveRank[index]))) -
-            (gameDetails.nbaAwayDefensiveRank.isEmpty ? 0 : int.parse(
-                gameDetails.nbaAwayDefensiveRank[index]))));
-      }
+
+      offensePointColor =
+      (con.isTeamReportTab ? ((gameDetails.nbaAwayOffensiveRank.isEmpty)
+          ? 0
+          : (int.parse(
+          gameDetails.nbaAwayOffensiveRank[index])) -
+          (gameDetails.nbaHomeDefensiveRank.isEmpty ? 0 : int.parse(
+              gameDetails.nbaHomeDefensiveRank[index]))) :
+      (((gameDetails.nbaHomeOffensiveRank.isEmpty) ? 0 : (int.parse(
+          gameDetails.nbaHomeOffensiveRank[index]))) -
+          (gameDetails.nbaAwayDefensiveRank.isEmpty ? 0 : int.parse(
+              gameDetails.nbaAwayDefensiveRank[index]))));
+
       return Stack(
         alignment: Alignment.center,
         children: [
@@ -1099,7 +1099,7 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                 .of(context)
                                 .size
                                 .height * .014),
-                        sportKey == "NBA" ? (con.isTeamReportTab
+                        (con.isTeamReportTab
                             ? gameDetails.nbaAwayOffensiveRank.isEmpty
                             ? "0"
                             : ' (${dateWidget(
@@ -1135,7 +1135,7 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                             size: MediaQuery
                                 .of(context)
                                 .size
-                                .height * .014) : const SizedBox(),
+                                .height * .014)
 
                       ],
                     ),
@@ -1143,7 +1143,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                       fit: BoxFit.scaleDown,
                       child: (con.isTeamReportTab
                           ? con.nbaOffensive[index]
-                          : con.nbaDefensive[index])
+                          : mobileView.size.shortestSide < 600 ? con
+                          .nbaMobileDefensive[index] : con.nbaDefensive[index])
                           .toString()
                           .appCommonText(
                           color: darkGreyColor,
@@ -1201,15 +1202,19 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                   .of(context)
                                   .size
                                   .height * .014),
-                          sportKey == "NBA" ? (!con.isTeamReportTab
+                          (!con.isTeamReportTab
                               ? ' (${dateWidget(
+                              gameDetails.nbaHomeOffensiveRank.isEmpty ? "0" :
                               gameDetails.nbaHomeOffensiveRank[index])})'
                               .toString()
                               : ' (${dateWidget(
+                              gameDetails.nbaHomeDefensiveRank.isEmpty ? "0" :
                               gameDetails.nbaHomeDefensiveRank[index])})'
                               .toString())
                               .appCommonText(
-                              color: !con.isTeamReportTab ? int.parse(
+                              color: !con.isTeamReportTab ? gameDetails
+                                  .nbaHomeOffensiveRank.isEmpty ? Colors
+                                  .transparent : int.parse(
                                   gameDetails.nbaHomeOffensiveRank[index]) <= 11
                                   ? Colors.green
                                   : (int.parse(
@@ -1217,7 +1222,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                   11 && int.parse(
                                   gameDetails.nbaHomeOffensiveRank[index]) <=
                                   22) ? yellowColor : redColor :
-                              int.parse(
+                              gameDetails.nbaHomeDefensiveRank.isEmpty ? Colors
+                                  .transparent : int.parse(
                                   gameDetails.nbaHomeDefensiveRank[index]) <= 11
                                   ? Colors.green
                                   : (int.parse(
@@ -1231,13 +1237,14 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                               size: MediaQuery
                                   .of(context)
                                   .size
-                                  .height * .014) : const SizedBox(),
+                                  .height * .014)
                         ],
                       ),
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: (con.isTeamReportTab
-                            ? con.nbaDefensive[index]
+                            ? mobileView.size.shortestSide < 600 ? con
+                            .nbaMobileDefensive[index] : con.nbaDefensive[index]
                             : con.nbaOffensive[index])
                             .toString()
                             .appCommonText(
@@ -1258,9 +1265,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
               ),
             ],
           ),
-          (sportKey ==
-              "NBA") /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/ &&
-              ((offensePointColor >= 15 || offensePointColor <= -15)) ?
+          /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
+          ((offensePointColor >= 15 || offensePointColor <= -15)) ?
 
           Positioned(
             child: InkWell(
@@ -5712,6 +5718,8 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
       : awayTeam?.abbreviation == 'GC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+      : awayTeam?.abbreviation == 'CSB'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
       : awayTeam?.abbreviation == 'NCST'
       ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
       : awayTeam?.abbreviation == 'ULL'
@@ -5739,6 +5747,8 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
       : homeTeam?.abbreviation == 'GC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+      : homeTeam?.abbreviation == 'CSB'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
       : homeTeam?.abbreviation == 'FAMU'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
       : homeTeam?.abbreviation == 'WAS' &&
