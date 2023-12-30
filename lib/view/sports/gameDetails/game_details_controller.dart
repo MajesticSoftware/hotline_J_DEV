@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:collection/collection.dart';
 import 'package:hotlines/model/game_listing.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
@@ -891,7 +890,6 @@ class GameDetailsController extends GetxController {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
-          List<num> gameStart = [];
           if (response.season != null) {
             if (response.record != null) {
               var offenciveData = response.record;
@@ -1370,7 +1368,6 @@ class GameDetailsController extends GetxController {
       if (result.status) {
         if (result.data != null) {
           NFLStaticsModel response = NFLStaticsModel.fromJson(result.data);
-          List<num> gameStart = [];
           if (response.season != null) {
             if (response.record != null) {
               var offenciveData = response.record;
