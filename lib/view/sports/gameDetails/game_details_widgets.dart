@@ -68,7 +68,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                           title: 'Subscriptions',
                           subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
                           onTap: () async {
-                            if (PreferenceManager.getIsLogin()??false) {
+                            if (PreferenceManager.getIsLogin() ?? false) {
                               if (subscriptionController.products.isEmpty) {
                                 null;
                               } else {
@@ -949,29 +949,33 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                     highlightColor: Colors.transparent,
                     splashFactory: NoSplash.splashFactory,
                     onTap: () {
-                      showDialogForRank(context, title:
-                      (con.isTeamReportTab ?
-                      ('${awayTeam
-                          ?.abbreviation} ${con.shortOffensive[index]
-                          .toString()} ranks ${dateWidget(
-                          gameDetails.nflAwayOffensiveRank.isEmpty
+                      showDialogForRank(
+                          context, awayText: '${awayTeam?.abbreviation} ${con
+                          .isTeamReportTab
+                          ? con.offensive[index]
+                          : con.defensive[index]} ranks',
+                          awayRank: con.isTeamReportTab ? (gameDetails
+                              .nflAwayOffensiveRank.isEmpty
                               ? "0"
                               : gameDetails
-                              .nflAwayOffensiveRank[index])} \n ${homeTeam
-                          ?.abbreviation} ${con
-                          .shortFormDefensive[index]} ranks ${dateWidget(
-                          gameDetails.nflHomeDefensiveRank.isEmpty
+                              .nflAwayOffensiveRank[index]) : (gameDetails
+                              .nflAwayDefensiveRank.isEmpty
                               ? "0"
-                              : gameDetails.nflHomeDefensiveRank[index])}') :
-                      ('${awayTeam
-                          ?.abbreviation} ${con
-                          .shortFormDefensive[index]} ranks ${dateWidget(
-                          gameDetails.nflAwayDefensiveRank.isEmpty ? "0" :
-                          gameDetails.nflAwayDefensiveRank[index])}\n${homeTeam
-                          ?.abbreviation} ${con
-                          .shortOffensive[index]} ranks ${dateWidget(gameDetails
-                          .nflHomeOffensiveRank.isEmpty ? "0" :
-                      gameDetails.nflHomeOffensiveRank[index])}'))
+                              : gameDetails
+                              .nflAwayDefensiveRank[index]),
+                          homeText: '${homeTeam?.abbreviation} ${con
+                              .isTeamReportTab
+
+                              ? con.defensive[index]
+                              : con.offensive[index]} ranks',
+                          homeRank:
+                          con.isTeamReportTab
+                              ? (gameDetails.nflHomeDefensiveRank.isEmpty
+                              ? "0"
+                              : gameDetails.nflHomeDefensiveRank[index])
+                              : (gameDetails.nflHomeOffensiveRank.isEmpty
+                              ? "0"
+                              : gameDetails.nflHomeOffensiveRank[index])
                       );
                     },
                     child: Container(
@@ -1014,12 +1018,52 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
   );
 }
 
-Future<dynamic> showDialogForRank(BuildContext context, {String title = ''}) {
+Future<dynamic> showDialogForRank(BuildContext context,
+    {String awayRank = '', String awayText = "", String homeRank = '', String homeText = ""}) {
   return showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         titlePadding: EdgeInsets.all(10.h),
+        content: Text.rich(
+          textAlign: TextAlign.center,
+          TextSpan(
+            children: [
+              TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
+                color: Colors.black, fontWeight: FontWeight.w500,
+              )),
+              TextSpan(
+                text: '${dateWidget(awayRank)} ${num.parse(awayRank) > 22
+                    ? "(poor)"
+                    : num.parse(awayRank) > 11 && num.parse(awayRank) <= 22
+                    ? "(mid)"
+                    : "(strong)"} ',
+                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.w600,
+                    color: num.parse(awayRank) > 22 ? redColor : num.parse(
+                        awayRank) > 11 && num.parse(awayRank) <= 22
+                        ? yellowColor
+                        : Colors.green),
+              ),
+
+              TextSpan(text: 'in the league. $homeText ',
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.black, fontWeight: FontWeight.w500,
+                  )),
+              TextSpan(
+                text: '${dateWidget(homeRank)} ${num.parse(homeRank) > 22
+                    ? "(poor)"
+                    : num.parse(homeRank) > 11 && num.parse(homeRank) <= 22
+                    ? "(mid)"
+                    : "(strong)"}. ',
+                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.w600,
+                    color: num.parse(homeRank) > 22 ? redColor : num.parse(
+                        homeRank) > 11 && num.parse(homeRank) <= 22
+                        ? yellowColor
+                        : Colors.green),
+              ),
+            ],
+          ),
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(
@@ -1031,15 +1075,7 @@ Future<dynamic> showDialogForRank(BuildContext context, {String title = ''}) {
             .of(context)
             .secondaryHeaderColor,
         contentPadding: EdgeInsets.all(20.h),
-        title:
-        title
-            .appCommonText(
-            color: Theme
-                .of(context)
-                .secondaryHeaderColor,
-            align: TextAlign.center,
-            weight: FontWeight.w800,
-            size: Get.height * .016),
+
       );
     },
   );
@@ -1273,30 +1309,31 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
               highlightColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
               onTap: () {
-                showDialogForRank(context, title:
-                (con.isTeamReportTab ?
-                ('${awayTeam
-                    ?.abbreviation} ${con.shortOffensiveNBA[index]
-                    .toString()} ranks ${dateWidget(
-                    gameDetails.nbaAwayOffensiveRank.isEmpty
+
+                showDialogForRank(
+                    context, awayText: '${awayTeam?.abbreviation} ${(con.isTeamReportTab
+                    ? con.nbaOffensive[index]
+                    : mobileView.size.shortestSide < 600 ? con
+                    .nbaMobileDefensive[index] : con.nbaDefensive[index])} ranks',
+                    awayRank: con.isTeamReportTab ? (gameDetails.nbaAwayOffensiveRank.isEmpty
                         ? "0"
-                        : gameDetails
-                        .nbaAwayOffensiveRank[index])} \n ${homeTeam
-                    ?.abbreviation} ${con
-                    .shortDefensiveNBA[index]} ranks ${dateWidget(
-                    gameDetails.nbaHomeDefensiveRank.isEmpty
-                        ? "0"
-                        : gameDetails.nbaHomeDefensiveRank[index])}') :
-                ('${awayTeam
-                    ?.abbreviation} ${con
-                    .shortDefensiveNBA[index]} ranks ${dateWidget(
-                    gameDetails.nbaAwayDefensiveRank.isEmpty ? "0" :
-                    gameDetails.nbaAwayDefensiveRank[index])}\n${homeTeam
-                    ?.abbreviation} ${con
-                    .shortOffensiveNBA[index]} ranks ${dateWidget(gameDetails
-                    .nbaHomeOffensiveRank.isEmpty ? "0" :
-                gameDetails.nbaHomeOffensiveRank[index])}'))
+                        :gameDetails
+                        .nbaAwayOffensiveRank[index]) : (gameDetails.nbaAwayDefensiveRank.isEmpty
+                        ? '0'
+                        : gameDetails.nbaAwayDefensiveRank[index]),
+                    homeText: '${homeTeam?.abbreviation} ${(con.isTeamReportTab
+                        ? mobileView.size.shortestSide < 600 ? con
+                        .nbaMobileDefensive[index] : con.nbaDefensive[index]
+                        : con.nbaOffensive[index])} ranks',
+                    homeRank:
+                    con.isTeamReportTab
+                        ? (gameDetails.nbaHomeDefensiveRank.isEmpty ? "0" :
+                    gameDetails.nbaHomeDefensiveRank[index])
+                        : (gameDetails.nbaHomeOffensiveRank.isEmpty ? "0" :
+                    gameDetails.nbaHomeOffensiveRank[index])
                 );
+
+
               },
               child: Container(
                 height: MediaQuery
@@ -1551,26 +1588,32 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
               highlightColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
               onTap: () {
-                showDialogForRank(context, title:
-                (con.isTeamReportTab ?
-                ('${gameDetails.awayPlayerName} ${con
-                    .teamQuarterBacksShortForm[index]
-                    .toString()} ranks ${dateWidget(
-                    gameDetails.awayQbRank.isEmpty ? "0" : gameDetails
-                        .awayQbRank[index])} \n'
-                    ' ${gameDetails.homeTeamAbb} ${con
-                    .teamQuarterBacksDefenceShortForm[index]} ranks ${dateWidget(
-                    gameDetails.homeQbDefenseRank.isEmpty ? "0" : gameDetails
-                        .homeQbDefenseRank[index])}') :
-                ('${gameDetails.awayTeamAbb} ${con
-                    .teamQuarterBacksDefenceShortForm[index]} ranks ${dateWidget(
-                    gameDetails.awayQbDefenseRank.isEmpty ? "0" : gameDetails
-                        .awayQbDefenseRank[index])}\n${gameDetails
-                    .homePlayerName} ${con
-                    .teamQuarterBacksShortForm[index]} ranks ${dateWidget(
-                    gameDetails.homeQbRank.isEmpty ? "0" : gameDetails
-                        .homeQbRank[index])}'))
+                showDialogForRank(
+                    context, awayText: '${con
+                    .isTeamReportTab?gameDetails.awayPlayerName:"Defense"} ${ (con
+                    .isTeamReportTab
+                    ? con.teamQuarterBacks[index]
+                    : con.teamQuarterBacksDefence[index])} ranks',
+                    awayRank:   (gameDetails.awayQbRank.isEmpty ||
+                        gameDetails.awayQbDefenseRank.isEmpty
+                        ? "0"
+                        : con.isTeamReportTab
+                        ? gameDetails.awayQbRank[index]
+                        : gameDetails.awayQbDefenseRank[index]),
+                    homeText: '${con
+                        .isTeamReportTab?"Defense":gameDetails.homePlayerName} ${(con
+                        .isTeamReportTab
+                        ? con.teamQuarterBacksDefence[index]
+                        : con.teamQuarterBacks[index])} ranks',
+                    homeRank:
+                    (gameDetails.homeQbRank.isEmpty ||
+                        gameDetails.homeQbDefenseRank.isEmpty
+                        ? "0"
+                        : con.isTeamReportTab
+                        ? gameDetails.homeQbDefenseRank[index]
+                        : gameDetails.homeQbRank[index]),
                 );
+
               },
               child: Container(
                 height: MediaQuery
@@ -5716,10 +5759,10 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
       : awayTeam?.abbreviation == 'FAMU'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-      :awayTeam?.abbreviation == 'UST'
+      : awayTeam?.abbreviation == 'UST'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
-      :awayTeam?.abbreviation == 'MCNS'
-      ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+      : awayTeam?.abbreviation == 'MCNS'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
       : awayTeam?.abbreviation == 'GC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
       : awayTeam?.abbreviation == 'CSB'
@@ -5732,9 +5775,9 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
       : awayTeam?.abbreviation == 'UMKC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
-      : awayTeam?.abbreviation== 'SIND'
+      : awayTeam?.abbreviation == 'SIND'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2635.png"
-      :  awayTeam?.abbreviation == 'CSN'
+      : awayTeam?.abbreviation == 'CSN'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
       : awayTeam?.abbreviation == 'SHS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
@@ -5760,9 +5803,9 @@ String homeLogo(Competitors? homeTeam,
       : homeTeam?.abbreviation == 'SIND'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
       : homeTeam?.abbreviation == 'MCNS'
-      ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
       : homeTeam?.abbreviation == 'UST'
-      ?"https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
       : homeTeam?.abbreviation == 'FAMU'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
       : homeTeam?.abbreviation == 'WAS' &&
@@ -5774,7 +5817,7 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
       : homeTeam?.abbreviation == 'CSB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-      :  homeTeam?.abbreviation == 'UMKC'
+      : homeTeam?.abbreviation == 'UMKC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
       : homeTeam?.abbreviation == 'ULL'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"

@@ -94,7 +94,7 @@ extension AddText on String {
       TextAlign align = TextAlign.center,
       FontWeight weight = FontWeight.w500,
       TextDecoration? decoration,
-      FontStyle fontStyle = FontStyle.normal,
+      // FontStyle fontStyle = FontStyle.normal,
       int? maxLine,
       TextOverflow? overflow}) {
     return Text(
@@ -104,8 +104,8 @@ extension AddText on String {
           color: color,
           letterSpacing: letterSpacing,
           // color: isDarkMode ? Colors.white : color,
-          fontWeight: weight,
-          fontStyle: fontStyle,
+          fontWeight: weight,decorationColor: whiteColor,
+          // fontStyle: fontStyle,
           decoration: decoration),
       textAlign: align,
       overflow: overflow,

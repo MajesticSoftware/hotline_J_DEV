@@ -180,7 +180,7 @@ class LogInScreen extends StatelessWidget {
                               color: whiteColor,
                               weight: FontWeight.w800,
                               size: MediaQuery.of(context).size.height * .02,
-                              decoration: TextDecoration.underline),
+                              ),
                         ),
                       ],
                     ),

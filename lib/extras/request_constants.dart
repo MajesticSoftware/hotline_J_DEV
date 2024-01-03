@@ -70,7 +70,7 @@ class MethodNames {
   static const manageGooglePurchase = "manageGooglePurchase";
   static const googleCloudGetStatusProduct = "googleCloudGetStatusProduct";
 }
-
+String currentYear='2023';
 class RequestHeaderKey {
   static const contentType = "Content-Type";
   static const userAgent = "User-Agent";

@@ -222,6 +222,7 @@ class RegisterScreen extends StatelessWidget {
                             scale: 1.3.h,
                             child: Checkbox(
                               hoverColor: whiteColor,
+
                               checkColor:
                                   Theme.of(context).secondaryHeaderColor,
                               activeColor: whiteColor,
@@ -252,7 +253,7 @@ class RegisterScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w800,
                                   fontSize:
                                       MediaQuery.of(context).size.height * .02,
-                                  decoration: TextDecoration.underline),
+                                  decoration: TextDecoration.underline,decorationColor: whiteColor),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   Get.to(const PrivacyPolicyScreen());
@@ -270,7 +271,7 @@ class RegisterScreen extends StatelessWidget {
                                 text: 'terms of service.',
                                 style: TextStyle(
                                     color: whiteColor,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w800,decorationColor: whiteColor,
                                     fontSize:
                                         MediaQuery.of(context).size.height *
                                             .02,
@@ -311,7 +312,7 @@ class RegisterScreen extends StatelessWidget {
                               color: whiteColor,
                               weight: FontWeight.w800,
                               size: MediaQuery.of(context).size.height * .02,
-                              decoration: TextDecoration.underline),
+                              ),
                         ),
                       ],
                     ),

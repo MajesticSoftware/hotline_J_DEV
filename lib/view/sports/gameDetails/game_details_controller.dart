@@ -5,6 +5,7 @@ import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 import 'package:hotlines/utils/utils.dart';
 import '../../../constant/constant.dart';
+import '../../../extras/request_constants.dart';
 import '../../../model/game_model.dart';
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
@@ -582,10 +583,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: homeTeamId, seasons: DateTime
-        .now()
-        .year
-        .toString());
+        teamId: homeTeamId, seasons: currentYear);
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
@@ -732,10 +730,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: awayTeamId, seasons: DateTime
-        .now()
-        .year
-        .toString());
+        teamId: awayTeamId, seasons: currentYear);
     try {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
@@ -881,10 +876,7 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: homeTeamId,
-        seasons: DateTime
-            .now()
-            .year
-            .toString(),
+        seasons: currentYear,
         sportKey: sportKey);
     try {
       if (result.status) {
@@ -1359,10 +1351,7 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: awayTeamId,
-        seasons: DateTime
-            .now()
-            .year
-            .toString(),
+        seasons: currentYear,
         sportKey: sportKey);
     try {
       if (result.status) {
