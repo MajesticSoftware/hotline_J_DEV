@@ -20,6 +20,7 @@ import '../../../theme/app_color.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/layouts.dart';
 import '../../widgets/common_dialog.dart';
+import '../../widgets/game_widget.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
@@ -60,36 +61,26 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                   highlightColor: Colors.transparent,
                   splashFactory: NoSplash.splashFactory,
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return exitApp(
-                          context, isLogOut: false,
-                          title: 'Subscriptions',
-                          subtitle: 'Subscribe \$6.99 Per month for getting FLAME DELTA per game.',
-                          onTap: () async {
-                            if (PreferenceManager.getIsLogin() ?? false) {
-                              if (subscriptionController.products.isEmpty) {
-                                null;
-                              } else {
-                                await subscriptionController.buyProduct(
-                                    subscriptionController.products[0]);
-                              }
-                            } else {
-                              showAppSnackBar(
-                                  'You have to login for Subscription!');
-                            }
-                          },
-                        );
-                      },
-                    );
+                    subscriptionDialog(context,onTap: () async {
+                      if (PreferenceManager.getIsLogin() ?? false) {
+                        if (subscriptionController.products.isEmpty) {
+                          null;
+                        } else {
+                          await subscriptionController.buyProduct(
+                              subscriptionController.products[0]);
+                        }
+                      } else {
+                        showAppSnackBar(
+                            'You have to login for Subscription!');
+                      }
+                    },);
                   },
-                  child: SvgPicture.asset(
-                    Assets.assetsImagesFire, fit: BoxFit.contain,
+                  child: Image.asset(
+                    Assets.imagesLock, fit: BoxFit.contain,
                     height: MediaQuery
                         .of(context)
                         .size
-                        .height * .03, alignment: Alignment.centerRight,),
+                        .height * .028, alignment: Alignment.centerRight,),
                 ),
               ),
             ],
@@ -1022,15 +1013,17 @@ Future<dynamic> showDialogForRank(BuildContext context,
     {String awayRank = '', String awayText = "", String homeRank = '', String homeText = ""}) {
   return showDialog(
     context: context,
+
     builder: (context) {
       return AlertDialog(
+
         titlePadding: EdgeInsets.all(10.h),
         content: Text.rich(
           textAlign: TextAlign.center,
           TextSpan(
             children: [
               TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
-                color: Colors.black, fontWeight: FontWeight.w500,
+                color: Colors.black, fontWeight: FontWeight.w700,
               )),
               TextSpan(
                 text: '${dateWidget(awayRank)} ${num.parse(awayRank) > 22
@@ -1038,16 +1031,16 @@ Future<dynamic> showDialogForRank(BuildContext context,
                     : num.parse(awayRank) > 11 && num.parse(awayRank) <= 22
                     ? "(mid)"
                     : "(strong)"} ',
-                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.w600,
+                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
                     color: num.parse(awayRank) > 22 ? redColor : num.parse(
                         awayRank) > 11 && num.parse(awayRank) <= 22
                         ? yellowColor
                         : Colors.green),
               ),
 
-              TextSpan(text: 'in the league. $homeText ',
+              TextSpan(text: 'in the league.\n\n $homeText ',
                   style: GoogleFonts.nunitoSans(
-                    color: Colors.black, fontWeight: FontWeight.w500,
+                    color: Colors.black, fontWeight: FontWeight.w700,
                   )),
               TextSpan(
                 text: '${dateWidget(homeRank)} ${num.parse(homeRank) > 22
@@ -1055,7 +1048,7 @@ Future<dynamic> showDialogForRank(BuildContext context,
                     : num.parse(homeRank) > 11 && num.parse(homeRank) <= 22
                     ? "(mid)"
                     : "(strong)"}. ',
-                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.w600,
+                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
                     color: num.parse(homeRank) > 22 ? redColor : num.parse(
                         homeRank) > 11 && num.parse(homeRank) <= 22
                         ? yellowColor
@@ -1063,7 +1056,7 @@ Future<dynamic> showDialogForRank(BuildContext context,
               ),
             ],
           ),
-        ),
+        ).paddingAll(20.h),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(

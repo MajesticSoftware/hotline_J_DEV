@@ -292,7 +292,7 @@ class GameListingRepo {
         ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=${AppUrls.MLB_APIKEY}'
         : sportKey == "NBA"
             ? '${AppUrls.NBA_BASE_URL}league/injuries.json?api_key=${AppUrls.NBA_APIKEY}'
-            : '${AppUrls.NFL_BASE_URL}seasons/${DateTime.now().year.toString()}/REG/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
+            : '${AppUrls.NFL_BASE_URL}seasons/$currentYear/REG/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

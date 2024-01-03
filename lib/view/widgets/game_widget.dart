@@ -16,6 +16,7 @@ import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
 import '../../model/leauge_model.dart';
+import 'common_widget.dart';
 
 class GameWidget extends StatelessWidget {
   const GameWidget(
@@ -253,17 +254,36 @@ class GameWidget extends StatelessWidget {
                         : const SizedBox(),
                     Column(
                       children: [
-                        SvgPicture.asset(
-                            Assets.assetsImagesFire, fit: BoxFit.contain,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * .028).paddingSymmetric(vertical: 10.h),
-                        '$flameNumber'.appCommonText(
-                            color: Theme.of(context).highlightColor,
-                            weight: FontWeight.w600,
-                            size: MediaQuery.of(context).size.height *
-                                .018
+                        SvgPicture.asset(Assets.assetsImagesFire,
+                                fit: BoxFit.contain,
+                                height:
+                                    MediaQuery.of(context).size.height * .028)
+                            .paddingSymmetric(vertical: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            '$flameNumber'.appCommonText(
+                                color: Theme.of(context).highlightColor,
+                                weight: FontWeight.w600,
+                                size:
+                                    MediaQuery.of(context).size.height * .018),
+                            5.h.W(),
+                            GestureDetector(
+                              onTap: () {
+                                subscriptionDialog(context,onTap: () {
+
+                                },);
+                              },
+                              child: Image.asset(
+                                Assets.imagesLock,
+                                height:
+                                    MediaQuery.of(context).size.height * .02,
+                                width: MediaQuery.of(context).size.height * .02,
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          ],
                         )
                       ],
                     ),
@@ -306,38 +326,41 @@ class GameWidget extends StatelessWidget {
                             )
                           : const SizedBox(),
                       5.w.H(),
-                    Column(children: [
-                                          getWeatherIcon(weather, context,
-                      MediaQuery.of(context).size.height * .035),
-                                          Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    textBaseline: TextBaseline.alphabetic,
-                    verticalDirection: VerticalDirection.up,
-                    children: [
-                      Text(
-                        temp == 32
-                            ? "TBD"
-                            : '  ${temp.toString().split('.').first}',
-                        style: GoogleFonts.nunitoSans(
-                            color: Theme.of(context).highlightColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: temp == 32
-                                ? MediaQuery.of(context).size.height * .014
-                                : MediaQuery.of(context).size.height *
-                                .024),
-                      ),
-                      Text(
-                        '°F',
-                        style: GoogleFonts.nunitoSans(
-                          color: Theme.of(context).highlightColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: Get.height * .01,
-                        ),
-                      ),
-                    ],
-                                          )
-                                        ],)
+                      Column(
+                        children: [
+                          getWeatherIcon(weather, context,
+                              MediaQuery.of(context).size.height * .035),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            textBaseline: TextBaseline.alphabetic,
+                            verticalDirection: VerticalDirection.up,
+                            children: [
+                              Text(
+                                temp == 32
+                                    ? "TBD"
+                                    : '  ${temp.toString().split('.').first}',
+                                style: GoogleFonts.nunitoSans(
+                                    color: Theme.of(context).highlightColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: temp == 32
+                                        ? MediaQuery.of(context).size.height *
+                                            .014
+                                        : MediaQuery.of(context).size.height *
+                                            .024),
+                              ),
+                              Text(
+                                '°F',
+                                style: GoogleFonts.nunitoSans(
+                                  color: Theme.of(context).highlightColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: Get.height * .01,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -426,8 +449,36 @@ class GameWidget extends StatelessWidget {
       ),
     );
   }
-}
 
+
+}
+Future<dynamic> subscriptionDialog(BuildContext context,{Function()? onTap}) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return SimpleDialog(
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.h,vertical: 30.h),
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.circular(30)),
+        backgroundColor:Theme.of(context).secondaryHeaderColor,
+        title: 'Hotlines Analytics'.appCommonText(decorationColor: yellowColor,
+            color: yellowColor,size:Get.height * .03 ,decoration: TextDecoration.underline,
+            weight: FontWeight.bold),
+        children: [
+          'Unlock next level analytics & we’ll help you easily identify the biggest mismatches for every game!'.appCommonText(
+              color: whiteColor,size:Get.height * .021 ,
+              weight: FontWeight.bold
+          ),
+          20.h.H(),
+          Image.asset(Assets.imagesSs),
+          40.h.H(),
+          CommonAppButton(title: "Upgrade for \$6.99/mo", textColor: blackColor,onTap: onTap??(){},).paddingSymmetric(horizontal: 40.h),
+        ],
+      );
+    },
+  );
+}
 class GameTabCard extends StatelessWidget {
   GameTabCard(
       {Key? key,

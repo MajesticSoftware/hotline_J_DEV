@@ -305,37 +305,7 @@ class SubscriptionController extends GetxController {
     update();
   }
 
-/*Future<void> _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailList) async {
-    for (var purchaseDetails in purchaseDetailList) {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        isLoading.value = true;
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error ||
-            purchaseDetails.status == PurchaseStatus.canceled) {
-          isLoading.value = false;
-          if (purchaseDetails.error != null) {
-            showAppSnackBar("Purchase error please try after some time", false);
-            log('${purchaseDetails.error!}', name: 'IAPError');
-          }
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          isLoading.value = false;
-          if (purchaseDetails.pendingCompletePurchase) {
-            inAppPurchase.completePurchase(purchaseDetails);
-          }
-          if (Platform.isAndroid) {
-            getGoogleCloudStatus(purchaseDetails as GooglePlayPurchaseDetails);
-            break;
-          } else if (Platform.isIOS) {
-            verifyReceipt(
-                purchaseDetails.verificationData.localVerificationData);
-            break;
-          }
-        }
-      }
-    }
-  }*/
+
 
   @override
   void onClose() {
@@ -419,46 +389,3 @@ alreadyPurchaseDialog() {
       });
 }
 
-/*  Future<void> getSubscriptionStatus(
-      GooglePlayPurchaseDetails purchaseDetails, int credit) async {
-    isLoading.value = true;
-    String packageName = purchaseDetails.billingClientPurchase.packageName;
-    String productId = purchaseDetails.productID;
-    String purchaseToken = purchaseDetails.billingClientPurchase.purchaseToken;
-
-    ResponseItem result = await SubscriptionRepo.getGoogleCloudStatus(
-        packageName, productId, purchaseToken);
-    isLoading.value = false;
-    try {
-      if (result.status) {
-        UserData subscriptionModel = UserData.fromJson(result.data);
-        preferences.saveSubscription(subscriptionModel);
-        isLoading.value = false;
-      }
-    } catch (e) {
-      print("Error is -----> $e");
-      showAppSnackBar(errorText);
-    }
-  }
-
-  Future<void> getGoogleCloudStatusProduct(
-      GooglePlayPurchaseDetails purchaseDetails, int credit) async {
-    isLoading.value = true;
-    String packageName = purchaseDetails.billingClientPurchase.packageName;
-    String productId = purchaseDetails.productID;
-    String purchaseToken = purchaseDetails.billingClientPurchase.purchaseToken;
-
-    ResponseItem result = await SubscriptionRepo.getGoogleCloudStatusProduct(
-        packageName, productId, purchaseToken, credit);
-    isLoading.value = false;
-    try {
-      if (result.status) {
-        UserData subscriptionModel = UserData.fromJson(result.data);
-        preferences.saveSubscription(subscriptionModel);
-        isLoading.value = false;
-      }
-    } catch (e) {
-      print("Error is -----> $e");
-      showAppSnackBar(errorText);
-    }
-  }*/

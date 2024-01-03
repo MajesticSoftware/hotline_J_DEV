@@ -64,10 +64,12 @@ class MethodNames {
   static const deleteAccount = "deleteAccount";
   static const changePasswordWithVerifyCode = "changePasswordWithVerifyCode";
   static const verifyReceipt = "verifyReceipt";
+
+
   static const getReceiptStatus = "getReceiptStatus";
   static const googleCloudGetStatus = "googleCloudGetStatus";
-
   static const manageGooglePurchase = "manageGooglePurchase";
+
   static const googleCloudGetStatusProduct = "googleCloudGetStatusProduct";
 }
 String currentYear='2023';

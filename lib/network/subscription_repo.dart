@@ -51,33 +51,7 @@ class SubscriptionRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  static Future<ResponseItem> getGoogleCloudStatusProduct(String packageName,
-      String productId, String purchaseToken, int partyCredit) async {
-    ResponseItem result;
-    bool status = true;
-    dynamic data;
-    String message = '';
 
-    var queryParameters = {
-      RequestParam.service: MethodNames.googleCloudGetStatusProduct
-    };
-    String queryString = Uri(queryParameters: queryParameters).query;
-    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
-    result = await BaseApiHelper.postRequest(
-        requestUrl,
-        {
-          'packageName': packageName,
-          'productId': productId,
-          'purchaseToken': purchaseToken,
-          'party_credit': partyCredit
-        },
-        true);
-    status = result.status;
-    data = result.data;
-    message = result.message;
-
-    return ResponseItem(data: data, message: message, status: status);
-  }
 
   static Future<ResponseItem> getReceiptStatus() async {
     ResponseItem result;
