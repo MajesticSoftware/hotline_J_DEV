@@ -725,33 +725,46 @@ class SelectGameScreen extends StatelessWidget {
                 ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
                 : competitors.awayTeamAbb == 'SCUS'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                    : competitors.awayTeamAbb == 'FAMU'
+                    : competitors.awayTeamAbb == 'MCNS'
+        ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+        : competitors.awayTeamAbb == 'FAMU'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
                         : competitors.awayTeamAbb == 'WEBB'
                             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                            : competitors.awayTeamAbb == 'WAS' &&
-                                    competitors.id == "sr:competitor:4432"
-                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                : competitors.awayTeamAbb == 'QUC'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                    : competitors.awayTeamAbb == 'GC'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                                        : competitors.awayTeamAbb == 'CSN'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                            : competitors.awayTeamAbb == 'CSB'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
-                                                : competitors.awayTeam ==
-                                                        'Louisiana-Lafayette Ragin Cajuns'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                    : competitors.awayTeam ==
-                                                            'CSB'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                            : competitors.awayTeamAbb == 'SIND'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                : competitors.awayTeamAbb == 'WAS' &&
+                                        competitors.id == "sr:competitor:4432"
+                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                    : competitors.awayTeamAbb == 'UST'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+                                        : competitors.awayTeamAbb == 'QUC'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                            : competitors.awayTeamAbb == 'UMKC'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+                                                : competitors.awayTeamAbb ==
+                                                        'GC'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                    : competitors.awayTeamAbb ==
+                                                            'CSN'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
                                                         : competitors
-                                                                    .awayTeam ==
-                                                                'Sam Houston State Bearkats'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                    .awayTeamAbb ==
+                                                                'CSB'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                             : competitors
-                                                                .gameLogoAwayLink;
+                                                                        .awayTeam ==
+                                                                    'Louisiana-Lafayette Ragin Cajuns'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                : competitors
+                                                                            .awayTeam ==
+                                                                        'CSB'
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                    : competitors.awayTeam ==
+                                                                            'Sam Houston State Bearkats'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                        : competitors
+                                                                            .gameLogoAwayLink;
   }
 
   String homeLogo(
@@ -766,31 +779,45 @@ class SelectGameScreen extends StatelessWidget {
                     ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
                     : competitors.homeTeamAbb == 'SCUS'
                         ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                        : competitors.homeTeamAbb == 'FAMU'
+                        :competitors.homeTeamAbb == 'MCNS'
+        ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+        :  competitors.homeTeamAbb == 'FAMU'
                             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                            : competitors.homeTeamAbb == 'CSN'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                : competitors.homeTeamAbb == 'WAS' &&
-                                        competitors.id == "sr:competitor:4432"
-                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                    : competitors.homeTeamAbb == 'QUC'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                        : competitors.homeTeamAbb == 'CSB'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
-                                            : competitors.homeTeamAbb == 'GC'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                            : competitors.homeTeamAbb == 'UMKC'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+                                : competitors.homeTeamAbb == 'CSN'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                    : competitors.homeTeamAbb == 'WAS' &&
+                                            competitors.id ==
+                                                "sr:competitor:4432"
+                                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                        : competitors.homeTeamAbb == 'QUC'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                            : competitors.homeTeamAbb == 'CSB'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                 : competitors.homeTeamAbb ==
-                                                        'CSB'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                    : competitors.homeTeam ==
-                                                            'Louisiana-Lafayette Ragin Cajuns'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                        'SIND'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                    : competitors.homeTeamAbb ==
+                                                            'UST'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
                                                         : competitors
-                                                                    .homeTeam ==
-                                                                'Sam Houston State Bearkats'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                    .homeTeamAbb ==
+                                                                'GC'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                                                             : competitors
-                                                                .gameHomeLogoLink;
+                                                                        .homeTeamAbb ==
+                                                                    'CSB'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                : competitors
+                                                                            .homeTeam ==
+                                                                        'Louisiana-Lafayette Ragin Cajuns'
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                    : competitors.homeTeam ==
+                                                                            'Sam Houston State Bearkats'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                        : competitors
+                                                                            .gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

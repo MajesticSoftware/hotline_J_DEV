@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -85,6 +87,7 @@ final SubscriptionController subscriptionController=Get.put(SubscriptionControll
                 homeTeam: homeTeam,
                 sportId: widget.sportId);
           }, builder: (con) {
+
             return RefreshIndicator(
               onRefresh: () async {
                 return await gameDetailsController.getResponse(

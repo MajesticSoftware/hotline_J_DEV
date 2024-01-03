@@ -5716,6 +5716,10 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
       : awayTeam?.abbreviation == 'FAMU'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+      :awayTeam?.abbreviation == 'UST'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+      :awayTeam?.abbreviation == 'MCNS'
+      ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
       : awayTeam?.abbreviation == 'GC'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
       : awayTeam?.abbreviation == 'CSB'
@@ -5726,7 +5730,11 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
       : awayTeam?.abbreviation == 'CSB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-      : awayTeam?.abbreviation == 'CSN'
+      : awayTeam?.abbreviation == 'UMKC'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+      : awayTeam?.abbreviation== 'SIND'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2635.png"
+      :  awayTeam?.abbreviation == 'CSN'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
       : awayTeam?.abbreviation == 'SHS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
@@ -5749,6 +5757,12 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
       : homeTeam?.abbreviation == 'CSB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+      : homeTeam?.abbreviation == 'SIND'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+      : homeTeam?.abbreviation == 'MCNS'
+      ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+      : homeTeam?.abbreviation == 'UST'
+      ?"https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
       : homeTeam?.abbreviation == 'FAMU'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
       : homeTeam?.abbreviation == 'WAS' &&
@@ -5760,6 +5774,8 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
       : homeTeam?.abbreviation == 'CSB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+      :  homeTeam?.abbreviation == 'UMKC'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
       : homeTeam?.abbreviation == 'ULL'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
       : homeTeam?.abbreviation == 'SHS'
