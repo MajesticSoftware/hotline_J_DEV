@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -73,10 +74,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Future checkReleaseVersion() async {
     ResponseItem result = await SubscriptionRepo.getReleaseVersion();
     if (result.data != null) {
-      /*   log("IOS RESULT--${result.data[0]['ios_release_version']}");
+         log("IOS RESULT--${result.data[0]['ios_release_version']}");
       log("ANDROID RESULT--${result.data[0]['android_release_version']}");
       log("ANDROID RESULT--${PreferenceManager.getDeviceVersion()}");
-      log("ANDROID RESULT--${PreferenceManager.getDeviceVersionNumber()}");*/
+      log("ANDROID RESULT--${PreferenceManager.getDeviceVersionNumber()}");
       String androidVersion =
           '${PreferenceManager.getDeviceVersion().toString().split('.').first}.${PreferenceManager.getDeviceVersion().toString().split('.')[1]}.${PreferenceManager.getDeviceVersionNumber()}';
       if ((Platform.isIOS
