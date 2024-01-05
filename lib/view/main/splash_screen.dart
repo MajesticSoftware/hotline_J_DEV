@@ -1,15 +1,21 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../constant/shred_preference.dart';
 import '../../extras/constants.dart';
 import '../../generated/assets.dart';
+import '../../model/response_item.dart';
+import '../../network/subscription_repo.dart';
 import '../../theme/app_color.dart';
 import '../auth/log_in_module/log_in_screen.dart';
+import '../widgets/common_dialog.dart';
 import 'app_starting_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,16 +31,18 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     Timer(const Duration(seconds: 2), () {
-      Get.to(() => PreferenceManager.getSkipLogin() ?? false
-          ? (PreferenceManager.getIsFirstLoaded() == null ||
-          !PreferenceManager.getIsFirstLoaded())
-          ? const AppStartScreen()
-          : SelectGameScreen()
-          : PreferenceManager.getIsLogin() ?? false
-          ? SelectGameScreen()
-          : LogInScreen(),
-
-          duration: const Duration(milliseconds: 900));
+      checkReleaseVersion().then((value) {
+        Get.to(
+            () => PreferenceManager.getSkipLogin() ?? false
+                ? (PreferenceManager.getIsFirstLoaded() == null ||
+                        !PreferenceManager.getIsFirstLoaded())
+                    ? const AppStartScreen()
+                    : SelectGameScreen()
+                : PreferenceManager.getIsLogin() ?? false
+                    ? SelectGameScreen()
+                    : LogInScreen(),
+            duration: const Duration(milliseconds: 900));
+      });
     });
   }
 
@@ -60,6 +68,50 @@ class _SplashScreenState extends State<SplashScreen> {
               height: Get.height,
               fit: BoxFit.cover,
             ),
+    );
+  }
+  Future checkReleaseVersion() async {
+    ResponseItem result = await SubscriptionRepo.getReleaseVersion();
+    if(result.data!=null){
+      log("IOS RESULT--${result.data[0]['ios_release_version']}");
+      log("ANDROID RESULT--${result.data[0]['android_release_version']}");
+      log("ANDROID RESULT--${PreferenceManager.getDeviceVersion()}");
+      if ((Platform.isIOS
+          ? result.data[0]['ios_release_version']
+          : result.data[0]['android_release_version']) !=
+          PreferenceManager.getDeviceVersion()) {
+        return updateAppDialog();
+      }
+    }
+
+  }
+
+  Future<dynamic> updateAppDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return exitApp(
+          context,
+          buttonText: '',
+isUpdateApp: true,
+          title: 'New Version',
+          subtitle: 'There is a new version of the app available. please go to the app store to update',
+          onTap: () {
+            if (Platform.isAndroid || Platform.isIOS) {
+              final appId = Platform.isAndroid ? 'com.fa.app.hotlines' : '6471570051';
+              final url = Uri.parse(
+                Platform.isAndroid
+                    ? "market://details?id=$appId"
+                    : "https://apps.apple.com/app/id$appId",
+              );
+              launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              );
+            }
+          },
+        );
+      },
     );
   }
 }

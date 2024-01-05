@@ -9,7 +9,6 @@ import 'package:hotlines/model/game_model.dart';
 import 'package:hotlines/theme/app_color.dart';
 import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/animated_search.dart';
-
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 
@@ -40,6 +39,7 @@ class GameWidget extends StatelessWidget {
       required this.homeTeamSpread,
       required this.homeTeamMoneyLine,
       required this.homeTeamOU,
+      required this.isShowFlam,
       this.onTap,
       required this.isShowWeather})
       : super(key: key);
@@ -61,6 +61,7 @@ class GameWidget extends StatelessWidget {
   final bool isLive;
   final int weather;
   final bool isShowWeather;
+  final bool isShowFlam;
   final num temp;
   final num flameNumber;
   final void Function()? onTap;
@@ -222,7 +223,7 @@ class GameWidget extends StatelessWidget {
               ),
               10.w.W(),
               Visibility(
-                visible: !isShowWeather,
+                visible: isShowFlam,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,48 +260,100 @@ class GameWidget extends StatelessWidget {
                                 height:
                                     MediaQuery.of(context).size.height * .028)
                             .paddingSymmetric(vertical: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            '$flameNumber'.appCommonText(
-                                color: Theme.of(context).highlightColor,
-                                weight: FontWeight.w600,
-                                size:
-                                    MediaQuery.of(context).size.height * .018),
-                            5.h.W(),
-                            GestureDetector(
-                              onTap: () {
-                                subscriptionDialog(context,onTap: () {
-
-                                },);
-                              },
-                              child: Image.asset(
-                                Assets.imagesLock,
-                                height:
-                                    MediaQuery.of(context).size.height * .02,
-                                width: MediaQuery.of(context).size.height * .02,
-                                fit: BoxFit.contain,
-                              ),
-                            )
-                          ],
-                        )
+                        '$flameNumber'.appCommonText(
+                            color: Theme.of(context).highlightColor,
+                            weight: FontWeight.w600,
+                            size: MediaQuery.of(context).size.height * .018)
                       ],
                     ),
                     5.w.H(),
                   ],
                 ),
               ),
+             /* Visibility(
+                  visible: isShowWeather&&!isShowFlam,
+                  child: Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        (MediaQuery.of(context).size.height * .005).H(),
+                        Text(
+                          dateTime,
+                          style: GoogleFonts.nunitoSans(
+                            color: Theme.of(context).dividerColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: Get.height * .01,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        isLive
+                            ? Container(
+                                height:
+                                    MediaQuery.of(context).size.height * .02,
+                                width: MediaQuery.of(context).size.width * .07,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(105),
+                                    color: redColor),
+                                child: Center(
+                                  child: 'LIVE'.appCommonText(
+                                      color: whiteColor,
+                                      size: MediaQuery.of(context).size.height *
+                                          .012,
+                                      weight: FontWeight.bold),
+                                ),
+                              )
+                            : const SizedBox(),
+                        5.w.H(),
+                        Column(
+                          children: [
+                            getWeatherIcon(weather, context,
+                                MediaQuery.of(context).size.height * .035),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              textBaseline: TextBaseline.alphabetic,
+                              verticalDirection: VerticalDirection.up,
+                              children: [
+                                Text(
+                                  temp == 32
+                                      ? "TBD"
+                                      : '  ${temp.toString().split('.').first}',
+                                  style: GoogleFonts.nunitoSans(
+                                      color: Theme.of(context).highlightColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: temp == 32
+                                          ? MediaQuery.of(context).size.height *
+                                              .014
+                                          : MediaQuery.of(context).size.height *
+                                              .024),
+                                ),
+                                Text(
+                                  '°F',
+                                  style: GoogleFonts.nunitoSans(
+                                    color: Theme.of(context).highlightColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: Get.height * .01,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  )),
               Visibility(
-                visible: isShowWeather,
-                child: Expanded(
-                  flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      (MediaQuery.of(context).size.height * .005).H(),
-                      Text(
+                visible: !isShowWeather&&!isShowFlam,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    (MediaQuery.of(context).size.height * .005).H(),
+                    SizedBox(
+                      width: 60.h,
+                      child: Text(
                         dateTime,
                         style: GoogleFonts.nunitoSans(
                           color: Theme.of(context).dividerColor,
@@ -309,62 +362,26 @@ class GameWidget extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      isLive
-                          ? Container(
-                              height: MediaQuery.of(context).size.height * .02,
-                              width: MediaQuery.of(context).size.width * .07,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(105),
-                                  color: redColor),
-                              child: Center(
-                                child: 'LIVE'.appCommonText(
-                                    color: whiteColor,
-                                    size: MediaQuery.of(context).size.height *
-                                        .012,
-                                    weight: FontWeight.bold),
-                              ),
-                            )
-                          : const SizedBox(),
-                      5.w.H(),
-                      Column(
-                        children: [
-                          getWeatherIcon(weather, context,
-                              MediaQuery.of(context).size.height * .035),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            textBaseline: TextBaseline.alphabetic,
-                            verticalDirection: VerticalDirection.up,
-                            children: [
-                              Text(
-                                temp == 32
-                                    ? "TBD"
-                                    : '  ${temp.toString().split('.').first}',
-                                style: GoogleFonts.nunitoSans(
-                                    color: Theme.of(context).highlightColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: temp == 32
-                                        ? MediaQuery.of(context).size.height *
-                                            .014
-                                        : MediaQuery.of(context).size.height *
-                                            .024),
-                              ),
-                              Text(
-                                '°F',
-                                style: GoogleFonts.nunitoSans(
-                                  color: Theme.of(context).highlightColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: Get.height * .01,
-                                ),
-                              ),
-                            ],
+                    ),
+                    isLive
+                        ? Container(
+                            height: MediaQuery.of(context).size.height * .02,
+                            width: MediaQuery.of(context).size.width * .07,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(105),
+                                color: redColor),
+                            child: Center(
+                              child: 'LIVE'.appCommonText(
+                                  color: whiteColor,
+                                  size: MediaQuery.of(context).size.height *
+                                      .012,
+                                  weight: FontWeight.bold),
+                            ),
                           )
-                        ],
-                      )
-                    ],
-                  ),
+                        : const SizedBox(),
+                  ],
                 ),
-              ),
+              ),*/
               10.w.W(),
               buildExpandedBoxWidget(context,
                   bottomText: homeTeamSpread, upText: awayTeamSpread),
@@ -449,36 +466,42 @@ class GameWidget extends StatelessWidget {
       ),
     );
   }
-
-
 }
-Future<dynamic> subscriptionDialog(BuildContext context,{Function()? onTap}) {
+
+Future<dynamic> subscriptionDialog(BuildContext context, {Function()? onTap}) {
   return showDialog(
     context: context,
     builder: (context) {
       return SimpleDialog(
-        contentPadding: EdgeInsets.symmetric(horizontal: 30.h,vertical: 30.h),
-        shape: RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(30)),
-        backgroundColor:Theme.of(context).secondaryHeaderColor,
-        title: 'Hotlines Analytics'.appCommonText(decorationColor: yellowColor,
-            color: yellowColor,size:Get.height * .03 ,decoration: TextDecoration.underline,
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: Theme.of(context).secondaryHeaderColor,
+        title: 'Hotlines Analytics'.appCommonText(
+            decorationColor: yellowColor,
+            color: yellowColor,
+            size: Get.height * .03,
+            decoration: TextDecoration.underline,
             weight: FontWeight.bold),
         children: [
-          'Unlock next level analytics & we’ll help you easily identify the biggest mismatches for every game!'.appCommonText(
-              color: whiteColor,size:Get.height * .021 ,
-              weight: FontWeight.bold
-          ),
+          'Unlock next level analytics & we’ll help you easily identify the biggest mismatches for every game!'
+              .appCommonText(
+                  color: whiteColor,
+                  size: Get.height * .021,
+                  weight: FontWeight.bold),
           20.h.H(),
           Image.asset(Assets.imagesSs),
           40.h.H(),
-          CommonAppButton(title: "Upgrade for \$6.99/mo", textColor: blackColor,onTap: onTap??(){},).paddingSymmetric(horizontal: 40.h),
+          CommonAppButton(
+            title: "Upgrade for \$6.99/mo",
+            textColor: blackColor,
+            onTap: onTap ?? () {},
+          ).paddingSymmetric(horizontal: 40.h),
         ],
       );
     },
   );
 }
+
 class GameTabCard extends StatelessWidget {
   GameTabCard(
       {Key? key,

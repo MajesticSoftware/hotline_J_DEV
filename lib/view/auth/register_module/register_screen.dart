@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
@@ -16,6 +17,7 @@ import 'package:hotlines/view/auth/register_module/register_controller.dart';
 import 'package:hotlines/view/term_of_service/privacy_policy.dart';
 import 'package:hotlines/view/term_of_service/term_service_screen.dart';
 
+import '../../../constant/shred_preference.dart';
 import '../../../extras/request_constants.dart';
 import '../../../generated/assets.dart';
 import '../../../utils/file_picker_utils.dart';
@@ -207,6 +209,8 @@ class RegisterScreen extends StatelessWidget {
                           }).toList(),
                           onChanged: (value) {
                             ctrl.selectedSpot = value!;
+                            log('ctrl.selectedSpot---${ctrl.selectedSpot}');
+                            PreferenceManager.setFavoriteSport(value);
                             ctrl.update();
                           },
                         ),
@@ -222,7 +226,12 @@ class RegisterScreen extends StatelessWidget {
                             scale: 1.3.h,
                             child: Checkbox(
                               hoverColor: whiteColor,
-
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2.0),
+                              ),
+                              side: MaterialStateBorderSide.resolveWith(
+                                    (states) => const BorderSide(width: 1.0, color: whiteColor),
+                              ),
                               checkColor:
                                   Theme.of(context).secondaryHeaderColor,
                               activeColor: whiteColor,
@@ -355,6 +364,7 @@ class RegisterScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Get.to(const AppStartScreen());
+                        PreferenceManager.setSubscriptionRecUrl("");
                       },
                       child: 'Skip for now'.appCommonText(
                           color: whiteColor,

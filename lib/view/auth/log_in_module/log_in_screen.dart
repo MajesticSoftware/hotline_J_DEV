@@ -223,6 +223,7 @@ class LogInScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         PreferenceManager.setSkipLogin(true);
+                        PreferenceManager.setSubscriptionRecUrl("");
                         PreferenceManager.getIsFirstLoaded() == null
                             ? Get.offAll(const AppStartScreen())
                             : Get.offAll(SelectGameScreen());

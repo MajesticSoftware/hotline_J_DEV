@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,8 +23,10 @@ import '../../../model/nfl_rank_model.dart';
 import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 import '../../../model/team_logo_model.dart';
+import '../../../model/user_model.dart';
 import '../../../network/auth_repo.dart';
 import '../../../network/game_listing_repo.dart';
+import '../../../network/subscription_repo.dart';
 import '../../../theme/helper.dart';
 import '../../../utils/extension.dart';
 import '../../auth/log_in_module/log_in_screen.dart';
@@ -47,7 +50,10 @@ class GameListingController extends GetxController {
 
   String sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
       ? 'sr:sport:3'
-      : 'sr:sport:16');
+      : ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NBA') ||
+              ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
+          ? 'sr:sport:2'
+          : 'sr:sport:16');
   String _sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
           ? "NCAA"
           : PreferenceManager.getFavoriteSport()) ??
@@ -63,6 +69,9 @@ class GameListingController extends GetxController {
   favoriteGameCall() {
     sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
         ? 'sr:sport:3'
+        : ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NBA') ||
+        ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
+        ? 'sr:sport:2'
         : 'sr:sport:16');
     sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
             ? "NCAA"
@@ -75,7 +84,10 @@ class GameListingController extends GetxController {
       () async {
         isPagination = true;
         isLoading.value = true;
-        await getResponse(true, sportKey);
+        await getResponse(true,  (PreferenceManager.getFavoriteSport() == "NCAAF"
+            ? "NCAA"
+            : PreferenceManager.getFavoriteSport()) ??
+            "NFL");
       },
     );
   }
@@ -100,10 +112,37 @@ class GameListingController extends GetxController {
     update();
   }
 
+  Future<void> getSubscriptionStatus() async {
+    isLoading.value = true;
+    ResponseItem result = Platform.isIOS
+        ? await SubscriptionRepo.getReceiptStatus()
+        : await SubscriptionRepo.getGoogleCloudStatus();
+    try {
+      if (result.status) {
+        UserData subscriptionModel = UserData.fromJson(result.data);
+        PreferenceManager().saveSubscription(subscriptionModel);
+        update();
+      } else {
+        PreferenceManager.setSubscriptionRecUrl("");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isLoading.value = false;
+    update();
+  }
+
   gameOnClick(BuildContext context, int index) {
     toggle = 0;
     FocusScope.of(context).unfocus();
     searchCon.clear();
+    if ((PreferenceManager.getIsOpenDialog() == null) &&
+        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+      PreferenceManager.setIsOpenDialog(true);
+    } else {
+      PreferenceManager.setIsOpenDialog(false);
+    }
+
     Get.to(SportDetailsScreen(
       gameDetails: (getSportEventList(sportKey))[index],
       sportKey: sportKey,
@@ -116,6 +155,12 @@ class GameListingController extends GetxController {
   searchGameOnClick(BuildContext context, int index) {
     toggle = 0;
     FocusScope.of(context).unfocus();
+    if ((PreferenceManager.getIsOpenDialog() == null) &&
+        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+      PreferenceManager.setIsOpenDialog(true);
+    } else {
+      PreferenceManager.setIsOpenDialog(false);
+    }
     searchCon.clear();
     searchCon.text = '';
     Get.to(SportDetailsScreen(
@@ -1656,9 +1701,7 @@ class GameListingController extends GetxController {
               homeTeam = element.competitors[1];
             }
             response.data?.forEach((team) {
-              if ((awayTeam?.abbreviation == "CLE"
-                      ? "56913910-87f7-4ad7-ae3b-5cd9fb218fd9"
-                      : replaceId(awayTeam?.uuids ?? '')) ==
+              if ((replaceId(awayTeam?.uuids ?? '')) ==
                   replaceId(team.teamId ?? "")) {
                 element.nbaAwayOffensiveList = [
                   team.pointOffense.toString(),
@@ -1719,9 +1762,7 @@ class GameListingController extends GetxController {
                   (team.teamPerDefenseRank ?? 0).toString(),
                 ];
               }
-              if ((homeTeam?.abbreviation == "CLE"
-                      ? "56913910-87f7-4ad7-ae3b-5cd9fb218fd9"
-                      : replaceId(homeTeam?.uuids ?? '')) ==
+              if ((replaceId(homeTeam?.uuids ?? '')) ==
                   replaceId(team.teamId ?? "")) {
                 element.nbaHomeOffensiveList = [
                   team.pointOffense.toString(),

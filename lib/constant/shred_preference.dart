@@ -8,6 +8,13 @@ import '../model/user_model.dart';
 
 class PreferenceManager {
   static GetStorage getStorage = GetStorage();
+  static Future setIsOpenDialog(bool isOpenDialog) async {
+    await getStorage.write("isOpenDialog", isOpenDialog);
+  }
+
+  static getIsOpenDialog() {
+    return getStorage.read("isOpenDialog");
+  }
 
   static Future setIsDarkMod(bool isDarkMode) async {
     await getStorage.write("isDarkMode", isDarkMode);
@@ -173,6 +180,7 @@ class PreferenceManager {
       setDeviceVersion(androidDeviceInfo.version.release);
     }
     setDeviceVersion(packageInfo.version);
+
   }
 
   ///SUBSCRIPTION

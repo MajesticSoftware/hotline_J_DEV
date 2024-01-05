@@ -17,6 +17,7 @@ Future<void> main() async {
   await GetStorage.init();
   await PreferenceManager().putAppDeviceInfo();
   // FlutterBranchSdk.validateSDKIntegration();
+
   runApp(const MyApp());
 }
 

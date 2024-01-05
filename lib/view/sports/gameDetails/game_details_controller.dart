@@ -20,6 +20,8 @@ import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
+
+
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',

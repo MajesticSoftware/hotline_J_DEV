@@ -9,6 +9,7 @@ import 'package:hotlines/utils/extension.dart';
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
 import '../../theme/app_color.dart';
+import 'common_widget.dart';
 
 class DialogWidget {
   showDataAlert(BuildContext context) {
@@ -298,78 +299,55 @@ class DialogWidget {
 }
 
 Widget exitApp(BuildContext context,
-    {void Function()? onTap, String subtitle = '', String title = '',bool isLogOut=true}) {
+    {void Function()? onTap,bool isUpdateApp=false, String subtitle = '', String title = '',String? buttonText,String? cancelText}) {
   return AlertDialog(
     title: title.appCommonText(
-        color: blackColor, weight: FontWeight.bold, size: 24),
+        color: Theme.of(context).secondaryHeaderColor, weight: FontWeight.bold, size: 28.h),
     content: subtitle.appCommonText(
-        color: blackColor.withOpacity(0.8), weight: FontWeight.w600, size: 16),
+        color: blackColor.withOpacity(.8), weight: FontWeight.w600, size: 20.h,align: TextAlign.center),
    // actionsPadding: const EdgeInsets.only(bottom: 20),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
     actionsAlignment: MainAxisAlignment.center,
-    actions: isLogOut?<Widget>[
+    actions:isUpdateApp?
+    <Widget>[   CommonAppButton(
+        onTap:onTap??(){},
+        radius: 15.r,
+        title: 'Update'),]: <Widget>[
       Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context).secondaryHeaderColor),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 10),
-                        child: noText.appCommonText(
-                            color: whiteColor,
-                            weight: FontWeight.w700,
-                            size: 18),
-                      )),
-                ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        color: Theme.of(context).secondaryHeaderColor),
+                    child: (cancelText?? noText).appCommonText(
+                        color: whiteColor,
+                        weight: FontWeight.w700,
+                        size: 22.h).paddingSymmetric(vertical: 10.h)),
               ),
-              10.W(),
-              Expanded(
-                child: GestureDetector(
-                  onTap: onTap,
-                  child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context).secondaryHeaderColor),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 10),
-                        child: yesText.appCommonText(
-                            color: whiteColor,
-                            weight: FontWeight.w700,
-                            size: 18),
-                      )),
-                ),
+            ),
+            10.W(),
+            Expanded(
+              child: GestureDetector(
+                onTap: onTap,
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        color: Theme.of(context).secondaryHeaderColor),
+                    child: ( buttonText??yesText).appCommonText(
+                        color: whiteColor,
+                        weight: FontWeight.w700,
+                        size: 22.h).paddingSymmetric(vertical: 10.h)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-    ]:[
-      GestureDetector(
-        onTap: onTap,
-        child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).secondaryHeaderColor),
-            child: Padding(
-              padding:  EdgeInsets.symmetric(
-                  horizontal: 80.h, vertical: 10),
-              child: 'Subscriptions'.appCommonText(
-                  color: whiteColor,
-                  weight: FontWeight.w700,
-                  size: 18),
-            )),
       ),
     ],
   );

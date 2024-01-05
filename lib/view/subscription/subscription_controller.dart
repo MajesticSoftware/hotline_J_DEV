@@ -7,8 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/widgets/common_widget.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import "package:in_app_purchase_android/in_app_purchase_android.dart";
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +45,7 @@ class SubscriptionController extends GetxController {
   late StreamSubscription<List<PurchaseDetails>> subscription;
   final InAppPurchase inAppPurchase = InAppPurchase.instance;
 
-  int selectedIndex = -1;
+  // int selectedIndex = -1;
   bool isStepController18 = false;
 
   String subscriptionPrice = "";
@@ -77,11 +78,7 @@ class SubscriptionController extends GetxController {
       late PurchaseParam purchaseParam;
       if (Platform.isAndroid) {
         purchaseParam = GooglePlayPurchaseParam(productDetails: prod);
-        if (selectedIndex == 2) {
-          await inAppPurchase.buyConsumable(purchaseParam: purchaseParam);
-        } else {
           await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-        }
       } else {
         purchaseParam = PurchaseParam(productDetails: prod);
         var transactions = await SKPaymentQueueWrapper().transactions();
@@ -89,11 +86,8 @@ class SubscriptionController extends GetxController {
           SKPaymentQueueWrapper()
               .finishTransaction(skPaymentTransactionWrapper);
         }
-        if (selectedIndex == 2) {
-          await inAppPurchase.buyConsumable(purchaseParam: purchaseParam);
-        } else {
-          await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-        }
+         await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+
         isLoading.value = false;
         update();
       }
@@ -140,7 +134,7 @@ class SubscriptionController extends GetxController {
         }
       }
     } catch (e) {
-      print("Subscription Listen error is ---> $e");
+      log("Subscription Listen error is ---> $e");
     }
   }
 
@@ -204,10 +198,10 @@ class SubscriptionController extends GetxController {
         return element.id == id;
       }));
     }
-    print("Product List Length ------> ${products.length}");
-    products.forEach((element) {
-      print("Product Price ------> ${element.price}");
-    });
+    log("Product List Length ------> ${products.length}");
+    for (var element in products) {
+      log("Product Price ------> ${element.price}");
+    }
     isLoading.value = false;
 
     return;
@@ -230,7 +224,9 @@ class SubscriptionController extends GetxController {
         update();
         isLoading.value = false;
       } else {
+        isLoading.value = false;
         showAppSnackBar(result.message);
+
       }
     } catch (e) {
       isLoading.value = false;
@@ -271,6 +267,8 @@ class SubscriptionController extends GetxController {
     update();
   }
 
+
+
   getSubscriptionProduct() {
     subscriptionId =PreferenceManager.getSubscriptionProduct() ?? "";
     String subscriptionProduct =
@@ -294,7 +292,7 @@ class SubscriptionController extends GetxController {
         int.parse(
            PreferenceManager.getSubscriptionStartDate() ??
                 ""));
-    print("subscriptionStartTime --> $subscriptionStartTime");
+    log("subscriptionStartTime --> $subscriptionStartTime");
     subscriptionStart =
         DateFormat("MMMM dd, yyyy").format(subscriptionStartTime);
 
@@ -327,27 +325,15 @@ class SubscriptionController extends GetxController {
           return AlertDialog(
             backgroundColor: Colors.white,
             content: ("Subscription purchase completed.")
-                .appCommonText(size: 16.h,color: Theme.of(context).secondaryHeaderColor,weight: FontWeight.w600)
+                .appCommonText(size: 18.h,color: Theme.of(context).secondaryHeaderColor,weight: FontWeight.w700)
                 .paddingOnly(top: 10),
             actionsAlignment: MainAxisAlignment.center,
             actions: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).secondaryHeaderColor),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      child: "Ok".appCommonText(
-                          color: whiteColor,
-                          weight: FontWeight.w700,
-                          size: 18),
-                    )),
-              ),
+              CommonAppButton(onTap: () {
+                Navigator.of(context).pop();
+
+              }, title: "Ok",buttonColor:Theme.of(context).secondaryHeaderColor ,textColor: whiteColor,)
+
             ],
           );
         });
@@ -371,21 +357,4 @@ class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
   }
 }
 
-alreadyPurchaseDialog() {
-  return showDialog(
-      context: Get.context!,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: ("Already Purchased"). appCommonText(size: 16.h,color: Theme.of(context).secondaryHeaderColor).paddingOnly(top: 10),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: "Ok". appCommonText(size: 16.h,color: Theme.of(context).secondaryHeaderColor))
-          ],
-        );
-      });
-}
 

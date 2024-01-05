@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../extras/base_api_helper.dart';
 import '../extras/request_constants.dart';
 import '../model/response_item.dart';
@@ -19,7 +21,7 @@ class SubscriptionRepo {
       data = result.data;
       message = result.message;
     } catch (e) {
-      print("Error ius ---> $e");
+      log("Error ius ---> $e");
     }
     return ResponseItem(data: data, message: message, status: status);
   }
@@ -63,6 +65,21 @@ class SubscriptionRepo {
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, true);
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }static Future<ResponseItem> getReleaseVersion() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    var queryParameters = {RequestParam.service: MethodNames.getReleaseVersion};
+    String queryString = Uri(queryParameters: queryParameters).query;
+    String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
+    result = await BaseApiHelper.postRequest(requestUrl, {}, false);
     status = result.status;
     data = result.data;
     message = result.message;

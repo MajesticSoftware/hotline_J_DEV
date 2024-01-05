@@ -1,21 +1,20 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:hotlines/view/subscription/subscription_controller.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
-
-import '../../../constant/shred_preference.dart';
-
-import 'game_details_controller.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
+import 'package:sticky_headers/sticky_headers/widget.dart';
+
+import '../../../constant/shred_preference.dart';
 import '../../../utils/app_progress.dart';
+import '../../widgets/common_dialog.dart';
+import '../../widgets/game_widget.dart';
+import 'game_details_controller.dart';
 import 'game_details_widgets.dart';
 
 // ignore: must_be_immutable
@@ -38,13 +37,47 @@ class SportDetailsScreen extends StatefulWidget {
 
 class _SportDetailsScreenState extends State<SportDetailsScreen>
     with SingleTickerProviderStateMixin {
-  final GameDetailsController gameDetailsController = Get.put(GameDetailsController());
-final SubscriptionController subscriptionController=Get.put(SubscriptionController());
+  final GameDetailsController gameDetailsController =
+      Get.put(GameDetailsController());
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
   TabController? _tabController;
 
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
+    if ((PreferenceManager.getIsOpenDialog() ?? false) &&
+        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+      Future.delayed(Duration.zero, () {
+        subscriptionDialog(context, onTap: () async {
+          Get.back();
+          if (PreferenceManager.getIsLogin() ?? false) {
+            if (subscriptionController.products.isEmpty) {
+              null;
+            } else {
+              await subscriptionController
+                  .buyProduct(subscriptionController.products[0]);
+            }
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return exitApp(
+                  context,
+                  buttonText: 'Login',
+                  cancelText: 'Cancel',
+                  title: 'Error',
+                  subtitle: 'You have to login for Subscription!',
+                  onTap: () {
+                    Get.offAll(LogInScreen());
+                  },
+                );
+              },
+            );
+          }
+        });
+      });
+    }
     super.initState();
   }
 
@@ -75,7 +108,8 @@ final SubscriptionController subscriptionController=Get.put(SubscriptionControll
       children: [
         Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: commonAppBarWidget(context, isDark,gameDetailsController,subscriptionController),
+          appBar: commonAppBarWidget(
+              context, isDark, gameDetailsController, subscriptionController),
           body: GetBuilder<GameDetailsController>(initState: (state) async {
             await gameDetailsController.getResponse(
                 isLoad: true,
@@ -87,7 +121,6 @@ final SubscriptionController subscriptionController=Get.put(SubscriptionControll
                 homeTeam: homeTeam,
                 sportId: widget.sportId);
           }, builder: (con) {
-
             return RefreshIndicator(
               onRefresh: () async {
                 return await gameDetailsController.getResponse(
@@ -220,7 +253,7 @@ final SubscriptionController subscriptionController=Get.put(SubscriptionControll
             );
           }),
         ),
-        Obx(() => gameDetailsController.isLoading.value
+        Obx(() => gameDetailsController.isLoading.value||subscriptionController.isLoading.value
             ? const AppProgress()
             : const SizedBox())
       ],
