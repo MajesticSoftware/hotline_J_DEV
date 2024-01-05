@@ -123,7 +123,7 @@ class GameListingController extends GetxController {
         PreferenceManager().saveSubscription(subscriptionModel);
         update();
       } else {
-        PreferenceManager.setSubscriptionRecUrl("");
+        PreferenceManager.setSubscriptionActive("0");
       }
     } catch (e) {
       debugPrint(e.toString());

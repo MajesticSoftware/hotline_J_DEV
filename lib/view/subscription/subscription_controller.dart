@@ -331,6 +331,7 @@ class SubscriptionController extends GetxController {
             actions: [
               CommonAppButton(onTap: () {
                 Navigator.of(context).pop();
+                PreferenceManager.setSubscriptionActive("1");
 
               }, title: "Ok",buttonColor:Theme.of(context).secondaryHeaderColor ,textColor: whiteColor,)
 
