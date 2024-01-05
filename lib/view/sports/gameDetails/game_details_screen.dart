@@ -47,7 +47,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
     if ((PreferenceManager.getIsOpenDialog() ?? false) &&
-        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+        ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
       Future.delayed(Duration.zero, () {
         subscriptionDialog(context, onTap: () async {
           Get.back();

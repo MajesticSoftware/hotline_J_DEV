@@ -137,7 +137,7 @@ class GameListingController extends GetxController {
     FocusScope.of(context).unfocus();
     searchCon.clear();
     if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+        ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
       PreferenceManager.setIsOpenDialog(true);
     } else {
       PreferenceManager.setIsOpenDialog(false);
@@ -156,7 +156,7 @@ class GameListingController extends GetxController {
     toggle = 0;
     FocusScope.of(context).unfocus();
     if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionRecUrl() ?? false) == "")) {
+        ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
       PreferenceManager.setIsOpenDialog(true);
     } else {
       PreferenceManager.setIsOpenDialog(false);

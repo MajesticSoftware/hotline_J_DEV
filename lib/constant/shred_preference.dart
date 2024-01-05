@@ -115,6 +115,13 @@ class PreferenceManager {
   static getDeviceVersion() {
     return getStorage.read("deviceVersion");
   }
+static Future setDeviceVersionNumber(String deviceVersionNumber) async {
+    await getStorage.write("deviceVersionNumber", deviceVersionNumber);
+  }
+
+  static getDeviceVersionNumber() {
+    return getStorage.read("deviceVersionNumber");
+  }
 
   ///userId
   static Future setUserId(num userId) async {
@@ -180,7 +187,7 @@ class PreferenceManager {
       setDeviceVersion(androidDeviceInfo.version.release);
     }
     setDeviceVersion(packageInfo.version);
-
+    setDeviceVersionNumber(packageInfo.buildNumber);
   }
 
   ///SUBSCRIPTION

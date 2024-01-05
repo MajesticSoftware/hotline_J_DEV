@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -70,20 +69,23 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
     );
   }
+
   Future checkReleaseVersion() async {
     ResponseItem result = await SubscriptionRepo.getReleaseVersion();
-    if(result.data!=null){
-      log("IOS RESULT--${result.data[0]['ios_release_version']}");
+    if (result.data != null) {
+      /*   log("IOS RESULT--${result.data[0]['ios_release_version']}");
       log("ANDROID RESULT--${result.data[0]['android_release_version']}");
       log("ANDROID RESULT--${PreferenceManager.getDeviceVersion()}");
+      log("ANDROID RESULT--${PreferenceManager.getDeviceVersionNumber()}");*/
+      String androidVersion =
+          '${PreferenceManager.getDeviceVersion().toString().split('.').first}.${PreferenceManager.getDeviceVersion().toString().split('.')[1]}.${PreferenceManager.getDeviceVersionNumber()}';
       if ((Platform.isIOS
-          ? result.data[0]['ios_release_version']
-          : result.data[0]['android_release_version']) !=
-          PreferenceManager.getDeviceVersion()) {
+          ? (result.data[0]['ios_release_version'] !=
+              PreferenceManager.getDeviceVersion())
+          : (result.data[0]['android_release_version'] != androidVersion))) {
         return updateAppDialog();
       }
     }
-
   }
 
   Future<dynamic> updateAppDialog() {
@@ -93,12 +95,14 @@ class _SplashScreenState extends State<SplashScreen> {
         return exitApp(
           context,
           buttonText: '',
-isUpdateApp: true,
+          isUpdateApp: true,
           title: 'New Version',
-          subtitle: 'There is a new version of the app available. please go to the app store to update',
+          subtitle:
+              'There is a new version of the app available. please go to the app store to update',
           onTap: () {
             if (Platform.isAndroid || Platform.isIOS) {
-              final appId = Platform.isAndroid ? 'com.fa.app.hotlines' : '6471570051';
+              final appId =
+                  Platform.isAndroid ? 'com.fa.app.hotlines' : '6471570051';
               final url = Uri.parse(
                 Platform.isAndroid
                     ? "market://details?id=$appId"

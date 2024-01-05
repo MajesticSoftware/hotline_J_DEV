@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -697,7 +699,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
           shrinkWrap: true,
           itemBuilder: (context, index) {
             int offensePointColor = 0;
-            if ((PreferenceManager.getSubscriptionRecUrl() ?? false) != "") {
+            if ((PreferenceManager.getSubscriptionActive() ?? "0") == "1") {
               offensePointColor = (con.isTeamReportTab ? (int.tryParse(
                   gameDetails.nflHomeDefensiveRank.isEmpty ? "0" : gameDetails
                       .nflHomeDefensiveRank[index]) ?? 0) - (int.tryParse(
@@ -747,8 +749,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                         .of(context)
                                         .size
                                         .height * .014),
-                                ((PreferenceManager.getSubscriptionRecUrl() ??
-                                    false) != "")
+                                ((PreferenceManager.getSubscriptionActive() ?? "0") == "1")
                                     ?
                                 (con.isTeamReportTab
                                     ? (gameDetails.nflAwayOffensiveRank.isEmpty
@@ -867,8 +868,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                       .size
                                       .height * .014),
 
-                              ((PreferenceManager.getSubscriptionRecUrl() ??
-                                  false) != "")
+                              ((PreferenceManager.getSubscriptionActive() ?? "0") == "1")
                                   ? (con.isTeamReportTab
                                   ? (gameDetails.nflHomeDefensiveRank.isEmpty
                                   ? '0'
@@ -948,8 +948,7 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                 (sportKey ==
                     "NFL" || sportKey ==
                     "NCAA") &&
-                    ((PreferenceManager.getSubscriptionRecUrl() ?? false) !=
-                        "") &&
+                    ((PreferenceManager.getSubscriptionActive() ?? "0") == "1") &&
                     ((offensePointColor >= 15 || offensePointColor <= -15)) ?
 
                 Positioned(
@@ -1157,8 +1156,7 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: ((PreferenceManager
-                              .getSubscriptionRecUrl() ?? false) != ""),
+                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
                           child: (con.isTeamReportTab
                               ? gameDetails.nbaAwayOffensiveRank.isEmpty
                               ? "0"
@@ -1274,8 +1272,7 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                   .size
                                   .height * .014),
                           Visibility(
-                            visible: ((PreferenceManager
-                                .getSubscriptionRecUrl() ?? false) != ""),
+                            visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
                             child: (!con.isTeamReportTab
                                 ? ' (${dateWidget(
                                 gameDetails.nbaHomeOffensiveRank.isEmpty ? "0" :
@@ -1354,8 +1351,7 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
           ),
           /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
           Visibility(
-            visible: ((PreferenceManager.getSubscriptionRecUrl() ?? false) !=
-                ""),
+            visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
             child: ((offensePointColor >= (sportKey == "NCAAB" ? 50 : 15) ||
                 offensePointColor <= (sportKey == "NCAAB" ? -50 : -15))) ?
 
@@ -1444,7 +1440,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
   return ListView.separated(
     itemBuilder: (context, index) {
       int offensePointColor = 0;
-      if ((PreferenceManager.getSubscriptionRecUrl() ?? false) != "") {
+      if ((PreferenceManager.getSubscriptionActive() ?? "0") == "1") {
         offensePointColor = (con.isTeamReportTab ? (int.tryParse(
             gameDetails.homeQbDefenseRank.isEmpty ? "0" : gameDetails
                 .homeQbDefenseRank[index]) ?? 0) - (int.tryParse(
@@ -1484,8 +1480,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: ((PreferenceManager
-                              .getSubscriptionRecUrl() ?? false) != ""),
+                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
                           child: (gameDetails.awayQbRank.isEmpty ||
                               gameDetails.awayQbDefenseRank.isEmpty
                               ? "0"
@@ -1579,8 +1574,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: ((PreferenceManager
-                              .getSubscriptionRecUrl() ?? false) != ""),
+                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
                           child: (gameDetails.homeQbDefenseRank.isEmpty ||
                               gameDetails.homeQbRank.isEmpty
                               ? "0"
@@ -1642,7 +1636,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
               ),
             ],
           ),
-          ((PreferenceManager.getSubscriptionRecUrl() ?? false) != "") &&
+          ((PreferenceManager.getSubscriptionActive() ?? "0") == "1") &&
               ((offensePointColor >= 15 || offensePointColor <= -15)) ?
 
           Positioned(
