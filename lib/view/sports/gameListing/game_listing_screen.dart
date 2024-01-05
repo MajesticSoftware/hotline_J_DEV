@@ -41,8 +41,8 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       await gameListingController.favoriteGameCall();
-      Future.delayed(Duration.zero)
-          .then((value) => gameListingController.getSubscriptionStatus());
+      // Future.delayed(Duration.zero)
+      //     .then((value) => gameListingController.getSubscriptionStatus());
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Scaffold(

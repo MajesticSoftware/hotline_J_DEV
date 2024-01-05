@@ -51,6 +51,7 @@ class LogInController extends GetxController {
             UserModel response = UserModel.fromJson(result.toJson());
             if (response.data != null) {
               PreferenceManager.setUserData(response.data!);
+              PreferenceManager().saveSubscription(response.data!);
               PreferenceManager.setIsLogin(true);
               /*PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())

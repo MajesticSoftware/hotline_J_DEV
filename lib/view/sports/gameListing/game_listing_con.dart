@@ -112,7 +112,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  Future<void> getSubscriptionStatus() async {
+/*  Future<void> getSubscriptionStatus() async {
     isLoading.value = true;
     ResponseItem result = Platform.isIOS
         ? await SubscriptionRepo.getReceiptStatus()
@@ -130,7 +130,7 @@ class GameListingController extends GetxController {
     }
     isLoading.value = false;
     update();
-  }
+  }*/
 
   gameOnClick(BuildContext context, int index) {
     toggle = 0;
