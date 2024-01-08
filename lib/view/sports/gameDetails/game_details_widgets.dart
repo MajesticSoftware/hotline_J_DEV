@@ -3419,7 +3419,7 @@ SizedBox headerOfRunningBacks(BuildContext context) {
                     .height * .016)),
         Expanded(
             flex: 2,
-            child: 'Rsh Yds/Gm'.appCommonText(
+            child: 'RshYds/Gm'.appCommonText(
                 color: Theme
                     .of(context)
                     .highlightColor,
