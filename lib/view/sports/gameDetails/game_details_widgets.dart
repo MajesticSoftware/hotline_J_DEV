@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,7 +58,14 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                     height: 34.w, fit: BoxFit.contain),
               ),
               Expanded(
-                child: InkWell(
+                child: (PreferenceManager.getSubscriptionActive() ?? "0") != "0"
+                    ? SizedBox(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * .028,
+                )
+                    : InkWell(
                   highlightColor: Colors.transparent,
                   splashFactory: NoSplash.splashFactory,
                   onTap: () {
@@ -749,7 +754,8 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                         .of(context)
                                         .size
                                         .height * .014),
-                                ((PreferenceManager.getSubscriptionActive() ?? "0") == "1")
+                                ((PreferenceManager.getSubscriptionActive() ??
+                                    "0") == "1")
                                     ?
                                 (con.isTeamReportTab
                                     ? (gameDetails.nflAwayOffensiveRank.isEmpty
@@ -868,7 +874,8 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                                       .size
                                       .height * .014),
 
-                              ((PreferenceManager.getSubscriptionActive() ?? "0") == "1")
+                              ((PreferenceManager.getSubscriptionActive() ??
+                                  "0") == "1")
                                   ? (con.isTeamReportTab
                                   ? (gameDetails.nflHomeDefensiveRank.isEmpty
                                   ? '0'
@@ -948,7 +955,8 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                 (sportKey ==
                     "NFL" || sportKey ==
                     "NCAA") &&
-                    ((PreferenceManager.getSubscriptionActive() ?? "0") == "1") &&
+                    ((PreferenceManager.getSubscriptionActive() ?? "0") ==
+                        "1") &&
                     ((offensePointColor >= 15 || offensePointColor <= -15)) ?
 
                 Positioned(
@@ -1156,7 +1164,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
+                          visible: (PreferenceManager.getSubscriptionActive() ??
+                              "0") == "1",
                           child: (con.isTeamReportTab
                               ? gameDetails.nbaAwayOffensiveRank.isEmpty
                               ? "0"
@@ -1272,7 +1281,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                   .size
                                   .height * .014),
                           Visibility(
-                            visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
+                            visible: (PreferenceManager
+                                .getSubscriptionActive() ?? "0") == "1",
                             child: (!con.isTeamReportTab
                                 ? ' (${dateWidget(
                                 gameDetails.nbaHomeOffensiveRank.isEmpty ? "0" :
@@ -1480,7 +1490,8 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
+                          visible: (PreferenceManager.getSubscriptionActive() ??
+                              "0") == "1",
                           child: (gameDetails.awayQbRank.isEmpty ||
                               gameDetails.awayQbDefenseRank.isEmpty
                               ? "0"
@@ -1574,7 +1585,8 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                                 .size
                                 .height * .014),
                         Visibility(
-                          visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
+                          visible: (PreferenceManager.getSubscriptionActive() ??
+                              "0") == "1",
                           child: (gameDetails.homeQbDefenseRank.isEmpty ||
                               gameDetails.homeQbRank.isEmpty
                               ? "0"

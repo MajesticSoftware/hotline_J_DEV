@@ -494,8 +494,8 @@ class SelectGameScreen extends StatelessWidget {
                               size: Get.height * .022,
                               weight: FontWeight.w800),
                           (controller.sportKey == "MLB"
-                                  ? "'2024 season starts March 20th'"
-                                  : "")
+                                  ? "'2024 season starts March 20th.'"
+                                  : controller.sportKey == "NCAAF"?"'2024 season starts August 24th.'":"")
                               .appCommonText(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   size: Get.height * .02,

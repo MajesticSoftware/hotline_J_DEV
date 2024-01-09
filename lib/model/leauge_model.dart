@@ -37,14 +37,7 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       sportId: 'sr:sport:16',
       isAvailable: true),
-  LeagueModel(
-      gameImage: Assets.imagesNcaa,
-      date: formatted,
-      key: 'NCAA',
-      gameName: 'NCAAF',
-      sportId: 'sr:sport:16',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: true),
+
 
   LeagueModel(
       sportId: 'sr:sport:2',
@@ -68,6 +61,14 @@ List<LeagueModel> sportsLeagueList = [
       date: formatted,
       key: 'MLB',
       sportId: 'sr:sport:3',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      isAvailable: true),
+  LeagueModel(
+      gameImage: Assets.imagesNcaa,
+      date: formatted,
+      key: 'NCAA',
+      gameName: 'NCAAF',
+      sportId: 'sr:sport:16',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true),
 /*

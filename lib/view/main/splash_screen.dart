@@ -74,16 +74,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Future checkReleaseVersion() async {
     ResponseItem result = await SubscriptionRepo.getReleaseVersion();
     if (result.data != null) {
-         log("IOS RESULT--${result.data[0]['ios_release_version']}");
-      log("ANDROID RESULT--${result.data[0]['android_release_version']}");
-      log("ANDROID RESULT--${PreferenceManager.getDeviceVersion()}");
-      log("ANDROID RESULT--${PreferenceManager.getDeviceVersionNumber()}");
-      String androidVersion =
-          '${PreferenceManager.getDeviceVersion().toString().split('.').first}.${PreferenceManager.getDeviceVersion().toString().split('.')[1]}.${PreferenceManager.getDeviceVersionNumber()}';
-      if ((Platform.isIOS
-          ? (result.data[0]['ios_release_version'] !=
-              PreferenceManager.getDeviceVersion())
-          : (result.data[0]['android_release_version'] != androidVersion))) {
+      String currentVersion = PreferenceManager.getDeviceVersion().toString();
+      String requiredVersion = Platform.isAndroid
+          ? result.data[0]['android_release_version'].toString()
+          : result.data[0]['ios_release_version'].toString();
+      String currentBuild = PreferenceManager.getDeviceVersionNumber().toString();
+      String requiredBuild = Platform.isAndroid
+          ? result.data[0]['android_release_build_num'].toString()
+          : result.data[0]['ios_release_build_num'].toString();
+      if (currentVersion.compareTo(requiredVersion) > 0 ||
+          (currentVersion == requiredVersion &&
+              currentBuild.compareTo(requiredBuild) >= 0)) {
+        log('App is up to date or newer.');
+      } else {
+        log('Update required. Please update the app.');
         return updateAppDialog();
       }
     }

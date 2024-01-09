@@ -1300,7 +1300,7 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       nflTomorrowEventsList.clear();
-      for (int i = 1; i <= 6; i++) {
+      for (int i = 1; i <= 7; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -1312,7 +1312,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
           getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-          if (i == 5) {
+          if (i == 7) {
             isPagination = false;
           }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,

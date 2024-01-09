@@ -612,7 +612,7 @@ class GameTabCard extends StatelessWidget {
                             sportsLeagueList[index].gameImage,
                             height: MediaQuery.of(context).size.height * .04,
                             width: MediaQuery.of(context).size.width * .01,
-                            fit: index == 2 || index == 3
+                            fit: index == 1 || index == 2
                                 ? BoxFit.cover
                                 : BoxFit.contain,
                             color: whiteColor,
