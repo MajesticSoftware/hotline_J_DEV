@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +27,7 @@ import '../../widgets/game_widget.dart';
 import 'game_details_controller.dart';
 
 PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
-    GameDetailsController con, SubscriptionController subscriptionController) {
+    GameDetailsController con) {
   return PreferredSize(
       preferredSize: Size.fromHeight(125.w),
       child: AnimatedContainer(
@@ -58,52 +60,60 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                     height: 34.w, fit: BoxFit.contain),
               ),
               Expanded(
-                child: (PreferenceManager.getSubscriptionActive() ?? "0") != "0"
-                    ? SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * .028,
-                )
-                    : InkWell(
-                  highlightColor: Colors.transparent,
-                  splashFactory: NoSplash.splashFactory,
-                  onTap: () {
-                    subscriptionDialog(context, onTap: () async {
-                      Get.back();
-                      if (PreferenceManager.getIsLogin() ?? false) {
-                        if (subscriptionController.products.isEmpty) {
-                          null;
-                        } else {
-                          await subscriptionController.buyProduct(
-                              subscriptionController.products[0]);
-                        }
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return exitApp(
-                              context,
-                              buttonText: 'Login',
-                              cancelText: 'Cancel',
-                              title: 'Error',
-                              subtitle: 'You have to login for Subscription!',
-                              onTap: () {
-                                Get.offAll(LogInScreen());
-                              },
-                            );
-                          },
-                        );
-                      }
-                    },);
-                  },
-                  child: Image.asset(
-                    Assets.imagesLock, fit: BoxFit.contain,
+                  child: (PreferenceManager.getSubscriptionActive() ?? "0") ==
+                      "1"
+                      ? SizedBox(
                     height: MediaQuery
                         .of(context)
                         .size
-                        .height * .028, alignment: Alignment.centerRight,),
-                ),
+                        .height * .028,
+                  ) :
+                  GetBuilder<SubscriptionController>(
+                      builder: (con) {
+                        return InkWell(
+                          highlightColor: Colors.transparent,
+                          splashFactory: NoSplash.splashFactory,
+                          onTap: () {
+                            subscriptionDialog(context, restoreOnTap: () async {
+                              await con.restorePurchase();
+                            }, onTap: () async {
+                              Get.back();
+                              if (PreferenceManager.getIsLogin() ?? false) {
+                                if (con.products.isEmpty) {
+                                  null;
+                                } else {
+                                  log('ON TAP');
+                                  await con.buyProduct(con.products[0]);
+                                }
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return exitApp(
+                                      context,
+                                      buttonText: 'Login',
+                                      cancelText: 'Cancel',
+                                      title: 'Error',
+                                      subtitle: 'You have to login for Subscription!',
+                                      onTap: () {
+                                        Get.offAll(LogInScreen());
+                                      },
+                                    );
+                                  },
+                                );
+                              }
+                            },);
+                          },
+                          child: Image.asset(
+                            Assets.imagesLock, fit: BoxFit.contain,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * .028,
+                            alignment: Alignment.centerRight,),
+                        );
+                      }
+                  )
               ),
             ],
           ),

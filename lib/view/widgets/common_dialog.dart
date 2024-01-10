@@ -309,10 +309,12 @@ Widget exitApp(BuildContext context,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
     actionsAlignment: MainAxisAlignment.center,
     actions:isUpdateApp?
-    <Widget>[   CommonAppButton(
-        onTap:onTap??(){},
-        radius: 15.r,
-        title: 'Update'),]: <Widget>[
+    <Widget>[   Center(
+      child: CommonAppButton(
+          onTap:onTap??(){},
+          radius: 15.r,
+          title: 'Update'),
+    ),]: <Widget>[
       Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

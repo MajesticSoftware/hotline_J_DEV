@@ -49,14 +49,20 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     if ((PreferenceManager.getIsOpenDialog() ?? false) &&
         ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
       Future.delayed(Duration.zero, () {
-        subscriptionDialog(context, onTap: () async {
+        subscriptionDialog(context,restoreOnTap: () async {
+         await subscriptionController.restorePurchase();
+
+        },
+            onTap: () async {
           Get.back();
           if (PreferenceManager.getIsLogin() ?? false) {
             if (subscriptionController.products.isEmpty) {
               null;
             } else {
-              await subscriptionController
-                  .buyProduct(subscriptionController.products[0]);
+             Future.delayed(const Duration(milliseconds: 100),() async {
+               await subscriptionController
+                   .buyProduct(subscriptionController.products[0]);
+             });
             }
           } else {
             showDialog(
@@ -106,152 +112,153 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     }
     return Stack(
       children: [
-        Scaffold(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: commonAppBarWidget(
-              context, isDark, gameDetailsController, subscriptionController),
-          body: GetBuilder<GameDetailsController>(initState: (state) async {
-            await gameDetailsController.getResponse(
-                isLoad: true,
-                gameDetails: widget.gameDetails,
-                sportKey: widget.sportKey,
-                date: widget.date,
-                hotLinesDate: widget.gameDetails.scheduled ?? "",
-                awayTeam: awayTeam,
-                homeTeam: homeTeam,
-                sportId: widget.sportId);
-          }, builder: (con) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                return await gameDetailsController.getResponse(
-                    isLoad: false,
-                    gameDetails: widget.gameDetails,
-                    hotLinesDate: widget.gameDetails.scheduled ?? "",
-                    sportKey: widget.sportKey,
-                    date: widget.date,
-                    awayTeam: awayTeam,
-                    homeTeam: homeTeam,
-                    sportId: widget.sportId);
-              },
-              color: Theme.of(context).disabledColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        headerWidget(context, widget.gameDetails, awayTeam,
-                            homeTeam, widget.sportKey),
-                        mainlinesWidget(
-                            context, widget.gameDetails, awayTeam, homeTeam),
-                        hotlinesWidget(context, con, widget.gameDetails,
-                            awayTeam, homeTeam, _tabController!),
-                        20.h.H(),
-                        StickyHeader(
-                            header: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width * .01),
-                                  color: Theme.of(context).canvasColor),
-                              child: Row(
-                                children: [
-                                  20.h.W(),
-                                  ClipTab(
-                                    isSelected: con.isTeamReportTab,
-                                    teamLogo:
-                                        awayLogo(awayTeam, widget.gameDetails),
-                                    onTap: () {
-                                      con.isTeamReportTab = true;
-                                    },
-                                  ),
-                                  80.h.W(),
-                                  ClipTab(
-                                    isSelected: !con.isTeamReportTab,
-                                    onTap: () {
-                                      con.isTeamReportTab = false;
-                                    },
-                                    teamLogo:
-                                        homeLogo(homeTeam, widget.gameDetails),
-                                  ),
-                                  20.h.W(),
-                                ],
-                              ).paddingSymmetric(
-                                vertical: 5,
-                              ),
-                            ).paddingSymmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.height * .02),
-                            content: Column(
-                              children: [
-                                widget.sportKey == 'MLB'
-                                    ? teamReportWidget(context, widget.sportKey,
-                                        widget.gameDetails, awayTeam, homeTeam)
-                                    : teamReportNFL(
-                                        context,
-                                        con,
-                                        widget.gameDetails,
-                                        awayTeam,
-                                        homeTeam,
-                                        widget.sportKey),
-                                widget.sportKey == 'MLB'
-                                    ? playerStatWidget(
-                                        context,
-                                        con,
-                                        widget.sportKey,
-                                        widget.gameDetails,
-                                        awayTeam,
-                                        homeTeam)
-                                    : widget.sportKey == 'NBA' ||
-                                            widget.sportKey == 'NCAAB'
-                                        ? const SizedBox()
-                                        : quarterBacks(
-                                            context,
-                                            con,
-                                            widget.gameDetails,
-                                            awayTeam,
-                                            homeTeam,
-                                            widget.sportKey),
-                                hitterPlayerStatWidget(
-                                    context,
-                                    con,
-                                    widget.gameDetails,
-                                    awayTeam,
-                                    homeTeam,
-                                    widget.sportKey),
-                                widget.sportKey == 'MLB' ||
-                                        widget.sportKey == 'NBA' ||
-                                        widget.sportKey == 'NCAAB'
-                                    ? const SizedBox()
-                                    : wrPlayersWidget(
-                                        context,
-                                        con,
-                                        widget.gameDetails,
-                                        awayTeam,
-                                        homeTeam,
-                                        widget.sportKey),
-                                widget.sportKey == 'NCAA' ||
-                                        widget.sportKey == 'NCAAB'
-                                    ? const SizedBox()
-                                    : injuryReportWidget(
-                                        context,
-                                        widget.gameDetails,
-                                        widget.sportKey,
-                                        awayTeam,
-                                        homeTeam,
-                                        con),
-                                40.H(),
-                              ],
-                            ))
-                      ],
-                    ),
-                  ))
-                ],
+        GetBuilder<GameDetailsController>(initState: (state) async {
+          await gameDetailsController.getResponse(
+              isLoad: true,
+              gameDetails: widget.gameDetails,
+              sportKey: widget.sportKey,
+              date: widget.date,
+              hotLinesDate: widget.gameDetails.scheduled ?? "",
+              awayTeam: awayTeam,
+              homeTeam: homeTeam,
+              sportId: widget.sportId);
+        }, builder: (con) {
+            return Scaffold(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              appBar: commonAppBarWidget(
+                  context, isDark, gameDetailsController),
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  return await gameDetailsController.getResponse(
+                      isLoad: false,
+                      gameDetails: widget.gameDetails,
+                      hotLinesDate: widget.gameDetails.scheduled ?? "",
+                      sportKey: widget.sportKey,
+                      date: widget.date,
+                      awayTeam: awayTeam,
+                      homeTeam: homeTeam,
+                      sportId: widget.sportId);
+                },
+                color: Theme.of(context).disabledColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            children: [
+                              headerWidget(context, widget.gameDetails, awayTeam,
+                                  homeTeam, widget.sportKey),
+                              mainlinesWidget(
+                                  context, widget.gameDetails, awayTeam, homeTeam),
+                              hotlinesWidget(context, con, widget.gameDetails,
+                                  awayTeam, homeTeam, _tabController!),
+                              20.h.H(),
+                              StickyHeader(
+                                  header: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            MediaQuery.of(context).size.width * .01),
+                                        color: Theme.of(context).canvasColor),
+                                    child: Row(
+                                      children: [
+                                        20.h.W(),
+                                        ClipTab(
+                                          isSelected: con.isTeamReportTab,
+                                          teamLogo:
+                                          awayLogo(awayTeam, widget.gameDetails),
+                                          onTap: () {
+                                            con.isTeamReportTab = true;
+                                          },
+                                        ),
+                                        80.h.W(),
+                                        ClipTab(
+                                          isSelected: !con.isTeamReportTab,
+                                          onTap: () {
+                                            con.isTeamReportTab = false;
+                                          },
+                                          teamLogo:
+                                          homeLogo(homeTeam, widget.gameDetails),
+                                        ),
+                                        20.h.W(),
+                                      ],
+                                    ).paddingSymmetric(
+                                      vertical: 5,
+                                    ),
+                                  ).paddingSymmetric(
+                                      horizontal:
+                                      MediaQuery.of(context).size.height * .02),
+                                  content: Column(
+                                    children: [
+                                      widget.sportKey == 'MLB'
+                                          ? teamReportWidget(context, widget.sportKey,
+                                          widget.gameDetails, awayTeam, homeTeam)
+                                          : teamReportNFL(
+                                          context,
+                                          con,
+                                          widget.gameDetails,
+                                          awayTeam,
+                                          homeTeam,
+                                          widget.sportKey),
+                                      widget.sportKey == 'MLB'
+                                          ? playerStatWidget(
+                                          context,
+                                          con,
+                                          widget.sportKey,
+                                          widget.gameDetails,
+                                          awayTeam,
+                                          homeTeam)
+                                          : widget.sportKey == 'NBA' ||
+                                          widget.sportKey == 'NCAAB'
+                                          ? const SizedBox()
+                                          : quarterBacks(
+                                          context,
+                                          con,
+                                          widget.gameDetails,
+                                          awayTeam,
+                                          homeTeam,
+                                          widget.sportKey),
+                                      hitterPlayerStatWidget(
+                                          context,
+                                          con,
+                                          widget.gameDetails,
+                                          awayTeam,
+                                          homeTeam,
+                                          widget.sportKey),
+                                      widget.sportKey == 'MLB' ||
+                                          widget.sportKey == 'NBA' ||
+                                          widget.sportKey == 'NCAAB'
+                                          ? const SizedBox()
+                                          : wrPlayersWidget(
+                                          context,
+                                          con,
+                                          widget.gameDetails,
+                                          awayTeam,
+                                          homeTeam,
+                                          widget.sportKey),
+                                      widget.sportKey == 'NCAA' ||
+                                          widget.sportKey == 'NCAAB'
+                                          ? const SizedBox()
+                                          : injuryReportWidget(
+                                          context,
+                                          widget.gameDetails,
+                                          widget.sportKey,
+                                          awayTeam,
+                                          homeTeam,
+                                          con),
+                                      40.H(),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ))
+                  ],
+                ),
               ),
             );
-          }),
+          }
         ),
         Obx(() => gameDetailsController.isLoading.value||subscriptionController.isLoading.value
             ? const AppProgress()

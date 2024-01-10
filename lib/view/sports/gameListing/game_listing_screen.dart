@@ -107,35 +107,39 @@ class SelectGameScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             (PreferenceManager.getIsLogin() ?? false)
-                ? Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: [
-                        commonCachedNetworkImage(
-                          imageUrl:
-                              ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile() ?? ""}'),
-                          height: MediaQuery.of(context).size.height * .12,
-                          width: MediaQuery.of(context).size.height * .12,
+                ? GetBuilder<GameListingController>(
+                  builder: (con)  {
+                    return Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            commonCachedNetworkImage(
+                              imageUrl:
+                                  ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile() ?? ""}'),
+                              height: MediaQuery.of(context).size.height * .12,
+                              width: MediaQuery.of(context).size.height * .12,
+                            ),
+                            10.h.H(),
+                            (PreferenceManager.getUserName() ?? "Name")
+                                .toString()
+                                .appCommonText(
+                                    color: yellowColor,
+                                    align: TextAlign.center,
+                                    weight: FontWeight.w700,
+                                    size: MediaQuery.of(context).size.height * .02),
+                            (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
+                                .toString()
+                                .appCommonText(
+                                    color: yellowColor,
+                                    align: TextAlign.center,
+                                    weight: FontWeight.w700,
+                                    size:
+                                        MediaQuery.of(context).size.height * .022),
+                          ],
                         ),
-                        10.h.H(),
-                        (PreferenceManager.getUserName() ?? "Name")
-                            .toString()
-                            .appCommonText(
-                                color: yellowColor,
-                                align: TextAlign.center,
-                                weight: FontWeight.w700,
-                                size: MediaQuery.of(context).size.height * .02),
-                        (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
-                            .toString()
-                            .appCommonText(
-                                color: yellowColor,
-                                align: TextAlign.center,
-                                weight: FontWeight.w700,
-                                size:
-                                    MediaQuery.of(context).size.height * .022),
-                      ],
-                    ),
-                  ).paddingOnly(bottom: 30.h, top: 90.h)
+                      ).paddingOnly(bottom: 30.h, top: 90.h);
+                  }
+                )
                 : const SizedBox(),
             Visibility(
               visible: (PreferenceManager.getIsLogin() ?? false) == false ||
@@ -161,9 +165,16 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),
+
             drawerCard(
-              icon: Assets.imagesNcaa,
-              title: 'NCAAF',
+              widget: SvgPicture.asset(
+                Assets.imagesNcaab,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .035,
+                width: MediaQuery.of(context).size.width * .035,
+                fit: BoxFit.cover,
+              ),
+              title: 'NBA',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -179,7 +190,7 @@ class SelectGameScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
               ),
-              title: 'NBA',
+              title: 'NCAAB',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -188,14 +199,8 @@ class SelectGameScreen extends StatelessWidget {
               },
             ),
             drawerCard(
-              widget: SvgPicture.asset(
-                Assets.imagesNcaab,
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height * .035,
-                width: MediaQuery.of(context).size.width * .035,
-                fit: BoxFit.cover,
-              ),
-              title: 'NCAAB',
+              icon: Assets.imagesMlb,
+              title: 'MLB',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -204,8 +209,8 @@ class SelectGameScreen extends StatelessWidget {
               },
             ),
             drawerCard(
-              icon: Assets.imagesMlb,
-              title: 'MLB',
+              icon: Assets.imagesNcaa,
+              title: 'NCAAF',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -240,6 +245,27 @@ class SelectGameScreen extends StatelessWidget {
                 onTap: () {
                   scaffoldKey.currentState?.closeDrawer();
                   Get.to(ProfileScreen());
+                },
+              ),
+            ),
+            Visibility(
+              visible:  (PreferenceManager.getIsLogin() ?? false) == true,
+              child: drawerCard(
+                widget: Image.asset(
+                  Assets.imagesSub,
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height * .06,
+                  width: MediaQuery.of(context).size.width * .06,
+                  fit: BoxFit.scaleDown,
+                ),
+                title: 'Subscription',
+                context: context,
+                onTap: () {
+                  subscriptionDialog(context,showButton: false,onTap: () {
+
+                  },restoreOnTap: () {
+
+                  },);
                 },
               ),
             ),
@@ -495,7 +521,7 @@ class SelectGameScreen extends StatelessWidget {
                               weight: FontWeight.w800),
                           (controller.sportKey == "MLB"
                                   ? "'2024 season starts March 20th.'"
-                                  : controller.sportKey == "NCAAF"?"'2024 season starts August 24th.'":"")
+                                  : controller.sportKey == "NCAA"?"'2024 season starts August 24th.'":"")
                               .appCommonText(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   size: Get.height * .02,

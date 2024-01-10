@@ -1953,6 +1953,7 @@ class GameDetailsController extends GetxController {
     hotlinesFData.clear();
     hotlinesMData.clear();
     hotlinesData.clear();
+
     if (sportKey == 'MLB') {
       mlbStaticsAwayTeamResponse(
           isLoad: false,

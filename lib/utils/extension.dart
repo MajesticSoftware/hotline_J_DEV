@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -26,19 +27,16 @@ extension AddSpace on num {
   }
 }
 
-shareLink(
-  String link,BuildContext context
-) async {
-
-  if( mobileView.size.shortestSide < 600){
+shareLink(String link, BuildContext context) async {
+  if (mobileView.size.shortestSide < 600) {
     await Share.share(link);
-  }
- else{
-    final box = context.findRenderObject() as RenderBox?;
+  } else {
+
 
     await Share.share(link,
-
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+        subject: '',
+        sharePositionOrigin:  Rect.fromPoints(
+            const Offset(2, 2), const Offset(3, 3)));
   }
 }
 
@@ -94,7 +92,7 @@ extension AddText on String {
       TextAlign align = TextAlign.center,
       FontWeight weight = FontWeight.w500,
       TextDecoration? decoration,
-        Color  decorationColor=whiteColor,
+      Color decorationColor = whiteColor,
       // FontStyle fontStyle = FontStyle.normal,
       int? maxLine,
       TextOverflow? overflow}) {
@@ -105,7 +103,8 @@ extension AddText on String {
           color: color,
           letterSpacing: letterSpacing,
           // color: isDarkMode ? Colors.white : color,
-          fontWeight: weight,decorationColor: decorationColor,
+          fontWeight: weight,
+          decorationColor: decorationColor,
           // fontStyle: fontStyle,
           decoration: decoration),
       textAlign: align,

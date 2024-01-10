@@ -49,6 +49,9 @@ class Assets {
   static const String imagesSplashImage = 'assets/images/splash_image.svg';
   static const String imagesSportDetail = 'assets/images/sport_detail.png';
   static const String imagesSs = 'assets/images/ss.png';
+  static const String imagesSub = 'assets/images/sub.png';
+  static const String imagesSubsc = 'assets/images/subsc.png';
+  static const String imagesSubscription = 'assets/images/subscription.svg';
   static const String imagesSun = 'assets/images/sun.svg';
   static const String imagesSun1 = 'assets/images/sun1.svg';
   static const String imagesSun2 = 'assets/images/sun2.svg';

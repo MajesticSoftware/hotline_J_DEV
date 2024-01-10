@@ -31,13 +31,13 @@ showAppSnackBar(String tittle, {bool status = false}) {
 }
 
 TextSpan linkTextWidget(BuildContext context,
-    {String link = '', String text = ''}) {
+    {String link = '', String text = '',Color? color}) {
   return TextSpan(
     recognizer: TapGestureRecognizer()
       ..onTap = () => launchInBrowser(Uri.parse(link)),
     text: text,
     style: GoogleFonts.nunitoSans(
-        color: Theme.of(context).highlightColor,
+        color:color?? Theme.of(context).highlightColor,
         fontWeight: FontWeight.bold,
         fontSize: Get.height * .016,
         decoration: TextDecoration.underline),

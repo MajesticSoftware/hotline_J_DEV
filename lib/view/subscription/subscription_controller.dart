@@ -13,6 +13,7 @@ import "package:in_app_purchase_android/in_app_purchase_android.dart";
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../../network/subscription_repo.dart';
 import '../../constant/app_strings.dart';
 import '../../model/response_item.dart';
@@ -36,6 +37,7 @@ class SubscriptionController extends GetxController {
   RxList<ProductDetails> products = <ProductDetails>[].obs;
   String monthlySubscription =
       Platform.isIOS ? iosMonthlySubscriptionID : androidMonthlySubscriptionID;
+
   // String yearlySubscription =
   //     Platform.isIOS ? iosYearlySubscriptionID : androidYearlySubscriptionID;
   // String lifeTimeSubscription = Platform.isIOS
@@ -61,7 +63,7 @@ class SubscriptionController extends GetxController {
     subscription = purchaseUpdated.listen((purchaseDetailList) async {
       // if (PreferenceManager.getSubscriptionProduct() !=
       //     lifeTimeSubscription) {
-        await listenToPurchaseUpdated(purchaseDetailList);
+      await listenToPurchaseUpdated(purchaseDetailList);
       // }
     }, onDone: () {
       subscription.cancel();
@@ -72,13 +74,20 @@ class SubscriptionController extends GetxController {
     super.onInit();
   }
 
+  restorePurchase() async {
+    Get.back();
+    isLoading.value = true;
+    await inAppPurchase.restorePurchases();
+    isLoading.value = false;
+  }
+
   buyProduct(ProductDetails prod) async {
     try {
       isLoading.value = true;
       late PurchaseParam purchaseParam;
       if (Platform.isAndroid) {
         purchaseParam = GooglePlayPurchaseParam(productDetails: prod);
-          await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+        await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
       } else {
         purchaseParam = PurchaseParam(productDetails: prod);
         var transactions = await SKPaymentQueueWrapper().transactions();
@@ -86,16 +95,17 @@ class SubscriptionController extends GetxController {
           SKPaymentQueueWrapper()
               .finishTransaction(skPaymentTransactionWrapper);
         }
-         await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+        await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
 
         isLoading.value = false;
         update();
       }
     } catch (e) {
+      log('SUBSCRIPTION ERROR--$e');
       isLoading.value = false;
     }
     update();
-    // }
+
   }
 
   Future<void> listenToPurchaseUpdated(
@@ -112,7 +122,8 @@ class SubscriptionController extends GetxController {
               log('${purchaseDetails.error!}', name: 'IAPError');
             }
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-              purchaseDetails.status == PurchaseStatus.restored) {
+              (purchaseDetails.status == PurchaseStatus.restored &&
+                  purchaseDetails.status == PurchaseStatus.purchased)) {
             final isValid = await _verifyPurchase(purchaseDetails);
             if (isValid) {
               if (Platform.isAndroid) {
@@ -140,9 +151,11 @@ class SubscriptionController extends GetxController {
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
     bool isVerify = false;
-    if (purchaseDetails.productID == monthlySubscription /*||
+    if (purchaseDetails.productID ==
+            monthlySubscription /*||
         purchaseDetails.productID == yearlySubscription ||
-        purchaseDetails.productID == lifeTimeSubscription*/) {
+        purchaseDetails.productID == lifeTimeSubscription*/
+        ) {
       isVerify = true;
       update();
     } else {
@@ -153,7 +166,6 @@ class SubscriptionController extends GetxController {
   }
 
   changeAutoRenewalSubscription(bool newValue) {}
-
 
   Future<void> initStoreInfo() async {
     isLoading.value = true;
@@ -226,7 +238,6 @@ class SubscriptionController extends GetxController {
       } else {
         isLoading.value = false;
         showAppSnackBar(result.message);
-
       }
     } catch (e) {
       isLoading.value = false;
@@ -267,10 +278,8 @@ class SubscriptionController extends GetxController {
     update();
   }
 
-
-
   getSubscriptionProduct() {
-    subscriptionId =PreferenceManager.getSubscriptionProduct() ?? "";
+    subscriptionId = PreferenceManager.getSubscriptionProduct() ?? "";
     String subscriptionProduct =
         PreferenceManager.getSubscriptionProduct() ?? "";
     subscriptionPrice = subscriptionProduct == monthlySubscription
@@ -279,31 +288,28 @@ class SubscriptionController extends GetxController {
             ? "\$24.99"
             : subscriptionProduct == lifeTimeSubscription
                 ? "\$99.99"
-                :*/ "";
+                :*/
+        "";
     subscriptionTime = subscriptionProduct == monthlySubscription
         ? "monthly"
         : /*subscriptionProduct == yearlySubscription
             ? "yearly"
             : subscriptionProduct == lifeTimeSubscription
                 ? "lifetime"
-                :*/ "";
+                :*/
+        "";
 
     DateTime subscriptionStartTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(
-           PreferenceManager.getSubscriptionStartDate() ??
-                ""));
+        int.parse(PreferenceManager.getSubscriptionStartDate() ?? ""));
     log("subscriptionStartTime --> $subscriptionStartTime");
     subscriptionStart =
         DateFormat("MMMM dd, yyyy").format(subscriptionStartTime);
 
     DateTime subscriptionEndTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(
-            PreferenceManager.getSubscriptionEndDate()));
+        int.parse(PreferenceManager.getSubscriptionEndDate()));
     subscriptionEnd = DateFormat("MMMM dd, yyyy").format(subscriptionEndTime);
     update();
   }
-
-
 
   @override
   void onClose() {
@@ -325,24 +331,25 @@ class SubscriptionController extends GetxController {
           return AlertDialog(
             backgroundColor: Colors.white,
             content: ("Subscription purchase completed.")
-                .appCommonText(size: 18.h,color: Theme.of(context).secondaryHeaderColor,weight: FontWeight.w700)
+                .appCommonText(
+                    size: 18.h,
+                    color: Theme.of(context).secondaryHeaderColor,
+                    weight: FontWeight.w700)
                 .paddingOnly(top: 10),
             actionsAlignment: MainAxisAlignment.center,
             actions: [
-              CommonAppButton(onTap: () {
-                Navigator.of(context).pop();
-                PreferenceManager.setSubscriptionActive("1");
-
-              }, title: "Ok",buttonColor:Theme.of(context).secondaryHeaderColor ,textColor: whiteColor,)
-
+              CommonAppButton(
+                onTap: () {
+                  Get.back();
+                },
+                title: "Ok",
+                buttonColor: Theme.of(context).secondaryHeaderColor,
+                textColor: whiteColor,
+              )
             ],
           );
         });
   }
-
-
-
-
 }
 
 class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
@@ -357,5 +364,3 @@ class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
     return false;
   }
 }
-
-

@@ -11,6 +11,7 @@ import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
@@ -270,7 +271,7 @@ class GameWidget extends StatelessWidget {
                   ],
                 ),
               ),
-             /* Visibility(
+              /* Visibility(
                   visible: isShowWeather&&!isShowFlam,
                   child: Expanded(
                     flex: 1,
@@ -468,7 +469,7 @@ class GameWidget extends StatelessWidget {
   }
 }
 
-Future<dynamic> subscriptionDialog(BuildContext context, {Function()? onTap}) {
+Future<dynamic> subscriptionDialog(BuildContext context, {required Function() onTap,required Function() restoreOnTap,bool showButton=true}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -489,13 +490,75 @@ Future<dynamic> subscriptionDialog(BuildContext context, {Function()? onTap}) {
                   size: Get.height * .021,
                   weight: FontWeight.bold),
           20.h.H(),
-          Image.asset(Assets.imagesSs),
-          40.h.H(),
-          CommonAppButton(
-            title: "Upgrade for \$6.99/mo",
-            textColor: blackColor,
-            onTap: onTap ?? () {},
-          ).paddingSymmetric(horizontal: 40.h),
+          Image.asset(
+            Assets.imagesSs,
+            height: 300,
+          ),
+          20.h.H(),
+          RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                  text:
+                      'This subscription automatically renews for \$6.99 a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
+                  style: GoogleFonts.nunitoSans(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: Get.height * .018,
+                  ),
+                  children: [
+                    linkTextWidget(context,
+                        text: 'Terms of Service',
+                        color: yellowColor,
+                        link: 'https://www.hotlinesmd.com/terms-of-service'),
+                    TextSpan(
+                      text: ', ',
+                      style: GoogleFonts.nunitoSans(
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Get.height * .018,
+                      ),
+                    ),
+                    linkTextWidget(context,
+                        text: 'EULA',
+                        color: yellowColor,
+                        link: 'https://www.hotlinesmd.com/eula'),
+                    TextSpan(
+                      text: ', and ',
+                      style: GoogleFonts.nunitoSans(
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Get.height * .018,
+                      ),
+                    ),
+                    linkTextWidget(context,
+                        text: 'Privacy Policy.',
+                        color: yellowColor,
+                        link: 'https://www.hotlinesmd.com/privacy-policy'),
+                  ])),
+          (showButton?20:0).h.H(),
+          Visibility(
+            visible: showButton,
+            child: CommonAppButton(
+              title: "Upgrade for \$6.99/mo",
+              textColor: blackColor,
+              onTap: onTap,
+            ).paddingSymmetric(horizontal: 40.h),
+          ),
+          (showButton?10:0).h.H(),
+          Visibility(
+            visible: showButton,
+            child: InkWell(
+              highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,
+              onTap:
+                restoreOnTap
+              ,
+              child: "Restore"
+                  .appCommonText(
+                  color: yellowColor,
+                  size: Get.height * .022,decoration: TextDecoration.underline,decorationColor: yellowColor,
+                  weight: FontWeight.bold),
+            ),
+          ),
         ],
       );
     },
