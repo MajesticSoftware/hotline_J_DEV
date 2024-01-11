@@ -49,20 +49,18 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     if ((PreferenceManager.getIsOpenDialog() ?? false) &&
         ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
       Future.delayed(Duration.zero, () {
-        subscriptionDialog(context,restoreOnTap: () async {
-         await subscriptionController.restorePurchase();
-
-        },
-            onTap: () async {
+        subscriptionDialog(context, restoreOnTap: () async {
+          await subscriptionController.restorePurchase(context);
+        }, onTap: () async {
           Get.back();
           if (PreferenceManager.getIsLogin() ?? false) {
             if (subscriptionController.products.isEmpty) {
               null;
             } else {
-             Future.delayed(const Duration(milliseconds: 100),() async {
-               await subscriptionController
-                   .buyProduct(subscriptionController.products[0]);
-             });
+              Future.delayed(const Duration(milliseconds: 100), () async {
+                await subscriptionController
+                    .buyProduct(subscriptionController.products[0]);
+              });
             }
           } else {
             showDialog(

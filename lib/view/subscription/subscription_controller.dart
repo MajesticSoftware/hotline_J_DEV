@@ -7,11 +7,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
 import 'package:hotlines/utils/extension.dart';
+import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/widgets/common_widget.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import "package:in_app_purchase_android/in_app_purchase_android.dart";
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../network/subscription_repo.dart';
@@ -20,6 +21,8 @@ import '../../model/response_item.dart';
 import '../../model/user_model.dart';
 import '../../theme/app_color.dart';
 import '../../theme/helper.dart';
+import '../auth/log_in_module/log_in_screen.dart';
+import '../widgets/common_dialog.dart';
 
 /// IOS SUBSCRIPTION ID
 const iosMonthlySubscriptionID = "com.subscription.monthly";
@@ -74,14 +77,32 @@ class SubscriptionController extends GetxController {
     super.onInit();
   }
 
-  restorePurchase() async {
+  restorePurchase(BuildContext context) async {
     Get.back();
     isLoading.value = true;
-    await inAppPurchase.restorePurchases();
+    if (PreferenceManager.getIsLogin() ?? false) {
+      await inAppPurchase.restorePurchases();
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return exitApp(
+            context,
+            buttonText: 'Login',
+            cancelText: 'Cancel',
+            title: 'Error',
+            subtitle: 'You have to login for Subscription!',
+            onTap: () {
+              Get.offAll(LogInScreen());
+            },
+          );
+        },
+      );
+    }
     isLoading.value = false;
   }
 
-  buyProduct(ProductDetails prod) async {
+   Future buyProduct(ProductDetails prod) async {
     try {
       isLoading.value = true;
       late PurchaseParam purchaseParam;
@@ -105,7 +126,6 @@ class SubscriptionController extends GetxController {
       isLoading.value = false;
     }
     update();
-
   }
 
   Future<void> listenToPurchaseUpdated(
@@ -230,8 +250,10 @@ class SubscriptionController extends GetxController {
     try {
       if (result.status) {
         UserData subscriptionModel = UserData.fromJson(result.data);
+        PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
         PreferenceManager().saveSubscription(subscriptionModel);
         showCompletePurchaseDialog();
+        Get.find<GameDetailsController>().update();
         await getSubscriptionProduct();
         update();
         isLoading.value = false;
@@ -255,7 +277,9 @@ class SubscriptionController extends GetxController {
         if (result.data != null) {
           UserData subscriptionModel = UserData.fromJson(result.data);
           PreferenceManager().saveSubscription(subscriptionModel);
+          PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
           showCompletePurchaseDialog();
+          Get.find<GameDetailsController>().update();
           await getSubscriptionProduct();
           isLoading.value = false;
           update();
@@ -341,6 +365,7 @@ class SubscriptionController extends GetxController {
               CommonAppButton(
                 onTap: () {
                   Get.back();
+                  Get.find<GameDetailsController>().update();
                 },
                 title: "Ok",
                 buttonColor: Theme.of(context).secondaryHeaderColor,

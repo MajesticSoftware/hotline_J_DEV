@@ -26,10 +26,10 @@ class LogInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).secondaryHeaderColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            GetBuilder<LogInController>(builder: (ctrl) {
+      body: Stack(
+        children: [
+          SafeArea(
+            child: GetBuilder<LogInController>(builder: (ctrl) {
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,77 +84,6 @@ class LogInScreen extends StatelessWidget {
                       ).paddingSymmetric(horizontal: 70.h),
                     ),
                     60.h.H(),
-                    /*    Row(
-                      children: [
-                         SizedBox(
-                          width: 20.h,
-                          height: 20.h,
-                          child: Transform.scale(
-                            scale: 1.3.h,
-                            child: Checkbox(
-                              hoverColor: whiteColor,
-                              checkColor: Theme.of(context).secondaryHeaderColor,
-                              activeColor: whiteColor,
-                              onChanged: (value) {
-                                ctrl.isCheck = !ctrl.isCheck;
-                                ctrl.update();
-                              },
-                              value: ctrl.isCheck,
-                            ),
-                          ),
-                        ),
-                        15.0.h.W(),
-                        Expanded(
-                            child: Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                              text: 'By logging, I agree to the ',
-                              style: TextStyle(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * .02),
-                            ),
-                            TextSpan(
-                              text: 'privacy policy ',
-                              style: TextStyle(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * .02,
-                                  decoration: TextDecoration.underline),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Get.to(const PrivacyPolicyScreen());
-                                },
-                            ),
-                            TextSpan(
-                              text: 'and ',
-                              style: TextStyle(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * .02),
-                            ),
-                            TextSpan(
-                                text: 'terms of service.',
-                                style: TextStyle(
-                                    color: whiteColor,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height * .02,
-                                    decoration: TextDecoration.underline),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Get.to(const TermOfServiceScreen());
-                                  }),
-                          ]),
-
-                          // overflow: TextOverflow.ellipsis,
-                        )),
-                      ],
-                    ).paddingSymmetric(horizontal: 70.h),
-                    20.h.H(),*/
                     CommonAppButton(
                       title: 'Login',
                       radius: 5,
@@ -239,13 +168,13 @@ class LogInScreen extends StatelessWidget {
                 ),
               );
             }),
-            Obx(
-              () => logInController.isLoading.value
-                  ? const AppProgress()
-                  : const SizedBox(),
-            )
-          ],
-        ),
+          ),
+          Obx(
+                () => logInController.isLoading.value
+                ? const AppProgress()
+                : const SizedBox(),
+          )
+        ],
       ),
     );
   }

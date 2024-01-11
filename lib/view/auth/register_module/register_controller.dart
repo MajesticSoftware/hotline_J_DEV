@@ -18,7 +18,7 @@ class RegisterCon extends GetxController {
   TextEditingController emailCon = TextEditingController();
   TextEditingController nameCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
-  List<String> spotsList = ['NFL', 'NCAAF', 'NBA','NCAAB','MLB'];
+  List<String> spotsList = ['NFL', 'NBA','NCAAB','MLB','NCAAF'];
   String selectedSpot = '';
   File? imageFile;
 

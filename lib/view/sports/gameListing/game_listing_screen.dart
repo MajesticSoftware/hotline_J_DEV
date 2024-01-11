@@ -248,26 +248,23 @@ class SelectGameScreen extends StatelessWidget {
                 },
               ),
             ),
-            Visibility(
-              visible:  (PreferenceManager.getIsLogin() ?? false) == true,
-              child: drawerCard(
-                widget: Image.asset(
-                  Assets.imagesSub,
-                  color: Colors.white,
-                  height: MediaQuery.of(context).size.height * .06,
-                  width: MediaQuery.of(context).size.width * .06,
-                  fit: BoxFit.scaleDown,
-                ),
-                title: 'Subscription',
-                context: context,
-                onTap: () {
-                  subscriptionDialog(context,showButton: false,onTap: () {
-
-                  },restoreOnTap: () {
-
-                  },);
-                },
+            drawerCard(
+              widget: Image.asset(
+                Assets.imagesSub,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .06,
+                width: MediaQuery.of(context).size.width * .06,
+                fit: BoxFit.scaleDown,
               ),
+              title: 'Subscription',
+              context: context,
+              onTap: () {
+                subscriptionDialog(context,showButton: false,onTap: () {
+
+                },restoreOnTap: () {
+
+                },);
+              },
             ),
             Visibility(
               visible: (PreferenceManager.getIsLogin() ?? false) == true,

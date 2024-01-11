@@ -33,10 +33,10 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).secondaryHeaderColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            GetBuilder<RegisterCon>(builder: (ctrl) {
+      body: Stack(
+        children: [
+          SafeArea(
+            child: GetBuilder<RegisterCon>(builder: (ctrl) {
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -377,13 +377,13 @@ class RegisterScreen extends StatelessWidget {
                 ),
               );
             }),
-            Obx(
-              () => registerCon.isLoading.value
-                  ? const AppProgress()
-                  : const SizedBox(),
-            )
-          ],
-        ),
+          ),
+          Obx(
+                () => registerCon.isLoading.value
+                ? const AppProgress()
+                : const SizedBox(),
+          )
+        ],
       ),
     );
   }
