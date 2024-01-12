@@ -5859,6 +5859,8 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
       : awayTeam?.abbreviation == 'ARI'
       ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+      :  awayTeam?.abbreviation == 'LINW'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
       : awayTeam?.abbreviation == 'WAS' &&
       awayTeam?.id == "sr:competitor:4432"
       ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
@@ -5897,6 +5899,8 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
       : homeTeam?.abbreviation == 'SCUS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+      :homeTeam?.abbreviation == 'LINW'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
       : homeTeam?.abbreviation == 'WEBB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
       : homeTeam?.abbreviation == 'ARI'
