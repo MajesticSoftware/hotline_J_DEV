@@ -74,23 +74,30 @@ class _SplashScreenState extends State<SplashScreen> {
   Future checkReleaseVersion() async {
     ResponseItem result = await SubscriptionRepo.getReleaseVersion();
     if (result.data != null) {
-      String currentVersion = PreferenceManager.getDeviceVersion().toString();
       String requiredVersion = Platform.isAndroid
           ? result.data[0]['android_release_version'].toString()
           : result.data[0]['ios_release_version'].toString();
-      String currentBuild = PreferenceManager.getDeviceVersionNumber().toString();
-      String requiredBuild = Platform.isAndroid
+      String requiredBuildNumber = Platform.isAndroid
           ? result.data[0]['android_release_build_num'].toString()
           : result.data[0]['ios_release_build_num'].toString();
-      if (currentVersion.compareTo(requiredVersion) > 0 ||
-          (currentVersion == requiredVersion &&
-              currentBuild.compareTo(requiredBuild) >= 0)) {
-        log('App is up to date or newer.');
-      } else {
+      String v2 =requiredVersion, v1 = PreferenceManager.getDeviceVersion().toString();
+      int localVersion = getExtendedVersionNumber(v1); // return 102003
+      int storeVersion = getExtendedVersionNumber(v2); // return 102011
+      log('localVersion--$localVersion');
+      log('storeVersion--$storeVersion');
+      if ((storeVersion > localVersion)||(storeVersion == localVersion&&int.parse(requiredBuildNumber) > int.parse(PreferenceManager.getDeviceVersionNumber().toString()))) {
         log('Update required. Please update the app.');
         return updateAppDialog();
+      } else {
+        log('App is up to date or newer.');
       }
     }
+  }
+
+  int getExtendedVersionNumber(String version) {
+    List versionCells = version.split('.');
+    versionCells = versionCells.map((i) => int.parse(i)).toList();
+    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
   }
 
   Future<dynamic> updateAppDialog() {
