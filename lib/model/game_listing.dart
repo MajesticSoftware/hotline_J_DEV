@@ -1,3 +1,4 @@
+import 'game_model.dart';
 import 'nba_statics_model.dart' as pro;
 import 'nfl_statics_model.dart';
 
@@ -61,6 +62,11 @@ class SportEvents {
   String? scheduled;
   bool? startTimeTbd;
   String? status;
+  List<HotlinesModel> hotlinesData =[];
+  List<HotlinesModel> hotlinesMainData =[];
+  List<HotlinesModel> hotlinesDData =[];
+  List<HotlinesModel> hotlinesFData =[];
+  List<HotlinesModel> hotlinesMData =[];
   List<String> nbaAwayOffensiveList = [];
   List<String> nbaAwayDefensiveList = [];
   List<String> nbaHomeOffensiveList = [];
@@ -152,6 +158,7 @@ class SportEvents {
     this.scheduled,
     this.startTimeTbd,
     this.status,
+    this.hotlinesData = const [],
     this.nbaAwayOffensiveList = const [],
     this.nbaAwayDefensiveList = const [],
     this.nbaHomeOffensiveList = const [],

@@ -1456,14 +1456,14 @@ class GameDetailsController extends GetxController {
   }
 
   ///HOTLINES DATA
-  List<HotlinesModel> _hotlinesFData = [];
-
-  List<HotlinesModel> get hotlinesFData => _hotlinesFData;
-
-  set hotlinesFData(List<HotlinesModel> value) {
-    _hotlinesFData = value;
-    update();
-  }
+  // List<HotlinesModel> _hotlinesFData = [];
+  //
+  // List<HotlinesModel> get hotlinesFData => _hotlinesFData;
+  //
+  // set hotlinesFData(List<HotlinesModel> value) {
+  //   _hotlinesFData = value;
+  //   update();
+  // }
 
   int _hotlinesIndex = 0;
 
@@ -1474,32 +1474,17 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<HotlinesModel> _hotlinesMData = [];
-  List<HotlinesModel> hotlinesMainData = [];
-  List<HotlinesModel> _hotlinesDData = [];
-  List<HotlinesModel> _hotlinesData = [];
-
-  List<HotlinesModel> get hotlinesData => _hotlinesData;
-
-  set hotlinesData(List<HotlinesModel> value) {
-    _hotlinesData = value.toSet().toList();
-    update();
-  }
 
   String hotlinesOdd = '';
   String hotlinesDecimal = '';
   String hotlinesDec = '';
   String hotlinesType = '';
 
-  // bool _isHotlines = false;
-  //   bool get isHotlines => _isHotlines;
-  //   set isHotlines(bool value) {
-  //     _isHotlines = value;
-  //     update();
-  // }
+
 
   Future hotlinesDataResponse({String awayTeamId = '',
     String sportId = '',
+    required SportEvents  gameDetails,
     String matchId = '',
     bool isLoad = false,
     String homeTeamId = ''}) async {
@@ -1527,7 +1512,7 @@ class GameDetailsController extends GetxController {
                       if (!int
                           .parse(outcome.oddsAmerican ?? '')
                           .isNegative) {
-                        hotlinesMainData.add(HotlinesModel(
+                        gameDetails.hotlinesMainData.add(HotlinesModel(
                             teamId: playersProp.player?.competitorId ?? "",
                             teamName:
                             '${playersProp.player?.name
@@ -1556,42 +1541,42 @@ class GameDetailsController extends GetxController {
                                 .last ?? '',
                             bookId: book.id ?? '',
                             value: '${outcome.oddsAmerican}'));
-                        hotlinesFData.clear();
-                        hotlinesDData.clear();
-                        hotlinesMData.clear();
-                        hotlinesMainData.sort((a, b) =>
+                        gameDetails.hotlinesFData.clear();
+                        gameDetails.hotlinesDData.clear();
+                        gameDetails.hotlinesMData.clear();
+                        gameDetails.hotlinesMainData.sort((a, b) =>
                             int.parse(b.value).compareTo(int.parse(a.value)));
-                        for (var element in hotlinesMainData) {
+                        for (var element in gameDetails.hotlinesMainData) {
                           if (element.bookId == 'sr:book:18149') {
-                            if (!(hotlinesDData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesDData.indexWhere((fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(hotlinesDData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesDData.indexWhere((fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
-                                hotlinesDData.add(element);
+                                gameDetails.hotlinesDData.add(element);
                               }
                             }
                           }
                           if (element.bookId == 'sr:book:17324') {
-                            if (!(hotlinesMData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesMData.indexWhere((fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(hotlinesMData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesMData.indexWhere((fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
-                                hotlinesMData.add(element);
+                                gameDetails.hotlinesMData.add(element);
                               }
                             }
                           }
                           if (element.bookId == 'sr:book:18186') {
-                            if (!(hotlinesFData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesFData.indexWhere((fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(hotlinesFData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesFData.indexWhere((fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
-                                hotlinesFData.add(element);
+                                gameDetails.hotlinesFData.add(element);
                               }
                             }
                           }
@@ -1605,35 +1590,35 @@ class GameDetailsController extends GetxController {
           });
 
           List<HotlinesModel> hotlinesFinalData = [];
-          hotlinesFinalData = hotlinesDData + hotlinesFData + hotlinesMData;
-          hotlinesData.clear();
+          hotlinesFinalData = gameDetails.hotlinesDData + gameDetails.hotlinesFData + gameDetails.hotlinesMData;
+          gameDetails.hotlinesData=[];
           hotlinesFinalData
               .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
           if (hotlinesFinalData.isNotEmpty) {
-            hotlinesData.add(hotlinesFinalData[0]);
+            gameDetails.hotlinesData.add(hotlinesFinalData[0]);
             for (int i = 1; i < hotlinesFinalData.length; i++) {
-              if (!(hotlinesData.indexWhere((element) =>
+              if (!(gameDetails.hotlinesData.indexWhere((element) =>
               element.teamName == hotlinesFinalData[i].teamName) >=
                   0)) {
-                if (hotlinesData
+                if (gameDetails.hotlinesData
                     .where((element) =>
                 element.bookId == hotlinesFinalData[i].bookId)
                     .toList()
                     .length <
                     2) {
-                  if (hotlinesData
+                  if (gameDetails.hotlinesData
                       .where((element) =>
                   element.teamId == hotlinesFinalData[i].teamId)
                       .toList()
                       .length <
                       3) {
-                    hotlinesData.add(hotlinesFinalData[i]);
+                    gameDetails.hotlinesData.add(hotlinesFinalData[i]);
                   }
                 }
               }
             }
           }
-          hotlinesData
+          gameDetails.hotlinesData
               .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
           update();
         }
@@ -1654,7 +1639,7 @@ class GameDetailsController extends GetxController {
     }
     update();
     isLoading.value = false;
-    return hotlinesData;
+    return gameDetails.hotlinesData;
   }
 
   ///GET NCAA AND NFL RECORDS
@@ -1926,19 +1911,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<HotlinesModel> get hotlinesMData => _hotlinesMData;
 
-  set hotlinesMData(List<HotlinesModel> value) {
-    _hotlinesMData = value;
-    update();
-  }
-
-  List<HotlinesModel> get hotlinesDData => _hotlinesDData;
-
-  set hotlinesDData(List<HotlinesModel> value) {
-    _hotlinesDData = value;
-    update();
-  }
 
   ///GET RESPONSE
   Future getResponse({required bool isLoad,
@@ -1949,10 +1922,10 @@ class GameDetailsController extends GetxController {
     required String sportKey,
     Competitors? homeTeam,
     Competitors? awayTeam}) async {
-    hotlinesDData.clear();
-    hotlinesFData.clear();
-    hotlinesMData.clear();
-    hotlinesData.clear();
+    gameDetails.hotlinesDData.clear();
+    gameDetails.hotlinesFData.clear();
+    gameDetails.hotlinesMData.clear();
+    gameDetails.hotlinesData.clear();
 
     if (sportKey == 'MLB') {
       mlbStaticsAwayTeamResponse(
@@ -1981,9 +1954,10 @@ class GameDetailsController extends GetxController {
           homeTeamId: gameDetails.homePlayerId,
         );
       }
-      hotlinesDataResponse(
+      await hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
+          gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
@@ -2014,7 +1988,7 @@ class GameDetailsController extends GetxController {
           homeTeamId: homeTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
-      mlbInjuriesResponse(
+       mlbInjuriesResponse(
           isLoad: false,
           sportKey: "NFL",
           sportEvent: gameDetails,
@@ -2024,10 +1998,11 @@ class GameDetailsController extends GetxController {
           homeTeamId: homeTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
-      hotlinesData.clear();
-      hotlinesDataResponse(
+
+     await  hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
+         gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
@@ -2053,6 +2028,7 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
+          gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
@@ -2088,6 +2064,7 @@ class GameDetailsController extends GetxController {
       hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
+          gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");

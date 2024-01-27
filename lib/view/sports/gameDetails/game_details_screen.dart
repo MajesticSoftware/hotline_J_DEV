@@ -82,6 +82,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
         });
       });
     }
+    gameDetailsController.hotlinesIndex = 0;
     super.initState();
   }
 
@@ -94,6 +95,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     super.dispose();
     client.close();
   }
+
 
   @override
   Widget build(BuildContext context) {

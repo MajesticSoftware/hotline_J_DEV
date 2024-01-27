@@ -5046,6 +5046,7 @@ Padding hotlinesWidget(BuildContext context,
               controller: tabController,
               onTap: (value) {
                 con.hotlinesIndex = value;
+                con.update();
                 // log('INDEX===$value');
               },
               dividerColor: Theme
@@ -5113,12 +5114,12 @@ Padding hotlinesWidget(BuildContext context,
               .size
               .height * .038)
               : (con.hotlinesIndex == 0
-              ? con.hotlinesData.isEmpty
+              ?gameDetails.hotlinesData.isEmpty
               : con.hotlinesIndex == 1
-              ? con.hotlinesDData.isEmpty
+              ? gameDetails.hotlinesDData.isEmpty
               : con.hotlinesIndex == 2
-              ? con.hotlinesFData.isEmpty
-              : con.hotlinesMData.isEmpty) &&
+              ? gameDetails.hotlinesFData.isEmpty
+              : gameDetails.hotlinesMData.isEmpty) &&
               !con.isLoading.value
               ? emptyListWidget(
             context,
@@ -5488,20 +5489,20 @@ Widget hotlinesCard(GameDetailsController con,
     padding: EdgeInsets.zero,
     shrinkWrap: true,
     itemCount: con.hotlinesIndex == 0
-        ? con.hotlinesData.length >= 6
+        ? gameDetails.hotlinesData.length >= 6
         ? 6
-        : con.hotlinesData.length
+        : gameDetails.hotlinesData.length
         : con.hotlinesIndex == 1
-        ? con.hotlinesDData.length >= 6
+        ? gameDetails.hotlinesDData.length >= 6
         ? 6
-        : con.hotlinesDData.length
+        : gameDetails.hotlinesDData.length
         : con.hotlinesIndex == 2
-        ? con.hotlinesFData.length >= 6
+        ? gameDetails.hotlinesFData.length >= 6
         ? 6
-        : con.hotlinesFData.length
-        : con.hotlinesMData.length >= 6
+        : gameDetails.hotlinesFData.length
+        : gameDetails.hotlinesMData.length >= 6
         ? 6
-        : con.hotlinesMData.length,
+        : gameDetails.hotlinesMData.length,
     physics: const NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
       return SizedBox(
@@ -5520,12 +5521,12 @@ Widget hotlinesCard(GameDetailsController con,
               Image.network(
                 (homeTeam?.id ==
                     (con.hotlinesIndex == 0
-                        ? con.hotlinesData[index].teamId
+                        ? gameDetails.hotlinesData[index].teamId
                         : con.hotlinesIndex == 1
-                        ? con.hotlinesDData[index].teamId
+                        ? gameDetails.hotlinesDData[index].teamId
                         : con.hotlinesIndex == 2
-                        ? con.hotlinesFData[index].teamId
-                        : con.hotlinesMData[index].teamId))
+                        ? gameDetails.hotlinesFData[index].teamId
+                        : gameDetails.hotlinesMData[index].teamId))
                     ? homeLogo(homeTeam, gameDetails)
                     : awayLogo(awayTeam, gameDetails),
                 height: MediaQuery
@@ -5553,12 +5554,12 @@ Widget hotlinesCard(GameDetailsController con,
               Expanded(
                 flex: mobileView.size.shortestSide < 600 ? 7 : 4,
                 child: (con.hotlinesIndex == 0
-                    ? con.hotlinesData[index].teamName
+                    ? gameDetails.hotlinesData[index].teamName
                     : con.hotlinesIndex == 1
-                    ? con.hotlinesDData[index].teamName
+                    ? gameDetails.hotlinesDData[index].teamName
                     : con.hotlinesIndex == 2
-                    ? con.hotlinesFData[index].teamName
-                    : con.hotlinesMData[index].teamName)
+                    ? gameDetails.hotlinesFData[index].teamName
+                    : gameDetails.hotlinesMData[index].teamName)
                     .appCommonText(
                     color: Theme
                         .of(context)
@@ -5601,12 +5602,12 @@ Widget hotlinesCard(GameDetailsController con,
                     fit: BoxFit.scaleDown,
                     child: Center(
                       child: (con.hotlinesIndex == 0
-                          ? con.hotlinesData[index].value
+                          ? gameDetails.hotlinesData[index].value
                           : con.hotlinesIndex == 1
-                          ? con.hotlinesDData[index].value
+                          ? gameDetails.hotlinesDData[index].value
                           : con.hotlinesIndex == 2
-                          ? con.hotlinesFData[index].value
-                          : con.hotlinesMData[index].value)
+                          ? gameDetails.hotlinesFData[index].value
+                          : gameDetails.hotlinesMData[index].value)
                           .appCommonText(
                           color: Theme
                               .of(context)
@@ -5648,23 +5649,23 @@ Widget hotlinesCard(GameDetailsController con,
                           image: DecorationImage(
                             image: AssetImage(
                               ((con.hotlinesIndex == 0
-                                  ? con.hotlinesData[index].bookId
+                                  ? gameDetails.hotlinesData[index].bookId
                                   : con.hotlinesIndex == 1
-                                  ? con.hotlinesDData[index].bookId
+                                  ? gameDetails.hotlinesDData[index].bookId
                                   : con.hotlinesIndex == 2
-                                  ? con.hotlinesFData[index].bookId
-                                  : con.hotlinesMData[index]
+                                  ? gameDetails.hotlinesFData[index].bookId
+                                  : gameDetails.hotlinesMData[index]
                                   .bookId) ==
                                   'sr:book:18186')
                                   ? Assets.imagesFanduel
                                   : ((con.hotlinesIndex == 0
-                                  ? con.hotlinesData[index].bookId
+                                  ? gameDetails.hotlinesData[index].bookId
                                   : con.hotlinesIndex == 1
-                                  ? con.hotlinesDData[index].bookId
+                                  ? gameDetails.hotlinesDData[index].bookId
                                   : con.hotlinesIndex == 2
-                                  ? con.hotlinesFData[index]
+                                  ? gameDetails.hotlinesFData[index]
                                   .bookId
-                                  : con.hotlinesMData[index]
+                                  : gameDetails.hotlinesMData[index]
                                   .bookId) ==
                                   'sr:book:17324')
                                   ? Assets.imagesMgm
