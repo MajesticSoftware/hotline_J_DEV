@@ -252,7 +252,7 @@ class SubscriptionController extends GetxController {
         UserData subscriptionModel = UserData.fromJson(result.data);
         PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
         PreferenceManager().saveSubscription(subscriptionModel);
-        showCompletePurchaseDialog();
+        // showCompletePurchaseDialog();
         Get.find<GameDetailsController>().update();
         await getSubscriptionProduct();
         update();
@@ -278,7 +278,7 @@ class SubscriptionController extends GetxController {
           UserData subscriptionModel = UserData.fromJson(result.data);
           PreferenceManager().saveSubscription(subscriptionModel);
           PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
-          showCompletePurchaseDialog();
+          // showCompletePurchaseDialog();
           Get.find<GameDetailsController>().update();
           await getSubscriptionProduct();
           isLoading.value = false;

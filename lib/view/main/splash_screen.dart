@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
       int storeVersion = getExtendedVersionNumber(v2); // return 102011
       log('localVersion--$localVersion');
       log('storeVersion--$storeVersion');
-      if ((storeVersion > localVersion)||(storeVersion == localVersion&&int.parse(requiredBuildNumber) > int.parse(PreferenceManager.getDeviceVersionNumber().toString()))) {
+      if ((storeVersion > localVersion)||(storeVersion == localVersion&&(int.tryParse(requiredBuildNumber)??0) > (int.tryParse(PreferenceManager.getDeviceVersionNumber().toString())??0))) {
         log('Update required. Please update the app.');
         return updateAppDialog();
       } else {
@@ -96,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   int getExtendedVersionNumber(String version) {
     List versionCells = version.split('.');
-    versionCells = versionCells.map((i) => int.parse(i)).toList();
+    versionCells = versionCells.map((i) => (int.tryParse(i)??0)).toList();
     return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
   }
 

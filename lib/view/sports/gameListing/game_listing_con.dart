@@ -2179,7 +2179,7 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaabTomorrowEventsList.clear();
-      for (int i = 1; i <= 3; i++) {
+      for (int i = 1; i <= 7; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -2190,7 +2190,7 @@ class GameListingController extends GetxController {
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          if (i == 3) {
+          if (i == 7) {
             isPagination = false;
           }
           gameListingsWithLogoResponseNCAAB(
