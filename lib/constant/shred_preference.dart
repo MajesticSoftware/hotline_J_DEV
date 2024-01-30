@@ -264,7 +264,7 @@ static Future setDeviceVersionNumber(String deviceVersionNumber) async {
     setSubscriptionProduct(userData.subscriptionProduct ?? "");
     setSubscriptionAndroid(userData.isAndroidPurchased ?? "");
     // preferences.putString(LAST_ACTIVE_DATE, userData.lastActiveDate);
-    setSubscriptionActive(userData.isSubscriptionActivated ?? "");
+    setSubscriptionActive(userData.isSubscriptionActivated ?? "0");
     // setAutoRenewalSub(userData.isAutoRenewalSubscription??"");
   }
 

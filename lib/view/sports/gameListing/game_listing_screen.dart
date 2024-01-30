@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -41,8 +40,8 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       await gameListingController.favoriteGameCall();
-      // Future.delayed(Duration.zero)
-      //     .then((value) => gameListingController.getSubscriptionStatus());
+      Future.delayed(Duration.zero)
+          .then((value) => gameListingController.getSubscriptionStatus());
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Scaffold(
@@ -107,39 +106,38 @@ class SelectGameScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             (PreferenceManager.getIsLogin() ?? false)
-                ? GetBuilder<GameListingController>(
-                  builder: (con)  {
+                ? GetBuilder<GameListingController>(builder: (con) {
                     return Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            commonCachedNetworkImage(
-                              imageUrl:
-                                  ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile() ?? ""}'),
-                              height: MediaQuery.of(context).size.height * .12,
-                              width: MediaQuery.of(context).size.height * .12,
-                            ),
-                            10.h.H(),
-                            (PreferenceManager.getUserName() ?? "Name")
-                                .toString()
-                                .appCommonText(
-                                    color: yellowColor,
-                                    align: TextAlign.center,
-                                    weight: FontWeight.w700,
-                                    size: MediaQuery.of(context).size.height * .02),
-                            (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
-                                .toString()
-                                .appCommonText(
-                                    color: yellowColor,
-                                    align: TextAlign.center,
-                                    weight: FontWeight.w700,
-                                    size:
-                                        MediaQuery.of(context).size.height * .022),
-                          ],
-                        ),
-                      ).paddingOnly(bottom: 30.h, top: 90.h);
-                  }
-                )
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          commonCachedNetworkImage(
+                            imageUrl:
+                                ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile() ?? ""}'),
+                            height: MediaQuery.of(context).size.height * .12,
+                            width: MediaQuery.of(context).size.height * .12,
+                          ),
+                          10.h.H(),
+                          (PreferenceManager.getUserName() ?? "Name")
+                              .toString()
+                              .appCommonText(
+                                  color: yellowColor,
+                                  align: TextAlign.center,
+                                  weight: FontWeight.w700,
+                                  size:
+                                      MediaQuery.of(context).size.height * .02),
+                          (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
+                              .toString()
+                              .appCommonText(
+                                  color: yellowColor,
+                                  align: TextAlign.center,
+                                  weight: FontWeight.w700,
+                                  size: MediaQuery.of(context).size.height *
+                                      .022),
+                        ],
+                      ),
+                    ).paddingOnly(bottom: 30.h, top: 90.h);
+                  })
                 : const SizedBox(),
             Visibility(
               visible: (PreferenceManager.getIsLogin() ?? false) == false ||
@@ -165,7 +163,6 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),
-
             drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
@@ -259,11 +256,12 @@ class SelectGameScreen extends StatelessWidget {
               title: 'Subscription',
               context: context,
               onTap: () {
-                subscriptionDialog(context,showButton: false,onTap: () {
-
-                },restoreOnTap: () {
-
-                },);
+                subscriptionDialog(
+                  context,
+                  showButton: false,
+                  onTap: () {},
+                  restoreOnTap: () {},
+                );
               },
             ),
             Visibility(
@@ -501,236 +499,256 @@ class SelectGameScreen extends StatelessWidget {
                 maxLines: 2,
               ).paddingOnly(bottom: 15.w),
             ),*/
-            !controller.isLoading.value &&
-                controller.isPagination?const PaginationProgress():
-            spotList(controller).isEmpty &&
-                    !controller.isLoading.value &&
-                    !controller.isPagination
-                ? Expanded(
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          'No Games'.appCommonText(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              size: Get.height * .022,
-                              weight: FontWeight.w800),
-                          (controller.sportKey == "MLB"
-                                  ? "'2024 season starts March 20th.'"
-                                  : controller.sportKey == "NCAA"?"'2024 season starts August 24th.'":"")
-                              .appCommonText(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  size: Get.height * .02,
-                                  weight: FontWeight.w800)
-                        ],
-                      ),
-                    ),
-                  )
-                : controller.searchCon.text.isEmpty
+            (!controller.isLoading.value && controller.isPagination)
+                ? const PaginationProgress()
+                :( spotList(controller).isEmpty &&
+                        !controller.isLoading.value &&
+                        !controller.isPagination)
                     ? Expanded(
-                        child: RefreshIndicator(
-                        onRefresh: () async {
-                          await controller.getResponse(
-                              false, controller.sportKey);
-                        },
-                        color: Theme.of(context).primaryColor,
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: spotList(controller).length,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            try {
-                              // SportEvents competitors = spotList(controller)[index];
-                              String date = DateFormat.MMMd().format(
-                                  DateTime.parse(spotList(controller)[index]
-                                              .scheduled ??
-                                          '')
-                                      .toLocal());
-                              String dateTime = DateFormat.jm().format(
-                                  DateTime.parse(spotList(controller)[index]
-                                              .scheduled ??
-                                          '')
-                                      .toLocal());
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              'No Games'.appCommonText(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  size: Get.height * .022,
+                                  weight: FontWeight.w800),
+                              (controller.sportKey == "MLB"
+                                      ? "'2024 season starts March 20th.'"
+                                      : controller.sportKey == "NCAA"
+                                          ? "'2024 season starts August 24th.'"
+                                          : "")
+                                  .appCommonText(
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor,
+                                      size: Get.height * .02,
+                                      weight: FontWeight.w800)
+                            ],
+                          ),
+                        ),
+                      )
+                    : controller.searchCon.text.isEmpty
+                        ? Expanded(
+                            child: RefreshIndicator(
+                            onRefresh: () async {
+                              await controller.getResponse(
+                                  false, controller.sportKey);
+                            },
+                            color: Theme.of(context).primaryColor,
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: spotList(controller).length,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                try {
+                                  // SportEvents competitors = spotList(controller)[index];
+                                  String date = DateFormat.MMMd().format(
+                                      DateTime.parse(spotList(controller)[index]
+                                                  .scheduled ??
+                                              '')
+                                          .toLocal());
+                                  String dateTime = DateFormat.jm().format(
+                                      DateTime.parse(spotList(controller)[index]
+                                                  .scheduled ??
+                                              '')
+                                          .toLocal());
 
-                              return (spotList(controller).length ==
-                                          index + 1 &&
-                                      controller.isPagination)
-                                  ? const PaginationProgress()
-                                  : Visibility(
-                                      visible: (spotList(controller)[index]
+                                  return (spotList(controller).length ==
+                                              index + 1 &&
+                                          controller.isPagination)
+                                      ? const PaginationProgress()
+                                      : Visibility(
+                                          visible: (spotList(controller)[index]
+                                                          .status !=
+                                                      'closed' &&
+                                                  controller.sportKey !=
+                                                      "NFL") ||
+                                              (spotList(controller)[index]
                                                       .status !=
-                                                  'closed' &&
-                                              controller.sportKey != "NFL") ||
-                                          (spotList(controller)[index].status !=
-                                              'postponed'),
-                                      child: GameWidget(
-                                        flameNumber: controller.sportKey !=
+                                                  'postponed'),
+                                          child: GameWidget(
+                                            flameNumber: controller.sportKey !=
                                                     "MLB"
-                                            ? spotList(controller)[index]
-                                                .getFlameValue
-                                            : 0,
-                                        isShowWeather: controller.sportKey !="NCAAB"&& controller.sportKey!="NBA",
-                                        onTap: () {
-                                          controller.gameOnClick(
-                                              context, index);
-                                        },
-                                          isShowFlam:(controller.sportKey != "MLB"),
-                                        awayTeamMoneyLine:
-                                            spotList(controller)[index]
-                                                .awayMoneyLineValue,
-                                        homeTeamMoneyLine:
-                                            spotList(controller)[index]
-                                                .homeMoneyLineValue,
-                                        awayTeamOU: spotList(controller)[index]
-                                            .awayOUValue,
-                                        homeTeamOU: spotList(controller)[index]
-                                            .homeOUValue,
-                                        weather:
-                                            spotList(controller)[index].weather,
-                                        homeTeamSpread: spotList(
-                                                    controller)[index]
-                                                .homeSpreadValue
-                                                .contains('-')
-                                            ? spotList(controller)[index]
-                                                .homeSpreadValue
-                                            : '+${spotList(controller)[index].homeSpreadValue}',
-                                        awayTeamSpread: spotList(
-                                                    controller)[index]
-                                                .awaySpreadValue
-                                                .contains('-')
-                                            ? spotList(controller)[index]
-                                                .awaySpreadValue
-                                            : '+${spotList(controller)[index].awaySpreadValue}',
-                                        temp: spotList(controller)[index]
-                                            .tmpInFahrenheit,
-                                        isLive: spotList(controller)[index]
-                                                .status ==
-                                            'live',
-                                        dateTime: '$date, $dateTime',
-                                        awayTeamImageUrl: awayLogo(
-                                            spotList(controller)[index],
-                                            controller,
-                                            index),
-                                        awayTeamRank:
-                                            (spotList(controller)[index]
+                                                ? spotList(controller)[index]
+                                                    .getFlameValue
+                                                : 0,
+                                            isShowWeather: controller
+                                                        .sportKey !=
+                                                    "NCAAB" &&
+                                                controller.sportKey != "NBA",
+                                            onTap: () {
+                                              controller.gameOnClick(
+                                                  context, index);
+                                            },
+                                            isShowFlam:
+                                                (controller.sportKey != "MLB"),
+                                            awayTeamMoneyLine:
+                                                spotList(controller)[index]
+                                                    .awayMoneyLineValue,
+                                            homeTeamMoneyLine:
+                                                spotList(controller)[index]
+                                                    .homeMoneyLineValue,
+                                            awayTeamOU:
+                                                spotList(controller)[index]
+                                                    .awayOUValue,
+                                            homeTeamOU:
+                                                spotList(controller)[index]
+                                                    .homeOUValue,
+                                            weather: spotList(controller)[index]
+                                                .weather,
+                                            homeTeamSpread: spotList(
+                                                        controller)[index]
+                                                    .homeSpreadValue
+                                                    .contains('-')
+                                                ? spotList(controller)[index]
+                                                    .homeSpreadValue
+                                                : '+${spotList(controller)[index].homeSpreadValue}',
+                                            awayTeamSpread: spotList(
+                                                        controller)[index]
+                                                    .awaySpreadValue
+                                                    .contains('-')
+                                                ? spotList(controller)[index]
+                                                    .awaySpreadValue
+                                                : '+${spotList(controller)[index].awaySpreadValue}',
+                                            temp: spotList(controller)[index]
+                                                .tmpInFahrenheit,
+                                            isLive: spotList(controller)[index]
+                                                    .status ==
+                                                'live',
+                                            dateTime: '$date, $dateTime',
+                                            awayTeamImageUrl: awayLogo(
+                                                spotList(controller)[index],
+                                                controller,
+                                                index),
+                                            awayTeamRank: (spotList(
+                                                            controller)[index]
                                                         .awayRank ==
                                                     '0'
                                                 ? ''
                                                 : spotList(controller)[index]
                                                     .awayRank),
-                                        awayTeamAbb:
-                                            (mobileView.size.shortestSide < 600
+                                            awayTeamAbb: (mobileView
+                                                        .size.shortestSide <
+                                                    600
                                                 ? spotList(controller)[index]
                                                     .awayTeamAbb
                                                 : spotList(controller)[index]
                                                     .awayTeam),
-                                        awayTeamScore:
-                                            (spotList(controller)[index]
-                                                .awayScore),
-                                        homeTeamImageUrl: homeLogo(
-                                            spotList(controller)[index],
-                                            controller,
-                                            index),
-                                        homeTeamRank:
-                                            (spotList(controller)[index]
+                                            awayTeamScore:
+                                                (spotList(controller)[index]
+                                                    .awayScore),
+                                            homeTeamImageUrl: homeLogo(
+                                                spotList(controller)[index],
+                                                controller,
+                                                index),
+                                            homeTeamRank: (spotList(
+                                                            controller)[index]
                                                         .homeRank ==
                                                     '0'
                                                 ? ''
                                                 : spotList(controller)[index]
                                                     .homeRank),
-                                        homeTeamAbb:
-                                            (mobileView.size.shortestSide < 600
+                                            homeTeamAbb: (mobileView
+                                                        .size.shortestSide <
+                                                    600
                                                 ? spotList(controller)[index]
                                                     .homeTeamAbb
                                                 : spotList(controller)[index]
                                                     .homeTeam),
-                                        homeTeamScore:
-                                            spotList(controller)[index]
-                                                .homeScore,
-                                      ),
-                                    );
-                            } catch (e) {
-                              return const SizedBox();
-                            }
-                          },
-                        ),
-                      ))
-                    : Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: controller.searchList.length,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            try {
-                              SportEvents competitors =
-                                  controller.searchList[index];
-                              String date = DateFormat.MMMd().format(
-                                  DateTime.parse(competitors.scheduled ?? '')
-                                      .toLocal());
-                              String dateTime = DateFormat.jm().format(
-                                  DateTime.parse(competitors.scheduled ?? '')
-                                      .toLocal());
-                              return Visibility(
-                                visible: (competitors.status != 'closed' &&
-                                        controller.sportKey != "NFL") ||
-                                    (competitors.status != 'postponed'),
-                                child: GameWidget(
-                                  isShowFlam:(controller.sportKey != "MLB"),
-                                  flameNumber: controller.sportKey != "MLB"
-                                      ? competitors.getFlameValue
-                                      : 0,
-                                  onTap: () {
-                                    controller.searchGameOnClick(
-                                        context, index);
-                                  },
-                                  isShowWeather: controller.sportKey !="NCAAB"&& controller.sportKey!="NBA",
-                                  awayTeamMoneyLine:
-                                      competitors.awayMoneyLineValue,
-                                  homeTeamMoneyLine:
-                                      competitors.homeMoneyLineValue,
-                                  awayTeamOU: competitors.awayOUValue,
-                                  homeTeamOU: competitors.homeOUValue,
-                                  weather: competitors.weather,
-                                  homeTeamSpread:
-                                      competitors.homeSpreadValue.contains('-')
+                                            homeTeamScore:
+                                                spotList(controller)[index]
+                                                    .homeScore,
+                                          ),
+                                        );
+                                } catch (e) {
+                                  return const SizedBox();
+                                }
+                              },
+                            ),
+                          ))
+                        : Expanded(
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: controller.searchList.length,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                try {
+                                  SportEvents competitors =
+                                      controller.searchList[index];
+                                  String date = DateFormat.MMMd().format(
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
+                                          .toLocal());
+                                  String dateTime = DateFormat.jm().format(
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
+                                          .toLocal());
+                                  return Visibility(
+                                    visible: (competitors.status != 'closed' &&
+                                            controller.sportKey != "NFL") ||
+                                        (competitors.status != 'postponed'),
+                                    child: GameWidget(
+                                      isShowFlam:
+                                          (controller.sportKey != "MLB"),
+                                      flameNumber: controller.sportKey != "MLB"
+                                          ? competitors.getFlameValue
+                                          : 0,
+                                      onTap: () {
+                                        controller.searchGameOnClick(
+                                            context, index);
+                                      },
+                                      isShowWeather:
+                                          controller.sportKey != "NCAAB" &&
+                                              controller.sportKey != "NBA",
+                                      awayTeamMoneyLine:
+                                          competitors.awayMoneyLineValue,
+                                      homeTeamMoneyLine:
+                                          competitors.homeMoneyLineValue,
+                                      awayTeamOU: competitors.awayOUValue,
+                                      homeTeamOU: competitors.homeOUValue,
+                                      weather: competitors.weather,
+                                      homeTeamSpread: competitors
+                                              .homeSpreadValue
+                                              .contains('-')
                                           ? competitors.homeSpreadValue
                                           : '+${competitors.homeSpreadValue}',
-                                  awayTeamSpread:
-                                      competitors.awaySpreadValue.contains('-')
+                                      awayTeamSpread: competitors
+                                              .awaySpreadValue
+                                              .contains('-')
                                           ? competitors.awaySpreadValue
                                           : '+${competitors.awaySpreadValue}',
-                                  temp: competitors.tmpInFahrenheit,
-                                  isLive: competitors.status == 'live',
-                                  dateTime: '$date, $dateTime',
-                                  awayTeamImageUrl:
-                                      awayLogo(competitors, controller, index),
-                                  awayTeamRank: (competitors.awayRank == '0'
-                                      ? ''
-                                      : competitors.awayRank),
-                                  awayTeamAbb:
-                                      (mobileView.size.shortestSide < 600
-                                          ? competitors.awayTeamAbb
-                                          : competitors.awayTeam),
-                                  awayTeamScore: (competitors.awayScore),
-                                  homeTeamImageUrl:
-                                      homeLogo(competitors, controller, index),
-                                  homeTeamRank: (competitors.homeRank == '0'
-                                      ? ''
-                                      : competitors.homeRank),
-                                  homeTeamAbb:
-                                      (mobileView.size.shortestSide < 600
-                                          ? competitors.homeTeamAbb
-                                          : competitors.homeTeam),
-                                  homeTeamScore: competitors.homeScore,
-                                ),
-                              );
-                            } catch (e) {
-                              return const SizedBox();
-                            }
-                          },
-                        ),
-                      ),
+                                      temp: competitors.tmpInFahrenheit,
+                                      isLive: competitors.status == 'live',
+                                      dateTime: '$date, $dateTime',
+                                      awayTeamImageUrl: awayLogo(
+                                          competitors, controller, index),
+                                      awayTeamRank: (competitors.awayRank == '0'
+                                          ? ''
+                                          : competitors.awayRank),
+                                      awayTeamAbb:
+                                          (mobileView.size.shortestSide < 600
+                                              ? competitors.awayTeamAbb
+                                              : competitors.awayTeam),
+                                      awayTeamScore: (competitors.awayScore),
+                                      homeTeamImageUrl: homeLogo(
+                                          competitors, controller, index),
+                                      homeTeamRank: (competitors.homeRank == '0'
+                                          ? ''
+                                          : competitors.homeRank),
+                                      homeTeamAbb:
+                                          (mobileView.size.shortestSide < 600
+                                              ? competitors.homeTeamAbb
+                                              : competitors.homeTeam),
+                                      homeTeamScore: competitors.homeScore,
+                                    ),
+                                  );
+                                } catch (e) {
+                                  return const SizedBox();
+                                }
+                              },
+                            ),
+                          ),
             (MediaQuery.of(context).size.height * .01).H(),
           ],
         ),
@@ -746,52 +764,53 @@ class SelectGameScreen extends StatelessWidget {
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.awayTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
-            :competitors.awayTeamAbb == 'LINW'
-            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
-            : competitors.awayTeamAbb == 'ARI'
-                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                : competitors.awayTeamAbb == 'SCUS'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                    : competitors.awayTeamAbb == 'MCNS'
-        ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-        : competitors.awayTeamAbb == 'FAMU'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                        : competitors.awayTeamAbb == 'WEBB'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                            : competitors.awayTeamAbb == 'SIND'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                : competitors.awayTeamAbb == 'WAS' &&
-                                        competitors.id == "sr:competitor:4432"
-                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                    : competitors.awayTeamAbb == 'UST'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
-                                        : competitors.awayTeamAbb == 'QUC'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                            : competitors.awayTeamAbb == 'UMKC'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+            : competitors.awayTeamAbb == 'LINW'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
+                : competitors.awayTeamAbb == 'ARI'
+                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                    : competitors.awayTeamAbb == 'SCUS'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                        : competitors.awayTeamAbb == 'MCNS'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+                            : competitors.awayTeamAbb == 'FAMU'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                                : competitors.awayTeamAbb == 'WEBB'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                                    : competitors.awayTeamAbb == 'SIND'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                        : competitors.awayTeamAbb == 'WAS' &&
+                                                competitors.id ==
+                                                    "sr:competitor:4432"
+                                            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+                                            : competitors.awayTeamAbb == 'UST'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
                                                 : competitors.awayTeamAbb ==
-                                                        'GC'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                        'QUC'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                                                     : competitors.awayTeamAbb ==
-                                                            'CSN'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                            'UMKC'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
                                                         : competitors
                                                                     .awayTeamAbb ==
-                                                                'CSB'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+                                                                'GC'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                                                             : competitors
-                                                                        .awayTeam ==
-                                                                    'Louisiana-Lafayette Ragin Cajuns'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                        .awayTeamAbb ==
+                                                                    'CSN'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
                                                                 : competitors
-                                                                            .awayTeam ==
+                                                                            .awayTeamAbb ==
                                                                         'CSB'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                                     : competitors.awayTeam ==
-                                                                            'Sam Houston State Bearkats'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                        : competitors
-                                                                            .gameLogoAwayLink;
+                                                                            'Louisiana-Lafayette Ragin Cajuns'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                        : competitors.awayTeam ==
+                                                                                'CSB'
+                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                            : competitors.awayTeam == 'Sam Houston State Bearkats'
+                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                                : competitors.gameLogoAwayLink;
   }
 
   String homeLogo(
@@ -801,52 +820,53 @@ class SelectGameScreen extends StatelessWidget {
         : competitors.homeTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.homeTeamAbb == 'LINW'
-            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
-            : competitors.homeTeamAbb == 'WEBB'
-                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                : competitors.homeTeamAbb == 'ARI'
-                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                    : competitors.homeTeamAbb == 'SCUS'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                        :competitors.homeTeamAbb == 'MCNS'
-        ?  "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-        :  competitors.homeTeamAbb == 'FAMU'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                            : competitors.homeTeamAbb == 'UMKC'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
-                                : competitors.homeTeamAbb == 'CSN'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                    : competitors.homeTeamAbb == 'WAS' &&
-                                            competitors.id ==
-                                                "sr:competitor:4432"
-                                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                        : competitors.homeTeamAbb == 'QUC'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                            : competitors.homeTeamAbb == 'CSB'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
+                : competitors.homeTeamAbb == 'WEBB'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                    : competitors.homeTeamAbb == 'ARI'
+                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                        : competitors.homeTeamAbb == 'SCUS'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                            : competitors.homeTeamAbb == 'MCNS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+                                : competitors.homeTeamAbb == 'FAMU'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                                    : competitors.homeTeamAbb == 'UMKC'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+                                        : competitors.homeTeamAbb == 'CSN'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                            : competitors.homeTeamAbb ==
+                                                        'WAS' &&
+                                                    competitors.id ==
+                                                        "sr:competitor:4432"
+                                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                                                 : competitors.homeTeamAbb ==
-                                                        'SIND'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                        'QUC'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                                                     : competitors.homeTeamAbb ==
-                                                            'UST'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+                                                            'CSB'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                         : competitors
                                                                     .homeTeamAbb ==
-                                                                'GC'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                                'SIND'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
                                                             : competitors
                                                                         .homeTeamAbb ==
-                                                                    'CSB'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                    'UST'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
                                                                 : competitors
-                                                                            .homeTeam ==
-                                                                        'Louisiana-Lafayette Ragin Cajuns'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                                    : competitors.homeTeam ==
-                                                                            'Sam Houston State Bearkats'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                        : competitors
-                                                                            .gameHomeLogoLink;
+                                                                            .homeTeamAbb ==
+                                                                        'GC'
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                                    : competitors.homeTeamAbb ==
+                                                                            'CSB'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                        : competitors.homeTeam ==
+                                                                                'Louisiana-Lafayette Ragin Cajuns'
+                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                            : competitors.homeTeam == 'Sam Houston State Bearkats'
+                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                                : competitors.gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

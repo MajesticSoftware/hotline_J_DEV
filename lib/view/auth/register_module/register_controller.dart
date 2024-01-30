@@ -82,6 +82,7 @@ class RegisterCon extends GetxController {
               profileImage = response.data?.userProfilePic ?? "";
               PreferenceManager.setUserData(response.data!);
               PreferenceManager.setIsLogin(true);
+              PreferenceManager().saveSubscription(response.data!);
               PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())
                   : Get.offAll(SelectGameScreen());

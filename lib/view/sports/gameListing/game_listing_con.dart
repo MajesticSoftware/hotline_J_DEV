@@ -70,9 +70,9 @@ class GameListingController extends GetxController {
     sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
         ? 'sr:sport:3'
         : ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NBA') ||
-        ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
-        ? 'sr:sport:2'
-        : 'sr:sport:16');
+                ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
+            ? 'sr:sport:2'
+            : 'sr:sport:16');
     sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
             ? "NCAA"
             : PreferenceManager.getFavoriteSport()) ??
@@ -84,10 +84,12 @@ class GameListingController extends GetxController {
       () async {
         isPagination = true;
         isLoading.value = true;
-        await getResponse(true,  (PreferenceManager.getFavoriteSport() == "NCAAF"
-            ? "NCAA"
-            : PreferenceManager.getFavoriteSport()) ??
-            "NFL");
+        await getResponse(
+            true,
+            (PreferenceManager.getFavoriteSport() == "NCAAF"
+                    ? "NCAA"
+                    : PreferenceManager.getFavoriteSport()) ??
+                "NFL");
       },
     );
   }
@@ -112,7 +114,27 @@ class GameListingController extends GetxController {
     update();
   }
 
-/*  Future<void> getSubscriptionStatus() async {
+
+
+  gameOnClick(BuildContext context, int index) {
+    toggle = 0;
+    FocusScope.of(context).unfocus();
+    searchCon.clear();
+    if ((PreferenceManager.getIsOpenDialog() == null) &&
+        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
+      PreferenceManager.setIsOpenDialog(true);
+    } else {
+      PreferenceManager.setIsOpenDialog(false);
+    }
+    Get.to(SportDetailsScreen(
+      gameDetails: (getSportEventList(sportKey))[index],
+      sportKey: sportKey,
+      sportId: sportId,
+      date: date,
+    ));
+    update();
+  }
+  Future<void> getSubscriptionStatus() async {
     isLoading.value = true;
     ResponseItem result = Platform.isIOS
         ? await SubscriptionRepo.getReceiptStatus()
@@ -122,41 +144,18 @@ class GameListingController extends GetxController {
         UserData subscriptionModel = UserData.fromJson(result.data);
         PreferenceManager().saveSubscription(subscriptionModel);
         update();
-      } else {
-        PreferenceManager.setSubscriptionActive("0");
       }
     } catch (e) {
       debugPrint(e.toString());
     }
     isLoading.value = false;
     update();
-  }*/
-
-  gameOnClick(BuildContext context, int index) {
-    toggle = 0;
-    FocusScope.of(context).unfocus();
-    searchCon.clear();
-    if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
-      PreferenceManager.setIsOpenDialog(true);
-    } else {
-      PreferenceManager.setIsOpenDialog(false);
-    }
-
-    Get.to(SportDetailsScreen(
-      gameDetails: (getSportEventList(sportKey))[index],
-      sportKey: sportKey,
-      sportId: sportId,
-      date: date,
-    ));
-    update();
   }
-
   searchGameOnClick(BuildContext context, int index) {
     toggle = 0;
     FocusScope.of(context).unfocus();
     if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionActive() ?? "0") == "0")) {
+        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
       PreferenceManager.setIsOpenDialog(true);
     } else {
       PreferenceManager.setIsOpenDialog(false);
@@ -173,7 +172,9 @@ class GameListingController extends GetxController {
   }
 
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
-  String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String date = (PreferenceManager.getFavoriteSport() ?? "NFL") == "NFL"
+      ? "2024-02-11"
+      :  DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<String> _isSelected = [PreferenceManager.getFavoriteSport() ?? "NFL"];
 
   List<String> get isSelected => _isSelected;
@@ -212,6 +213,7 @@ class GameListingController extends GetxController {
     Get.offAll(LogInScreen());
     PreferenceManager.clearData();
     PreferenceManager.setIsLogin(false);
+    PreferenceManager.setIsOpenDialog(false);
     PreferenceManager.setIsDarkMod(isDark);
     PreferenceManager.setIsFirstLoaded(true);
     showAppSnackBar('Successfully logged out.', status: true);
@@ -2179,7 +2181,7 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaabTomorrowEventsList.clear();
-      for (int i = 1; i <= 7; i++) {
+      for (int i = 1; i <= 3; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -2190,7 +2192,7 @@ class GameListingController extends GetxController {
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          if (i == 7) {
+          if (i == 3) {
             isPagination = false;
           }
           gameListingsWithLogoResponseNCAAB(

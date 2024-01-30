@@ -32,7 +32,7 @@ List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
-      date: formatted,
+      date: '2024-02-11',
       key: 'NFL',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       sportId: 'sr:sport:16',

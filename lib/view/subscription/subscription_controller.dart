@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
@@ -10,9 +11,9 @@ import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/widgets/common_widget.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import "package:in_app_purchase_android/in_app_purchase_android.dart";
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../network/subscription_repo.dart';
@@ -79,9 +80,13 @@ class SubscriptionController extends GetxController {
 
   restorePurchase(BuildContext context) async {
     Get.back();
-    isLoading.value = true;
     if (PreferenceManager.getIsLogin() ?? false) {
-      await inAppPurchase.restorePurchases();
+      isLoading.value = true;
+
+       await inAppPurchase.restorePurchases();
+
+      isLoading.value = false;
+      update();
     } else {
       showDialog(
         context: context,
@@ -101,8 +106,24 @@ class SubscriptionController extends GetxController {
     }
     isLoading.value = false;
   }
-
-   Future buyProduct(ProductDetails prod) async {
+  Future<void> getSubscriptionStatus() async {
+    isLoading.value = true;
+    ResponseItem result = Platform.isIOS
+        ? await SubscriptionRepo.getReceiptStatus()
+        : await SubscriptionRepo.getGoogleCloudStatus();
+    try {
+      if (result.status) {
+        UserData subscriptionModel = UserData.fromJson(result.data);
+        PreferenceManager().saveSubscription(subscriptionModel);
+        update();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isLoading.value = false;
+    update();
+  }
+  Future buyProduct(ProductDetails prod) async {
     try {
       isLoading.value = true;
       late PurchaseParam purchaseParam;
@@ -111,12 +132,14 @@ class SubscriptionController extends GetxController {
         await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
       } else {
         purchaseParam = PurchaseParam(productDetails: prod);
-        var transactions = await SKPaymentQueueWrapper().transactions();
+        final paymentWrapper = SKPaymentQueueWrapper();
+        var transactions = await paymentWrapper.transactions();
         for (var skPaymentTransactionWrapper in transactions) {
-          SKPaymentQueueWrapper()
+         await paymentWrapper
               .finishTransaction(skPaymentTransactionWrapper);
+
         }
-        await inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+        await inAppPurchase.buyNonConsumable( purchaseParam: PurchaseParam(productDetails: prod));
 
         isLoading.value = false;
         update();
@@ -142,8 +165,7 @@ class SubscriptionController extends GetxController {
               log('${purchaseDetails.error!}', name: 'IAPError');
             }
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-              (purchaseDetails.status == PurchaseStatus.restored &&
-                  purchaseDetails.status == PurchaseStatus.purchased)) {
+               purchaseDetails.status == PurchaseStatus.restored  ) {
             final isValid = await _verifyPurchase(purchaseDetails);
             if (isValid) {
               if (Platform.isAndroid) {
@@ -250,7 +272,8 @@ class SubscriptionController extends GetxController {
     try {
       if (result.status) {
         UserData subscriptionModel = UserData.fromJson(result.data);
-        PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
+        PreferenceManager.setSubscriptionActive(
+            subscriptionModel.isSubscriptionActivated ?? "0");
         PreferenceManager().saveSubscription(subscriptionModel);
         // showCompletePurchaseDialog();
         Get.find<GameDetailsController>().update();
@@ -277,7 +300,8 @@ class SubscriptionController extends GetxController {
         if (result.data != null) {
           UserData subscriptionModel = UserData.fromJson(result.data);
           PreferenceManager().saveSubscription(subscriptionModel);
-          PreferenceManager.setSubscriptionActive(subscriptionModel.isSubscriptionActivated ?? "");
+          PreferenceManager.setSubscriptionActive(
+              subscriptionModel.isSubscriptionActivated ?? "0");
           // showCompletePurchaseDialog();
           Get.find<GameDetailsController>().update();
           await getSubscriptionProduct();
@@ -294,6 +318,8 @@ class SubscriptionController extends GetxController {
     }
     isLoading.value = false;
   }
+
+
 
   Future<void> restoreProduct() async {
     isLoading.value = true;
