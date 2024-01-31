@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
@@ -82,8 +81,11 @@ class SubscriptionController extends GetxController {
     Get.back();
     if (PreferenceManager.getIsLogin() ?? false) {
       isLoading.value = true;
-
-       await inAppPurchase.restorePurchases();
+      try {
+        await inAppPurchase.restorePurchases();
+      } catch (e) {
+        isLoading.value = false;
+      }
 
       isLoading.value = false;
       update();
@@ -106,6 +108,7 @@ class SubscriptionController extends GetxController {
     }
     isLoading.value = false;
   }
+
   Future<void> getSubscriptionStatus() async {
     isLoading.value = true;
     ResponseItem result = Platform.isIOS
@@ -123,6 +126,7 @@ class SubscriptionController extends GetxController {
     isLoading.value = false;
     update();
   }
+
   Future buyProduct(ProductDetails prod) async {
     try {
       isLoading.value = true;
@@ -135,11 +139,10 @@ class SubscriptionController extends GetxController {
         final paymentWrapper = SKPaymentQueueWrapper();
         var transactions = await paymentWrapper.transactions();
         for (var skPaymentTransactionWrapper in transactions) {
-         await paymentWrapper
-              .finishTransaction(skPaymentTransactionWrapper);
-
+          await paymentWrapper.finishTransaction(skPaymentTransactionWrapper);
         }
-        await inAppPurchase.buyNonConsumable( purchaseParam: PurchaseParam(productDetails: prod));
+        await inAppPurchase.buyNonConsumable(
+            purchaseParam: PurchaseParam(productDetails: prod));
 
         isLoading.value = false;
         update();
@@ -165,7 +168,7 @@ class SubscriptionController extends GetxController {
               log('${purchaseDetails.error!}', name: 'IAPError');
             }
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-               purchaseDetails.status == PurchaseStatus.restored  ) {
+              purchaseDetails.status == PurchaseStatus.restored) {
             final isValid = await _verifyPurchase(purchaseDetails);
             if (isValid) {
               if (Platform.isAndroid) {
@@ -318,8 +321,6 @@ class SubscriptionController extends GetxController {
     }
     isLoading.value = false;
   }
-
-
 
   Future<void> restoreProduct() async {
     isLoading.value = true;

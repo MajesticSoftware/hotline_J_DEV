@@ -98,7 +98,9 @@ class SelectGameScreen extends StatelessWidget {
                   ],
                 ),
               )),
-          Obx(() => Get.find<SubscriptionController>().isLoading.value?const AppProgress():const SizedBox())
+          Obx(() => Get.find<SubscriptionController>().isLoading.value
+              ? const AppProgress()
+              : const SizedBox())
         ],
       );
     });
@@ -263,38 +265,47 @@ class SelectGameScreen extends StatelessWidget {
               ),
               title: 'Subscription',
               context: context,
+
               onTap: () {
-                scaffoldKey.currentState?.closeDrawer();
-                subscriptionDialog(context, restoreOnTap: () async {
-                  await Get.find<SubscriptionController>().restorePurchase(context);
-                }, onTap: () async {
-                  Get.back();
-                  if (PreferenceManager.getIsLogin() ?? false) {
-                    if (Get.find<SubscriptionController>().products.isEmpty) {
-                      null;
+                subscriptionDialog(
+                  context,showButton:  (PreferenceManager.getSubscriptionActive() ?? "0") ==
+                    "1"
+                    ?false:true,
+                  restoreOnTap: () async {
+                    await Get.find<SubscriptionController>()
+                        .restorePurchase(context);
+                  },
+                  onTap: () async {
+                    Get.back();
+
+                    if (PreferenceManager.getIsLogin() ?? false) {
+                      if (Get.find<SubscriptionController>().products.isEmpty) {
+                        null;
+                      } else {
+                        log('ON TAP');
+                        await Get.find<SubscriptionController>().buyProduct(
+                            Get.find<SubscriptionController>().products[0]);
+                        Get.find<SubscriptionController>().update();
+                      }
                     } else {
-                      log('ON TAP');
-                      await Get.find<SubscriptionController>().buyProduct(Get.find<SubscriptionController>().products[0]);
-                      Get.find<SubscriptionController>().update();
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return exitApp(
+                            context,
+                            buttonText: 'Login',
+                            cancelText: 'Cancel',
+                            title: 'Error',
+                            subtitle: 'You have to login for Subscription!',
+                            onTap: () {
+                              Get.offAll(LogInScreen());
+                            },
+                          );
+                        },
+                      );
                     }
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return exitApp(
-                          context,
-                          buttonText: 'Login',
-                          cancelText: 'Cancel',
-                          title: 'Error',
-                          subtitle: 'You have to login for Subscription!',
-                          onTap: () {
-                            Get.offAll(LogInScreen());
-                          },
-                        );
-                      },
-                    );
-                  }
-                },);
+                  },
+                );
               },
             ),
             Visibility(
@@ -534,7 +545,7 @@ class SelectGameScreen extends StatelessWidget {
             ),*/
             (!controller.isLoading.value && controller.isPagination)
                 ? const PaginationProgress()
-                :( spotList(controller).isEmpty &&
+                : (spotList(controller).isEmpty &&
                         !controller.isLoading.value &&
                         !controller.isPagination)
                     ? Expanded(
