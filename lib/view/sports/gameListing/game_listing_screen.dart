@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:hotlines/constant/app_strings.dart';
 import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
+import 'package:hotlines/view/subscription/subscription_controller.dart';
 import 'package:hotlines/view/widgets/game_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +23,7 @@ import '../../../theme/theme.dart';
 import '../../../utils/animated_search.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/utils.dart';
+import '../../auth/log_in_module/log_in_screen.dart';
 import '../../change_password/change_pass_screen.dart';
 import '../../profile_module/profile_screen.dart';
 import '../../term_of_service/privacy_policy.dart';
@@ -44,55 +47,60 @@ class SelectGameScreen extends StatelessWidget {
           .then((value) => gameListingController.getSubscriptionStatus());
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
-      return Scaffold(
-          key: scaffoldKey,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: commonAppBar(context, controller),
-          drawer: buildDrawer(context, controller),
-          drawerEnableOpenDragGesture: false,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                GameTabCard(
-                  onTapContact: () {
-                    toggle = 0;
-                    if (Platform.isIOS) {
-                      controller.launchEmailSubmission();
-                    } else {
-                      controller.isSelectedGame = 'Contact';
-                    }
-                    controller.update();
-                  },
-                  onTapGambling: () {
-                    toggle = 0;
-                    controller.isSelectedGame = 'Gambling 101';
-                    controller.update();
-                    // showDataAlert(context);
-                  },
-                  controller: controller,
+      return Stack(
+        children: [
+          Scaffold(
+              key: scaffoldKey,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              appBar: commonAppBar(context, controller),
+              drawer: buildDrawer(context, controller),
+              drawerEnableOpenDragGesture: false,
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    GameTabCard(
+                      onTapContact: () {
+                        toggle = 0;
+                        if (Platform.isIOS) {
+                          controller.launchEmailSubmission();
+                        } else {
+                          controller.isSelectedGame = 'Contact';
+                        }
+                        controller.update();
+                      },
+                      onTapGambling: () {
+                        toggle = 0;
+                        controller.isSelectedGame = 'Gambling 101';
+                        controller.update();
+                        // showDataAlert(context);
+                      },
+                      controller: controller,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.r),
+                        color: Theme.of(context).cardColor,
+                      ),
+                      height: MediaQuery.of(context).size.height -
+                          MediaQuery.of(context).size.height * .2,
+                      width: Get.width,
+                      clipBehavior: Clip.antiAlias,
+                      child: controller.isSelectedGame == 'Gambling 101'
+                          ? const GamblingCard()
+                          : /*controller.isSelectedGame == 'Contact'
+                              ? ContactView(
+                                  webController: controller.webController,
+                                )
+                              :*/
+                          tableDetailWidget(context, controller),
+                    ).paddingSymmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                  ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                    color: Theme.of(context).cardColor,
-                  ),
-                  height: MediaQuery.of(context).size.height -
-                      MediaQuery.of(context).size.height * .2,
-                  width: Get.width,
-                  clipBehavior: Clip.antiAlias,
-                  child: controller.isSelectedGame == 'Gambling 101'
-                      ? const GamblingCard()
-                      : /*controller.isSelectedGame == 'Contact'
-                          ? ContactView(
-                              webController: controller.webController,
-                            )
-                          :*/
-                      tableDetailWidget(context, controller),
-                ).paddingSymmetric(
-                    horizontal: MediaQuery.of(context).size.width * .03),
-              ],
-            ),
-          ));
+              )),
+          Obx(() => Get.find<SubscriptionController>().isLoading.value?const AppProgress():const SizedBox())
+        ],
+      );
     });
   }
 
@@ -256,12 +264,37 @@ class SelectGameScreen extends StatelessWidget {
               title: 'Subscription',
               context: context,
               onTap: () {
-                subscriptionDialog(
-                  context,
-                  showButton: false,
-                  onTap: () {},
-                  restoreOnTap: () {},
-                );
+                scaffoldKey.currentState?.closeDrawer();
+                subscriptionDialog(context, restoreOnTap: () async {
+                  await Get.find<SubscriptionController>().restorePurchase(context);
+                }, onTap: () async {
+                  Get.back();
+                  if (PreferenceManager.getIsLogin() ?? false) {
+                    if (Get.find<SubscriptionController>().products.isEmpty) {
+                      null;
+                    } else {
+                      log('ON TAP');
+                      await Get.find<SubscriptionController>().buyProduct(Get.find<SubscriptionController>().products[0]);
+                      Get.find<SubscriptionController>().update();
+                    }
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return exitApp(
+                          context,
+                          buttonText: 'Login',
+                          cancelText: 'Cancel',
+                          title: 'Error',
+                          subtitle: 'You have to login for Subscription!',
+                          onTap: () {
+                            Get.offAll(LogInScreen());
+                          },
+                        );
+                      },
+                    );
+                  }
+                },);
               },
             ),
             Visibility(
