@@ -5889,6 +5889,8 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2635.png"
       : awayTeam?.abbreviation == 'CSN'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+      : awayTeam?.abbreviation == 'LMC'
+      ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
       : awayTeam?.abbreviation == 'SHS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
       : gameDetails.gameLogoAwayLink;
@@ -5935,6 +5937,8 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
       : homeTeam?.abbreviation == 'SHS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+      :homeTeam?.abbreviation == 'LMC'
+      ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
       : gameDetails.gameHomeLogoLink;
 }
 

@@ -810,6 +810,8 @@ class SelectGameScreen extends StatelessWidget {
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.awayTeamAbb == 'LINW'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
+                : competitors.awayTeamAbb == 'LMC'
+                ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
                 : competitors.awayTeamAbb == 'ARI'
                     ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
                     : competitors.awayTeamAbb == 'SCUS'
@@ -863,6 +865,8 @@ class SelectGameScreen extends StatelessWidget {
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.homeTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+            :competitors.homeTeamAbb == 'LMC'
+            ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
             : competitors.homeTeamAbb == 'LINW'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
                 : competitors.homeTeamAbb == 'WEBB'
