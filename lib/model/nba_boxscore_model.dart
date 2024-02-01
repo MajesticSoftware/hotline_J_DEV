@@ -8,6 +8,7 @@ class NBABoxScoreModel {
   num? timesTied;
   String? clock;
   num? quarter;
+  num? half;
   bool? inseasonTournament;
   bool? trackOnCourt;
   String? reference;
@@ -28,6 +29,7 @@ class NBABoxScoreModel {
       this.timesTied,
       this.clock,
       this.quarter,
+      this.half,
       this.inseasonTournament,
       this.trackOnCourt,
       this.reference,
@@ -48,6 +50,7 @@ class NBABoxScoreModel {
     timesTied = json['times_tied'];
     clock = json['clock'];
     quarter = json['quarter'];
+    half = json['half'];
     inseasonTournament = json['inseason_tournament'];
     trackOnCourt = json['track_on_court'];
     reference = json['reference'];
@@ -72,6 +75,7 @@ class NBABoxScoreModel {
     data['times_tied'] = timesTied;
     data['clock'] = clock;
     data['quarter'] = quarter;
+    data['half'] = half;
     data['inseason_tournament'] = inseasonTournament;
     data['track_on_court'] = trackOnCourt;
     data['reference'] = reference;

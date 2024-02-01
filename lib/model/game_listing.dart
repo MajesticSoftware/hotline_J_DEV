@@ -119,7 +119,7 @@ class SportEvents {
   String awayLoss = '0';
   String homeLoss = '0';
   String inning = '0';
-  String inningHalf = 'T';
+  String inningHalf = '';
   String wlHome = '0';
   String wlAway = '0';
   String eraHome = '0';

@@ -975,10 +975,22 @@ class GameListingController extends GetxController {
         final game = response;
 
         if (game.id == gameId) {
+          if (sportKey == "NBA") {
+            nbaSportEventsList[index].inning =
+                (game.quarter??"0").toString();
+            nbaSportEventsList[index].inningHalf =
+            'Q';
+          }else{
+            ncaabSportEventsList[index].inning =
+                (game.half??"0").toString();
+            ncaabSportEventsList[index].inningHalf =
+            'H';
+          }
           if (homeTeamId == game.home?.id) {
             if (sportKey == "NBA") {
               nbaSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
+
             } else {
               ncaabSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
@@ -1317,7 +1329,8 @@ class GameListingController extends GetxController {
           if (i == 7) {
             isPagination = false;
           }
-          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+          gameListingsWithLogoResponseNCAAB(
+              DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
           if (nflSportEventsList.isNotEmpty) {
             for (int i = 0; i < nflSportEventsList.length; i++) {
