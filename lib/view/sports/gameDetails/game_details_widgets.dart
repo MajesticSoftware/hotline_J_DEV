@@ -76,7 +76,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                           onTap: () {
                             subscriptionDialog(context, restoreOnTap: () async {
                               await ctrl.restorePurchase(context);
-                            }, onTap: () async {
+                            }, price:  ctrl.price,onTap: () async {
                               Get.back();
                               if (PreferenceManager.getIsLogin() ?? false) {
                                 if (ctrl.products.isEmpty) {

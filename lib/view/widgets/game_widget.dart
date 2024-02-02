@@ -469,7 +469,7 @@ class GameWidget extends StatelessWidget {
   }
 }
 
-Future<dynamic> subscriptionDialog(BuildContext context, {required Function() onTap,required Function() restoreOnTap,bool showButton=true}) {
+Future<dynamic> subscriptionDialog(BuildContext context, {required Function() onTap,required Function() restoreOnTap,bool showButton=true,String? price}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -499,7 +499,7 @@ Future<dynamic> subscriptionDialog(BuildContext context, {required Function() on
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'This subscription automatically renews for \$6.99 a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
+                      'This subscription automatically renews for ${price??"\$9.99/mo"} a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -539,7 +539,7 @@ Future<dynamic> subscriptionDialog(BuildContext context, {required Function() on
           Visibility(
             visible: showButton,
             child: CommonAppButton(
-              title: "Upgrade for \$6.99/mo",
+              title: "Upgrade for ${price??"\$9.99"}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),

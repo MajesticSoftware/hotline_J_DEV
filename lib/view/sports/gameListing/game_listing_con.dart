@@ -174,7 +174,7 @@ class GameListingController extends GetxController {
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
   String date = (PreferenceManager.getFavoriteSport() ?? "NFL") == "NFL"
       ? "2024-02-11"
-      :  DateFormat('yyyy-MM-dd').format(DateTime.now());
+      :  DateFormat('yyyy-MM-dd').format(DateTime.now().toUtc());
   List<String> _isSelected = [PreferenceManager.getFavoriteSport() ?? "NFL"];
 
   List<String> get isSelected => _isSelected;
@@ -1726,9 +1726,9 @@ class GameListingController extends GetxController {
                   team.blocksOffense.toString(),
                   team.turnOverOffense.toString(),
                   team.foulsOffense.toString(),
-                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
-                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
-                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  '${team.fgAttOffense} / ${team.fgMadeOffense} / ${team.fgOffense}%',
+                  '${team.threePAttOffense} / ${team.threePMadeOffense} / ${team.threePOffense}%',
+                  '${team.ftAttOffense} / ${team.ftMadeOffense} / ${team.ftOffense}%',
                   '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
                       .toString(),
                   team.teamPerOffense.toString(),
@@ -1742,8 +1742,8 @@ class GameListingController extends GetxController {
                   (team.turnOverOffenseRank ?? 0).toString(),
                   (team.foulsOffenseRank ?? 0).toString(),
                   '${team.fgOffenseRank ?? 0}',
-                  '${team.ftOffenseRank ?? 0}',
                   '${team.threePOffenseRank ?? 0}',
+                  '${team.ftOffenseRank ?? 0}',
                   (team.trueShootingOffenseRank ?? 0).toString(),
                   (team.teamPerOffenseRank ?? 0).toString(),
                 ];
@@ -1755,9 +1755,9 @@ class GameListingController extends GetxController {
                   team.blocksDefense.toString(),
                   team.turnOverDefense.toString(),
                   team.foulsDefense.toString(),
-                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
-                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
-                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  '${team.fgAttDefense} / ${team.fgMadeDefense} / ${team.fgDefense}%',
+                  '${team.threePAttDefense} / ${team.threePMadeDefense} / ${team.threePDefense}%',
+                  '${team.ftAttDefense} / ${team.ftMadeDefense} / ${team.ftDefense}%',
                   '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
                       .toString(),
                   team.teamPerDefense.toString(),
@@ -1771,8 +1771,8 @@ class GameListingController extends GetxController {
                   (team.turnOverDefenseRank ?? 0).toString(),
                   (team.foulsDefenseRank ?? 0).toString(),
                   '${team.fgDefenseRank ?? 0}',
-                  '${team.ftDefenseRank ?? 0}',
                   '${team.threePDefenseRank ?? 0}',
+                  '${team.ftDefenseRank ?? 0}',
                   (team.trueShootingDefenseRank ?? 0).toString(),
                   (team.teamPerDefenseRank ?? 0).toString(),
                 ];
@@ -1787,9 +1787,9 @@ class GameListingController extends GetxController {
                   team.blocksOffense.toString(),
                   team.turnOverOffense.toString(),
                   team.foulsOffense.toString(),
-                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
-                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
-                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  '${team.fgAttOffense} / ${team.fgMadeOffense} / ${team.fgOffense}%',
+                  '${team.threePAttOffense} / ${team.threePMadeOffense} / ${team.threePOffense}%',
+                  '${team.ftAttOffense} / ${team.ftMadeOffense} / ${team.ftOffense}%',
                   '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
                       .toString(),
                   team.teamPerOffense.toString(),
@@ -1803,8 +1803,9 @@ class GameListingController extends GetxController {
                   (team.turnOverOffenseRank ?? 0).toString(),
                   (team.foulsOffenseRank ?? 0).toString(),
                   '${team.fgOffenseRank ?? 0}',
-                  '${team.ftOffenseRank ?? 0}',
                   '${team.threePOffenseRank ?? 0}',
+
+                  '${team.ftOffenseRank ?? 0}',
                   (team.trueShootingOffenseRank ?? 0).toString(),
                   (team.teamPerOffenseRank ?? 0).toString(),
                 ];
@@ -1816,9 +1817,9 @@ class GameListingController extends GetxController {
                   team.blocksDefense.toString(),
                   team.turnOverDefense.toString(),
                   team.foulsDefense.toString(),
-                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
-                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
-                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  '${team.fgAttDefense} / ${team.fgMadeDefense} / ${team.fgDefense}%',
+                  '${team.threePAttDefense} / ${team.threePMadeDefense} / ${team.threePDefense}%',
+                  '${team.ftAttDefense} / ${team.ftMadeDefense} / ${team.ftDefense}%',
                   '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
                       .toString(),
                   team.teamPerDefense.toString(),
@@ -1832,8 +1833,8 @@ class GameListingController extends GetxController {
                   (team.turnOverDefenseRank ?? 0).toString(),
                   (team.foulsDefenseRank ?? 0).toString(),
                   '${team.fgDefenseRank ?? 0}',
-                  '${team.ftDefenseRank ?? 0}',
                   '${team.threePDefenseRank ?? 0}',
+                  '${team.ftDefenseRank ?? 0}',
                   (team.trueShootingDefenseRank ?? 0).toString(),
                   (team.teamPerDefenseRank ?? 0).toString(),
                 ];
@@ -2194,7 +2195,11 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaabTomorrowEventsList.clear();
-      for (int i = 1; i <= 3; i++) {
+      for (int i = 1; i <= 1; i++) {
+        getAllEventList(sportKey, isLoad);
+        nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+        isPagination = false;
+
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,

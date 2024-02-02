@@ -103,6 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<dynamic> updateAppDialog() {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return exitApp(
           context,

@@ -53,7 +53,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
       Future.delayed(Duration.zero, () {
         subscriptionDialog(context, restoreOnTap: () async {
           await subscriptionController.restorePurchase(context);
-        }, onTap: () async {
+        }, price: subscriptionController.price,onTap: () async {
           Get.back();
           if (PreferenceManager.getIsLogin() ?? false) {
             if (subscriptionController.products.isEmpty) {

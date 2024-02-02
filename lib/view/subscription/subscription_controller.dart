@@ -211,7 +211,7 @@ class SubscriptionController extends GetxController {
   }
 
   changeAutoRenewalSubscription(bool newValue) {}
-
+String price='\$9.99/mo';
   Future<void> initStoreInfo() async {
     isLoading.value = true;
     products.clear();
@@ -257,6 +257,7 @@ class SubscriptionController extends GetxController {
     }
     log("Product List Length ------> ${products.length}");
     for (var element in products) {
+      price=element.price;
       log("Product Price ------> ${element.price}");
     }
     isLoading.value = false;
@@ -334,7 +335,7 @@ class SubscriptionController extends GetxController {
     String subscriptionProduct =
         PreferenceManager.getSubscriptionProduct() ?? "";
     subscriptionPrice = subscriptionProduct == monthlySubscription
-        ? "\$6.99/mo"
+        ? price
         : /*subscriptionProduct == yearlySubscription
             ? "\$24.99"
             : subscriptionProduct == lifeTimeSubscription

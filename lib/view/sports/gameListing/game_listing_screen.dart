@@ -270,7 +270,7 @@ class SelectGameScreen extends StatelessWidget {
                 subscriptionDialog(
                   context,showButton:  (PreferenceManager.getSubscriptionActive() ?? "0") ==
                     "1"
-                    ?false:true,
+                    ?false:true,price:  Get.find<SubscriptionController>().price,
                   restoreOnTap: () async {
                     await Get.find<SubscriptionController>()
                         .restorePurchase(context);
