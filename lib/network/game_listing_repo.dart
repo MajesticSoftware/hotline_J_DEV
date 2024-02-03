@@ -20,6 +20,22 @@ class GameListingRepo {
     message = result.message;
 
     return ResponseItem(data: data, message: message, status: status);
+  }Future<ResponseItem> gameListingRepoNCAAB(
+      {String date = '', String spotId = '', String key = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        '${AppUrls.NCAAB_BASE_URL}games/2024/02/03/schedule.json?api_key=${AppUrls.NCAAB_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
   }
 
   ///NCAA RANKING
