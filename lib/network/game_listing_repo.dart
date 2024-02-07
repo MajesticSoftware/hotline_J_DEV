@@ -1,4 +1,5 @@
 import 'package:hotlines/extras/extras.dart';
+import 'package:hotlines/model/game_listing.dart';
 
 import '../model/response_item.dart';
 
@@ -281,8 +282,7 @@ class GameListingRepo {
   }
 
   ///PLAYER PROPS API(HOTLINES)
-  Future<ResponseItem> hotlinesDataRepo(
-      {required String matchId}) async {
+  Future<ResponseItem> hotlinesDataRepo({required String matchId}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
@@ -324,7 +324,9 @@ class GameListingRepo {
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters =sportKey=="NFL"? {RequestParam.service: MethodNames.getNFLGameOffenseRank}: {RequestParam.service: MethodNames.getNCAAFGameOffenseRank};
+    var queryParameters = sportKey == "NFL"
+        ? {RequestParam.service: MethodNames.getNFLGameOffenseRank}
+        : {RequestParam.service: MethodNames.getNCAAFGameOffenseRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -338,12 +340,14 @@ class GameListingRepo {
   }
 
   ///NFL QBS RANK
-Future<ResponseItem> getNFLQBSRank(String sportKey) async {
+  Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     bool status = false;
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters = sportKey=="NFL"?{RequestParam.service: MethodNames.getNFLQBSRank}: {RequestParam.service: MethodNames.getNCAAFQBSRank};
+    var queryParameters = sportKey == "NFL"
+        ? {RequestParam.service: MethodNames.getNFLQBSRank}
+        : {RequestParam.service: MethodNames.getNCAAFQBSRank};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -356,13 +360,17 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-///NBA GAME RANK
+  ///NBA GAME RANK
   Future<ResponseItem> nbaGameRankApi(String sportKey) async {
     bool status = false;
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters ={RequestParam.service: sportKey=="NBA"?MethodNames.getNBAGameOffenseRank: MethodNames.getNCAABGameOffenseRank};
+    var queryParameters = {
+      RequestParam.service: sportKey == "NBA"
+          ? MethodNames.getNBAGameOffenseRank
+          : MethodNames.getNCAABGameOffenseRank
+    };
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;
     result = await BaseApiHelper.postRequest(requestUrl, {}, false);
@@ -374,7 +382,6 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
 
     return ResponseItem(data: data, message: message, status: status);
   }
-
 
   ///OTHER APIS--LOGOS
   Future<ResponseItem> gameListingsWithLogo(
@@ -410,7 +417,6 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
   Future<ResponseItem> gameListingsWithLogoForNCAAB(String sportKey) async {
     ResponseItem result;
 
-
     Uri parameter;
     Uri uri = Uri.parse(
         'https://sports-information.p.rapidapi.com/${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : sportKey == 'NFL' ? 'nfl' : sportKey == 'NBA' ? "nba" : "mbb"}/team-list?group=2');
@@ -422,5 +428,4 @@ Future<ResponseItem> getNFLQBSRank(String sportKey) async {
     });
     return result;
   }
-
 }

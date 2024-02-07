@@ -101,8 +101,8 @@ class GameWidget extends StatelessWidget {
                             alignment: Alignment.topRight,
                             children: [
                               commonCachedNetworkImage(
-                                width: Get.height * .044,
-                                height: Get.height * .044,
+                                width: Get.height * .042,
+                                height: Get.height * .042,
                                 imageUrl: awayTeamImageUrl,
                               ),
                               Positioned(
@@ -124,14 +124,20 @@ class GameWidget extends StatelessWidget {
                           ),
                           Expanded(
                             flex: mobileView.size.shortestSide < 600 ? 1 : 2,
-                            child: Text(
-                              awayTeamAbb.toString(),
-                              style: GoogleFonts.nunitoSans(
-                                  color: Theme.of(context).highlightColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: Get.height * .016),
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  awayTeamAbb.toString(),
+                                  style: GoogleFonts.nunitoSans(
+                                      color: Theme.of(context).highlightColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: Get.height * .016),
+                                  textAlign: TextAlign.start,
+
+                                ),
+                              ),
                             ),
                           ),
                           Text(
@@ -139,7 +145,7 @@ class GameWidget extends StatelessWidget {
                             style: GoogleFonts.nunitoSans(
                               color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.w700,
-                              fontSize: Get.height * .018,
+                              fontSize: Get.height * .016,
                             ),
                             textAlign: TextAlign.start,
                             maxLines: 2,
@@ -174,8 +180,8 @@ class GameWidget extends StatelessWidget {
                             clipBehavior: Clip.none,
                             children: [
                               commonCachedNetworkImage(
-                                  width: Get.height * .044,
-                                  height: Get.height * .044,
+                                  width: Get.height * .042,
+                                  height: Get.height * .042,
                                   imageUrl: homeTeamImageUrl),
                               Positioned(
                                 top: -6,
@@ -196,14 +202,20 @@ class GameWidget extends StatelessWidget {
                           ),
                           Expanded(
                             flex: mobileView.size.shortestSide < 600 ? 1 : 2,
-                            child: Text(
-                              homeTeamAbb.toString(),
-                              style: GoogleFonts.nunitoSans(
-                                  color: Theme.of(context).highlightColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: Get.height * .016),
-                              textAlign: TextAlign.start,
-                              maxLines: 2,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  homeTeamAbb.toString(),
+                                  style: GoogleFonts.nunitoSans(
+                                      color: Theme.of(context).highlightColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: Get.height * .016),
+                                  textAlign: TextAlign.start,
+
+                                ),
+                              ),
                             ),
                           ),
                           Text(
@@ -211,7 +223,7 @@ class GameWidget extends StatelessWidget {
                             style: GoogleFonts.nunitoSans(
                               color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.w700,
-                              fontSize: Get.height * .018,
+                              fontSize: Get.height * .016,
                             ),
                             textAlign: TextAlign.start,
                             maxLines: 2,

@@ -43,8 +43,11 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       await gameListingController.favoriteGameCall();
-      Future.delayed(Duration.zero)
-          .then((value) => gameListingController.getSubscriptionStatus());
+      if(PreferenceManager.getIsLogin()??false){
+        Future.delayed(Duration.zero)
+            .then((value) => gameListingController.getSubscriptionStatus());
+      }
+
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Stack(
@@ -265,12 +268,14 @@ class SelectGameScreen extends StatelessWidget {
               ),
               title: 'Subscription',
               context: context,
-
               onTap: () {
                 subscriptionDialog(
-                  context,showButton:  (PreferenceManager.getSubscriptionActive() ?? "0") ==
-                    "1"
-                    ?false:true,price:  Get.find<SubscriptionController>().price,
+                  context,
+                  showButton:
+                      (PreferenceManager.getSubscriptionActive() ?? "0") == "1"
+                          ? false
+                          : true,
+                  price: Get.find<SubscriptionController>().price,
                   restoreOnTap: () async {
                     await Get.find<SubscriptionController>()
                         .restorePurchase(context);
@@ -611,98 +616,140 @@ class SelectGameScreen extends StatelessWidget {
                                               (spotList(controller)[index]
                                                       .status !=
                                                   'postponed'),
-                                          child: GameWidget(
-                                            flameNumber: controller.sportKey !=
-                                                    "MLB"
-                                                ? spotList(controller)[index]
-                                                    .getFlameValue
-                                                : 0,
-                                            isShowWeather: controller
-                                                        .sportKey !=
-                                                    "NCAAB" &&
-                                                controller.sportKey != "NBA",
-                                            onTap: () {
-                                              controller.gameOnClick(
-                                                  context, index);
-                                            },
-                                            isShowFlam:
-                                                (controller.sportKey != "MLB"),
-                                            awayTeamMoneyLine:
-                                                spotList(controller)[index]
-                                                    .awayMoneyLineValue,
-                                            homeTeamMoneyLine:
-                                                spotList(controller)[index]
-                                                    .homeMoneyLineValue,
-                                            awayTeamOU:
-                                                spotList(controller)[index]
-                                                    .awayOUValue,
-                                            homeTeamOU:
-                                                spotList(controller)[index]
-                                                    .homeOUValue,
-                                            weather: spotList(controller)[index]
-                                                .weather,
-                                            homeTeamSpread: spotList(
-                                                        controller)[index]
-                                                    .homeSpreadValue
-                                                    .contains('-')
-                                                ? spotList(controller)[index]
-                                                    .homeSpreadValue
-                                                : '+${spotList(controller)[index].homeSpreadValue}',
-                                            awayTeamSpread: spotList(
-                                                        controller)[index]
-                                                    .awaySpreadValue
-                                                    .contains('-')
-                                                ? spotList(controller)[index]
-                                                    .awaySpreadValue
-                                                : '+${spotList(controller)[index].awaySpreadValue}',
-                                            temp: spotList(controller)[index]
-                                                .tmpInFahrenheit,
-                                            isLive: spotList(controller)[index]
-                                                    .status ==
-                                                'live',
-                                            dateTime: '$date, $dateTime',
-                                            awayTeamImageUrl: awayLogo(
-                                                spotList(controller)[index],
-                                                controller,
-                                                index),
-                                            awayTeamRank: (spotList(
+                                          child: Column(
+                                            children: [
+                                              GameWidget(
+                                                flameNumber:
+                                                    controller.sportKey != "MLB"
+                                                        ? spotList(controller)[
+                                                                index]
+                                                            .getFlameValue
+                                                        : 0,
+                                                isShowWeather:
+                                                    controller.sportKey !=
+                                                            "NCAAB" &&
+                                                        controller.sportKey !=
+                                                            "NBA",
+                                                onTap: () {
+                                                  controller.gameOnClick(
+                                                      context, index);
+                                                },
+                                                isShowFlam:
+                                                    (controller.sportKey !=
+                                                        "MLB"),
+                                                awayTeamMoneyLine:
+                                                    spotList(controller)[index]
+                                                        .awayMoneyLineValue,
+                                                homeTeamMoneyLine:
+                                                    spotList(controller)[index]
+                                                        .homeMoneyLineValue,
+                                                awayTeamOU:
+                                                    spotList(controller)[index]
+                                                        .awayOUValue,
+                                                homeTeamOU:
+                                                    spotList(controller)[index]
+                                                        .homeOUValue,
+                                                weather:
+                                                    spotList(controller)[index]
+                                                        .weather,
+                                                homeTeamSpread: spotList(
                                                             controller)[index]
-                                                        .awayRank ==
-                                                    '0'
-                                                ? ''
-                                                : spotList(controller)[index]
-                                                    .awayRank),
-                                            awayTeamAbb: (mobileView
-                                                        .size.shortestSide <
-                                                    600
-                                                ? spotList(controller)[index]
-                                                    .awayTeamAbb
-                                                : spotList(controller)[index]
-                                                    .awayTeam),
-                                            awayTeamScore:
-                                                (spotList(controller)[index]
-                                                    .awayScore),
-                                            homeTeamImageUrl: homeLogo(
-                                                spotList(controller)[index],
-                                                controller,
-                                                index),
-                                            homeTeamRank: (spotList(
+                                                        .homeSpreadValue
+                                                        .contains('-')
+                                                    ? spotList(
                                                             controller)[index]
-                                                        .homeRank ==
-                                                    '0'
-                                                ? ''
-                                                : spotList(controller)[index]
-                                                    .homeRank),
-                                            homeTeamAbb: (mobileView
-                                                        .size.shortestSide <
-                                                    600
-                                                ? spotList(controller)[index]
-                                                    .homeTeamAbb
-                                                : spotList(controller)[index]
-                                                    .homeTeam),
-                                            homeTeamScore:
-                                                spotList(controller)[index]
-                                                    .homeScore,
+                                                        .homeSpreadValue
+                                                    : '+${spotList(controller)[index].homeSpreadValue}',
+                                                awayTeamSpread: spotList(
+                                                            controller)[index]
+                                                        .awaySpreadValue
+                                                        .contains('-')
+                                                    ? spotList(
+                                                            controller)[index]
+                                                        .awaySpreadValue
+                                                    : '+${spotList(controller)[index].awaySpreadValue}',
+                                                temp:
+                                                    spotList(controller)[index]
+                                                        .tmpInFahrenheit,
+                                                isLive:
+                                                    spotList(controller)[index]
+                                                            .status ==
+                                                        'live',
+                                                dateTime:
+                                                    '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
+                                                awayTeamImageUrl: awayLogo(
+                                                    spotList(controller)[index],
+                                                    controller,
+                                                    index),
+                                                awayTeamRank:
+                                                    (spotList(controller)[index]
+                                                                .awayRank ==
+                                                            '0'
+                                                        ? ''
+                                                        : spotList(controller)[
+                                                                index]
+                                                            .awayRank),
+                                                awayTeamAbb:
+                                                    (mobileView.size
+                                                                .shortestSide <
+                                                            600
+                                                        ? spotList(controller)[
+                                                                index]
+                                                            .awayTeamAbb
+                                                        : spotList(controller)[
+                                                                index]
+                                                            .awayTeam),
+                                                awayTeamScore:
+                                                    (spotList(controller)[index]
+                                                        .awayScore),
+                                                homeTeamImageUrl: homeLogo(
+                                                    spotList(controller)[index],
+                                                    controller,
+                                                    index),
+                                                homeTeamRank:
+                                                    (spotList(controller)[index]
+                                                                .homeRank ==
+                                                            '0'
+                                                        ? ''
+                                                        : spotList(controller)[
+                                                                index]
+                                                            .homeRank),
+                                                homeTeamAbb:
+                                                    (mobileView.size
+                                                                .shortestSide <
+                                                            600
+                                                        ? spotList(controller)[
+                                                                index]
+                                                            .homeTeamAbb
+                                                        : spotList(controller)[
+                                                                index]
+                                                            .homeTeam),
+                                                homeTeamScore:
+                                                    spotList(controller)[index]
+                                                        .homeScore,
+                                              ),
+                                              spotList(controller).length >= 2
+                                                  ? DateTime.parse(spotList(controller)[
+                                                                          index]
+                                                                      .scheduled ??
+                                                                  '').toLocal()
+                                                              .day !=
+                                                          DateTime.parse(spotList(
+                                                                              controller)[
+                                                                          index +
+                                                                              1]
+                                                                      .scheduled ??
+                                                                  '').toLocal()
+                                                              .day
+                                                      ? Divider(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .indicatorColor,
+                                                          thickness: 2,
+                                                        ).paddingOnly(top: 5.h)
+                                                      : const SizedBox()
+                                                  : SizedBox(),
+                                            ],
                                           ),
                                         );
                                 } catch (e) {
@@ -764,7 +811,8 @@ class SelectGameScreen extends StatelessWidget {
                                           : '+${competitors.awaySpreadValue}',
                                       temp: competitors.tmpInFahrenheit,
                                       isLive: competitors.status == 'live',
-                                      dateTime: '$date, $dateTime',
+                                      dateTime:
+                                          '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
                                       awayTeamImageUrl: awayLogo(
                                           competitors, controller, index),
                                       awayTeamRank: (competitors.awayRank == '0'
@@ -811,52 +859,53 @@ class SelectGameScreen extends StatelessWidget {
             : competitors.awayTeamAbb == 'LINW'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
                 : competitors.awayTeamAbb == 'LMC'
-                ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
-                : competitors.awayTeamAbb == 'ARI'
-                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                    : competitors.awayTeamAbb == 'SCUS'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                        : competitors.awayTeamAbb == 'MCNS'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-                            : competitors.awayTeamAbb == 'FAMU'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                                : competitors.awayTeamAbb == 'WEBB'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                                    : competitors.awayTeamAbb == 'SIND'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                        : competitors.awayTeamAbb == 'WAS' &&
-                                                competitors.id ==
-                                                    "sr:competitor:4432"
-                                            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                            : competitors.awayTeamAbb == 'UST'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+                    ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
+                    : competitors.awayTeamAbb == 'ARI'
+                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                        : competitors.awayTeamAbb == 'SCUS'
+                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                            : competitors.awayTeamAbb == 'MCNS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+                                : competitors.awayTeamAbb == 'FAMU'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                                    : competitors.awayTeamAbb == 'WEBB'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                                        : competitors.awayTeamAbb == 'SIND'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                            : competitors.awayTeamAbb ==
+                                                        'WAS' &&
+                                                    competitors.id ==
+                                                        "sr:competitor:4432"
+                                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                                                 : competitors.awayTeamAbb ==
-                                                        'QUC'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                                        'UST'
+                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
                                                     : competitors.awayTeamAbb ==
-                                                            'UMKC'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+                                                            'QUC'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                                                         : competitors
                                                                     .awayTeamAbb ==
-                                                                'GC'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                                'UMKC'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
                                                             : competitors
                                                                         .awayTeamAbb ==
-                                                                    'CSN'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                                    'GC'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
                                                                 : competitors
                                                                             .awayTeamAbb ==
-                                                                        'CSB'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
-                                                                    : competitors.awayTeam ==
-                                                                            'Louisiana-Lafayette Ragin Cajuns'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                        'CSN'
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                                    : competitors.awayTeamAbb ==
+                                                                            'CSB'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                                         : competitors.awayTeam ==
-                                                                                'CSB'
-                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                                            : competitors.awayTeam == 'Sam Houston State Bearkats'
-                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                                : competitors.gameLogoAwayLink;
+                                                                                'Louisiana-Lafayette Ragin Cajuns'
+                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                            : competitors.awayTeam == 'CSB'
+                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                                : competitors.awayTeam == 'Sam Houston State Bearkats'
+                                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                                    : competitors.gameLogoAwayLink;
   }
 
   String homeLogo(
@@ -865,56 +914,55 @@ class SelectGameScreen extends StatelessWidget {
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.homeTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
-            :competitors.homeTeamAbb == 'LMC'
-            ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
-            : competitors.homeTeamAbb == 'LINW'
-                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
-                : competitors.homeTeamAbb == 'WEBB'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                    : competitors.homeTeamAbb == 'ARI'
-                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                        : competitors.homeTeamAbb == 'SCUS'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                            : competitors.homeTeamAbb == 'MCNS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-                                : competitors.homeTeamAbb == 'FAMU'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                                    : competitors.homeTeamAbb == 'UMKC'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
-                                        : competitors.homeTeamAbb == 'CSN'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                            : competitors.homeTeamAbb ==
-                                                        'WAS' &&
-                                                    competitors.id ==
-                                                        "sr:competitor:4432"
-                                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
+            : competitors.homeTeamAbb == 'LMC'
+                ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
+                : competitors.homeTeamAbb == 'LINW'
+                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
+                    : competitors.homeTeamAbb == 'WEBB'
+                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
+                        : competitors.homeTeamAbb == 'ARI'
+                            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
+                            : competitors.homeTeamAbb == 'SCUS'
+                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+                                : competitors.homeTeamAbb == 'MCNS'
+                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
+                                    : competitors.homeTeamAbb == 'FAMU'
+                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
+                                        : competitors.homeTeamAbb == 'UMKC'
+                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
+                                            : competitors.homeTeamAbb == 'CSN'
+                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
                                                 : competitors.homeTeamAbb ==
-                                                        'QUC'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
+                                                            'WAS' &&
+                                                        competitors.id ==
+                                                            "sr:competitor:4432"
+                                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
                                                     : competitors.homeTeamAbb ==
-                                                            'CSB'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
+                                                            'QUC'
+                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
                                                         : competitors
                                                                     .homeTeamAbb ==
-                                                                'SIND'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+                                                                'CSB'
+                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
                                                             : competitors
                                                                         .homeTeamAbb ==
-                                                                    'UST'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
+                                                                    'SIND'
+                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
                                                                 : competitors
                                                                             .homeTeamAbb ==
-                                                                        'GC'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                                        'UST'
+                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
                                                                     : competitors.homeTeamAbb ==
-                                                                            'CSB'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                                        : competitors.homeTeam ==
-                                                                                'Louisiana-Lafayette Ragin Cajuns'
-                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                                            : competitors.homeTeam == 'Sam Houston State Bearkats'
-                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                                : competitors.gameHomeLogoLink;
+                                                                            'GC'
+                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
+                                                                        : competitors.homeTeamAbb ==
+                                                                                'CSB'
+                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
+                                                                            : competitors.homeTeam == 'Louisiana-Lafayette Ragin Cajuns'
+                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
+                                                                                : competitors.homeTeam == 'Sam Houston State Bearkats'
+                                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
+                                                                                    : competitors.gameHomeLogoLink;
   }
 
   List<SportEvents> spotList(GameListingController controller) {

@@ -46,8 +46,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
-    Future.delayed(Duration.zero)
-        .then((value) => subscriptionController.getSubscriptionStatus());
+    if(PreferenceManager.getIsLogin()??false){
+      Future.delayed(Duration.zero)
+          .then((value) => subscriptionController.getSubscriptionStatus());
+    }
     if ((PreferenceManager.getIsOpenDialog() ?? false) &&
         ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
       Future.delayed(Duration.zero, () {

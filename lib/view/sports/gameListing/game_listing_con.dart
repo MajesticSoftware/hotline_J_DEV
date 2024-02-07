@@ -114,8 +114,6 @@ class GameListingController extends GetxController {
     update();
   }
 
-
-
   gameOnClick(BuildContext context, int index) {
     toggle = 0;
     FocusScope.of(context).unfocus();
@@ -134,6 +132,7 @@ class GameListingController extends GetxController {
     ));
     update();
   }
+
   Future<void> getSubscriptionStatus() async {
     isLoading.value = true;
     ResponseItem result = Platform.isIOS
@@ -151,6 +150,7 @@ class GameListingController extends GetxController {
     isLoading.value = false;
     update();
   }
+
   searchGameOnClick(BuildContext context, int index) {
     toggle = 0;
     FocusScope.of(context).unfocus();
@@ -174,7 +174,7 @@ class GameListingController extends GetxController {
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
   String date = (PreferenceManager.getFavoriteSport() ?? "NFL") == "NFL"
       ? "2024-02-11"
-      :  DateFormat('yyyy-MM-dd').format(DateTime.now().toUtc());
+      : DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<String> _isSelected = [PreferenceManager.getFavoriteSport() ?? "NFL"];
 
   List<String> get isSelected => _isSelected;
@@ -976,21 +976,16 @@ class GameListingController extends GetxController {
 
         if (game.id == gameId) {
           if (sportKey == "NBA") {
-            nbaSportEventsList[index].inning =
-                (game.quarter??"0").toString();
-            nbaSportEventsList[index].inningHalf =
-            'Q';
-          }else{
-            ncaabSportEventsList[index].inning =
-                (game.half??"0").toString();
-            ncaabSportEventsList[index].inningHalf =
-            'H';
+            nbaSportEventsList[index].inning = (game.quarter ?? "0").toString();
+            nbaSportEventsList[index].inningHalf = 'Q';
+          } else {
+            ncaabSportEventsList[index].inning = (game.half ?? "0").toString();
+            ncaabSportEventsList[index].inningHalf = 'H';
           }
           if (homeTeamId == game.home?.id) {
             if (sportKey == "NBA") {
               nbaSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
-
             } else {
               ncaabSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
@@ -1804,7 +1799,6 @@ class GameListingController extends GetxController {
                   (team.foulsOffenseRank ?? 0).toString(),
                   '${team.fgOffenseRank ?? 0}',
                   '${team.threePOffenseRank ?? 0}',
-
                   '${team.ftOffenseRank ?? 0}',
                   (team.trueShootingOffenseRank ?? 0).toString(),
                   (team.teamPerOffenseRank ?? 0).toString(),
@@ -2029,9 +2023,8 @@ class GameListingController extends GetxController {
         .then((value) {
       isLoading.value = false;
       isPagination = isLoad;
-
       nbaTomorrowEventsList.clear();
-      for (int i = 1; i <= 3; i++) {
+      for (int i = 1; i <= 1; i++) {
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -2041,7 +2034,7 @@ class GameListingController extends GetxController {
                 sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
-          if (i == 3) {
+          if (i == 1) {
             isPagination = false;
           }
           gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
@@ -2195,11 +2188,9 @@ class GameListingController extends GetxController {
       isLoading.value = false;
       isPagination = isLoad;
       ncaabTomorrowEventsList.clear();
-      for (int i = 1; i <= 1; i++) {
+      for (int i = 1; i <= 2; i++) {
         getAllEventList(sportKey, isLoad);
         nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-        isPagination = false;
-
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -2210,13 +2201,12 @@ class GameListingController extends GetxController {
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          if (i == 3) {
+          if (i == 2) {
             isPagination = false;
           }
           gameListingsWithLogoResponseNCAAB(
               DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
-
           if (ncaabSportEventsList.isNotEmpty) {
             for (int i = 0; i < ncaabSportEventsList.length; i++) {
               if (ncaabSportEventsList[i].uuids != null) {

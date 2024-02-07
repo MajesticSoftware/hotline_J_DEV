@@ -76,7 +76,7 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                           onTap: () {
                             subscriptionDialog(context, restoreOnTap: () async {
                               await ctrl.restorePurchase(context);
-                            }, price:  ctrl.price,onTap: () async {
+                            }, price: ctrl.price, onTap: () async {
                               Get.back();
                               if (PreferenceManager.getIsLogin() ?? false) {
                                 if (ctrl.products.isEmpty) {
@@ -5114,7 +5114,7 @@ Padding hotlinesWidget(BuildContext context,
               .size
               .height * .038)
               : (con.hotlinesIndex == 0
-              ?gameDetails.hotlinesData.isEmpty
+              ? gameDetails.hotlinesData.isEmpty
               : con.hotlinesIndex == 1
               ? gameDetails.hotlinesDData.isEmpty
               : con.hotlinesIndex == 2
@@ -5860,7 +5860,7 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
       : awayTeam?.abbreviation == 'ARI'
       ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-      :  awayTeam?.abbreviation == 'LINW'
+      : awayTeam?.abbreviation == 'LINW'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
       : awayTeam?.abbreviation == 'WAS' &&
       awayTeam?.id == "sr:competitor:4432"
@@ -5902,7 +5902,7 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
       : homeTeam?.abbreviation == 'SCUS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-      :homeTeam?.abbreviation == 'LINW'
+      : homeTeam?.abbreviation == 'LINW'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
       : homeTeam?.abbreviation == 'WEBB'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
@@ -5937,7 +5937,7 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
       : homeTeam?.abbreviation == 'SHS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-      :homeTeam?.abbreviation == 'LMC'
+      : homeTeam?.abbreviation == 'LMC'
       ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
       : gameDetails.gameHomeLogoLink;
 }
@@ -6141,7 +6141,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${(gameDetails.status ==
                             'live' ? '${gameDetails.inningHalf}${gameDetails
-                            .inning}' : dateTime)} ')
+                            .inning} ${(sportKey == 'NBA' ||
+                            sportKey == 'NCAAB') ? " - ${dateTime.toString().replaceAll("AM","").replaceAll("PM", "")}" : ""}' : dateTime)} ')
                             .appCommonText(
                             color: backGroundColor,
                             size: MediaQuery
