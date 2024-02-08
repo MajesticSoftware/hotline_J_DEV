@@ -1,19 +1,21 @@
+import 'dart:developer';
+
 import 'package:hotlines/extras/extras.dart';
-import 'package:hotlines/model/game_listing.dart';
 
 import '../model/response_item.dart';
 
 class GameListingRepo {
   ///GAME LISTING
   Future<ResponseItem> gameListingRepo(
-      {String date = '', String spotId = '', String key = ''}) async {
+      {String date = '', String spotId = '', String key = '',int start=0}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
 
+
     Uri uri = Uri.parse(
-        '${AppUrls.BASE_URL}en/us/sports/$spotId/$date/schedule.json?api_key=$key');
+        '${AppUrls.BASE_URL}en/us/sports/$spotId/$date/schedule.json?api_key=$key&start=${start.toString()}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

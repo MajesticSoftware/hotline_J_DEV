@@ -544,31 +544,64 @@ class GameListingController extends GetxController {
   List<SportEvents> _ncaaTomorrowEventsList = [];
 
   ///GAME LISTING API
-  Future gameListingTodayApiRes(
+  Future<List<SportEvents>> fetchListingData(
       {String sportId = '',
       String date = "",
       String sportKey = "",
+      int start = 0,
       bool isLoad = false,
       String key = ''}) async {
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
-        .gameListingRepo(key: key, date: date, spotId: sportId);
+        .gameListingRepo(key: key, date: date, spotId: sportId, start: start);
     try {
-      getTodayList(sportKey).clear();
-
       if (result.status) {
         GameListingDataModel response =
             GameListingDataModel.fromJson(result.data);
         final sportEvents = response.sportEvents;
-        if (sportEvents != null) {
+        return sportEvents ?? [];
+      }
+      isLoading.value = false;
+      if (result.message == 'Error in response: No internet connection') {
+        showAppSnackBar(
+          result.message,
+        );
+      }
+    } catch (e) {
+      log('ERROR__------$e');
+      showAppSnackBar(errorText);
+    }
+    return [];
+  }
+
+  gameListingTodayApiRes(
+      {String sportId = '',
+      String date = "",
+      String sportKey = "",
+      int start = 0,
+      bool isLoad = false,
+      String key = ''}) async {
+    int pageIndex = 0;
+    for (int i = 0; i <= pageIndex; i++) {
+      await fetchListingData(
+              start: i * 100,
+              key: key,
+              date: date,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              sportId: sportId)
+          .then((value) {
+        if (value.isNotEmpty) {
+          if (value.length >= 100) {
+            pageIndex++;
+          }
+          final sportEvents = value;
           for (var event in sportEvents) {
             DateTime time = (DateTime.parse(event.scheduled ?? ''));
-            // log('UTC TIME---> ${time.toUtc()} |||| ${DateTime.now().toUtc()}');
             var difference =
                 (time.toUtc().difference((DateTime.now().toUtc())));
-            // log('difference----->>  ${difference.inHours}');
             if (event.season?.id == 'sr:season:100127' &&
                 sportKey == 'MLB' &&
                 (difference.inHours >= (-6))) {
@@ -583,8 +616,8 @@ class GameListingController extends GetxController {
                 (difference.inHours >= (-6))) {
               ncaaTodayEventsList.add(event);
             } else if (event.season?.id == 'sr:season:104319' &&
-                sportKey == 'NCAAB' &&
-                (difference.inHours >= (-6))) {
+                sportKey == 'NCAAB' /*&&
+                (difference.inHours >= (-6))*/) {
               ncaabTodayEventsList.add(event);
             } else if (event.season?.id == 'sr:season:106289' &&
                 sportKey == 'NBA' &&
@@ -592,27 +625,63 @@ class GameListingController extends GetxController {
               nbaTodayEventsList.add(event);
             }
           }
+          (getTodayList(sportKey)).sort((a, b) =>
+              DateTime.parse(a.scheduled ?? "")
+                  .compareTo(DateTime.parse(b.scheduled ?? "")));
         }
-        (getTodayList(sportKey)).sort((a, b) =>
-            DateTime.parse(a.scheduled ?? "")
-                .compareTo(DateTime.parse(b.scheduled ?? "")));
-      } else {
-        isLoading.value = false;
-        if (result.message == 'Error in response: No internet connection') {
-          showAppSnackBar(
-            result.message,
-          );
-        }
-      }
-    } catch (e) {
-      isLoading.value = false;
-      log('ERROR TODAY GAME LISTING--------$e');
-      // showAppSnackBar(
-      //   result.message,
-      // );
+      });
     }
-    update();
-    return getTodayList(sportKey);
+  }
+
+  gameListingTomorrowApiRes(
+      {String sportId = '',
+      String date = "",
+      String sportKey = "",
+      int start = 0,
+      bool isLoad = false,
+      String key = ''}) async {
+    int pageIndex = 0;
+    for (int i = 0; i <= pageIndex; i++) {
+      await fetchListingData(
+              start: i * 100,
+              key: key,
+              date: date,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              sportId: sportId)
+          .then((value) {
+        if (value.isNotEmpty) {
+          if (value.length >= 100) {
+            pageIndex++;
+          }
+          final sportEvents = value;
+          for (var event in sportEvents) {
+            if (event.season?.id == 'sr:season:100127' &&
+                sportKey == 'MLB' &&
+                DateTime.parse(event.scheduled ?? '').toLocal().day !=
+                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
+              mlbTomorrowEventsList.add(event);
+            } else if (event.season?.id == 'sr:season:102797' &&
+                sportKey == 'NFL') {
+              nflTomorrowEventsList.add(event);
+            } else if ((event.season?.id == 'sr:season:101983' ||
+                    (event.season?.id == 'sr:season:101811')) &&
+                sportKey == 'NCAA') {
+              ncaaTomorrowEventsList.add(event);
+            } else if (event.season?.id == 'sr:season:104319' &&
+                sportKey == 'NCAAB') {
+              ncaabTomorrowEventsList.add(event);
+            } else if (event.season?.id == 'sr:season:106289' &&
+                sportKey == 'NBA') {
+              nbaTomorrowEventsList.add(event);
+            }
+          }
+          getTomorrowList(sportKey).sort((a, b) =>
+              DateTime.parse(a.scheduled ?? "")
+                  .compareTo(DateTime.parse(b.scheduled ?? "")));
+        }
+      });
+    }
   }
 
   List<SportEvents> getTodayList(sportKey) {
@@ -651,7 +720,7 @@ class GameListingController extends GetxController {
                     : ncaaSportEventsList;
   }
 
-  Future gameListingTomorrowApiRes(
+  /*Future gameListingTomorrowApiRes(
       {String sportId = '',
       String date = "",
       String sportKey = "",
@@ -706,7 +775,7 @@ class GameListingController extends GetxController {
       showAppSnackBar(errorText);
     }
     update();
-  }
+  }*/
 
   ///GET ALL EVENT BY HOME AWAY FILTER
   getAllEventList(String sportKey, bool isLoad) {
