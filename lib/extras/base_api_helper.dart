@@ -144,7 +144,6 @@ class BaseApiHelper {
     var responseData = jsonDecode(response.body.toString());
     bool status = false;
     String message;
-    int statusCode = response.statusCode;
     var data = responseData;
 
     printData(tittle: "responseCode:", val: response.statusCode.toString());

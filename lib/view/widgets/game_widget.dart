@@ -11,7 +11,6 @@ import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
