@@ -650,6 +650,7 @@ class GameTabCard extends StatelessWidget {
                       GestureDetector(
                     onTap: () {
                       controller.tabClick(context, index);
+                      controller.isCallApi=false;
                       controller.update();
                     },
                     child: Container(
