@@ -43,11 +43,10 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       await gameListingController.favoriteGameCall();
-      if(PreferenceManager.getIsLogin()??false){
+      if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
             .then((value) => gameListingController.getSubscriptionStatus());
       }
-
     }, builder: (controller) {
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Stack(
@@ -520,6 +519,7 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
+
   Widget tableDetailWidget(
       BuildContext context, GameListingController controller) {
     return Stack(
@@ -581,8 +581,14 @@ class SelectGameScreen extends StatelessWidget {
                         ? Expanded(
                             child: RefreshIndicator(
                             onRefresh: () async {
-                              await controller.getResponse(
-                                  false, controller.sportKey);
+                              Future.delayed(const Duration(seconds: 0), () async {
+                                if(!controller.isCallApi){
+                                  controller.isCallApi=true;
+                                  await controller.getResponse(
+                                      false, controller.sportKey);
+                                }
+                                controller.update();
+                              });
                             },
                             color: Theme.of(context).primaryColor,
                             child: ListView.builder(
@@ -617,140 +623,155 @@ class SelectGameScreen extends StatelessWidget {
                                                       .status !=
                                                   'postponed'),
                                           child: Column(
-                                            children: [
-                                              GameWidget(
-                                                flameNumber:
-                                                    controller.sportKey != "MLB"
-                                                        ? spotList(controller)[
-                                                                index]
-                                                            .getFlameValue
-                                                        : 0,
-                                                isShowWeather:
-                                                    controller.sportKey !=
-                                                            "NCAAB" &&
-                                                        controller.sportKey !=
-                                                            "NBA",
-                                                onTap: () {
-                                                  controller.gameOnClick(
-                                                      context, index);
-                                                },
-                                                isShowFlam:
-                                                    (controller.sportKey !=
-                                                        "MLB"),
-                                                awayTeamMoneyLine:
-                                                    spotList(controller)[index]
-                                                        .awayMoneyLineValue,
-                                                homeTeamMoneyLine:
-                                                    spotList(controller)[index]
-                                                        .homeMoneyLineValue,
-                                                awayTeamOU:
-                                                    spotList(controller)[index]
-                                                        .awayOUValue,
-                                                homeTeamOU:
-                                                    spotList(controller)[index]
-                                                        .homeOUValue,
-                                                weather:
-                                                    spotList(controller)[index]
-                                                        .weather,
-                                                homeTeamSpread: spotList(
-                                                            controller)[index]
-                                                        .homeSpreadValue
-                                                        .contains('-')
-                                                    ? spotList(
-                                                            controller)[index]
-                                                        .homeSpreadValue
-                                                    : '+${spotList(controller)[index].homeSpreadValue}',
-                                                awayTeamSpread: spotList(
-                                                            controller)[index]
-                                                        .awaySpreadValue
-                                                        .contains('-')
-                                                    ? spotList(
-                                                            controller)[index]
-                                                        .awaySpreadValue
-                                                    : '+${spotList(controller)[index].awaySpreadValue}',
-                                                temp:
-                                                    spotList(controller)[index]
-                                                        .tmpInFahrenheit,
-                                                isLive:
-                                                    spotList(controller)[index]
-                                                            .status ==
-                                                        'live',
-                                                dateTime:
-                                                    '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
-                                                awayTeamImageUrl: awayLogo(
-                                                    spotList(controller)[index],
-                                                    controller,
-                                                    index),
-                                                awayTeamRank:
-                                                    (spotList(controller)[index]
-                                                                .awayRank ==
-                                                            '0'
-                                                        ? ''
-                                                        : spotList(controller)[
-                                                                index]
-                                                            .awayRank),
-                                                awayTeamAbb:
-                                                    (mobileView.size
-                                                                .shortestSide <
-                                                            600
-                                                        ? spotList(controller)[
-                                                                index]
-                                                            .awayTeamAbb
-                                                        : spotList(controller)[
-                                                                index]
-                                                            .awayTeam),
-                                                awayTeamScore:
-                                                    (spotList(controller)[index]
-                                                        .awayScore),
-                                                homeTeamImageUrl: homeLogo(
-                                                    spotList(controller)[index],
-                                                    controller,
-                                                    index),
-                                                homeTeamRank:
-                                                    (spotList(controller)[index]
-                                                                .homeRank ==
-                                                            '0'
-                                                        ? ''
-                                                        : spotList(controller)[
-                                                                index]
-                                                            .homeRank),
-                                                homeTeamAbb:
-                                                    (mobileView.size
-                                                                .shortestSide <
-                                                            600
-                                                        ? spotList(controller)[
-                                                                index]
-                                                            .homeTeamAbb
-                                                        : spotList(controller)[
-                                                                index]
-                                                            .homeTeam),
-                                                homeTeamScore:
-                                                    spotList(controller)[index]
-                                                        .homeScore,
-                                              ),
-                                              spotList(controller).length >= 2
-                                                  ? DateTime.parse(spotList(controller)[
+                                                  children: [
+                                                    GameWidget(
+                                                      flameNumber: controller
+                                                                  .sportKey !=
+                                                              "MLB"
+                                                          ? spotList(controller)[
+                                                                  index]
+                                                              .getFlameValue
+                                                          : 0,
+                                                      isShowWeather: controller
+                                                                  .sportKey !=
+                                                              "NCAAB" &&
+                                                          controller.sportKey !=
+                                                              "NBA",
+                                                      onTap: () {
+                                                        controller.gameOnClick(
+                                                            context, index);
+                                                      },
+                                                      isShowFlam: (controller
+                                                              .sportKey !=
+                                                          "MLB"),
+                                                      awayTeamMoneyLine: spotList(
+                                                              controller)[index]
+                                                          .awayMoneyLineValue,
+                                                      homeTeamMoneyLine: spotList(
+                                                              controller)[index]
+                                                          .homeMoneyLineValue,
+                                                      awayTeamOU: spotList(
+                                                              controller)[index]
+                                                          .awayOUValue,
+                                                      homeTeamOU: spotList(
+                                                              controller)[index]
+                                                          .homeOUValue,
+                                                      weather: spotList(
+                                                              controller)[index]
+                                                          .weather,
+                                                      homeTeamSpread: spotList(
+                                                                      controller)[
+                                                                  index]
+                                                              .homeSpreadValue
+                                                              .contains('-')
+                                                          ? spotList(controller)[
+                                                                  index]
+                                                              .homeSpreadValue
+                                                          : '+${spotList(controller)[index].homeSpreadValue}',
+                                                      awayTeamSpread: spotList(
+                                                                      controller)[
+                                                                  index]
+                                                              .awaySpreadValue
+                                                              .contains('-')
+                                                          ? spotList(controller)[
+                                                                  index]
+                                                              .awaySpreadValue
+                                                          : '+${spotList(controller)[index].awaySpreadValue}',
+                                                      temp: spotList(
+                                                              controller)[index]
+                                                          .tmpInFahrenheit,
+                                                      isLive:
+                                                          spotList(controller)[
+                                                                      index]
+                                                                  .status ==
+                                                              'live',
+                                                      dateTime:
+                                                          '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
+                                                      awayTeamImageUrl: awayLogo(
+                                                          spotList(controller)[
+                                                              index],
+                                                          controller,
+                                                          index),
+                                                      awayTeamRank:
+                                                          (spotList(controller)[
                                                                           index]
-                                                                      .scheduled ??
-                                                                  '').toLocal()
-                                                              .day !=
-                                                          DateTime.parse(spotList(
-                                                                              controller)[
-                                                                          index +
-                                                                              1]
-                                                                      .scheduled ??
-                                                                  '').toLocal()
-                                                              .day
-                                                      ? Divider(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .indicatorColor,
-                                                          thickness: 2,
-                                                        ).paddingOnly(top: 5.h)
-                                                      : const SizedBox()
-                                                  : SizedBox(),
-                                            ],
-                                          ),
+                                                                      .awayRank ==
+                                                                  '0'
+                                                              ? ''
+                                                              : spotList(controller)[
+                                                                      index]
+                                                                  .awayRank),
+                                                      awayTeamAbb: (mobileView
+                                                                  .size
+                                                                  .shortestSide <
+                                                              600
+                                                          ? spotList(controller)[
+                                                                  index]
+                                                              .awayTeamAbb
+                                                          : spotList(controller)[
+                                                                  index]
+                                                              .awayTeam),
+                                                      awayTeamScore: (spotList(
+                                                              controller)[index]
+                                                          .awayScore),
+                                                      homeTeamImageUrl: homeLogo(
+                                                          spotList(controller)[
+                                                              index],
+                                                          controller,
+                                                          index),
+                                                      homeTeamRank:
+                                                          (spotList(controller)[
+                                                                          index]
+                                                                      .homeRank ==
+                                                                  '0'
+                                                              ? ''
+                                                              : spotList(controller)[
+                                                                      index]
+                                                                  .homeRank),
+                                                      homeTeamAbb: (mobileView
+                                                                  .size
+                                                                  .shortestSide <
+                                                              600
+                                                          ? spotList(controller)[
+                                                                  index]
+                                                              .homeTeamAbb
+                                                          : spotList(controller)[
+                                                                  index]
+                                                              .homeTeam),
+                                                      homeTeamScore: spotList(
+                                                              controller)[index]
+                                                          .homeScore,
+                                                    ),
+                                                    spotList(controller)
+                                                                .length >=
+                                                            2
+                                                        ? (controller.sportKey ==
+                                                                    "NCAAB" ||
+                                                                controller
+                                                                        .sportKey ==
+                                                                    "NBA")
+                                                            ? const SizedBox()
+                                                            : (DateTime.parse(spotList(controller)[index].scheduled ??
+                                                                            '')
+                                                                        .toLocal()
+                                                                        .day !=
+                                                                    DateTime.parse(
+                                                                            spotList(controller)[index + 1].scheduled ??
+                                                                                '')
+                                                                        .toLocal()
+                                                                        .day)
+                                                                ? Divider(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .indicatorColor,
+                                                                    thickness:
+                                                                        2,
+                                                                  ).paddingOnly(
+                                                                    top: 5.h)
+                                                                : const SizedBox()
+                                                        : SizedBox(),
+                                                  ],
+                                                ),
                                         );
                                 } catch (e) {
                                   return const SizedBox();
@@ -780,60 +801,69 @@ class SelectGameScreen extends StatelessWidget {
                                             controller.sportKey != "NFL") ||
                                         (competitors.status != 'postponed'),
                                     child: GameWidget(
-                                      isShowFlam:
-                                          (controller.sportKey != "MLB"),
-                                      flameNumber: controller.sportKey != "MLB"
-                                          ? competitors.getFlameValue
-                                          : 0,
-                                      onTap: () {
-                                        controller.searchGameOnClick(
-                                            context, index);
-                                      },
-                                      isShowWeather:
-                                          controller.sportKey != "NCAAB" &&
-                                              controller.sportKey != "NBA",
-                                      awayTeamMoneyLine:
-                                          competitors.awayMoneyLineValue,
-                                      homeTeamMoneyLine:
-                                          competitors.homeMoneyLineValue,
-                                      awayTeamOU: competitors.awayOUValue,
-                                      homeTeamOU: competitors.homeOUValue,
-                                      weather: competitors.weather,
-                                      homeTeamSpread: competitors
-                                              .homeSpreadValue
-                                              .contains('-')
-                                          ? competitors.homeSpreadValue
-                                          : '+${competitors.homeSpreadValue}',
-                                      awayTeamSpread: competitors
-                                              .awaySpreadValue
-                                              .contains('-')
-                                          ? competitors.awaySpreadValue
-                                          : '+${competitors.awaySpreadValue}',
-                                      temp: competitors.tmpInFahrenheit,
-                                      isLive: competitors.status == 'live',
-                                      dateTime:
-                                          '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
-                                      awayTeamImageUrl: awayLogo(
-                                          competitors, controller, index),
-                                      awayTeamRank: (competitors.awayRank == '0'
-                                          ? ''
-                                          : competitors.awayRank),
-                                      awayTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.awayTeamAbb
-                                              : competitors.awayTeam),
-                                      awayTeamScore: (competitors.awayScore),
-                                      homeTeamImageUrl: homeLogo(
-                                          competitors, controller, index),
-                                      homeTeamRank: (competitors.homeRank == '0'
-                                          ? ''
-                                          : competitors.homeRank),
-                                      homeTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.homeTeamAbb
-                                              : competitors.homeTeam),
-                                      homeTeamScore: competitors.homeScore,
-                                    ),
+                                            isShowFlam:
+                                                (controller.sportKey != "MLB"),
+                                            flameNumber:
+                                                controller.sportKey != "MLB"
+                                                    ? competitors.getFlameValue
+                                                    : 0,
+                                            onTap: () {
+                                              controller.searchGameOnClick(
+                                                  context, index);
+                                            },
+                                            isShowWeather: controller
+                                                        .sportKey !=
+                                                    "NCAAB" &&
+                                                controller.sportKey != "NBA",
+                                            awayTeamMoneyLine:
+                                                competitors.awayMoneyLineValue,
+                                            homeTeamMoneyLine:
+                                                competitors.homeMoneyLineValue,
+                                            awayTeamOU: competitors.awayOUValue,
+                                            homeTeamOU: competitors.homeOUValue,
+                                            weather: competitors.weather,
+                                            homeTeamSpread: competitors
+                                                    .homeSpreadValue
+                                                    .contains('-')
+                                                ? competitors.homeSpreadValue
+                                                : '+${competitors.homeSpreadValue}',
+                                            awayTeamSpread: competitors
+                                                    .awaySpreadValue
+                                                    .contains('-')
+                                                ? competitors.awaySpreadValue
+                                                : '+${competitors.awaySpreadValue}',
+                                            temp: competitors.tmpInFahrenheit,
+                                            isLive:
+                                                competitors.status == 'live',
+                                            dateTime:
+                                                '$date, ${spotList(controller)[index].status == 'live' ? spotList(controller)[index].currentTime : dateTime}',
+                                            awayTeamImageUrl: awayLogo(
+                                                competitors, controller, index),
+                                            awayTeamRank:
+                                                (competitors.awayRank == '0'
+                                                    ? ''
+                                                    : competitors.awayRank),
+                                            awayTeamAbb:
+                                                (mobileView.size.shortestSide <
+                                                        600
+                                                    ? competitors.awayTeamAbb
+                                                    : competitors.awayTeam),
+                                            awayTeamScore:
+                                                (competitors.awayScore),
+                                            homeTeamImageUrl: homeLogo(
+                                                competitors, controller, index),
+                                            homeTeamRank:
+                                                (competitors.homeRank == '0'
+                                                    ? ''
+                                                    : competitors.homeRank),
+                                            homeTeamAbb:
+                                                (mobileView.size.shortestSide <
+                                                        600
+                                                    ? competitors.homeTeamAbb
+                                                    : competitors.homeTeam),
+                                            homeTeamScore:
+                                                competitors.homeScore,
+                                          ),
                                   );
                                 } catch (e) {
                                   return const SizedBox();
