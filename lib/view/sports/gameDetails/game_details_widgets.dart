@@ -6139,10 +6139,14 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                         (((sportKey == 'NFL' || sportKey == 'NCAA') &&
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
-                            : '$day, $month $date , ${(gameDetails.status ==
-                            'live' ? '${gameDetails.inningHalf}${gameDetails
+                            : '$day, $month $date , ${((gameDetails.status ==
+                            'live' || gameDetails.status == "inprogress")
+                            ? '${gameDetails.inningHalf}${gameDetails
                             .inning} ${(sportKey == 'NBA' ||
-                            sportKey == 'NCAAB') ? " - ${dateTime.toString().replaceAll("AM","").replaceAll("PM", "")}" : ""}' : dateTime)} ')
+                            sportKey == 'NCAAB')
+                            ? " - ${gameDetails.clock}"
+                            : ""}'
+                            : dateTime)} ')
                             .appCommonText(
                             color: backGroundColor,
                             size: MediaQuery
@@ -6351,7 +6355,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
           );
         }),
       ),
-      gameDetails.status == 'live'
+      (gameDetails.status == 'live' || gameDetails.status == "inprogress")
           ? Positioned(
         top: MediaQuery
             .of(context)
@@ -6374,7 +6378,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                     .of(context)
                     .size
                     .height * .012,
-                weight: FontWeight.w700)
+                weight: FontWeight.bold)
                 .paddingSymmetric(
                 horizontal: MediaQuery
                     .of(context)

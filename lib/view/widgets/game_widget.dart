@@ -30,6 +30,7 @@ class GameWidget extends StatelessWidget {
       required this.homeTeamScore,
       required this.dateTime,
       required this.isLive,
+      required this.status,
       required this.weather,
       required this.temp,
       required this.flameNumber,
@@ -58,6 +59,7 @@ class GameWidget extends StatelessWidget {
   final String homeTeamMoneyLine;
   final String homeTeamOU;
   final String dateTime;
+  final String status;
   final bool isLive;
   final int weather;
   final bool isShowWeather;
@@ -244,7 +246,7 @@ class GameWidget extends StatelessWidget {
                     SizedBox(
                       width: 60.h,
                       child: dateTime.appCommonText(
-                        size: Get.height * .012,
+                        size: Get.height * .012, weight: FontWeight.w600,
                         color: Theme.of(context).highlightColor,
                       ),
                     ),

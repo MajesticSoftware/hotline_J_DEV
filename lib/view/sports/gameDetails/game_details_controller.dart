@@ -73,7 +73,8 @@ class GameDetailsController extends GetxController {
     'FTG',
     'TS',
     'TO',
-  ];List shortDefensiveNBA = [
+  ];
+  List shortDefensiveNBA = [
     'PAG',
     'ORG',
     'OAG',
@@ -138,7 +139,8 @@ class GameDetailsController extends GetxController {
     'Opponent FT att / made / %',
     'Opponent True Shooting',
     'Team PER Def',
-  ];List nbaMobileDefensive = [
+  ];
+  List nbaMobileDefensive = [
     'Points Allowed/Game',
     'Opp Rebounds/Game',
     'Opp Assists/Game',
@@ -921,7 +923,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
-                 /* if (sportKey == "NCAA") {
+                  /* if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
@@ -1285,7 +1287,7 @@ class GameDetailsController extends GetxController {
   }*/
 
 
- /* Future getNFLQBSRank({String awayTeamId = '',
+  /* Future getNFLQBSRank({String awayTeamId = '',
     String homeTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
@@ -1396,7 +1398,7 @@ class GameDetailsController extends GetxController {
                       player.position == 'TE' && player.gamesPlayed != 0) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
-                 /* if (sportKey == "NCAA") {
+                  /* if (sportKey == "NCAA") {
                     if (player.position == 'QB' && player.gamesStarted != 0) {
                       gameStart.add(player.gamesStarted ?? 0);
                       num gameStartNum = gameStart.max;
@@ -1481,10 +1483,9 @@ class GameDetailsController extends GetxController {
   String hotlinesType = '';
 
 
-
   Future hotlinesDataResponse({String awayTeamId = '',
     String sportId = '',
-    required SportEvents  gameDetails,
+    required SportEvents gameDetails,
     String matchId = '',
     bool isLoad = false,
     String homeTeamId = ''}) async {
@@ -1548,10 +1549,12 @@ class GameDetailsController extends GetxController {
                             int.parse(b.value).compareTo(int.parse(a.value)));
                         for (var element in gameDetails.hotlinesMainData) {
                           if (element.bookId == 'sr:book:18149') {
-                            if (!(gameDetails.hotlinesDData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesDData.indexWhere((
+                                fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(gameDetails.hotlinesDData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesDData.indexWhere((
+                                  fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesDData.add(element);
@@ -1559,10 +1562,12 @@ class GameDetailsController extends GetxController {
                             }
                           }
                           if (element.bookId == 'sr:book:17324') {
-                            if (!(gameDetails.hotlinesMData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesMData.indexWhere((
+                                fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(gameDetails.hotlinesMData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesMData.indexWhere((
+                                  fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesMData.add(element);
@@ -1570,10 +1575,12 @@ class GameDetailsController extends GetxController {
                             }
                           }
                           if (element.bookId == 'sr:book:18186') {
-                            if (!(gameDetails.hotlinesFData.indexWhere((fData) =>
+                            if (!(gameDetails.hotlinesFData.indexWhere((
+                                fData) =>
                             fData.playerName == element.playerName) >=
                                 0)) {
-                              if (!(gameDetails.hotlinesFData.indexWhere((fData) =>
+                              if (!(gameDetails.hotlinesFData.indexWhere((
+                                  fData) =>
                               fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesFData.add(element);
@@ -1590,8 +1597,10 @@ class GameDetailsController extends GetxController {
           });
 
           List<HotlinesModel> hotlinesFinalData = [];
-          hotlinesFinalData = gameDetails.hotlinesDData + gameDetails.hotlinesFData + gameDetails.hotlinesMData;
-          gameDetails.hotlinesData=[];
+          hotlinesFinalData =
+              gameDetails.hotlinesDData + gameDetails.hotlinesFData +
+                  gameDetails.hotlinesMData;
+          gameDetails.hotlinesData = [];
           hotlinesFinalData
               .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
           if (hotlinesFinalData.isNotEmpty) {
@@ -1734,7 +1743,6 @@ class GameDetailsController extends GetxController {
   ///NBA STATICS API
 
 
-
   Future staticsAwayNBA({
     String awayId = '',
     bool isLoad = false,
@@ -1771,7 +1779,6 @@ class GameDetailsController extends GetxController {
     }
     update();
   }
-
 
 
   Future staticsHomeNBA({
@@ -1912,7 +1919,6 @@ class GameDetailsController extends GetxController {
   }
 
 
-
   ///GET RESPONSE
   Future getResponse({required bool isLoad,
     required String sportId,
@@ -1988,7 +1994,7 @@ class GameDetailsController extends GetxController {
           homeTeamId: homeTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
-       mlbInjuriesResponse(
+      mlbInjuriesResponse(
           isLoad: false,
           sportKey: "NFL",
           sportEvent: gameDetails,
@@ -1999,10 +2005,10 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
 
-     await  hotlinesDataResponse(
+      await hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
-         gameDetails: gameDetails,
+          gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
           homeTeamId: homeTeam?.id ?? "");
@@ -2013,8 +2019,8 @@ class GameDetailsController extends GetxController {
           isLoad: false,
           sportEvent: gameDetails,
           key: sportKey,
-          awayId:  replaceId(awayTeam?.uuids ?? ''),
-          homeId:replaceId(homeTeam?.uuids ?? ''));
+          awayId: replaceId(awayTeam?.uuids ?? ''),
+          homeId: replaceId(homeTeam?.uuids ?? ''));
       nflStaticsAwayTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,
