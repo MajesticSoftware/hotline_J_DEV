@@ -136,7 +136,6 @@ class GameWidget extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       fontSize: Get.height * .016),
                                   textAlign: TextAlign.start,
-
                                 ),
                               ),
                             ),
@@ -214,7 +213,6 @@ class GameWidget extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       fontSize: Get.height * .016),
                                   textAlign: TextAlign.start,
-
                                 ),
                               ),
                             ),
@@ -246,7 +244,8 @@ class GameWidget extends StatelessWidget {
                     SizedBox(
                       width: 60.h,
                       child: dateTime.appCommonText(
-                        size: Get.height * .012, weight: FontWeight.w600,
+                        size: Get.height * .012,
+                        weight: FontWeight.w600,
                         color: Theme.of(context).highlightColor,
                       ),
                     ),
@@ -482,7 +481,11 @@ class GameWidget extends StatelessWidget {
   }
 }
 
-Future<dynamic> subscriptionDialog(BuildContext context, {required Function() onTap,required Function() restoreOnTap,bool showButton=true,String? price}) {
+Future<dynamic> subscriptionDialog(BuildContext context,
+    {required Function() onTap,
+    required Function() restoreOnTap,
+    bool showButton = true,
+    String? price}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -512,7 +515,7 @@ Future<dynamic> subscriptionDialog(BuildContext context, {required Function() on
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'This subscription automatically renews for ${price??"\$9.99/mo"} a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
+                      'This subscription automatically renews for ${price ?? "\$9.99/mo"} a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -548,27 +551,27 @@ Future<dynamic> subscriptionDialog(BuildContext context, {required Function() on
                         color: yellowColor,
                         link: 'https://www.hotlinesmd.com/privacy-policy'),
                   ])),
-          (showButton?20:0).h.H(),
+          (showButton ? 20 : 0).h.H(),
           Visibility(
             visible: showButton,
             child: CommonAppButton(
-              title: "Upgrade for ${price??"\$9.99"}/mo",
+              title: "Upgrade for ${price ?? "\$9.99"}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),
           ),
-          (showButton?10:0).h.H(),
+          (showButton ? 10 : 0).h.H(),
           Visibility(
             visible: showButton,
             child: InkWell(
-              highlightColor: Colors.transparent,splashFactory: NoSplash.splashFactory,
-              onTap:
-                restoreOnTap
-              ,
-              child: "Restore"
-                  .appCommonText(
+              highlightColor: Colors.transparent,
+              splashFactory: NoSplash.splashFactory,
+              onTap: restoreOnTap,
+              child: "Restore".appCommonText(
                   color: yellowColor,
-                  size: Get.height * .022,decoration: TextDecoration.underline,decorationColor: yellowColor,
+                  size: Get.height * .022,
+                  decoration: TextDecoration.underline,
+                  decorationColor: yellowColor,
                   weight: FontWeight.bold),
             ),
           ),
@@ -652,7 +655,7 @@ class GameTabCard extends StatelessWidget {
                       GestureDetector(
                     onTap: () {
                       controller.tabClick(context, index);
-                      controller.isCallApi=false;
+                      controller.isCallApi = false;
                       controller.update();
                     },
                     child: Container(
@@ -689,7 +692,7 @@ class GameTabCard extends StatelessWidget {
                             sportsLeagueList[index].gameImage,
                             height: MediaQuery.of(context).size.height * .04,
                             width: MediaQuery.of(context).size.width * .01,
-                            fit: index == 1 || index == 2
+                            fit: index == 1 || index == 0
                                 ? BoxFit.cover
                                 : BoxFit.contain,
                             color: whiteColor,

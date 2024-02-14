@@ -25,8 +25,8 @@ class ProfileController extends GetxController {
     update();
   }
 
-  List<String> spotsList = ['NFL', 'NBA','NCAAB', 'MLB','NCAAF'];
-  String selectedSpot = PreferenceManager.getFavoriteSport() ?? "NFL";
+  List<String> spotsList = [ 'NBA','NCAAB', 'MLB','NCAAF','NFL'];
+  String selectedSpot = PreferenceManager.getFavoriteSport() ?? "NBA";
 
   RxBool isLoading = false.obs;
 
@@ -60,7 +60,7 @@ class ProfileController extends GetxController {
               PreferenceManager.setUserProfile(
                   response.data?.userProfilePic ?? "");
               PreferenceManager.setUserName(response.data?.userName ?? "");
-              PreferenceManager.setFavoriteSport(response.data?.favouriteSport ?? "");
+              PreferenceManager.setFavoriteSport(/*response.data?.favouriteSport ?? */"NBA");
               Get.back();
               showAppSnackBar('${response.msg}', status: true);
             }

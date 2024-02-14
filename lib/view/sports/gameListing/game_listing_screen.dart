@@ -42,7 +42,10 @@ class SelectGameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
-      await gameListingController.favoriteGameCall();
+      // await gameListingController.favoriteGameCall();
+      await gameListingController.getResponse(true,"NBA").then((value) {
+
+      });
       if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
             .then((value) => gameListingController.getSubscriptionStatus());

@@ -60,7 +60,6 @@ class SubscriptionRepo {
     bool status = true;
     dynamic data;
     String message = "";
-
     var queryParameters = {RequestParam.service: MethodNames.getReceiptStatus};
     String queryString = Uri(queryParameters: queryParameters).query;
     String requestUrl = AppUrls.AUTH_BASE_URL + queryString;

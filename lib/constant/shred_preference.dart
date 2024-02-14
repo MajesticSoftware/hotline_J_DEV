@@ -164,7 +164,7 @@ static Future setDeviceVersionNumber(String deviceVersionNumber) async {
     setAuthToken(response.authToken ?? "");
     setUserToken(response.userToken ?? "");
     setUserProfile(response.userProfilePic ?? "");
-    setFavoriteSport(response.favouriteSport ?? "");
+    setFavoriteSport(/*response.favouriteSport ?? */"NBA");
     setLoginType(response.loginType ?? "");
     setDeviceType(Platform.isIOS ? "iOS" : "android");
     setUserId(response.userId ?? 0);

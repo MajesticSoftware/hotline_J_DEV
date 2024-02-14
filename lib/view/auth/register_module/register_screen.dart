@@ -210,7 +210,7 @@ class RegisterScreen extends StatelessWidget {
                           onChanged: (value) {
                             ctrl.selectedSpot = value!;
                             log('ctrl.selectedSpot---${ctrl.selectedSpot}');
-                            PreferenceManager.setFavoriteSport(value);
+                            PreferenceManager.setFavoriteSport(/*value*/"NBA");
                             ctrl.update();
                           },
                         ),

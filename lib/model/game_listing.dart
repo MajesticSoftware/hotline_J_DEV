@@ -215,7 +215,7 @@ class SportEvents {
     this.eraHome = "0",
     this.eraAway = "0",
     this.inning='0',
-    this.inningHalf='0',
+    this.inningHalf='',
     this.clock='0',
     this.wlHome = "0",
     this.wlAway = '0',

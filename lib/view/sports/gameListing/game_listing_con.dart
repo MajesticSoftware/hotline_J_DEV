@@ -48,16 +48,21 @@ class GameListingController extends GetxController {
     log('I am closed');
   }
 
-  String sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
+  String sportId = 'sr:sport:2'
+
+      /*((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
       ? 'sr:sport:3'
-      : ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NBA') ||
-              ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
+      : ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NBA') ||
+              ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NCAAB')
           ? 'sr:sport:2'
-          : 'sr:sport:16');
-  String _sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
+          : 'sr:sport:16')*/
+      ;
+
+  String
+      _sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
           ? "NCAA"
-          : PreferenceManager.getFavoriteSport()) ??
-      "NFL";
+          : PreferenceManager.getFavoriteSport()) ??*/
+      "NBA";
 
   String get sportKey => _sportKey;
 
@@ -67,18 +72,18 @@ class GameListingController extends GetxController {
   }
 
   favoriteGameCall() {
-    sportId = ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'MLB'
+    sportId = ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
         ? 'sr:sport:3'
-        : ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NBA') ||
-                ((PreferenceManager.getFavoriteSport() ?? "NFL") == 'NCAAB')
+        : ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NBA') ||
+                ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NCAAB')
             ? 'sr:sport:2'
             : 'sr:sport:16');
     sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
             ? "NCAA"
             : PreferenceManager.getFavoriteSport()) ??
-        "NFL";
-    isSelected.add(PreferenceManager.getFavoriteSport() ?? "NFL");
-    isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NFL";
+        "NBA";
+    isSelected.add(PreferenceManager.getFavoriteSport() ?? "NBA");
+    isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NBA";
     Future.delayed(
       Duration.zero,
       () async {
@@ -89,7 +94,7 @@ class GameListingController extends GetxController {
             (PreferenceManager.getFavoriteSport() == "NCAAF"
                     ? "NCAA"
                     : PreferenceManager.getFavoriteSport()) ??
-                "NFL");
+                "NBA");
       },
     );
   }
@@ -134,7 +139,7 @@ class GameListingController extends GetxController {
   }
 
   Future<void> getSubscriptionStatus() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     ResponseItem result = Platform.isIOS
         ? await SubscriptionRepo.getReceiptStatus()
         : await SubscriptionRepo.getGoogleCloudStatus();
@@ -149,7 +154,7 @@ class GameListingController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
     }
-    isLoading.value = false;
+    // isLoading.value = false;
     update();
   }
 
@@ -174,10 +179,13 @@ class GameListingController extends GetxController {
   }
 
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
-  String date = (PreferenceManager.getFavoriteSport() ?? "NFL") == "NFL"
+  String date = (PreferenceManager.getFavoriteSport() ?? "NBA") == "NFL"
       ? "2024-02-11"
       : DateFormat('yyyy-MM-dd').format(DateTime.now());
-  List<String> _isSelected = [PreferenceManager.getFavoriteSport() ?? "NFL"];
+  List<String> _isSelected = [
+    /*PreferenceManager.getFavoriteSport() ?? */
+    "NBA"
+  ];
 
   List<String> get isSelected => _isSelected;
 
@@ -186,7 +194,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String _isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NFL";
+  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/ "NBA";
 
   String get isSelectedGame => _isSelectedGame;
 
@@ -563,7 +571,6 @@ class GameListingController extends GetxController {
       int start = 0,
       bool isLoad = false,
       String key = ''}) async {
-    // isLoading.value = isLoad;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -595,6 +602,7 @@ class GameListingController extends GetxController {
       int start = 0,
       bool isLoad = false,
       String key = ''}) async {
+    isLoading.value = isLoad;
     int pageIndex = 0;
     for (int i = 0; i <= pageIndex; i++) {
       await fetchListingData(
@@ -667,6 +675,8 @@ class GameListingController extends GetxController {
       int start = 0,
       bool isLoad = false,
       String key = ''}) async {
+    isPagination = isLoad;
+    isLoading.value = false;
     int pageIndex = 0;
     for (int i = 0; i <= pageIndex; i++) {
       await fetchListingData(
