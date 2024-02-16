@@ -1103,17 +1103,6 @@ class GameListingController extends GetxController {
         final game = response;
 
         if (game.id == gameId) {
-          if (sportKey == "NBA") {
-            nbaSportEventsList[index].inning = (game.quarter ?? "0").toString();
-            nbaSportEventsList[index].inningHalf = 'Q';
-            nbaSportEventsList[index].status = game.status.toString();
-            nbaSportEventsList[index].clock = (game.clock ?? "00:00");
-          } else {
-            ncaabSportEventsList[index].inning = (game.half ?? "0").toString();
-            ncaabSportEventsList[index].inningHalf = 'H';
-            ncaabSportEventsList[index].status = game.status.toString();
-            ncaabSportEventsList[index].clock = (game.clock ?? "00:00");
-          }
           if (homeTeamId == game.home?.id) {
             if (sportKey == "NBA") {
               nbaSportEventsList[index].homeScore =
@@ -1132,6 +1121,18 @@ class GameListingController extends GetxController {
                   (game.away?.points ?? "0").toString();
             }
           }
+          if (sportKey == "NBA") {
+            nbaSportEventsList[index].inning = (game.quarter ?? "0").toString();
+            nbaSportEventsList[index].inningHalf = 'Q';
+            nbaSportEventsList[index].status = game.status.toString();
+            nbaSportEventsList[index].clock = (game.clock ?? "00:00");
+          } else {
+            ncaabSportEventsList[index].inning = (game.half ?? "0").toString();
+            ncaabSportEventsList[index].inningHalf = 'H';
+            ncaabSportEventsList[index].status = game.status.toString();
+            ncaabSportEventsList[index].clock = (game.clock ?? "00:00");
+          }
+
         }
         update();
       } else {
@@ -2177,7 +2178,7 @@ class GameListingController extends GetxController {
           .then((value) async {
         getAllEventList(sportKey, isLoad);
         isPagination = false;
-        gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
+        gameListingsWithLogoResponseNCAAB(DateTime.now().year.toString(), sportKey,
             isLoad: isLoad);
         nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
 

@@ -6140,12 +6140,12 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${((gameDetails.status ==
-                            'live' || gameDetails.status == "inprogress")
+                            'live')
                             ? '${gameDetails.inningHalf}${gameDetails
                             .inning} ${(sportKey == 'NBA' ||
                             sportKey == 'NCAAB')
                             ? " - ${gameDetails.clock}"
-                            : ""}'
+                            :(gameDetails.status == "inprogress")?"HalfTime": ""}'
                             : dateTime)} ')
                             .appCommonText(
                             color: backGroundColor,
