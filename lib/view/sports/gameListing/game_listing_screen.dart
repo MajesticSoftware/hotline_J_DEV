@@ -534,7 +534,7 @@ class SelectGameScreen extends StatelessWidget {
               visible: (controller.sportKey == 'MLB' &&
                   !(controller.mlbSportEventsList.indexWhere((element) =>
                           DateTime.parse(element.scheduled.toString())
-                              .toLocal()
+                              toUtc()
                               .day ==
                           DateTime.now().toLocal().day) >=
                       0) &&
@@ -589,7 +589,7 @@ class SelectGameScreen extends StatelessWidget {
                                   () async {
                                 if (!controller.isCallApi) {
                                   controller.isCallApi = true;
-                                  await controller.getResponse(
+                                  await controller.getRefreshResponse(
                                       false, controller.sportKey);
                                 }
                                 controller.update();
@@ -601,8 +601,9 @@ class SelectGameScreen extends StatelessWidget {
                               itemCount: spotList(controller).length,
                               physics: const AlwaysScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
+                                // log("STATUS---${spotList(controller)[
+                                // index].status}");
                                 try {
-                                  // SportEvents competitors = spotList(controller)[index];
                                   String date = DateFormat.MMMd().format(
                                       DateTime.parse(spotList(controller)[index]
                                                   .scheduled ??
@@ -692,7 +693,10 @@ class SelectGameScreen extends StatelessWidget {
                                                         'live' ||
                                                     spotList(controller)[index]
                                                             .status ==
-                                                        'inprogress'),
+                                                        'inprogress'||
+                                                    spotList(controller)[index]
+                                                            .status ==
+                                                        'halftime'),
                                                 dateTime: (spotList(controller)[
                                                                     index]
                                                                 .status ==
@@ -700,7 +704,11 @@ class SelectGameScreen extends StatelessWidget {
                                                         spotList(controller)[
                                                                     index]
                                                                 .status ==
-                                                            'inprogress')
+                                                            'inprogress'||
+                                                        spotList(controller)[
+                                                                    index]
+                                                                .status ==
+                                                            'halftime')
                                                     ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
                                                     : '$date, $dateTime',
                                                 awayTeamImageUrl: awayLogo(
@@ -844,10 +852,13 @@ class SelectGameScreen extends StatelessWidget {
                                           : '+${competitors.awaySpreadValue}',
                                       temp: competitors.tmpInFahrenheit,
                                       isLive: (competitors.status == 'live' ||
-                                          competitors.status == "inprogress"),
+                                          competitors.status == "inprogress" ||
+                                          competitors.status == "halftime"),
                                       dateTime: (competitors.status == 'live' ||
                                               competitors.status ==
-                                                  "inprogress")
+                                                  "inprogress"||
+                                              competitors.status ==
+                                                  "halftime")
                                           ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
                                           : '$date, $dateTime',
                                       awayTeamImageUrl: awayLogo(
@@ -895,6 +906,8 @@ class SelectGameScreen extends StatelessWidget {
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.awayTeamAbb == 'LINW'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
+                : competitors.awayTeamAbb == 'IUN'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
                 : competitors.awayTeamAbb == 'LMC'
                     ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
                     : competitors.awayTeamAbb == 'ARI'
@@ -953,6 +966,8 @@ class SelectGameScreen extends StatelessWidget {
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.homeTeamAbb == 'LMC'
                 ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
+                : competitors.homeTeamAbb == 'IUN'
+                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
                 : competitors.homeTeamAbb == 'LINW'
                     ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
                     : competitors.homeTeamAbb == 'WEBB'

@@ -5889,6 +5889,8 @@ String awayLogo(Competitors? awayTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2635.png"
       : awayTeam?.abbreviation == 'CSN'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
+      : awayTeam?.abbreviation == 'IUN'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
       : awayTeam?.abbreviation == 'LMC'
       ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
       : awayTeam?.abbreviation == 'SHS'
@@ -5902,6 +5904,8 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
       : homeTeam?.abbreviation == 'SCUS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
+      :homeTeam?.abbreviation == 'IUN'
+      ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
       : homeTeam?.abbreviation == 'LINW'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
       : homeTeam?.abbreviation == 'WEBB'
@@ -6140,12 +6144,14 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${((gameDetails.status ==
-                            'live')
+                            'live'||gameDetails.status ==
+                            'halftime'||gameDetails.status ==
+                            'inprogress')
                             ? '${gameDetails.inningHalf}${gameDetails
                             .inning} ${(sportKey == 'NBA' ||
                             sportKey == 'NCAAB')
                             ? " - ${gameDetails.clock}"
-                            :(gameDetails.status == "inprogress")?"HalfTime": ""}'
+                            : dateTime}'
                             : dateTime)} ')
                             .appCommonText(
                             color: backGroundColor,
@@ -6355,7 +6361,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
           );
         }),
       ),
-      (gameDetails.status == 'live' || gameDetails.status == "inprogress")
+      (gameDetails.status == 'live' || gameDetails.status == "inprogress"|| gameDetails.status == "halftime")
           ? Positioned(
         top: MediaQuery
             .of(context)

@@ -24,14 +24,11 @@ class LeagueModel {
       required this.isAvailable});
 }
 
-final DateTime now = DateTime.now().toUtc();
+final DateTime now = DateTime.now().subtract(const Duration(days: 1)).toUtc();
 final DateFormat formatter = DateFormat('yyyy-MM-dd');
 final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
-
-
-
   LeagueModel(
       sportId: 'sr:sport:2',
       gameName: 'NBA',

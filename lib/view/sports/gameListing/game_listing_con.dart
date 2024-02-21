@@ -438,6 +438,25 @@ class GameListingController extends GetxController {
     }
   }
 
+  Future<void> getRefreshResponse(bool isLoad, String sportKey) async {
+    if (sportKey == 'MLB') {
+      return await mlbGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: 'MLB', date: date, sportId: sportId);
+    } else if (sportKey == 'NFL') {
+      return await nflGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: "NFL", date: date, sportId: sportId);
+    } else if (sportKey == 'NCAA') {
+      return ncaaGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == 'NBA') {
+      return nbaGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == 'NCAAB') {
+      return ncaabGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    }
+  }
+
   searchData(String text, String sportKey) {
     searchList.clear();
     if (text.isNotEmpty) {
@@ -1132,7 +1151,6 @@ class GameListingController extends GetxController {
             ncaabSportEventsList[index].status = game.status.toString();
             ncaabSportEventsList[index].clock = (game.clock ?? "00:00");
           }
-
         }
         update();
       } else {
@@ -1141,7 +1159,7 @@ class GameListingController extends GetxController {
         // );
       }
     } catch (e) {
-      log('ERROR BOX SCORE MLB----$e');
+      log('ERROR BOX SCORE NBA----$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1275,158 +1293,261 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) {
-      isLoading.value = false;
-      isPagination = isLoad;
-      ncaaTomorrowEventsList.clear();
-      for (int i = 1; i <= 12; i++) {
-        gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(Duration(days: i))),
-                sportId: sportId)
-            .then((value) {
-          getAllEventList(sportKey, isLoad);
-          nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
-              isLoad: isLoad);
-          if (i == 12) {
-            isPagination = false;
-          }
-        }).then((value) {
-          if (ncaaSportEventsList.isNotEmpty) {
-            for (int i = 0; i < ncaaSportEventsList.length; i++) {
-              if (ncaaSportEventsList[i].uuids != null) {
-                getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
-                    index: i, sportKey: sportKey);
-                boxScoreResponseNCAA(
-                    key: sportKey,
-                    gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
-                    index: i);
-                ncaaGameRanking(
-                  isLoad: false,
-                  gameDetails: ncaaSportEventsList[i],
-                  homeTeamId: replaceId(
-                          ncaaSportEventsList[i].competitors[0].uuids ?? '') ??
-                      "",
-                  awayTeamId: replaceId(
-                          ncaaSportEventsList[i].competitors[1].uuids ?? '') ??
-                      "",
-                );
-              }
-            }
-          }
-        });
-      }
-      if (ncaaTodayEventsList.isNotEmpty) {
-        timerNCAA = Timer.periodic(const Duration(seconds: 45), (t) async {
-          ncaaTodayEventsList.clear();
-          await gameListingTodayApiRes(
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        ncaaTomorrowEventsList.clear();
+        for (int i = 2; i <= 12; i++) {
+          gameListingTomorrowApiRes(
                   key: apiKey,
-                  isLoad: false,
+                  isLoad: isLoad,
                   sportKey: sportKey,
-                  date: date,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
                   sportId: sportId)
               .then((value) {
-            setOdds(ncaaTodayEventsList);
-            for (int i = 0; i < ncaaTodayEventsList.length; i++) {
-              int newIndex = (ncaaSportEventsList.indexWhere(
-                  (element) => element.id == ncaaTodayEventsList[i].id));
-              if (newIndex >= 0) {
-                ncaaSportEventsList[newIndex].status =
-                    ncaaTodayEventsList[i].status;
-                if (ncaaTodayEventsList[i].consensus != null) {
-                  ///MONEY LINES
-                  if (ncaaTodayEventsList[i].markets.isNotEmpty) {
-                    for (var marketData in ncaaTodayEventsList[i].markets) {
-                      if (marketData.oddsTypeId == 4) {
-                        int fanDuelIndex = marketData.books.indexWhere(
-                            (element) => element.id == 'sr:book:18186');
-                        for (var bookData in marketData.books) {
-                          if (fanDuelIndex >= 0) {
-                            if (bookData.id == 'sr:book:18186') {
-                              if (bookData.outcomes?[0].type == 'home') {
-                                ncaaSportEventsList[newIndex].homeSpread =
-                                    bookData.outcomes?[0].spread.toString() ??
-                                        '00';
+            getAllEventList(sportKey, isLoad);
+            nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
+            gameListingsWithLogoResponse(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            if (i == 12) {
+              isPagination = false;
+            }
+          }).then((value) {
+            if (ncaaSportEventsList.isNotEmpty) {
+              for (int i = 0; i < ncaaSportEventsList.length; i++) {
+                if (ncaaSportEventsList[i].uuids != null) {
+                  getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
+                      index: i, sportKey: sportKey);
+                  boxScoreResponseNCAA(
+                      key: sportKey,
+                      gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
+                      index: i);
+                  ncaaGameRanking(
+                    isLoad: false,
+                    gameDetails: ncaaSportEventsList[i],
+                    homeTeamId: replaceId(
+                            ncaaSportEventsList[i].competitors[0].uuids ??
+                                '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            ncaaSportEventsList[i].competitors[1].uuids ??
+                                '') ??
+                        "",
+                  );
+                }
+              }
+            }
+          });
+        }
+        if (ncaaTodayEventsList.isNotEmpty) {
+          timerNCAA = Timer.periodic(const Duration(seconds: 45), (t) async {
+            ncaaTodayEventsList.clear();
+            await gameListingTodayApiRes(
+                    key: apiKey,
+                    isLoad: false,
+                    sportKey: sportKey,
+                    date: date,
+                    sportId: sportId)
+                .then((value) {
+              gameListingTodayApiRes(
+                      key: apiKey,
+                      isLoad: false,
+                      sportKey: sportKey,
+                      date: DateFormat('yyyy-MM-dd').format(
+                          DateTime.parse(date).add(const Duration(days: 1))),
+                      sportId: sportId)
+                  .then((value) {
+                setOdds(ncaaTodayEventsList);
+                for (int i = 0; i < ncaaTodayEventsList.length; i++) {
+                  int newIndex = (ncaaSportEventsList.indexWhere(
+                      (element) => element.id == ncaaTodayEventsList[i].id));
+                  if (newIndex >= 0) {
+                    ncaaSportEventsList[newIndex].status =
+                        ncaaTodayEventsList[i].status;
+                    if (ncaaTodayEventsList[i].consensus != null) {
+                      ///MONEY LINES
+                      if (ncaaTodayEventsList[i].markets.isNotEmpty) {
+                        for (var marketData in ncaaTodayEventsList[i].markets) {
+                          if (marketData.oddsTypeId == 4) {
+                            int fanDuelIndex = marketData.books.indexWhere(
+                                (element) => element.id == 'sr:book:18186');
+                            for (var bookData in marketData.books) {
+                              if (fanDuelIndex >= 0) {
+                                if (bookData.id == 'sr:book:18186') {
+                                  if (bookData.outcomes?[0].type == 'home') {
+                                    ncaaSportEventsList[newIndex].homeSpread =
+                                        bookData.outcomes?[0].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                  if (bookData.outcomes?[1].type == 'away') {
+                                    ncaaSportEventsList[newIndex].awaySpread =
+                                        bookData.outcomes?[1].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                }
+                              } else if (bookData.id == 'sr:book:28901') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  ncaaSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  ncaaSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
+                              } else if (bookData.id == 'sr:book:17324') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  ncaaSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  ncaaSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
                               }
-                              if (bookData.outcomes?[1].type == 'away') {
-                                ncaaSportEventsList[newIndex].awaySpread =
-                                    bookData.outcomes?[1].spread.toString() ??
-                                        '00';
-                              }
-                            }
-                          } else if (bookData.id == 'sr:book:28901') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              ncaaSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              ncaaSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
-                            }
-                          } else if (bookData.id == 'sr:book:17324') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              ncaaSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              ncaaSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
                             }
                           }
                         }
                       }
-                    }
-                  }
 
-                  if (ncaaTodayEventsList[i].consensus?.lines != null) {
-                    ncaaTodayEventsList[i]
-                        .consensus
-                        ?.lines
-                        ?.forEach((consensus) {
-                      if (consensus.name == 'moneyline_current') {
-                        consensus.outcomes?.forEach((lines) {
-                          if (lines.type == 'home') {
-                            ncaaSportEventsList[newIndex].homeMoneyLine =
-                                lines.odds.toString();
+                      if (ncaaTodayEventsList[i].consensus?.lines != null) {
+                        ncaaTodayEventsList[i]
+                            .consensus
+                            ?.lines
+                            ?.forEach((consensus) {
+                          if (consensus.name == 'moneyline_current') {
+                            consensus.outcomes?.forEach((lines) {
+                              if (lines.type == 'home') {
+                                ncaaSportEventsList[newIndex].homeMoneyLine =
+                                    lines.odds.toString();
+                              }
+                              if (lines.type == 'away') {
+                                ncaaSportEventsList[newIndex].awayMoneyLine =
+                                    lines.odds.toString();
+                              }
+                            });
                           }
-                          if (lines.type == 'away') {
-                            ncaaSportEventsList[newIndex].awayMoneyLine =
-                                lines.odds.toString();
+                          if (consensus.name == 'total_current') {
+                            ncaaSportEventsList[newIndex].homeOU =
+                                consensus.total.toString();
+                            ncaaSportEventsList[newIndex].awayOU =
+                                consensus.total.toString();
                           }
                         });
                       }
-                      if (consensus.name == 'total_current') {
-                        ncaaSportEventsList[newIndex].homeOU =
-                            consensus.total.toString();
-                        ncaaSportEventsList[newIndex].awayOU =
-                            consensus.total.toString();
-                      }
-                    });
+                    }
                   }
+                  // int liveIndex = ncaaSportEventsList.indexWhere((element) =>
+                  // element.status != "closed" &&
+                  //     ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
+                  //         DateTime.now().toLocal().day));
+                  if (((DateTime.parse(ncaaSportEventsList[i].scheduled ?? "")
+                                  .toLocal())
+                              .day ==
+                          DateTime.now().toLocal().day) &&
+                      ncaaSportEventsList[i].status != "closed") {
+                    if (ncaaSportEventsList[i].uuids != null) {
+                      boxScoreResponseNCAA(
+                          key: sportKey,
+                          gameId: replaceId(ncaaTodayEventsList[i].uuids ?? ''),
+                          index: i);
+                    }
+                  }
+                }
+              });
+            });
+            update();
+          });
+        }
+      });
+    });
+  }
+
+  ncaaGameRefreshCall(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    ncaaTodayEventsList = [];
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        ncaaTomorrowEventsList.clear();
+        for (int i = 2; i <= 12; i++) {
+          gameListingTomorrowApiRes(
+                  key: apiKey,
+                  isLoad: isLoad,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  sportId: sportId)
+              .then((value) {
+            getAllEventList(sportKey, isLoad);
+            nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
+            gameListingsWithLogoResponse(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            if (i == 12) {
+              isPagination = false;
+            }
+          }).then((value) {
+            if (ncaaSportEventsList.isNotEmpty) {
+              for (int i = 0; i < ncaaSportEventsList.length; i++) {
+                if (ncaaSportEventsList[i].uuids != null) {
+                  getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
+                      index: i, sportKey: sportKey);
+                  boxScoreResponseNCAA(
+                      key: sportKey,
+                      gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
+                      index: i);
+                  ncaaGameRanking(
+                    isLoad: false,
+                    gameDetails: ncaaSportEventsList[i],
+                    homeTeamId: replaceId(
+                            ncaaSportEventsList[i].competitors[0].uuids ??
+                                '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            ncaaSportEventsList[i].competitors[1].uuids ??
+                                '') ??
+                        "",
+                  );
                 }
               }
             }
-            int liveIndex = ncaaSportEventsList.indexWhere((element) =>
-                element.status != "closed" &&
-                ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
-                    DateTime.now().toLocal().day));
-            if (liveIndex >= 0) {
-              if (ncaaSportEventsList[liveIndex].uuids != null) {
-                boxScoreResponseNCAA(
-                    key: sportKey,
-                    gameId:
-                        replaceId(ncaaTodayEventsList[liveIndex].uuids ?? ''),
-                    index: liveIndex);
-              }
-            }
           });
-          update();
-        });
-      }
+        }
+      });
     });
   }
 
@@ -1443,153 +1564,238 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) {
-      isLoading.value = false;
-      isPagination = isLoad;
-      nflTomorrowEventsList.clear();
-      for (int i = 1; i <= 7; i++) {
-        gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(Duration(days: i))),
-                sportId: sportId)
-            .then((value) async {
-          getAllEventList(sportKey, isLoad);
-          nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-          if (i == 7) {
-            isPagination = false;
-          }
-          gameListingsWithLogoResponseNCAAB(
-              DateTime.now().year.toString(), sportKey,
-              isLoad: isLoad);
-          if (nflSportEventsList.isNotEmpty) {
-            for (int i = 0; i < nflSportEventsList.length; i++) {
-              if (nflSportEventsList[i].uuids != null) {
-                getWeather(nflSportEventsList[i].venue?.cityName ?? "",
-                    index: i, sportKey: sportKey);
-                boxScoreResponseNCAA(
-                    key: sportKey,
-                    gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
-                    index: i);
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        nflTomorrowEventsList.clear();
+        for (int i = 2; i <= 7; i++) {
+          gameListingTomorrowApiRes(
+                  key: apiKey,
+                  isLoad: isLoad,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  sportId: sportId)
+              .then((value) async {
+            getAllEventList(sportKey, isLoad);
+            nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
+            if (i == 7) {
+              isPagination = false;
+            }
+            gameListingsWithLogoResponseNCAAB(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            if (nflSportEventsList.isNotEmpty) {
+              for (int i = 0; i < nflSportEventsList.length; i++) {
+                if (nflSportEventsList[i].uuids != null) {
+                  getWeather(nflSportEventsList[i].venue?.cityName ?? "",
+                      index: i, sportKey: sportKey);
+                  boxScoreResponseNCAA(
+                      key: sportKey,
+                      gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
+                      index: i);
+                }
               }
             }
-          }
-        });
-      }
+          });
+        }
 
-      if (nflTodayEventsList.isNotEmpty) {
-        timerNFL = Timer.periodic(const Duration(seconds: 45), (t) {
-          nflTodayEventsList.clear();
-          gameListingTodayApiRes(
-                  key: apiKey,
-                  isLoad: false,
-                  sportKey: sportKey,
-                  date: date,
-                  sportId: sportId)
-              .then((value) {
-            setOdds(nflTodayEventsList);
-            for (int i = 0; i < nflTodayEventsList.length; i++) {
-              int newIndex = (nflSportEventsList.indexWhere(
-                  (element) => element.id == nflTodayEventsList[i].id));
-              if (newIndex >= 0) {
-                // log('IS UPDATE NFL------>');
-                nflSportEventsList[newIndex].status =
-                    nflTodayEventsList[i].status;
+        if (nflTodayEventsList.isNotEmpty) {
+          timerNFL = Timer.periodic(const Duration(seconds: 45), (t) {
+            nflTodayEventsList.clear();
+            gameListingTodayApiRes(
+                    key: apiKey,
+                    isLoad: false,
+                    sportKey: sportKey,
+                    date: date,
+                    sportId: sportId)
+                .then((value) {
+              gameListingTodayApiRes(
+                      key: apiKey,
+                      isLoad: false,
+                      sportKey: sportKey,
+                      date: DateFormat('yyyy-MM-dd').format(
+                          DateTime.parse(date).add(const Duration(days: 1))),
+                      sportId: sportId)
+                  .then((value) {
+                setOdds(nflTodayEventsList);
+                for (int i = 0; i < nflTodayEventsList.length; i++) {
+                  int newIndex = (nflSportEventsList.indexWhere(
+                      (element) => element.id == nflTodayEventsList[i].id));
+                  if (newIndex >= 0) {
+                    // log('IS UPDATE NFL------>');
+                    nflSportEventsList[newIndex].status =
+                        nflTodayEventsList[i].status;
 
-                ///MONEY LINES
-                if (nflTodayEventsList[i].markets.isNotEmpty) {
-                  // log('IS UPDATE NFL------>111');
-                  for (var marketData in nflTodayEventsList[i].markets) {
-                    if (marketData.oddsTypeId == 4) {
-                      int fanDuelIndex = marketData.books.indexWhere(
-                          (element) => element.id == 'sr:book:18186');
-                      for (var bookData in marketData.books) {
-                        if (fanDuelIndex >= 0) {
-                          if (bookData.id == 'sr:book:18186') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              nflSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ??
-                                      '00';
+                    ///MONEY LINES
+                    if (nflTodayEventsList[i].markets.isNotEmpty) {
+                      // log('IS UPDATE NFL------>111');
+                      for (var marketData in nflTodayEventsList[i].markets) {
+                        if (marketData.oddsTypeId == 4) {
+                          int fanDuelIndex = marketData.books.indexWhere(
+                              (element) => element.id == 'sr:book:18186');
+                          for (var bookData in marketData.books) {
+                            if (fanDuelIndex >= 0) {
+                              if (bookData.id == 'sr:book:18186') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  nflSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '00';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  nflSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '00';
+                                }
+                              }
+                            } else if (bookData.id == 'sr:book:28901') {
+                              if (bookData.outcomes?[0].type == 'home') {
+                                nflSportEventsList[newIndex].homeSpread =
+                                    bookData.outcomes?[0].spread.toString() ??
+                                        '';
+                              }
+                              if (bookData.outcomes?[1].type == 'away') {
+                                nflSportEventsList[newIndex].awaySpread =
+                                    bookData.outcomes?[1].spread.toString() ??
+                                        '';
+                              }
+                            } else if (bookData.id == 'sr:book:17324') {
+                              if (bookData.outcomes?[0].type == 'home') {
+                                nflSportEventsList[newIndex].homeSpread =
+                                    bookData.outcomes?[0].spread.toString() ??
+                                        '';
+                              }
+                              if (bookData.outcomes?[1].type == 'away') {
+                                nflSportEventsList[newIndex].awaySpread =
+                                    bookData.outcomes?[1].spread.toString() ??
+                                        '';
+                              }
                             }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              nflSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ??
-                                      '00';
-                            }
-                          }
-                        } else if (bookData.id == 'sr:book:28901') {
-                          if (bookData.outcomes?[0].type == 'home') {
-                            nflSportEventsList[newIndex].homeSpread =
-                                bookData.outcomes?[0].spread.toString() ?? '';
-                          }
-                          if (bookData.outcomes?[1].type == 'away') {
-                            nflSportEventsList[newIndex].awaySpread =
-                                bookData.outcomes?[1].spread.toString() ?? '';
-                          }
-                        } else if (bookData.id == 'sr:book:17324') {
-                          if (bookData.outcomes?[0].type == 'home') {
-                            nflSportEventsList[newIndex].homeSpread =
-                                bookData.outcomes?[0].spread.toString() ?? '';
-                          }
-                          if (bookData.outcomes?[1].type == 'away') {
-                            nflSportEventsList[newIndex].awaySpread =
-                                bookData.outcomes?[1].spread.toString() ?? '';
                           }
                         }
                       }
                     }
-                  }
-                }
-                if (nflTodayEventsList[i].consensus != null) {
-                  // log('IS UPDATE NFL------>222');
-                  if (nflTodayEventsList[i].consensus?.lines != null) {
-                    nflTodayEventsList[i]
-                        .consensus
-                        ?.lines
-                        ?.forEach((consensus) {
-                      if (consensus.name == 'moneyline_current') {
-                        consensus.outcomes?.forEach((lines) {
-                          if (lines.type == 'home') {
-                            nflSportEventsList[newIndex].homeMoneyLine =
-                                lines.odds.toString();
+                    if (nflTodayEventsList[i].consensus != null) {
+                      // log('IS UPDATE NFL------>222');
+                      if (nflTodayEventsList[i].consensus?.lines != null) {
+                        nflTodayEventsList[i]
+                            .consensus
+                            ?.lines
+                            ?.forEach((consensus) {
+                          if (consensus.name == 'moneyline_current') {
+                            consensus.outcomes?.forEach((lines) {
+                              if (lines.type == 'home') {
+                                nflSportEventsList[newIndex].homeMoneyLine =
+                                    lines.odds.toString();
+                              }
+                              if (lines.type == 'away') {
+                                nflSportEventsList[newIndex].awayMoneyLine =
+                                    lines.odds.toString();
+                                nflSportEventsList[newIndex].awayMoneyLine;
+                              }
+                            });
                           }
-                          if (lines.type == 'away') {
-                            nflSportEventsList[newIndex].awayMoneyLine =
-                                lines.odds.toString();
-                            nflSportEventsList[newIndex].awayMoneyLine;
+                          if (consensus.name == 'total_current') {
+                            nflSportEventsList[newIndex].homeOU =
+                                consensus.total.toString();
+                            nflSportEventsList[newIndex].awayOU =
+                                consensus.total.toString();
                           }
                         });
                       }
-                      if (consensus.name == 'total_current') {
-                        nflSportEventsList[newIndex].homeOU =
-                            consensus.total.toString();
-                        nflSportEventsList[newIndex].awayOU =
-                            consensus.total.toString();
-                      }
-                    });
+                    }
                   }
+                  // int liveIndex = nflTodayEventsList.indexWhere((element) =>
+                  // element.status != "closed" &&
+                  //     ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
+                  //         DateTime.now().toLocal().day));
+                  if (((DateTime.parse(nflTodayEventsList[i].scheduled ?? "")
+                                  .toLocal())
+                              .day ==
+                          DateTime.now().toLocal().day) &&
+                      nflTodayEventsList[i].status != "closed") {
+                    if (nflTodayEventsList[i].uuids != null) {
+                      boxScoreResponseNCAA(
+                          key: sportKey,
+                          gameId: replaceId(nflTodayEventsList[i].uuids ?? ''),
+                          index: i);
+                    }
+                  }
+                }
+              });
+            });
+            update();
+          });
+        }
+      });
+    });
+  }
+
+  Future<void> nflGameRefreshCall(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    nflTodayEventsList.clear();
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        nflTomorrowEventsList.clear();
+        for (int i = 2; i <= 7; i++) {
+          gameListingTomorrowApiRes(
+                  key: apiKey,
+                  isLoad: isLoad,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  sportId: sportId)
+              .then((value) async {
+            getAllEventList(sportKey, isLoad);
+            nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
+            if (i == 7) {
+              isPagination = false;
+            }
+            gameListingsWithLogoResponseNCAAB(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            if (nflSportEventsList.isNotEmpty) {
+              for (int i = 0; i < nflSportEventsList.length; i++) {
+                if (nflSportEventsList[i].uuids != null) {
+                  getWeather(nflSportEventsList[i].venue?.cityName ?? "",
+                      index: i, sportKey: sportKey);
+                  boxScoreResponseNCAA(
+                      key: sportKey,
+                      gameId: replaceId(nflSportEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }
-            int liveIndex = nflTodayEventsList.indexWhere((element) =>
-                element.status != "closed" &&
-                ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
-                    DateTime.now().toLocal().day));
-            if (liveIndex >= 0) {
-              if (nflTodayEventsList[liveIndex].uuids != null) {
-                boxScoreResponseNCAA(
-                    key: sportKey,
-                    gameId:
-                        replaceId(nflTodayEventsList[liveIndex].uuids ?? ''),
-                    index: liveIndex);
-              }
-            }
           });
-          update();
-        });
-      }
+        }
+      });
     });
   }
 
@@ -1997,158 +2203,250 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) {
-      isLoading.value = false;
-      isPagination = isLoad;
-      mlbTomorrowEventsList.clear();
-      for (int i = 1; i <= 3; i++) {
-        gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(Duration(days: i))),
-                sportId: sportId)
-            .then((value) {
-          getAllEventList(sportKey, isLoad);
-          if (mlbSportEventsList.isNotEmpty) {
-            for (int i = 0; i < mlbSportEventsList.length; i++) {
-              getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
-                  index: i, sportKey: sportKey);
-              if (mlbSportEventsList[i].uuids != null) {
-                boxScoreResponse(
-                    homeTeamId: replaceId(
-                            mlbSportEventsList[i].competitors[0].uuids ?? '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            mlbSportEventsList[i].competitors[1].uuids ?? '') ??
-                        "",
-                    gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
-                    index: i);
-              }
-            }
-          }
-          gameListingsWithLogoResponse(DateTime.now().year.toString(), sportKey,
-              isLoad: isLoad);
-        });
-        if (i == 3) {
-          isPagination = false;
-        }
-      }
-      if (mlbTodayEventsList.isNotEmpty) {
-        timer = Timer.periodic(const Duration(seconds: 45), (t) {
-          mlbTodayEventsList.clear();
-          gameListingTodayApiRes(
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        mlbTomorrowEventsList.clear();
+        for (int i = 2; i <= 3; i++) {
+          gameListingTomorrowApiRes(
                   key: apiKey,
-                  isLoad: false,
+                  isLoad: isLoad,
                   sportKey: sportKey,
-                  date: date,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
                   sportId: sportId)
               .then((value) {
-            setOdds(mlbTodayEventsList);
-            for (int i = 0; i < mlbTodayEventsList.length; i++) {
-              int newIndex = (mlbSportEventsList.indexWhere(
-                  (element) => element.id == mlbTodayEventsList[i].id));
-              if (newIndex >= 0) {
-                mlbSportEventsList[newIndex].status =
-                    mlbTodayEventsList[i].status;
-                if (mlbTodayEventsList[i].consensus != null) {
-                  ///MONEY LINES
-                  if (mlbTodayEventsList[i].markets.isNotEmpty) {
-                    for (var marketData in mlbTodayEventsList[i].markets) {
-                      if (marketData.oddsTypeId == 4) {
-                        int fanDuelIndex = marketData.books.indexWhere(
-                            (element) => element.id == 'sr:book:18186');
-                        for (var bookData in marketData.books) {
-                          if (fanDuelIndex >= 0) {
-                            if (bookData.id == 'sr:book:18186') {
-                              if (bookData.outcomes?[0].type == 'home') {
-                                mlbSportEventsList[newIndex].homeSpread =
-                                    bookData.outcomes?[0].spread.toString() ??
-                                        '00';
+            getAllEventList(sportKey, isLoad);
+            if (mlbSportEventsList.isNotEmpty) {
+              for (int i = 0; i < mlbSportEventsList.length; i++) {
+                getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
+                    index: i, sportKey: sportKey);
+                if (mlbSportEventsList[i].uuids != null) {
+                  boxScoreResponse(
+                      homeTeamId: replaceId(
+                              mlbSportEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              mlbSportEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
+                      index: i);
+                }
+              }
+            }
+            gameListingsWithLogoResponse(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+          });
+          if (i == 3) {
+            isPagination = false;
+          }
+        }
+        if (mlbTodayEventsList.isNotEmpty) {
+          timer = Timer.periodic(const Duration(seconds: 45), (t) {
+            mlbTodayEventsList.clear();
+            gameListingTodayApiRes(
+                    key: apiKey,
+                    isLoad: false,
+                    sportKey: sportKey,
+                    date: date,
+                    sportId: sportId)
+                .then((value) {
+              gameListingTodayApiRes(
+                      key: apiKey,
+                      isLoad: false,
+                      sportKey: sportKey,
+                      date: DateFormat('yyyy-MM-dd').format(
+                          DateTime.parse(date).add(const Duration(days: 1))),
+                      sportId: sportId)
+                  .then((value) {
+                setOdds(mlbTodayEventsList);
+                for (int i = 0; i < mlbTodayEventsList.length; i++) {
+                  int newIndex = (mlbSportEventsList.indexWhere(
+                      (element) => element.id == mlbTodayEventsList[i].id));
+                  if (newIndex >= 0) {
+                    mlbSportEventsList[newIndex].status =
+                        mlbTodayEventsList[i].status;
+                    if (mlbTodayEventsList[i].consensus != null) {
+                      ///MONEY LINES
+                      if (mlbTodayEventsList[i].markets.isNotEmpty) {
+                        for (var marketData in mlbTodayEventsList[i].markets) {
+                          if (marketData.oddsTypeId == 4) {
+                            int fanDuelIndex = marketData.books.indexWhere(
+                                (element) => element.id == 'sr:book:18186');
+                            for (var bookData in marketData.books) {
+                              if (fanDuelIndex >= 0) {
+                                if (bookData.id == 'sr:book:18186') {
+                                  if (bookData.outcomes?[0].type == 'home') {
+                                    mlbSportEventsList[newIndex].homeSpread =
+                                        bookData.outcomes?[0].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                  if (bookData.outcomes?[1].type == 'away') {
+                                    mlbSportEventsList[newIndex].awaySpread =
+                                        bookData.outcomes?[1].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                }
+                              } else if (bookData.id == 'sr:book:28901') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  mlbSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  mlbSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
+                              } else if (bookData.id == 'sr:book:17324') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  mlbSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  mlbSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
                               }
-                              if (bookData.outcomes?[1].type == 'away') {
-                                mlbSportEventsList[newIndex].awaySpread =
-                                    bookData.outcomes?[1].spread.toString() ??
-                                        '00';
-                              }
-                            }
-                          } else if (bookData.id == 'sr:book:28901') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              mlbSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              mlbSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
-                            }
-                          } else if (bookData.id == 'sr:book:17324') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              mlbSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              mlbSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
                             }
                           }
                         }
                       }
-                    }
-                  }
-                  if (mlbTodayEventsList[i].consensus?.lines != null) {
-                    mlbTodayEventsList[i]
-                        .consensus
-                        ?.lines
-                        ?.forEach((consensus) {
-                      if (consensus.name == 'moneyline_current') {
-                        consensus.outcomes?.forEach((lines) {
-                          if (lines.type == 'home') {
-                            mlbSportEventsList[newIndex].homeMoneyLine =
-                                lines.odds.toString();
+                      if (mlbTodayEventsList[i].consensus?.lines != null) {
+                        mlbTodayEventsList[i]
+                            .consensus
+                            ?.lines
+                            ?.forEach((consensus) {
+                          if (consensus.name == 'moneyline_current') {
+                            consensus.outcomes?.forEach((lines) {
+                              if (lines.type == 'home') {
+                                mlbSportEventsList[newIndex].homeMoneyLine =
+                                    lines.odds.toString();
+                              }
+                              if (lines.type == 'away') {
+                                mlbSportEventsList[newIndex].awayMoneyLine =
+                                    lines.odds.toString();
+                              }
+                            });
                           }
-                          if (lines.type == 'away') {
-                            mlbSportEventsList[newIndex].awayMoneyLine =
-                                lines.odds.toString();
+                          if (consensus.name == 'total_current') {
+                            mlbSportEventsList[newIndex].homeOU =
+                                consensus.total.toString();
+                            mlbSportEventsList[newIndex].awayOU =
+                                consensus.total.toString();
                           }
                         });
                       }
-                      if (consensus.name == 'total_current') {
-                        mlbSportEventsList[newIndex].homeOU =
-                            consensus.total.toString();
-                        mlbSportEventsList[newIndex].awayOU =
-                            consensus.total.toString();
-                      }
-                    });
+                    }
                   }
+                  // int liveIndex = mlbTodayEventsList.indexWhere((element) =>
+                  // element.status != "closed" &&
+                  //     ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
+                  //         DateTime.now().toLocal().day));
+                  if (((DateTime.parse(mlbTodayEventsList[i].scheduled ?? "")
+                                  .toLocal())
+                              .day ==
+                          DateTime.now().toLocal().day) &&
+                      mlbTodayEventsList[i].status != "closed") {
+                    if (mlbTodayEventsList[i].uuids != null) {
+                      boxScoreResponse(
+                          homeTeamId: replaceId(
+                                  mlbTodayEventsList[i].competitors[0].uuids ??
+                                      '') ??
+                              "",
+                          awayTeamId: replaceId(
+                                  mlbTodayEventsList[i].competitors[1].uuids ??
+                                      '') ??
+                              "",
+                          gameId: replaceId(mlbTodayEventsList[i].uuids ?? ''),
+                          index: i);
+                    }
+                  }
+                }
+              });
+            });
+            update();
+          });
+        }
+      });
+    });
+  }
+
+  Future<void> mlbGameRefreshCall(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        mlbTomorrowEventsList.clear();
+        for (int i = 2; i <= 3; i++) {
+          gameListingTomorrowApiRes(
+                  key: apiKey,
+                  isLoad: isLoad,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(date).add(Duration(days: i))),
+                  sportId: sportId)
+              .then((value) {
+            getAllEventList(sportKey, isLoad);
+            if (mlbSportEventsList.isNotEmpty) {
+              for (int i = 0; i < mlbSportEventsList.length; i++) {
+                getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
+                    index: i, sportKey: sportKey);
+                if (mlbSportEventsList[i].uuids != null) {
+                  boxScoreResponse(
+                      homeTeamId: replaceId(
+                              mlbSportEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              mlbSportEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }
-            int liveIndex = mlbTodayEventsList.indexWhere((element) =>
-                element.status != "closed" &&
-                ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
-                    DateTime.now().toLocal().day));
-            if (liveIndex >= 0) {
-              if (mlbTodayEventsList[liveIndex].uuids != null) {
-                boxScoreResponse(
-                    homeTeamId: replaceId(mlbTodayEventsList[liveIndex]
-                                .competitors[0]
-                                .uuids ??
-                            '') ??
-                        "",
-                    awayTeamId: replaceId(mlbTodayEventsList[liveIndex]
-                                .competitors[1]
-                                .uuids ??
-                            '') ??
-                        "",
-                    gameId:
-                        replaceId(mlbTodayEventsList[liveIndex].uuids ?? ''),
-                    index: liveIndex);
-              }
-            }
+            gameListingsWithLogoResponse(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
           });
-          update();
-        });
-      }
+          if (i == 3) {
+            isPagination = false;
+          }
+        }
+      });
     });
   }
 
@@ -2165,156 +2463,242 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) {
-      isLoading.value = false;
-      isPagination = isLoad;
-      nbaTomorrowEventsList.clear();
-      gameListingTomorrowApiRes(
+      gameListingTodayApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: DateFormat('yyyy-MM-dd')
                   .format(DateTime.parse(date).add(const Duration(days: 1))),
               sportId: sportId)
-          .then((value) async {
-        getAllEventList(sportKey, isLoad);
-        isPagination = false;
-        gameListingsWithLogoResponseNCAAB(DateTime.now().year.toString(), sportKey,
-            isLoad: isLoad);
-        nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        nbaTomorrowEventsList.clear();
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(const Duration(days: 2))),
+                sportId: sportId)
+            .then((value) async {
+          getAllEventList(sportKey, isLoad);
+          isPagination = false;
+          gameListingsWithLogoResponseNCAAB(
+              DateTime.now().year.toString(), sportKey,
+              isLoad: isLoad);
+          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
 
-        if (nbaSportEventsList.isNotEmpty) {
-          for (int i = 0; i < nbaSportEventsList.length; i++) {
-            if (nbaSportEventsList[i].uuids != null) {
-              boxScoreNBAResponse(
-                  sportKey: sportKey,
-                  homeTeamId: replaceId(
-                          nbaSportEventsList[i].competitors[0].uuids ?? '') ??
-                      "",
-                  awayTeamId: replaceId(
-                          nbaSportEventsList[i].competitors[1].uuids ?? '') ??
-                      "",
-                  gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
-                  index: i);
+          if (nbaSportEventsList.isNotEmpty) {
+            for (int i = 0; i < nbaSportEventsList.length; i++) {
+              if (nbaSportEventsList[i].uuids != null) {
+                boxScoreNBAResponse(
+                    sportKey: sportKey,
+                    homeTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
+                        "",
+                    awayTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
+                        "",
+                    gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
+                    index: i);
+              }
             }
           }
-        }
-      });
-      if (nbaTodayEventsList.isNotEmpty) {
-        timer = Timer.periodic(const Duration(seconds: 45), (t) {
-          nbaTodayEventsList.clear();
-          gameListingTodayApiRes(
-                  key: apiKey,
-                  isLoad: false,
-                  sportKey: sportKey,
-                  date: date,
-                  sportId: sportId)
-              .then((value) async {
-            setOdds(nbaTodayEventsList);
-            for (int i = 0; i < nbaTodayEventsList.length; i++) {
-              int newIndex = (nbaSportEventsList.indexWhere(
-                  (element) => element.id == nbaTodayEventsList[i].id));
-              if (newIndex >= 0) {
-                nbaSportEventsList[newIndex].status =
-                    nbaTodayEventsList[i].status;
-                if (nbaTodayEventsList[i].consensus != null) {
-                  ///MONEY LINES
-                  if (nbaTodayEventsList[i].markets.isNotEmpty) {
-                    for (var marketData in nbaTodayEventsList[i].markets) {
-                      if (marketData.oddsTypeId == 4) {
-                        int fanDuelIndex = marketData.books.indexWhere(
-                            (element) => element.id == 'sr:book:18186');
-                        for (var bookData in marketData.books) {
-                          if (fanDuelIndex >= 0) {
-                            if (bookData.id == 'sr:book:18186') {
-                              if (bookData.outcomes?[0].type == 'home') {
-                                nbaSportEventsList[newIndex].homeSpread =
-                                    bookData.outcomes?[0].spread.toString() ??
-                                        '00';
+        });
+        if (nbaTodayEventsList.isNotEmpty) {
+          timer = Timer.periodic(const Duration(seconds: 45), (t) {
+            nbaTodayEventsList.clear();
+            gameListingTodayApiRes(
+                    key: apiKey,
+                    isLoad: false,
+                    sportKey: sportKey,
+                    date: date,
+                    sportId: sportId)
+                .then((value) async {
+              gameListingTodayApiRes(
+                      key: apiKey,
+                      isLoad: false,
+                      sportKey: sportKey,
+                      date: DateFormat('yyyy-MM-dd').format(
+                          DateTime.parse(date).add(const Duration(days: 1))),
+                      sportId: sportId)
+                  .then((value) async {
+                setOdds(nbaTodayEventsList);
+                for (int i = 0; i < nbaTodayEventsList.length; i++) {
+                  int newIndex = (nbaSportEventsList.indexWhere(
+                      (element) => element.id == nbaTodayEventsList[i].id));
+                  if (newIndex >= 0) {
+                    nbaSportEventsList[newIndex].status =
+                        nbaTodayEventsList[i].status;
+                    if (nbaTodayEventsList[i].consensus != null) {
+                      ///MONEY LINES
+                      if (nbaTodayEventsList[i].markets.isNotEmpty) {
+                        for (var marketData in nbaTodayEventsList[i].markets) {
+                          if (marketData.oddsTypeId == 4) {
+                            int fanDuelIndex = marketData.books.indexWhere(
+                                (element) => element.id == 'sr:book:18186');
+                            for (var bookData in marketData.books) {
+                              if (fanDuelIndex >= 0) {
+                                if (bookData.id == 'sr:book:18186') {
+                                  if (bookData.outcomes?[0].type == 'home') {
+                                    nbaSportEventsList[newIndex].homeSpread =
+                                        bookData.outcomes?[0].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                  if (bookData.outcomes?[1].type == 'away') {
+                                    nbaSportEventsList[newIndex].awaySpread =
+                                        bookData.outcomes?[1].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                }
+                              } else if (bookData.id == 'sr:book:28901') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  nbaSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  nbaSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
+                              } else if (bookData.id == 'sr:book:17324') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  nbaSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  nbaSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
                               }
-                              if (bookData.outcomes?[1].type == 'away') {
-                                nbaSportEventsList[newIndex].awaySpread =
-                                    bookData.outcomes?[1].spread.toString() ??
-                                        '00';
-                              }
-                            }
-                          } else if (bookData.id == 'sr:book:28901') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              nbaSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              nbaSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
-                            }
-                          } else if (bookData.id == 'sr:book:17324') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              nbaSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              nbaSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
                             }
                           }
                         }
                       }
-                    }
-                  }
-                  if (nbaTodayEventsList[i].consensus?.lines != null) {
-                    nbaTodayEventsList[i]
-                        .consensus
-                        ?.lines
-                        ?.forEach((consensus) {
-                      if (consensus.name == 'moneyline_current') {
-                        consensus.outcomes?.forEach((lines) {
-                          if (lines.type == 'home') {
-                            nbaSportEventsList[newIndex].homeMoneyLine =
-                                lines.odds.toString();
+                      if (nbaTodayEventsList[i].consensus?.lines != null) {
+                        nbaTodayEventsList[i]
+                            .consensus
+                            ?.lines
+                            ?.forEach((consensus) {
+                          if (consensus.name == 'moneyline_current') {
+                            consensus.outcomes?.forEach((lines) {
+                              if (lines.type == 'home') {
+                                nbaSportEventsList[newIndex].homeMoneyLine =
+                                    lines.odds.toString();
+                              }
+                              if (lines.type == 'away') {
+                                nbaSportEventsList[newIndex].awayMoneyLine =
+                                    lines.odds.toString();
+                              }
+                            });
                           }
-                          if (lines.type == 'away') {
-                            nbaSportEventsList[newIndex].awayMoneyLine =
-                                lines.odds.toString();
+                          if (consensus.name == 'total_current') {
+                            nbaSportEventsList[newIndex].homeOU =
+                                consensus.total.toString();
+                            nbaSportEventsList[newIndex].awayOU =
+                                consensus.total.toString();
                           }
                         });
                       }
-                      if (consensus.name == 'total_current') {
-                        nbaSportEventsList[newIndex].homeOU =
-                            consensus.total.toString();
-                        nbaSportEventsList[newIndex].awayOU =
-                            consensus.total.toString();
-                      }
-                    });
+                    }
+                  }
+                  // int liveIndex = nbaTodayEventsList.indexWhere((element) =>
+                  // element.status != "closed" &&
+                  //     ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
+                  //         DateTime.now().toLocal().day));
+                  if (((DateTime.parse(nbaTodayEventsList[i].scheduled ?? "")
+                                  .toLocal())
+                              .day ==
+                          DateTime.now().toLocal().day) &&
+                      nbaTodayEventsList[i].status != "closed") {
+                    if (nbaTodayEventsList[i].uuids != null) {
+                      boxScoreNBAResponse(
+                          sportKey: sportKey,
+                          homeTeamId: replaceId(
+                                  nbaTodayEventsList[i].competitors[0].uuids ??
+                                      '') ??
+                              "",
+                          awayTeamId: replaceId(
+                                  nbaTodayEventsList[i].competitors[1].uuids ??
+                                      '') ??
+                              "",
+                          gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
+                          index: i);
+                    }
                   }
                 }
-              }
-            }
-            int liveIndex = nbaTodayEventsList.indexWhere((element) =>
-                element.status != "closed" &&
-                ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
-                    DateTime.now().toLocal().day));
-            if (liveIndex >= 0) {
-              if (nbaTodayEventsList[liveIndex].uuids != null) {
+              });
+            });
+            update();
+          });
+        }
+      });
+    });
+  }
+
+  Future<void> nbaGameRefreshCall(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    nbaTodayEventsList.clear();
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        nbaTomorrowEventsList.clear();
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(const Duration(days: 2))),
+                sportId: sportId)
+            .then((value) async {
+          getAllEventList(sportKey, isLoad);
+          isPagination = false;
+          gameListingsWithLogoResponseNCAAB(
+              DateTime.now().year.toString(), sportKey,
+              isLoad: isLoad);
+          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+
+          if (nbaSportEventsList.isNotEmpty) {
+            for (int i = 0; i < nbaSportEventsList.length; i++) {
+              if (nbaSportEventsList[i].uuids != null) {
                 boxScoreNBAResponse(
                     sportKey: sportKey,
-                    homeTeamId: replaceId(nbaTodayEventsList[liveIndex]
-                                .competitors[0]
-                                .uuids ??
-                            '') ??
+                    homeTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
                         "",
-                    awayTeamId: replaceId(nbaTodayEventsList[liveIndex]
-                                .competitors[1]
-                                .uuids ??
-                            '') ??
+                    awayTeamId: replaceId(
+                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
                         "",
-                    gameId:
-                        replaceId(nbaTodayEventsList[liveIndex].uuids ?? ''),
-                    index: liveIndex);
+                    gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
+                    index: i);
               }
             }
-          });
-          update();
+          }
         });
-      }
+      });
     });
   }
 
@@ -2333,164 +2717,261 @@ class GameListingController extends GetxController {
             date: date,
             sportId: sportId)
         .then((value) {
-      isLoading.value = false;
-      isPagination = isLoad;
-      ncaabTomorrowEventsList.clear();
-      gameListingTomorrowApiRes(
+      gameListingTodayApiRes(
               key: apiKey,
               isLoad: isLoad,
               sportKey: sportKey,
               date: DateFormat('yyyy-MM-dd')
                   .format(DateTime.parse(date).add(const Duration(days: 1))),
               sportId: sportId)
-          .then((value) async {
-        getAllEventList(sportKey, isLoad);
-        nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-        isPagination = false;
-        gameListingsWithLogoResponseNCAAB(
-            DateTime.now().year.toString(), sportKey,
-            isLoad: isLoad);
-        if (ncaabSportEventsList.isNotEmpty) {
-          for (int i = 0; i < ncaabSportEventsList.length; i++) {
-            if (ncaabSportEventsList[i].uuids != null) {
-              if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
-                      .toLocal()
-                      .day ==
-                  DateTime.now().day) {
-                boxScoreNBAResponse(
-                    sportKey: sportKey,
-                    homeTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                    gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
-                    index: i);
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        ncaabTomorrowEventsList.clear();
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(const Duration(days: 2))),
+                sportId: sportId)
+            .then((value) async {
+          getAllEventList(sportKey, isLoad);
+          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+          isPagination = false;
+          gameListingsWithLogoResponseNCAAB(
+              DateTime.now().year.toString(), sportKey,
+              isLoad: isLoad);
+          if (ncaabSportEventsList.isNotEmpty) {
+            for (int i = 0; i < ncaabSportEventsList.length; i++) {
+              if (ncaabSportEventsList[i].uuids != null) {
+                if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
+                        .toLocal()
+                        .day ==
+                    DateTime.now().day) {
+                  boxScoreNBAResponse(
+                      sportKey: sportKey,
+                      homeTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
+                      index: i);
+                }
               }
             }
           }
-        }
-      });
+        });
 
-      if (ncaabTodayEventsList.isNotEmpty) {
-        timer = Timer.periodic(const Duration(seconds: 45), (t) {
-          ncaabTodayEventsList.clear();
-          gameListingTodayApiRes(
-                  key: apiKey,
-                  isLoad: false,
-                  sportKey: sportKey,
-                  date: date,
-                  sportId: sportId)
-              .then((value) async {
-            setOdds(ncaabTodayEventsList);
-            for (int i = 0; i < ncaabTodayEventsList.length; i++) {
-              int newIndex = (ncaabSportEventsList.indexWhere(
-                  (element) => element.id == ncaabTodayEventsList[i].id));
-              if (newIndex >= 0) {
-                ncaabSportEventsList[newIndex].status =
-                    ncaabTodayEventsList[i].status;
-                if (ncaabTodayEventsList[i].consensus != null) {
-                  ///MONEY LINES
-                  if (ncaabTodayEventsList[i].markets.isNotEmpty) {
-                    for (var marketData in ncaabTodayEventsList[i].markets) {
-                      if (marketData.oddsTypeId == 4) {
-                        int fanDuelIndex = marketData.books.indexWhere(
-                            (element) => element.id == 'sr:book:18186');
-                        for (var bookData in marketData.books) {
-                          if (fanDuelIndex >= 0) {
-                            if (bookData.id == 'sr:book:18186') {
-                              if (bookData.outcomes?[0].type == 'home') {
-                                ncaabSportEventsList[newIndex].homeSpread =
-                                    bookData.outcomes?[0].spread.toString() ??
-                                        '00';
+        if (ncaabTodayEventsList.isNotEmpty) {
+          timer = Timer.periodic(const Duration(seconds: 45), (t) {
+            ncaabTodayEventsList.clear();
+            gameListingTodayApiRes(
+                    key: apiKey,
+                    isLoad: false,
+                    sportKey: sportKey,
+                    date: date,
+                    sportId: sportId)
+                .then((value) async {
+              gameListingTodayApiRes(
+                      key: apiKey,
+                      isLoad: false,
+                      sportKey: sportKey,
+                      date: DateFormat('yyyy-MM-dd').format(
+                          DateTime.parse(date).add(const Duration(days: 1))),
+                      sportId: sportId)
+                  .then((value) async {
+                setOdds(ncaabTodayEventsList);
+                for (int i = 0; i < ncaabTodayEventsList.length; i++) {
+                  int newIndex = (ncaabSportEventsList.indexWhere(
+                      (element) => element.id == ncaabTodayEventsList[i].id));
+                  if (newIndex >= 0) {
+                    ncaabSportEventsList[newIndex].status =
+                        ncaabTodayEventsList[i].status;
+                    if (ncaabTodayEventsList[i].consensus != null) {
+                      ///MONEY LINES
+                      if (ncaabTodayEventsList[i].markets.isNotEmpty) {
+                        for (var marketData
+                            in ncaabTodayEventsList[i].markets) {
+                          if (marketData.oddsTypeId == 4) {
+                            int fanDuelIndex = marketData.books.indexWhere(
+                                (element) => element.id == 'sr:book:18186');
+                            for (var bookData in marketData.books) {
+                              if (fanDuelIndex >= 0) {
+                                if (bookData.id == 'sr:book:18186') {
+                                  if (bookData.outcomes?[0].type == 'home') {
+                                    ncaabSportEventsList[newIndex].homeSpread =
+                                        bookData.outcomes?[0].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                  if (bookData.outcomes?[1].type == 'away') {
+                                    ncaabSportEventsList[newIndex].awaySpread =
+                                        bookData.outcomes?[1].spread
+                                                .toString() ??
+                                            '00';
+                                  }
+                                }
+                              } else if (bookData.id == 'sr:book:28901') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  ncaabSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  ncaabSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
+                              } else if (bookData.id == 'sr:book:17324') {
+                                if (bookData.outcomes?[0].type == 'home') {
+                                  ncaabSportEventsList[newIndex].homeSpread =
+                                      bookData.outcomes?[0].spread.toString() ??
+                                          '';
+                                }
+                                if (bookData.outcomes?[1].type == 'away') {
+                                  ncaabSportEventsList[newIndex].awaySpread =
+                                      bookData.outcomes?[1].spread.toString() ??
+                                          '';
+                                }
                               }
-                              if (bookData.outcomes?[1].type == 'away') {
-                                ncaabSportEventsList[newIndex].awaySpread =
-                                    bookData.outcomes?[1].spread.toString() ??
-                                        '00';
-                              }
-                            }
-                          } else if (bookData.id == 'sr:book:28901') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              ncaabSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              ncaabSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
-                            }
-                          } else if (bookData.id == 'sr:book:17324') {
-                            if (bookData.outcomes?[0].type == 'home') {
-                              ncaabSportEventsList[newIndex].homeSpread =
-                                  bookData.outcomes?[0].spread.toString() ?? '';
-                            }
-                            if (bookData.outcomes?[1].type == 'away') {
-                              ncaabSportEventsList[newIndex].awaySpread =
-                                  bookData.outcomes?[1].spread.toString() ?? '';
                             }
                           }
                         }
                       }
-                    }
-                  }
-                  if (ncaabTodayEventsList[i].consensus?.lines != null) {
-                    ncaabTodayEventsList[i]
-                        .consensus
-                        ?.lines
-                        ?.forEach((consensus) {
-                      if (consensus.name == 'moneyline_current') {
-                        consensus.outcomes?.forEach((lines) {
-                          if (lines.type == 'home') {
-                            ncaabSportEventsList[newIndex].homeMoneyLine =
-                                lines.odds.toString();
+                      if (ncaabTodayEventsList[i].consensus?.lines != null) {
+                        ncaabTodayEventsList[i]
+                            .consensus
+                            ?.lines
+                            ?.forEach((consensus) {
+                          if (consensus.name == 'moneyline_current') {
+                            consensus.outcomes?.forEach((lines) {
+                              if (lines.type == 'home') {
+                                ncaabSportEventsList[newIndex].homeMoneyLine =
+                                    lines.odds.toString();
+                              }
+                              if (lines.type == 'away') {
+                                ncaabSportEventsList[newIndex].awayMoneyLine =
+                                    lines.odds.toString();
+                              }
+                            });
                           }
-                          if (lines.type == 'away') {
-                            ncaabSportEventsList[newIndex].awayMoneyLine =
-                                lines.odds.toString();
+                          if (consensus.name == 'total_current') {
+                            ncaabSportEventsList[newIndex].homeOU =
+                                consensus.total.toString();
+                            ncaabSportEventsList[newIndex].awayOU =
+                                consensus.total.toString();
                           }
                         });
                       }
-                      if (consensus.name == 'total_current') {
-                        ncaabSportEventsList[newIndex].homeOU =
-                            consensus.total.toString();
-                        ncaabSportEventsList[newIndex].awayOU =
-                            consensus.total.toString();
-                      }
-                    });
+                    }
                   }
+                  // int liveIndex = ncaabSportEventsList.indexWhere((element) =>
+                  // element.status != "closed" &&
+                  //     ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
+                  //         DateTime.now().toLocal().day));
+                  if (((DateTime.parse(ncaabTodayEventsList[i].scheduled ?? "")
+                                  .toLocal())
+                              .day ==
+                          DateTime.now().toLocal().day) &&
+                      ncaabTodayEventsList[i].status != "closed") {
+                    if (ncaabTodayEventsList[i].uuids != null) {
+                      boxScoreNBAResponse(
+                          sportKey: sportKey,
+                          homeTeamId: replaceId(ncaabTodayEventsList[i]
+                                      .competitors[0]
+                                      .uuids ??
+                                  '') ??
+                              "",
+                          awayTeamId: replaceId(ncaabTodayEventsList[i]
+                                      .competitors[1]
+                                      .uuids ??
+                                  '') ??
+                              "",
+                          gameId:
+                              replaceId(ncaabTodayEventsList[i].uuids ?? ''),
+                          index: i);
+                    }
+                  }
+                }
+              });
+            });
+            update();
+          });
+        }
+      });
+    });
+  }
+
+  ncaabGameRefreshCall(
+    bool isLoad, {
+    String apiKey = '',
+    String sportKey = '',
+    String date = '',
+    String sportId = '',
+  }) {
+    ncaabTodayEventsList = [];
+    gameListingTodayApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: date,
+            sportId: sportId)
+        .then((value) {
+      gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(const Duration(days: 1))),
+              sportId: sportId)
+          .then((value) {
+        isLoading.value = false;
+        isPagination = isLoad;
+        ncaabTomorrowEventsList.clear();
+        gameListingTomorrowApiRes(
+                key: apiKey,
+                isLoad: isLoad,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd')
+                    .format(DateTime.parse(date).add(const Duration(days: 2))),
+                sportId: sportId)
+            .then((value) async {
+          getAllEventList(sportKey, isLoad);
+          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+          isPagination = false;
+          gameListingsWithLogoResponseNCAAB(
+              DateTime.now().year.toString(), sportKey,
+              isLoad: isLoad);
+          if (ncaabSportEventsList.isNotEmpty) {
+            for (int i = 0; i < ncaabSportEventsList.length; i++) {
+              if (ncaabSportEventsList[i].uuids != null) {
+                if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
+                        .toLocal()
+                        .day ==
+                    DateTime.now().day) {
+                  boxScoreNBAResponse(
+                      sportKey: sportKey,
+                      homeTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[0].uuids ??
+                                  '') ??
+                          "",
+                      awayTeamId: replaceId(
+                              ncaabSportEventsList[i].competitors[1].uuids ??
+                                  '') ??
+                          "",
+                      gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
+                      index: i);
                 }
               }
             }
-            int liveIndex = ncaabTodayEventsList.indexWhere((element) =>
-                element.status != "closed" &&
-                ((DateTime.parse(element.scheduled ?? "").toLocal()).day ==
-                    DateTime.now().toLocal().day));
-            if (liveIndex >= 0) {
-              if (ncaabTodayEventsList[liveIndex].uuids != null) {
-                boxScoreNBAResponse(
-                    sportKey: sportKey,
-                    homeTeamId: replaceId(ncaabTodayEventsList[liveIndex]
-                                .competitors[0]
-                                .uuids ??
-                            '') ??
-                        "",
-                    awayTeamId: replaceId(ncaabTodayEventsList[liveIndex]
-                                .competitors[1]
-                                .uuids ??
-                            '') ??
-                        "",
-                    gameId:
-                        replaceId(ncaabTodayEventsList[liveIndex].uuids ?? ''),
-                    index: liveIndex);
-              }
-            }
-          });
-          update();
+          }
         });
-      }
+      });
     });
   }
 
