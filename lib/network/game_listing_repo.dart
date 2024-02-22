@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:hotlines/extras/extras.dart';
 
 import '../model/response_item.dart';
@@ -7,12 +5,14 @@ import '../model/response_item.dart';
 class GameListingRepo {
   ///GAME LISTING
   Future<ResponseItem> gameListingRepo(
-      {String date = '', String spotId = '', String key = '',int start=0}) async {
+      {String date = '',
+      String spotId = '',
+      String key = '',
+      int start = 0}) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
-
 
     Uri uri = Uri.parse(
         '${AppUrls.BASE_URL}en/us/sports/$spotId/$date/schedule.json?api_key=$key&start=${start.toString()}');
@@ -23,7 +23,9 @@ class GameListingRepo {
     message = result.message;
 
     return ResponseItem(data: data, message: message, status: status);
-  }Future<ResponseItem> gameListingRepoNCAAB(
+  }
+
+  Future<ResponseItem> gameListingRepoNCAAB(
       {String date = '', String spotId = '', String key = ''}) async {
     ResponseItem result;
     bool status = true;
@@ -42,14 +44,15 @@ class GameListingRepo {
   }
 
   ///NCAA RANKING
-  Future<ResponseItem> ncaaGameRanking() async {
+  Future<ResponseItem> ncaaGameRanking(String sportName) async {
     ResponseItem result;
     bool status = true;
     dynamic data;
     String message = "";
 
-    Uri uri = Uri.parse(
-        '${AppUrls.NCAA_BASE_URL}polls/AP25/$currentYear/rankings.json?api_key=${AppUrls.NCAA_APIKEY}');
+    Uri uri = Uri.parse(sportName == "NCAAB"
+        ? "${AppUrls.NCAAB_BASE_URL}polls/us/$currentYear/rankings.json?api_key=${AppUrls.NCAAB_APIKEY}"
+        : '${AppUrls.NCAA_BASE_URL}polls/AP25/$currentYear/rankings.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

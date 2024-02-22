@@ -1,7 +1,7 @@
 class RankingModel {
   Poll? poll;
   num? season;
-  num? week;
+  // num? week;
   String? effectiveTime;
   List<Rankings>? rankings;
   List<Candidates>? candidates;
@@ -9,7 +9,7 @@ class RankingModel {
   RankingModel(
       {this.poll,
       this.season,
-      this.week,
+      // this.week,
       this.effectiveTime,
       this.rankings,
       this.candidates});
@@ -17,7 +17,7 @@ class RankingModel {
   RankingModel.fromJson(Map<String, dynamic> json) {
     poll = json['poll'] != null ? Poll.fromJson(json['poll']) : null;
     season = json['season'];
-    week = json['week'];
+    // week = json['week'];
     effectiveTime = json['effective_time'];
     if (json['rankings'] != null) {
       rankings = <Rankings>[];
@@ -39,7 +39,7 @@ class RankingModel {
       data['poll'] = poll!.toJson();
     }
     data['season'] = season;
-    data['week'] = week;
+    // data['week'] = week;
     data['effective_time'] = effectiveTime;
     if (rankings != null) {
       data['rankings'] = rankings!.map((v) => v.toJson()).toList();
