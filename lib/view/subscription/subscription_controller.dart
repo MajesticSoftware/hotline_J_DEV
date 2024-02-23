@@ -211,7 +211,7 @@ class SubscriptionController extends GetxController {
   }
 
   changeAutoRenewalSubscription(bool newValue) {}
-String price='\$9.99/mo';
+String price='30 days free trial';
   Future<void> initStoreInfo() async {
     isLoading.value = true;
     products.clear();

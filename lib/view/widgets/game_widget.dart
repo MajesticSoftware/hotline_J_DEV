@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -177,24 +179,23 @@ class GameWidget extends StatelessWidget {
                         children: [
                           Stack(
                             clipBehavior: Clip.none,
+                            alignment: Alignment.centerRight,
                             children: [
                               commonCachedNetworkImage(
-                                  width: Get.height * .042,
-                                  height: Get.height * .042,
-                                  imageUrl: homeTeamImageUrl),
+                                width: Get.height * .042,
+                                height: Get.height * .042,
+                                imageUrl: homeTeamImageUrl,
+                              ),
                               Positioned(
-                                top: -6,
-                                right: -1,
-                                child: homeTeamRank.appCommonText(
+                                right: -4,
+                                child: homeTeamRank.toString().appCommonText(
                                     color: Theme.of(context).highlightColor,
                                     align: TextAlign.start,
                                     size: MediaQuery.of(context).size.height *
                                         .019,
                                     weight: FontWeight.bold),
                               )
-                            ],
-                          ),
-
+                            ],),
                           // 10.W(),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * .02,
@@ -499,14 +500,14 @@ Future<dynamic> subscriptionDialog(BuildContext context,
             decoration: TextDecoration.underline,
             weight: FontWeight.bold),
         children: [
-          'Unlock next level analytics & we’ll help you easily identify the biggest mismatches for every game!'
+          'March Madness Special! 30 Day Free Trial now available for our next level analytics that help you easily identify the biggest mismatches in every game!'
               .appCommonText(
                   color: whiteColor,
                   size: Get.height * .021,
                   weight: FontWeight.bold),
           20.h.H(),
           Image.asset(
-            Assets.imagesSs,
+            Assets.imagesSubscriptioon,
             height: 300,
           ),
           20.h.H(),
@@ -514,7 +515,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'This subscription automatically renews for ${price ?? "\$9.99/mo"} a month. You can cancel anytime. By upgrading, you agree to Hotlines ',
+                      'After the 30 days this subscription will automatically renew for ${(price ?? "\$9.99")}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -522,7 +523,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                   ),
                   children: [
                     linkTextWidget(context,
-                        text: 'Terms of Service',
+                        text: 'TOS',
                         color: yellowColor,
                         link: 'https://www.hotlinesmd.com/terms-of-service'),
                     TextSpan(
@@ -554,7 +555,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
           Visibility(
             visible: showButton,
             child: CommonAppButton(
-              title: "Upgrade for ${price ?? "\$9.99"}/mo",
+              title:price=="Free"? "30 days free trial": "Upgrade for ${(price ?? "\$9.99")}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),

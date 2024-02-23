@@ -750,8 +750,7 @@ class GameListingController extends GetxController {
                 ncaabTomorrowEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == 'NBA' &&
-                (difference.inHours <= (16))) {
+                sportKey == 'NBA') {
               if (nbaTomorrowEventsList.contains(event)) {
               } else {
                 nbaTomorrowEventsList.add(event);
@@ -888,9 +887,8 @@ class GameListingController extends GetxController {
         }
       }
 
-      if (event.consensus != null) {
-        ///MONEY LINES
-        /*      if (event.markets.isNotEmpty) {
+      ///MONEY LINES
+      /*      if (event.markets.isNotEmpty) {
           for (var marketData in event.markets) {
             if (marketData.oddsTypeId == 4) {
               int fanDuelIndex = marketData.books
@@ -930,29 +928,61 @@ class GameListingController extends GetxController {
             }
           }
         }*/
-        if (event.consensus?.lines != null) {
-          event.consensus?.lines?.forEach((consensus) {
-            if (consensus.name == 'moneyline_current') {
-              consensus.outcomes?.forEach((lines) {
-                if (lines.type == 'home') {
-                  event.homeMoneyLine = lines.odds.toString();
-                }
-                if (lines.type == 'away') {
-                  event.awayMoneyLine = lines.odds.toString();
-                }
-              });
-            }
+      if (event.status == 'live' ||
+          event.status == "inprogress" ||
+          event.status == "halftime") {
+        if (event.consensus != null) {
+          if (event.consensus?.lines != null) {
+            event.consensus?.lines?.forEach((consensus) {
+              if (consensus.name == 'moneyline_live') {
+                consensus.outcomes?.forEach((lines) {
+                  if (lines.type == 'home') {
+                    event.homeMoneyLine = lines.odds.toString();
+                    log('HOME MONEY ---${event.homeMoneyLine}');
+                  }
+                  if (lines.type == 'away') {
+                    event.awayMoneyLine = lines.odds.toString();
+                    log('AWAY MONEY ---${event.awayMoneyLine}');
+                  }
+                });
+              }
+              if (consensus.name == 'total_live') {
+                event.homeOU = consensus.total.toString();
+                event.awayOU = consensus.total.toString();
+              }
+              if (consensus.name == 'spread_live') {
+                event.homeSpread = '${consensus.spread}'.toString();
+                event.awaySpread = '${consensus.spread}'.toString();
+              }
+            });
+          }
+        }
+      } else {
+        if (event.consensus != null) {
+          if (event.consensus?.lines != null) {
+            event.consensus?.lines?.forEach((consensus) {
+              if (consensus.name == 'moneyline_current') {
+                consensus.outcomes?.forEach((lines) {
+                  if (lines.type == 'home') {
+                    event.homeMoneyLine = lines.odds.toString();
+                  }
+                  if (lines.type == 'away') {
+                    event.awayMoneyLine = lines.odds.toString();
+                  }
+                });
+              }
 
-            if (consensus.name == 'total_current') {
-              event.homeOU = consensus.total.toString();
-              event.awayOU = consensus.total.toString();
-            }
-            if (consensus.name == 'run_line_current' ||
-                consensus.name == 'spread_current') {
-              event.homeSpread = '${consensus.spread}'.toString();
-              event.awaySpread = '${consensus.spread}'.toString();
-            }
-          });
+              if (consensus.name == 'total_current') {
+                event.homeOU = consensus.total.toString();
+                event.awayOU = consensus.total.toString();
+              }
+              if (consensus.name == 'run_line_current' ||
+                  consensus.name == 'spread_current') {
+                event.homeSpread = '${consensus.spread}'.toString();
+                event.awaySpread = '${consensus.spread}'.toString();
+              }
+            });
+          }
         }
       }
     }
@@ -1228,13 +1258,14 @@ class GameListingController extends GetxController {
               consensus.outcomes?.forEach((lines) {
                 if (lines.type == 'home') {
                   event.homeMoneyLine = lines.odds.toString();
+                  log('HOME MONEY ---${event.homeMoneyLine}');
                 }
                 if (lines.type == 'away') {
                   event.awayMoneyLine = lines.odds.toString();
+                  log('AWAY MONEY ---${event.awayMoneyLine}');
                 }
               });
             }
-
             if (consensus.name == 'total_live') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
@@ -1370,7 +1401,11 @@ class GameListingController extends GetxController {
                       sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < ncaaTodayEventsList.length; i++) {
-                  setOdds(ncaaTodayEventsList[i]);
+                  int liveIndex = ncaaSportEventsList.indexWhere(
+                      (element) => element.id == ncaaTodayEventsList[i].id);
+                  if (liveIndex >= 0) {
+                    setOdds(ncaaSportEventsList[liveIndex]);
+                  }
                   if (((DateTime.parse(ncaaTodayEventsList[i].scheduled ?? "")
                                   .toLocal())
                               .day ==
@@ -1543,7 +1578,11 @@ class GameListingController extends GetxController {
                       sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < nflTodayEventsList.length; i++) {
-                  setOdds(nflTodayEventsList[i]);
+                  int liveIndex = nflSportEventsList.indexWhere(
+                      (element) => element.id == nflTodayEventsList[i].id);
+                  if (liveIndex >= 0) {
+                    setOdds(nflSportEventsList[liveIndex]);
+                  }
                   if (((DateTime.parse(nflTodayEventsList[i].scheduled ?? "")
                                   .toLocal())
                               .day ==
@@ -2097,7 +2136,11 @@ class GameListingController extends GetxController {
                       sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < mlbTodayEventsList.length; i++) {
-                  setOdds(mlbTodayEventsList[i]);
+                  int liveIndex = mlbSportEventsList.indexWhere(
+                      (element) => element.id == mlbTodayEventsList[i].id);
+                  if (liveIndex >= 0) {
+                    setOdds(mlbSportEventsList[liveIndex]);
+                  }
                   if (((DateTime.parse(mlbTodayEventsList[i].scheduled ?? "")
                                   .toLocal())
                               .day ==
@@ -2266,7 +2309,11 @@ class GameListingController extends GetxController {
                       sportId: sportId)
                   .then((value) async {
                 for (int i = 0; i < nbaTodayEventsList.length; i++) {
-                  setOdds(nbaTodayEventsList[i]);
+                  int liveIndex = nbaSportEventsList.indexWhere(
+                      (element) => element.id == nbaTodayEventsList[i].id);
+                  if (liveIndex >= 0) {
+                    setOdds(nbaSportEventsList[liveIndex]);
+                  }
                   if (((DateTime.parse(nbaTodayEventsList[i].scheduled ?? "")
                                   .toLocal())
                               .day ==
@@ -2452,7 +2499,11 @@ class GameListingController extends GetxController {
                       sportId: sportId)
                   .then((value) async {
                 for (int i = 0; i < ncaabTodayEventsList.length; i++) {
-                  setOdds(ncaabTodayEventsList[i]);
+                  int liveIndex = ncaabSportEventsList.indexWhere(
+                      (element) => element.id == ncaabTodayEventsList[i].id);
+                  if (liveIndex >= 0) {
+                    setOdds(ncaabSportEventsList[liveIndex]);
+                  }
                   if (((DateTime.parse(ncaabTodayEventsList[i].scheduled ?? "")
                                   .toLocal())
                               .day ==
@@ -2512,7 +2563,7 @@ class GameListingController extends GetxController {
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
-        ncaabTomorrowEventsList.clear();
+        ncaabTomorrowEventsList=[];
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
@@ -2523,7 +2574,6 @@ class GameListingController extends GetxController {
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          isPagination = false;
           gameListingsWithLogoResponseNCAAB(
               DateTime.now().year.toString(), sportKey,
               isLoad: isLoad);
