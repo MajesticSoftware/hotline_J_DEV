@@ -26,13 +26,9 @@ import '../widgets/common_dialog.dart';
 
 /// IOS SUBSCRIPTION ID
 const iosMonthlySubscriptionID = "com.subscription.monthly";
-// const iosYearlySubscriptionID = "com.subscription.yearly";
-// const iosLifeTimeSubscriptionID = "com.subscription.lifetime.mama";
 
 /// ANDROID SUBSCRIPTION ID
 const androidMonthlySubscriptionID = "com.subscription.monthly";
-// const androidYearlySubscriptionID = "com.subscription.yearly";
-// const androidLifeTimeSubscriptionID = "com.subscription.lifetime.mama";
 
 class SubscriptionController extends GetxController {
   bool isAutoRenewalSubscription =
@@ -40,17 +36,10 @@ class SubscriptionController extends GetxController {
   RxList<ProductDetails> products = <ProductDetails>[].obs;
   String monthlySubscription =
       Platform.isIOS ? iosMonthlySubscriptionID : androidMonthlySubscriptionID;
-
-  // String yearlySubscription =
-  //     Platform.isIOS ? iosYearlySubscriptionID : androidYearlySubscriptionID;
-  // String lifeTimeSubscription = Platform.isIOS
-  //     ? iosLifeTimeSubscriptionID
-  //     : androidLifeTimeSubscriptionID;
   RxBool isLoading = false.obs;
   late StreamSubscription<List<PurchaseDetails>> subscription;
   final InAppPurchase inAppPurchase = InAppPurchase.instance;
 
-  // int selectedIndex = -1;
   bool isStepController18 = false;
 
   String subscriptionPrice = "";
@@ -64,10 +53,7 @@ class SubscriptionController extends GetxController {
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         inAppPurchase.purchaseStream;
     subscription = purchaseUpdated.listen((purchaseDetailList) async {
-      // if (PreferenceManager.getSubscriptionProduct() !=
-      //     lifeTimeSubscription) {
       await listenToPurchaseUpdated(purchaseDetailList);
-      // }
     }, onDone: () {
       subscription.cancel();
     }, onError: (error) {
@@ -196,11 +182,7 @@ class SubscriptionController extends GetxController {
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
     bool isVerify = false;
-    if (purchaseDetails.productID ==
-            monthlySubscription /*||
-        purchaseDetails.productID == yearlySubscription ||
-        purchaseDetails.productID == lifeTimeSubscription*/
-        ) {
+    if (purchaseDetails.productID == monthlySubscription) {
       isVerify = true;
       update();
     } else {
@@ -210,8 +192,8 @@ class SubscriptionController extends GetxController {
     return Future<bool>.value(isVerify);
   }
 
-  changeAutoRenewalSubscription(bool newValue) {}
-String price='30 days free trial';
+  String price = 'Start Free Trial';
+
   Future<void> initStoreInfo() async {
     isLoading.value = true;
     products.clear();
@@ -229,11 +211,7 @@ String price='30 days free trial';
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     }
 
-    List<String> kProductIds = [
-      monthlySubscription,
-      // yearlySubscription,
-      // lifeTimeSubscription
-    ];
+    List<String> kProductIds = [monthlySubscription];
     final ProductDetailsResponse productDetailResponse =
         await inAppPurchase.queryProductDetails(kProductIds.toSet());
 
@@ -249,19 +227,34 @@ String price='30 days free trial';
       isLoading.value = false;
       return;
     }
-
     for (var id in kProductIds) {
       products.add(productDetailResponse.productDetails.firstWhere((element) {
         return element.id == id;
       }));
     }
     log("Product List Length ------> ${products.length}");
-    for (var element in products) {
-      price=element.price;
-      log("Product Price ------> ${element.price}");
+    if (Platform.isIOS) {
+      final AppStoreProductDetails details =
+          products.first as AppStoreProductDetails;
+      if (details.skProduct.introductoryPrice != null) {
+        price = details.skProduct.introductoryPrice!.price;
+      } else {
+        price = details.skProduct.price;
+      }
+    }else{
+      final GooglePlayProductDetails details =
+      products.first as GooglePlayProductDetails;
+      if (details.productDetails.subscriptionOfferDetails != null) {
+        price = details.productDetails.subscriptionOfferDetails![0].pricingPhases[0].formattedPrice;
+      } else {
+        for (var element in products) {
+          price = element.price;
+          log("Product Price ------> ${element.price}");
+        }
+      }
     }
-    isLoading.value = false;
 
+    isLoading.value = false;
     return;
   }
 
@@ -334,22 +327,9 @@ String price='30 days free trial';
     subscriptionId = PreferenceManager.getSubscriptionProduct() ?? "";
     String subscriptionProduct =
         PreferenceManager.getSubscriptionProduct() ?? "";
-    subscriptionPrice = subscriptionProduct == monthlySubscription
-        ? price
-        : /*subscriptionProduct == yearlySubscription
-            ? "\$24.99"
-            : subscriptionProduct == lifeTimeSubscription
-                ? "\$99.99"
-                :*/
-        "";
-    subscriptionTime = subscriptionProduct == monthlySubscription
-        ? "monthly"
-        : /*subscriptionProduct == yearlySubscription
-            ? "yearly"
-            : subscriptionProduct == lifeTimeSubscription
-                ? "lifetime"
-                :*/
-        "";
+    subscriptionPrice = subscriptionProduct == monthlySubscription ? price : "";
+    subscriptionTime =
+        subscriptionProduct == monthlySubscription ? "monthly" : "";
 
     DateTime subscriptionStartTime = DateTime.fromMillisecondsSinceEpoch(
         int.parse(PreferenceManager.getSubscriptionStartDate() ?? ""));

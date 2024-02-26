@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:intl/intl.dart';
@@ -34,11 +35,17 @@ class CommonAppButton extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             icon ?? const SizedBox(),
-            title.appCommonText(
-              color: textColor ?? appColor,
-              size: MediaQuery.of(context).size.height * .02,
-              weight: FontWeight.w700,
-              align: TextAlign.end,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: title.appCommonText(
+
+                  color: textColor ?? appColor,
+                  size: MediaQuery.of(context).size.height * .02,
+                  weight: FontWeight.w700,
+                  align: TextAlign.end,
+                ).paddingSymmetric(horizontal: 10),
+              ),
             ),
           ],
         ),

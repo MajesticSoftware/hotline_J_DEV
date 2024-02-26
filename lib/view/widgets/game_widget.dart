@@ -515,7 +515,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'After the 30 days this subscription will automatically renew for ${(price ?? "\$9.99")}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
+                      'After the 30 days this subscription will automatically renew for ${(price=="0"?"\$9.99":(price ?? "\$9.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -555,7 +555,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
           Visibility(
             visible: showButton,
             child: CommonAppButton(
-              title:price=="Free"? "30 days free trial": "Upgrade for ${(price ?? "\$9.99")}/mo",
+              title:price=="0"? "Start Free Trial": "Upgrade for ${(price ?? "\$9.99")}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),
