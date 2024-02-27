@@ -199,6 +199,7 @@ class GameDetailsController extends GetxController {
     'RYG',
     'RTG',
     'IG',
+
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
