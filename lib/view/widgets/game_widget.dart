@@ -101,7 +101,7 @@ class GameWidget extends StatelessWidget {
                         children: [
                           Stack(
                             clipBehavior: Clip.none,
-                            alignment: Alignment.centerRight,
+                            alignment: Alignment.topRight,
                             children: [
                               commonCachedNetworkImage(
                                 width: Get.height * .042,
@@ -110,6 +110,7 @@ class GameWidget extends StatelessWidget {
                               ),
                               Positioned(
                                 right: -4,
+                                top: -6,
                                 child: awayTeamRank.toString().appCommonText(
                                     color: Theme.of(context).highlightColor,
                                     align: TextAlign.start,
@@ -179,7 +180,7 @@ class GameWidget extends StatelessWidget {
                         children: [
                           Stack(
                             clipBehavior: Clip.none,
-                            alignment: Alignment.centerRight,
+                            alignment: Alignment.topRight,
                             children: [
                               commonCachedNetworkImage(
                                 width: Get.height * .042,
@@ -188,6 +189,7 @@ class GameWidget extends StatelessWidget {
                               ),
                               Positioned(
                                 right: -4,
+                                top: -6,
                                 child: homeTeamRank.toString().appCommonText(
                                     color: Theme.of(context).highlightColor,
                                     align: TextAlign.start,
