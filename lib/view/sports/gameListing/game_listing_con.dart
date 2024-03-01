@@ -888,79 +888,22 @@ class GameListingController extends GetxController {
       }
 
       ///MONEY LINES
-      /*      if (event.markets.isNotEmpty) {
-          for (var marketData in event.markets) {
-            if (marketData.oddsTypeId == 4) {
-              int fanDuelIndex = marketData.books
-                  .indexWhere((element) => element.id == 'sr:book:18186');
-              for (var bookData in marketData.books) {
-                if (fanDuelIndex >= 0) {
-                  if (bookData.id == 'sr:book:18186') {
-                    if (bookData.outcomes?[0].type == 'home') {
-                      event.homeSpread =
-                          bookData.outcomes?[0].spread.toString() ?? '00';
-                    }
-                    if (bookData.outcomes?[1].type == 'away') {
-                      event.awaySpread =
-                          bookData.outcomes?[1].spread.toString() ?? '00';
-                    }
-                  }
-                } else if (bookData.id == 'sr:book:28901') {
-                  if (bookData.outcomes?[0].type == 'home') {
-                    event.homeSpread =
-                        bookData.outcomes?[0].spread.toString() ?? '';
-                  }
-                  if (bookData.outcomes?[1].type == 'away') {
-                    event.awaySpread =
-                        bookData.outcomes?[1].spread.toString() ?? '';
-                  }
-                } else if (bookData.id == 'sr:book:17324') {
-                  if (bookData.outcomes?[0].type == 'home') {
-                    event.homeSpread =
-                        bookData.outcomes?[0].spread.toString() ?? '';
-                  }
-                  if (bookData.outcomes?[1].type == 'away') {
-                    event.awaySpread =
-                        bookData.outcomes?[1].spread.toString() ?? '';
-                  }
+
+      if (event.consensus != null) {
+        if (event.consensus?.lines != null) {
+          event.consensus?.lines?.forEach((consensus) {
+            if (consensus.name == 'moneyline_live') {
+              consensus.outcomes?.forEach((lines) {
+                if (lines.type == 'home') {
+                  event.homeMoneyLine = lines.odds.toString();
+                  log('HOME MONEY ---${event.homeMoneyLine}');
                 }
-              }
-            }
-          }
-        }*/
-      if (event.status == 'live' ||
-          event.status == "inprogress" ||
-          event.status == "halftime") {
-        if (event.consensus != null) {
-          if (event.consensus?.lines != null) {
-            event.consensus?.lines?.forEach((consensus) {
-              if (consensus.name == 'moneyline_live') {
-                consensus.outcomes?.forEach((lines) {
-                  if (lines.type == 'home') {
-                    event.homeMoneyLine = lines.odds.toString();
-                    log('HOME MONEY ---${event.homeMoneyLine}');
-                  }
-                  if (lines.type == 'away') {
-                    event.awayMoneyLine = lines.odds.toString();
-                    log('AWAY MONEY ---${event.awayMoneyLine}');
-                  }
-                });
-              }
-              if (consensus.name == 'total_live') {
-                event.homeOU = consensus.total.toString();
-                event.awayOU = consensus.total.toString();
-              }
-              if (consensus.name == 'spread_live') {
-                event.homeSpread = '${consensus.spread}'.toString();
-                event.awaySpread = '${consensus.spread}'.toString();
-              }
-            });
-          }
-        }
-      } else {
-        if (event.consensus != null) {
-          if (event.consensus?.lines != null) {
-            event.consensus?.lines?.forEach((consensus) {
+                if (lines.type == 'away') {
+                  event.awayMoneyLine = lines.odds.toString();
+                  log('AWAY MONEY ---${event.awayMoneyLine}');
+                }
+              });
+            }else{
               if (consensus.name == 'moneyline_current') {
                 consensus.outcomes?.forEach((lines) {
                   if (lines.type == 'home') {
@@ -971,17 +914,64 @@ class GameListingController extends GetxController {
                   }
                 });
               }
-
+            }
+            if (consensus.name == 'total_live') {
+              event.homeOU = consensus.total.toString();
+              event.awayOU = consensus.total.toString();
+            }else{
               if (consensus.name == 'total_current') {
                 event.homeOU = consensus.total.toString();
                 event.awayOU = consensus.total.toString();
               }
-              if (consensus.name == 'run_line_current' ||
-                  consensus.name == 'spread_current') {
-                event.homeSpread = '${consensus.spread}'.toString();
-                event.awaySpread = '${consensus.spread}'.toString();
+            }
+
+
+            // if (consensus.name == 'run_line_current' ||
+            //     consensus.name == 'spread_current') {
+            //   event.homeSpread = '${consensus.spread}'.toString();
+            //   event.awaySpread = '${consensus.spread}'.toString();
+            // }
+
+          });
+        }
+      }
+      if (event.markets.isNotEmpty) {
+        for (var marketData in event.markets) {
+          if (marketData.oddsTypeId == 4) {
+            int fanDuelIndex = marketData.books
+                .indexWhere((element) => element.id == 'sr:book:18186');
+            for (var bookData in marketData.books) {
+              if (fanDuelIndex >= 0) {
+                if (bookData.id == 'sr:book:18186') {
+                  if (bookData.outcomes?[0].type == 'home') {
+                    event.homeSpread =
+                        bookData.outcomes?[0].spread.toString() ?? '00';
+                  }
+                  if (bookData.outcomes?[1].type == 'away') {
+                    event.awaySpread =
+                        bookData.outcomes?[1].spread.toString() ?? '00';
+                  }
+                }
+              } else if (bookData.id == 'sr:book:28901') {
+                if (bookData.outcomes?[0].type == 'home') {
+                  event.homeSpread =
+                      bookData.outcomes?[0].spread.toString() ?? '';
+                }
+                if (bookData.outcomes?[1].type == 'away') {
+                  event.awaySpread =
+                      bookData.outcomes?[1].spread.toString() ?? '';
+                }
+              } else if (bookData.id == 'sr:book:17324') {
+                if (bookData.outcomes?[0].type == 'home') {
+                  event.homeSpread =
+                      bookData.outcomes?[0].spread.toString() ?? '';
+                }
+                if (bookData.outcomes?[1].type == 'away') {
+                  event.awaySpread =
+                      bookData.outcomes?[1].spread.toString() ?? '';
+                }
               }
-            });
+            }
           }
         }
       }
@@ -1248,39 +1238,21 @@ class GameListingController extends GetxController {
   }
 
   setOdds(SportEvents event) {
-    if (event.status == 'live' ||
-        event.status == "inprogress" ||
-        event.status == "halftime") {
-      if (event.consensus != null) {
-        if (event.consensus?.lines != null) {
-          event.consensus?.lines?.forEach((consensus) {
-            if (consensus.name == 'moneyline_live') {
-              consensus.outcomes?.forEach((lines) {
-                if (lines.type == 'home') {
-                  event.homeMoneyLine = lines.odds.toString();
-                  log('HOME MONEY ---${event.homeMoneyLine}');
-                }
-                if (lines.type == 'away') {
-                  event.awayMoneyLine = lines.odds.toString();
-                  log('AWAY MONEY ---${event.awayMoneyLine}');
-                }
-              });
-            }
-            if (consensus.name == 'total_live') {
-              event.homeOU = consensus.total.toString();
-              event.awayOU = consensus.total.toString();
-            }
-            if (consensus.name == 'spread_live') {
-              event.homeSpread = '${consensus.spread}'.toString();
-              event.awaySpread = '${consensus.spread}'.toString();
-            }
-          });
-        }
-      }
-    } else {
-      if (event.consensus != null) {
-        if (event.consensus?.lines != null) {
-          event.consensus?.lines?.forEach((consensus) {
+    if (event.consensus != null) {
+      if (event.consensus?.lines != null) {
+        event.consensus?.lines?.forEach((consensus) {
+          if (consensus.name == 'moneyline_live') {
+            consensus.outcomes?.forEach((lines) {
+              if (lines.type == 'home') {
+                event.homeMoneyLine = lines.odds.toString();
+                log('HOME MONEY ---${event.homeMoneyLine}');
+              }
+              if (lines.type == 'away') {
+                event.awayMoneyLine = lines.odds.toString();
+                log('AWAY MONEY ---${event.awayMoneyLine}');
+              }
+            });
+          }else{
             if (consensus.name == 'moneyline_current') {
               consensus.outcomes?.forEach((lines) {
                 if (lines.type == 'home') {
@@ -1291,17 +1263,64 @@ class GameListingController extends GetxController {
                 }
               });
             }
-
+          }
+          if (consensus.name == 'total_live') {
+            event.homeOU = consensus.total.toString();
+            event.awayOU = consensus.total.toString();
+          }else{
             if (consensus.name == 'total_current') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
             }
-            if (consensus.name == 'run_line_current' ||
-                consensus.name == 'spread_current') {
-              event.homeSpread = '${consensus.spread}'.toString();
-              event.awaySpread = '${consensus.spread}'.toString();
+          }
+
+
+          // if (consensus.name == 'run_line_current' ||
+          //     consensus.name == 'spread_current') {
+          //   event.homeSpread = '${consensus.spread}'.toString();
+          //   event.awaySpread = '${consensus.spread}'.toString();
+          // }
+
+        });
+      }
+    }
+    if (event.markets.isNotEmpty) {
+      for (var marketData in event.markets) {
+        if (marketData.oddsTypeId == 4) {
+          int fanDuelIndex = marketData.books
+              .indexWhere((element) => element.id == 'sr:book:18186');
+          for (var bookData in marketData.books) {
+            if (fanDuelIndex >= 0) {
+              if (bookData.id == 'sr:book:18186') {
+                if (bookData.outcomes?[0].type == 'home') {
+                  event.homeSpread =
+                      bookData.outcomes?[0].spread.toString() ?? '00';
+                }
+                if (bookData.outcomes?[1].type == 'away') {
+                  event.awaySpread =
+                      bookData.outcomes?[1].spread.toString() ?? '00';
+                }
+              }
+            } else if (bookData.id == 'sr:book:28901') {
+              if (bookData.outcomes?[0].type == 'home') {
+                event.homeSpread =
+                    bookData.outcomes?[0].spread.toString() ?? '';
+              }
+              if (bookData.outcomes?[1].type == 'away') {
+                event.awaySpread =
+                    bookData.outcomes?[1].spread.toString() ?? '';
+              }
+            } else if (bookData.id == 'sr:book:17324') {
+              if (bookData.outcomes?[0].type == 'home') {
+                event.homeSpread =
+                    bookData.outcomes?[0].spread.toString() ?? '';
+              }
+              if (bookData.outcomes?[1].type == 'away') {
+                event.awaySpread =
+                    bookData.outcomes?[1].spread.toString() ?? '';
+              }
             }
-          });
+          }
         }
       }
     }
@@ -2563,7 +2582,7 @@ class GameListingController extends GetxController {
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
-        ncaabTomorrowEventsList=[];
+        ncaabTomorrowEventsList = [];
         gameListingTomorrowApiRes(
                 key: apiKey,
                 isLoad: isLoad,
