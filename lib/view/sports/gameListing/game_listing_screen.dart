@@ -615,10 +615,8 @@ class SelectGameScreen extends StatelessWidget {
                                               index + 1 &&
                                           controller.isPagination)
                                       ? const PaginationProgress()
-                                      :
-                                              (spotList(controller)[index]
-                                                      .status ==
-                                                  'postponed')
+                                      : (spotList(controller)[index].status ==
+                                              'postponed')
                                           ? const SizedBox()
                                           : Column(
                                               children: [

@@ -750,7 +750,8 @@ class GameListingController extends GetxController {
                 ncaabTomorrowEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == 'NBA') {
+                sportKey == 'NBA' &&
+                (difference.inHours <= (16))) {
               if (nbaTomorrowEventsList.contains(event)) {
               } else {
                 nbaTomorrowEventsList.add(event);
@@ -903,7 +904,7 @@ class GameListingController extends GetxController {
                   log('AWAY MONEY ---${event.awayMoneyLine}');
                 }
               });
-            }else{
+            } else {
               if (consensus.name == 'moneyline_current') {
                 consensus.outcomes?.forEach((lines) {
                   if (lines.type == 'home') {
@@ -918,20 +919,18 @@ class GameListingController extends GetxController {
             if (consensus.name == 'total_live') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
-            }else{
+            } else {
               if (consensus.name == 'total_current') {
                 event.homeOU = consensus.total.toString();
                 event.awayOU = consensus.total.toString();
               }
             }
 
-
             // if (consensus.name == 'run_line_current' ||
             //     consensus.name == 'spread_current') {
             //   event.homeSpread = '${consensus.spread}'.toString();
             //   event.awaySpread = '${consensus.spread}'.toString();
             // }
-
           });
         }
       }
@@ -1252,7 +1251,7 @@ class GameListingController extends GetxController {
                 log('AWAY MONEY ---${event.awayMoneyLine}');
               }
             });
-          }else{
+          } else {
             if (consensus.name == 'moneyline_current') {
               consensus.outcomes?.forEach((lines) {
                 if (lines.type == 'home') {
@@ -1267,20 +1266,18 @@ class GameListingController extends GetxController {
           if (consensus.name == 'total_live') {
             event.homeOU = consensus.total.toString();
             event.awayOU = consensus.total.toString();
-          }else{
+          } else {
             if (consensus.name == 'total_current') {
               event.homeOU = consensus.total.toString();
               event.awayOU = consensus.total.toString();
             }
           }
 
-
           // if (consensus.name == 'run_line_current' ||
           //     consensus.name == 'spread_current') {
           //   event.homeSpread = '${consensus.spread}'.toString();
           //   event.awaySpread = '${consensus.spread}'.toString();
           // }
-
         });
       }
     }
