@@ -62,7 +62,7 @@ class GameListingController extends GetxController {
       _sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
           ? "NCAA"
           : PreferenceManager.getFavoriteSport()) ??*/
-      "NBA";
+      "NCAAB";
 
   String get sportKey => _sportKey;
 
@@ -179,12 +179,12 @@ class GameListingController extends GetxController {
   }
 
   String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
-  String date = (PreferenceManager.getFavoriteSport() ?? "NBA") == "NFL"
+  String date = (PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
       ? "2024-02-11"
-      : DateFormat('yyyy-MM-dd').format(DateTime.now());
+      : DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(const Duration(days: 1)));
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
-    "NBA"
+   "NCAAB"
   ];
 
   List<String> get isSelected => _isSelected;
@@ -194,7 +194,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/ "NBA";
+  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/"NCAAB";
 
   String get isSelectedGame => _isSelectedGame;
 
@@ -666,7 +666,7 @@ class GameListingController extends GetxController {
               } else {
                 ncaaTodayEventsList.add(event);
               }
-            } else if ((event.season?.id == 'sr:season:104319' &&
+            } else if (((event.season?.id == 'sr:season:104319'||event.season?.id=='sr:season:104315') &&
                 sportKey == 'NCAAB' &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed"))) {
@@ -742,7 +742,7 @@ class GameListingController extends GetxController {
               } else {
                 ncaaTomorrowEventsList.add(event);
               }
-            } else if (event.season?.id == 'sr:season:104319' &&
+            } else if ((event.season?.id == 'sr:season:104319'||event.season?.id=='sr:season:104315') &&
                 sportKey == 'NCAAB' &&
                 (difference.inHours <= (16))) {
               if (ncaabTomorrowEventsList.contains(event)) {
