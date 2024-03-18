@@ -43,12 +43,13 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       // await gameListingController.favoriteGameCall();
-      await gameListingController.getResponse(true, "NBA").then((value) {});
+      await gameListingController.getResponse(true, "NCAAB").then((value) {});
       if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
             .then((value) => gameListingController.getSubscriptionStatus());
       }
     }, builder: (controller) {
+
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Stack(
         children: [
@@ -174,7 +175,7 @@ class SelectGameScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
               ),
-              title: 'NBA',
+              title: 'NCAAB',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -190,7 +191,7 @@ class SelectGameScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
               ),
-              title: 'NCAAB',
+              title: 'NBA',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -198,6 +199,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ),
+
             drawerCard(
               icon: Assets.imagesMlb,
               title: 'MLB',

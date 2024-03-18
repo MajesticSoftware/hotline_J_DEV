@@ -29,19 +29,20 @@ final DateFormat formatter = DateFormat('yyyy-MM-dd');
 final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
-  LeagueModel(
-      sportId: 'sr:sport:2',
-      gameName: 'NBA',
-      date: formatted,
-      key: 'NBA',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: true,
-      gameImage: Assets.imagesNcaab),
+
   LeagueModel(
       sportId: 'sr:sport:2',
       gameName: 'NCAAB',
       date: formatted,
       key: 'NCAAB',
+      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      isAvailable: true,
+      gameImage: Assets.imagesNcaab),
+  LeagueModel(
+      sportId: 'sr:sport:2',
+      gameName: 'NBA',
+      date: formatted,
+      key: 'NBA',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
