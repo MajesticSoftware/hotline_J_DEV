@@ -743,8 +743,7 @@ class GameListingController extends GetxController {
                 ncaaTomorrowEventsList.add(event);
               }
             } else if ((event.season?.id == 'sr:season:104319'||event.season?.id=='sr:season:104315') &&
-                sportKey == 'NCAAB' &&
-                (difference.inHours <= (16))) {
+                sportKey == 'NCAAB' ) {
               if (ncaabTomorrowEventsList.contains(event)) {
               } else {
                 ncaabTomorrowEventsList.add(event);
@@ -2446,55 +2445,59 @@ class GameListingController extends GetxController {
         isLoading.value = false;
         isPagination = isLoad;
         ncaabTomorrowEventsList.clear();
-        gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(const Duration(days: 2))),
-                sportId: sportId)
-            .then((value) async {
-          getAllEventList(sportKey, isLoad);
-          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          isPagination = false;
-          gameListingsWithLogoResponseNCAAB(
-              DateTime.now().year.toString(), sportKey,
-              isLoad: isLoad);
-          if (ncaabSportEventsList.isNotEmpty) {
-            for (int i = 0; i < ncaabSportEventsList.length; i++) {
-              if (ncaabSportEventsList[i].uuids != null) {
-                ncaaGameRanking(
-                  sportName: sportKey,
-                  isLoad: false,
-                  gameDetails: ncaabSportEventsList[i],
-                  homeTeamId: replaceId(
-                          ncaabSportEventsList[i].competitors[0].uuids ?? '') ??
-                      "",
-                  awayTeamId: replaceId(
-                          ncaabSportEventsList[i].competitors[1].uuids ?? '') ??
-                      "",
-                );
-                if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
-                        .toLocal()
-                        .day ==
-                    DateTime.now().day) {
-                  boxScoreNBAResponse(
-                      sportKey: sportKey,
-                      homeTeamId: replaceId(
-                              ncaabSportEventsList[i].competitors[0].uuids ??
-                                  '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              ncaabSportEventsList[i].competitors[1].uuids ??
-                                  '') ??
-                          "",
-                      gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
-                      index: i);
+        for(int j=2;j<=6;j++){
+          gameListingTomorrowApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add( Duration(days: j))),
+              sportId: sportId)
+              .then((value) async {
+            getAllEventList(sportKey, isLoad);
+            nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            if(j==6){
+              isPagination = false;
+            }
+            gameListingsWithLogoResponseNCAAB(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            if (ncaabSportEventsList.isNotEmpty) {
+              for (int i = 0; i < ncaabSportEventsList.length; i++) {
+                if (ncaabSportEventsList[i].uuids != null) {
+                  ncaaGameRanking(
+                    sportName: sportKey,
+                    isLoad: false,
+                    gameDetails: ncaabSportEventsList[i],
+                    homeTeamId: replaceId(
+                        ncaabSportEventsList[i].competitors[0].uuids ?? '') ??
+                        "",
+                    awayTeamId: replaceId(
+                        ncaabSportEventsList[i].competitors[1].uuids ?? '') ??
+                        "",
+                  );
+                  if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                      DateTime.now().day) {
+                    boxScoreNBAResponse(
+                        sportKey: sportKey,
+                        homeTeamId: replaceId(
+                            ncaabSportEventsList[i].competitors[0].uuids ??
+                                '') ??
+                            "",
+                        awayTeamId: replaceId(
+                            ncaabSportEventsList[i].competitors[1].uuids ??
+                                '') ??
+                            "",
+                        gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
+                        index: i);
+                  }
                 }
               }
             }
-          }
-        });
+          });
+        }
 
         if (ncaabTodayEventsList.isNotEmpty) {
           timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -2580,43 +2583,58 @@ class GameListingController extends GetxController {
         isLoading.value = false;
         isPagination = isLoad;
         ncaabTomorrowEventsList = [];
-        gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(const Duration(days: 2))),
-                sportId: sportId)
-            .then((value) async {
-          getAllEventList(sportKey, isLoad);
-          nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
-          gameListingsWithLogoResponseNCAAB(
-              DateTime.now().year.toString(), sportKey,
-              isLoad: isLoad);
-          if (ncaabSportEventsList.isNotEmpty) {
-            for (int i = 0; i < ncaabSportEventsList.length; i++) {
-              if (ncaabSportEventsList[i].uuids != null) {
-                if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
-                        .toLocal()
-                        .day ==
-                    DateTime.now().day) {
-                  boxScoreNBAResponse(
-                      sportKey: sportKey,
-                      homeTeamId: replaceId(
-                              ncaabSportEventsList[i].competitors[0].uuids ??
-                                  '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              ncaabSportEventsList[i].competitors[1].uuids ??
-                                  '') ??
-                          "",
-                      gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
-                      index: i);
+        for(int j=2;j<=6;j++){
+          gameListingTomorrowApiRes(
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add( Duration(days: j))),
+              sportId: sportId)
+              .then((value) async {
+            getAllEventList(sportKey, isLoad);
+
+            gameListingsWithLogoResponseNCAAB(
+                DateTime.now().year.toString(), sportKey,
+                isLoad: isLoad);
+            nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
+            if (ncaabSportEventsList.isNotEmpty) {
+              for (int i = 0; i < ncaabSportEventsList.length; i++) {
+                if (ncaabSportEventsList[i].uuids != null) {
+                  ncaaGameRanking(
+                    sportName: sportKey,
+                    isLoad: false,
+                    gameDetails: ncaabSportEventsList[i],
+                    homeTeamId: replaceId(
+                        ncaabSportEventsList[i].competitors[0].uuids ?? '') ??
+                        "",
+                    awayTeamId: replaceId(
+                        ncaabSportEventsList[i].competitors[1].uuids ?? '') ??
+                        "",
+                  );
+                  if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                      DateTime.now().day) {
+
+                    boxScoreNBAResponse(
+                        sportKey: sportKey,
+                        homeTeamId: replaceId(
+                            ncaabSportEventsList[i].competitors[0].uuids ??
+                                '') ??
+                            "",
+                        awayTeamId: replaceId(
+                            ncaabSportEventsList[i].competitors[1].uuids ??
+                                '') ??
+                            "",
+                        gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
+                        index: i);
+                  }
                 }
               }
             }
-          }
-        });
+          });
+        }
       });
     });
   }
