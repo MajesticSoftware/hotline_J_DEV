@@ -309,10 +309,10 @@ class SportEvents {
                       ? "0"
                       : nbaAwayDefensiveRank[index]) ??
                   0);
-      if (condition3 >= (season?.id == 'sr:season:104319'?50:15) || condition3 <= (season?.id == 'sr:season:104319'?-50:-15)) {
+      if (condition3 >= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?50:15) || condition3 <= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?-50:-15)) {
         flamValue += 1;
       }
-      if (condition4 >= (season?.id == 'sr:season:104319'?50:15) || condition4 <= (season?.id == 'sr:season:104319'?-50:-15)) {
+      if (condition4 >= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?50:15) || condition4 <= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?-50:-15)) {
         flamValue += 1;
       }
     }

@@ -524,6 +524,7 @@ class SelectGameScreen extends StatelessWidget {
 
   Widget tableDetailWidget(
       BuildContext context, GameListingController controller) {
+    // log("spotList(controller)--${spotList(controller).length}");
     return Stack(
       children: [
         const HeaderCard(),
