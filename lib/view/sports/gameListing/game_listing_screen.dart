@@ -49,7 +49,6 @@ class SelectGameScreen extends StatelessWidget {
             .then((value) => gameListingController.getSubscriptionStatus());
       }
     }, builder: (controller) {
-
       // isDark = PreferenceManager.getIsDarkMode()??false ?? false;
       return Stack(
         children: [
@@ -199,7 +198,6 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ),
-
             drawerCard(
               icon: Assets.imagesMlb,
               title: 'MLB',
@@ -566,9 +564,9 @@ class SelectGameScreen extends StatelessWidget {
                                   color: Theme.of(context).secondaryHeaderColor,
                                   size: Get.height * .022,
                                   weight: FontWeight.w800),
-                              (controller.sportKey == "MLB"
+                              (/*controller.sportKey == "MLB"
                                       ? "'2024 season starts March 20th.'"
-                                      : controller.sportKey == "NFL"
+                                      :*/ controller.sportKey == "NFL"
                                           ? "‘2024 season starts September 5th’"
                                           : controller.sportKey == "NCAA"
                                               ? "'2024 season starts August 24th.'"
@@ -637,7 +635,7 @@ class SelectGameScreen extends StatelessWidget {
                                                       : 0,
                                                   isShowWeather:
                                                       controller.sportKey !=
-                                                              "NCAAB" &&
+                                                              "NCAAB" ||
                                                           controller.sportKey !=
                                                               "NBA",
                                                   onTap: () {
@@ -705,7 +703,13 @@ class SelectGameScreen extends StatelessWidget {
                                                                       index]
                                                                   .status ==
                                                               'halftime')
-                                                      ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
+                                                      ? (controller.sportKey ==
+                                                                  "NCAAB" ||
+                                                              controller
+                                                                      .sportKey ==
+                                                                  "NBA")
+                                                          ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
+                                                          : '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].outs}'
                                                       : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
                                                       spotList(
@@ -761,13 +765,13 @@ class SelectGameScreen extends StatelessWidget {
                                                       .homeScore,
                                                 ),
                                                 spotList(controller).length >= 2
-                                                    ? (controller.sportKey ==
+                                                    ? /*(controller.sportKey ==
                                                                 "NCAAB" ||
                                                             controller
                                                                     .sportKey ==
                                                                 "NBA")
                                                         ? const SizedBox()
-                                                        : (DateTime.parse(spotList(controller)[index]
+                                                        :*/ (DateTime.parse(spotList(controller)[index]
                                                                             .scheduled ??
                                                                         '')
                                                                     .toLocal()
@@ -826,7 +830,7 @@ class SelectGameScreen extends StatelessWidget {
                                             context, index);
                                       },
                                       isShowWeather:
-                                          controller.sportKey != "NCAAB" &&
+                                          controller.sportKey != "NCAAB" ||
                                               controller.sportKey != "NBA",
                                       awayTeamMoneyLine:
                                           competitors.awayMoneyLineValue,
@@ -853,7 +857,10 @@ class SelectGameScreen extends StatelessWidget {
                                               competitors.status ==
                                                   "inprogress" ||
                                               competitors.status == "halftime")
-                                          ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
+                                          ? (controller.sportKey == "NCAAB" ||
+                                                  controller.sportKey == "NBA")
+                                              ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
+                                              : '${competitors.inningHalf}${competitors.inning}, ${competitors.outs}'
                                           : '$date, $dateTime',
                                       awayTeamImageUrl: awayLogo(
                                           competitors, controller, index),

@@ -121,6 +121,7 @@ class SportEvents {
   String inning = '0';
   String clock = '0';
   String inningHalf = '';
+  String outs = '0';
   String wlHome = '0';
   String wlAway = '0';
   String eraHome = '0';
@@ -157,6 +158,7 @@ class SportEvents {
   SportEvents({
     this.id,
     this.scheduled,
+    this.outs="0",
     this.startTimeTbd,
     this.status,
     this.hotlinesData = const [],

@@ -314,7 +314,10 @@ Padding playerStatWidget(BuildContext context,
           color: Theme
               .of(context)
               .canvasColor),
-      child: GetBuilder<GameDetailsController>(builder: (controller) {
+      child: GetBuilder<GameDetailsController>(initState: (state) {
+
+      },builder: (controller) {
+
         return StickyHeader(
             header: headerTitleWidget(context, 'Pitching',
                 isTeamReport: false,
@@ -5904,7 +5907,7 @@ String homeLogo(Competitors? homeTeam,
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
       : homeTeam?.abbreviation == 'SCUS'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-      :homeTeam?.abbreviation == 'IUN'
+      : homeTeam?.abbreviation == 'IUN'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
       : homeTeam?.abbreviation == 'LINW'
       ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
@@ -6144,14 +6147,14 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${((gameDetails.status ==
-                            'live'||gameDetails.status ==
-                            'halftime'||gameDetails.status ==
+                            'live' || gameDetails.status ==
+                            'halftime' || gameDetails.status ==
                             'inprogress')
                             ? '${gameDetails.inningHalf}${gameDetails
                             .inning} ${(sportKey == 'NBA' ||
                             sportKey == 'NCAAB')
                             ? " - ${gameDetails.clock}"
-                            : dateTime}'
+                            : " - ${gameDetails.outs}"}'
                             : dateTime)} ')
                             .appCommonText(
                             color: backGroundColor,
@@ -6361,7 +6364,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
           );
         }),
       ),
-      (gameDetails.status == 'live' || gameDetails.status == "inprogress"|| gameDetails.status == "halftime")
+      (gameDetails.status == 'live' || gameDetails.status == "inprogress" ||
+          gameDetails.status == "halftime")
           ? Positioned(
         top: MediaQuery
             .of(context)

@@ -248,7 +248,27 @@ class GameDetailsController extends GetxController {
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
   List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
 
+  String _awayPlayerName = '';
+
+  String get awayPlayerName => _awayPlayerName;
+
+  set awayPlayerName(String value) {
+    _awayPlayerName = value;
+    update();
+  }
+
+  String _homePlayerName = '';
+
+
+  String get homePlayerName => _homePlayerName;
+
+  set homePlayerName(String value) {
+    _homePlayerName = value;
+    update();
+  }
+
   String _whipHome = '0';
+
 
   String get whipHome => _whipHome;
 
@@ -352,11 +372,11 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
+          homePlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == 'REG' && player.year == DateTime
-                .now()
-                .year) {
+            if (/*player.type == 'REG' &&*/ player.year == DateTime.now().year) {
+
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
               homeBb =
@@ -542,10 +562,10 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
+          awayPlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
+
           for (var player in playerData.seasons) {
-            if (player.type == 'REG' && player.year == DateTime
-                .now()
-                .year) {
+            if (/*player.type == 'REG' &&*/ player.year ==  DateTime.now().year) {
               whipAway =
                   player.totals.statistics.pitching.overall.whip.toString();
               awayBb =
@@ -1935,6 +1955,16 @@ class GameDetailsController extends GetxController {
     gameDetails.hotlinesData.clear();
 
     if (sportKey == 'MLB') {
+      awayIp="0";
+      homeIp="0";
+      whipAway="0";
+      whipHome="0";
+      awayKk="0";
+      homeKk="0";
+      awayBb="0";
+      homeBb="0";
+      awayH="0";
+      homeH="0";
       mlbStaticsAwayTeamResponse(
           isLoad: false,
           awayTeamId: replaceId(awayTeam?.uuids ?? ''),

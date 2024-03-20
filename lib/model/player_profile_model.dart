@@ -37,19 +37,23 @@ class PlayerProfileModel {
 
 class Player {
   String id;
+  String full_name;
   List<Season> seasons;
 
   Player({
     required this.id,
+    required this.full_name,
     required this.seasons,
   });
 
   Player copyWith({
     String? id,
+    String? full_name,
     List<Season>? seasons,
   }) =>
       Player(
         id: id ?? this.id,
+        full_name: full_name ?? this.full_name,
         seasons: seasons ?? this.seasons,
       );
 
@@ -59,12 +63,14 @@ class Player {
 
   factory Player.fromJson(Map<String, dynamic> json) => Player(
         id: json["id"],
+    full_name: json["full_name"],
         seasons:
             List<Season>.from(json["seasons"].map((x) => Season.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "full_name": full_name,
         "seasons": List<dynamic>.from(seasons.map((x) => x.toJson())),
       };
 }

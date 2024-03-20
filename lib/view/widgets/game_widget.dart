@@ -285,7 +285,7 @@ class GameWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              /* Visibility(
+              Visibility(
                   visible: isShowWeather&&!isShowFlam,
                   child: Expanded(
                     flex: 1,
@@ -294,14 +294,13 @@ class GameWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         (MediaQuery.of(context).size.height * .005).H(),
-                        Text(
-                          dateTime,
-                          style: GoogleFonts.nunitoSans(
-                            color: Theme.of(context).dividerColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: Get.height * .01,
+                        SizedBox(
+                          width: 60.h,
+                          child: dateTime.appCommonText(
+                            size: Get.height * .012,
+                            weight: FontWeight.w600,
+                            color: Theme.of(context).highlightColor,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                         isLive
                             ? Container(
@@ -318,7 +317,7 @@ class GameWidget extends StatelessWidget {
                                           .012,
                                       weight: FontWeight.bold),
                                 ),
-                              )
+                              ).paddingOnly(top: 6.h)
                             : const SizedBox(),
                         5.w.H(),
                         Column(
@@ -359,7 +358,7 @@ class GameWidget extends StatelessWidget {
                       ],
                     ),
                   )),
-              Visibility(
+             /* Visibility(
                 visible: !isShowWeather&&!isShowFlam,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
