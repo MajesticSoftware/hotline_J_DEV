@@ -316,8 +316,7 @@ Padding playerStatWidget(BuildContext context,
               .canvasColor),
       child: GetBuilder<GameDetailsController>(initState: (state) {
 
-      },builder: (controller) {
-
+      }, builder: (controller) {
         return StickyHeader(
             header: headerTitleWidget(context, 'Pitching',
                 isTeamReport: false,
@@ -381,7 +380,7 @@ Padding playerStatWidget(BuildContext context,
 }
 
 Padding hitterPlayerStatWidget(BuildContext context,
-    GameDetailsController con,
+
     SportEvents gameDetails,
     Competitors? awayTeam,
     Competitors? homeTeam,
@@ -414,13 +413,13 @@ Padding hitterPlayerStatWidget(BuildContext context,
       child: GetBuilder<GameDetailsController>(builder: (controller) {
         return StickyHeader(
             header: customTabBar(
-                context, con, gameDetails, awayTeam, homeTeam, sportKey),
+                context, controller, gameDetails, awayTeam, homeTeam, sportKey),
             content: sportKey == 'NBA' || sportKey == 'NCAAB'
                 ? Column(
               children: [
                 headerOfNBAPlayerStat(context),
                 commonDivider(context),
-                nbaRushingCard(con, gameDetails),
+                nbaRushingCard(controller, gameDetails),
               ],
             )
                 : sportKey == 'MLB'
@@ -428,14 +427,14 @@ Padding hitterPlayerStatWidget(BuildContext context,
               children: [
                 headerOfHitterPlayerStat(context),
                 commonDivider(context),
-                hitterPlayerDetailCard(con),
+                hitterPlayerDetailCard(controller),
               ],
             )
                 : Column(
               children: [
                 headerOfRunningBacks(context),
                 commonDivider(context),
-                runningBacksCard(con, gameDetails),
+                runningBacksCard(controller, gameDetails),
               ],
             ));
       }),
@@ -2136,31 +2135,31 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
           child: Column(
             children: [
               ExpandablePanel(
-                theme: const ExpandableThemeData(hasIcon: false),
-                header: expandedAwayHeader(context, i, con),
-                collapsed: const SizedBox(),
-                expanded: Column(
-                  children: [
-                    expandableTileCard(context, con,
-                        value1: con.hitterAwayPlayerMainList[i].runValue,
-                        title1: con.hitterAwayPlayerMainList[i].run,
-                        title2: con.hitterAwayPlayerMainList[i].obp,
-                        value2: con.hitterAwayPlayerMainList[i].obpValue),
-                    expandableTileCard(context, con,
-                        value1: con
-                            .hitterAwayPlayerMainList[i].totalBaseValue,
-                        title1: con.hitterAwayPlayerMainList[i].totalBase,
-                        title2: con.hitterAwayPlayerMainList[i].slg,
-                        value2: con.hitterAwayPlayerMainList[i].slgValue),
-                    expandableTileCard(context, con,
-                        value1: con
-                            .hitterAwayPlayerMainList[i].stolenBaseValue,
-                        title1:
-                        con.hitterAwayPlayerMainList[i].stolenBase,
-                        title2: con.hitterAwayPlayerMainList[i].hAb,
-                        value2: con.hitterAwayPlayerMainList[i].hAbValue),
-                  ],
-                ),
+                  theme: const ExpandableThemeData(hasIcon: false),
+                  header: expandedAwayHeader(context, i, con),
+                  collapsed: const SizedBox(),
+                  expanded: Column(
+                    children: [
+                      expandableTileCard(context, con,
+                          value1: con.hitterAwayPlayerMainList[i].runValue,
+                          title1: con.hitterAwayPlayerMainList[i].run,
+                          title2: con.hitterAwayPlayerMainList[i].obp,
+                          value2: con.hitterAwayPlayerMainList[i].obpValue),
+                      expandableTileCard(context, con,
+                          value1: con
+                              .hitterAwayPlayerMainList[i].totalBaseValue,
+                          title1: con.hitterAwayPlayerMainList[i].totalBase,
+                          title2: con.hitterAwayPlayerMainList[i].slg,
+                          value2: con.hitterAwayPlayerMainList[i].slgValue),
+                      expandableTileCard(context, con,
+                          value1: con
+                              .hitterAwayPlayerMainList[i].stolenBaseValue,
+                          title1:
+                          con.hitterAwayPlayerMainList[i].stolenBase,
+                          title2: con.hitterAwayPlayerMainList[i].hAb,
+                          value2: con.hitterAwayPlayerMainList[i].hAbValue),
+                    ],
+                  )
               )
             ],
           ),
@@ -4344,7 +4343,9 @@ Column commonRankingWidget(BuildContext context,
                                     .height *
                                     .014))
                       ]))
-                  : (num.tryParse(awayText) ?? awayText)
+                  : (awayText.isNotEmpty
+                  ? (num.tryParse(awayText) ?? awayText)
+                  : "0")
                   .toString()
                   .appCommonText(
                   color: Theme
@@ -4427,7 +4428,9 @@ Column commonRankingWidget(BuildContext context,
                                     .height *
                                     .014))
                       ]))
-                  : (num.tryParse(homeText) ?? homeText)
+                  : (homeText.isNotEmpty
+                  ? (num.tryParse(homeText) ?? homeText)
+                  : "0")
                   .toString()
                   .appCommonText(
                   color: Theme

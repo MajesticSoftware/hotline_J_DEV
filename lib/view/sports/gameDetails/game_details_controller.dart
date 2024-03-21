@@ -246,7 +246,15 @@ class GameDetailsController extends GetxController {
 
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
-  List<HitterPlayerStatMainModel> hitterHomePlayerMainList = [];
+  List<HitterPlayerStatMainModel> _hitterHomePlayerMainList = [];
+
+  List<HitterPlayerStatMainModel> get hitterHomePlayerMainList =>
+      _hitterHomePlayerMainList;
+
+  set hitterHomePlayerMainList(List<HitterPlayerStatMainModel> value) {
+    _hitterHomePlayerMainList = value;
+    update();
+  }
 
   String _awayPlayerName = '';
 
@@ -375,7 +383,7 @@ class GameDetailsController extends GetxController {
           homePlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
 
           for (var player in playerData.seasons) {
-            if (/*player.type == 'REG' &&*/ player.year == DateTime.now().year) {
+            if (player.type == 'REG' && player.year == DateTime.now().year) {
 
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
@@ -565,7 +573,7 @@ class GameDetailsController extends GetxController {
           awayPlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
 
           for (var player in playerData.seasons) {
-            if (/*player.type == 'REG' &&*/ player.year ==  DateTime.now().year) {
+            if (player.type == 'REG' && player.year ==  DateTime.now().year) {
               whipAway =
                   player.totals.statistics.pitching.overall.whip.toString();
               awayBb =
@@ -608,7 +616,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: homeTeamId, seasons: currentYear);
+        teamId: homeTeamId, seasons: DateTime.now().year.toString());
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
@@ -631,21 +639,21 @@ class GameDetailsController extends GetxController {
                 hitterHomePlayerMainList.add(
                   HitterPlayerStatMainModel(
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
-                      avg: '${player.statistics?.hitting?.overall?.avg}',
-                      bb: '${player.statistics?.hitting?.overall?.onbase?.bb}',
+                      avg: player.statistics?.hitting?.overall?.avg??"0",
+                      bb: '${player.statistics?.hitting?.overall?.onbase?.bb??"0"}',
                       hAbValue:
                       '${player.statistics?.hitting?.overall?.onbase
-                          ?.h}-${player.statistics?.hitting?.overall?.ab}',
-                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                      position: '${player.position}',
-                      rbi: '${player.statistics?.hitting?.overall?.rbi}',
+                          ?.h??"0"}-${player.statistics?.hitting?.overall?.ab??"0"}',
+                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr??"0"}',
+                      position: player.position??"0",
+                      rbi: '${player.statistics?.hitting?.overall?.rbi??"0"}',
                       sb:
-                      '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                      '${player.statistics?.hitting?.overall?.steal?.stolen??"0"}',
                       obp: 'OBP',
-                      obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                      obpValue: '${player.statistics?.hitting?.overall?.obp??"0"}',
                       hAb: 'H-AB',
                       slg: 'SLG',
-                      slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                      slgValue: '${player.statistics?.hitting?.overall?.slg??"0"}',
                       run: 'Runs/Game',
                       runValue: ((int.parse(player
                           .statistics?.hitting?.overall?.runs?.total
@@ -661,7 +669,7 @@ class GameDetailsController extends GetxController {
                           totalGame)
                           .toStringAsFixed(2)),
                       stolenBase: 'Stolen Bases/Game',
-                      ab: '${player.statistics?.hitting?.overall?.ab}',
+                      ab: '${player.statistics?.hitting?.overall?.ab??"0"}',
                       stolenBaseValue: ((int.parse(
                           player.statistics?.hitting?.overall?.steal?.stolen
                               .toString() ?? "0") /
@@ -746,7 +754,15 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<HitterPlayerStatMainModel> hitterAwayPlayerMainList = [];
+  List<HitterPlayerStatMainModel> _hitterAwayPlayerMainList = [];
+
+  List<HitterPlayerStatMainModel> get hitterAwayPlayerMainList =>
+      _hitterAwayPlayerMainList;
+
+  set hitterAwayPlayerMainList(List<HitterPlayerStatMainModel> value) {
+    _hitterAwayPlayerMainList = value;
+    update();
+  }
 
   Future mlbStaticsAwayTeamResponse({String awayTeamId = '',
     bool isLoad = false,
@@ -755,7 +771,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: awayTeamId, seasons: currentYear);
+        teamId: awayTeamId, seasons: DateTime.now().year.toString(),);
     try {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
@@ -777,21 +793,21 @@ class GameDetailsController extends GetxController {
             if (player.position != 'P') {
               hitterAwayPlayerMainList.add(
                 HitterPlayerStatMainModel(
-                    bb: '${player.statistics?.hitting?.overall?.onbase?.bb}',
+                    bb: '${player.statistics?.hitting?.overall?.onbase?.bb??"0"}',
                     playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: '${player.statistics?.hitting?.overall?.avg}',
+                    avg: player.statistics?.hitting?.overall?.avg??"0",
                     hAbValue:
-                    '${player.statistics?.hitting?.overall?.onbase?.h}-${player
-                        .statistics?.hitting?.overall?.ab}',
-                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr}',
-                    position: '${player.position}',
-                    rbi: '${player.statistics?.hitting?.overall?.rbi}',
-                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen}',
+                    '${player.statistics?.hitting?.overall?.onbase?.h??"0"}-${player
+                        .statistics?.hitting?.overall?.ab??"0"}',
+                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr??"0"}',
+                    position: player.position??"0",
+                    rbi: '${player.statistics?.hitting?.overall?.rbi??"0"}',
+                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen??"0"}',
                     obp: 'OBP',
-                    obpValue: '${player.statistics?.hitting?.overall?.obp}',
+                    obpValue: '${player.statistics?.hitting?.overall?.obp??"0"}',
                     hAb: 'H-AB',
                     slg: 'SLG',
-                    slgValue: '${player.statistics?.hitting?.overall?.slg}',
+                    slgValue: '${player.statistics?.hitting?.overall?.slg??"0"}',
                     run: 'Runs/Game',
                     runValue: ((int.parse(player
                         .statistics?.hitting?.overall?.runs?.total
@@ -807,7 +823,7 @@ class GameDetailsController extends GetxController {
                         totalGame)
                         .toStringAsFixed(2)),
                     stolenBase: 'Stolen Bases/Game',
-                    ab: '${player.statistics?.hitting?.overall?.ab}',
+                    ab: '${player.statistics?.hitting?.overall?.ab??"0"}',
                     stolenBaseValue: ((int.parse(
                         player.statistics?.hitting?.overall?.steal?.stolen
                             .toString() ?? "0") /
@@ -834,7 +850,7 @@ class GameDetailsController extends GetxController {
           ((int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
           awayHitting?.avg ?? "0",
-          '.${(awayHitting?.slg
+          '.${((awayHitting?.slg??"0")
               .toString()
               .split('.')
               .last)}',
@@ -847,7 +863,7 @@ class GameDetailsController extends GetxController {
           '${awayPitching?.era ?? '0'}',
           '${awayPitching?.games?.shutout ?? '0'}',
           '.${(((awayPitching?.games?.save ?? 0) /
-              (awayPitching?.games?.svo ?? 0))
+              (awayPitching?.games?.svo ?? 1))
               .toStringAsFixed(3)
               .split('.')
               .last)}',
@@ -901,7 +917,7 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: homeTeamId,
-        seasons: currentYear,
+        seasons:DateTime.now().year.toString(),
         sportKey: sportKey);
     try {
       if (result.status) {

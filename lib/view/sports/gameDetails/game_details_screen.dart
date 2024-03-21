@@ -240,7 +240,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         widget.sportKey),
                                     hitterPlayerStatWidget(
                                         context,
-                                        con,
+
                                         widget.gameDetails,
                                         awayTeam,
                                         homeTeam,
