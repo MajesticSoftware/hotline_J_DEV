@@ -171,7 +171,7 @@ class RegisterScreen extends StatelessWidget {
                       controller: ctrl.passCon,
                       hintText: 'Password',
                     ).paddingSymmetric(horizontal: 60.h),
-                    25.w.H(),
+                    /*25.w.H(),
                     DropdownButtonHideUnderline(
                       child: Container(
                         height: MediaQuery.of(context).size.height * .05,
@@ -210,12 +210,12 @@ class RegisterScreen extends StatelessWidget {
                           onChanged: (value) {
                             ctrl.selectedSpot = value!;
                             log('ctrl.selectedSpot---${ctrl.selectedSpot}');
-                            PreferenceManager.setFavoriteSport(/*value*/"NBA");
+                            PreferenceManager.setFavoriteSport(*//*value*//*"NBA");
                             ctrl.update();
                           },
                         ),
                       ),
-                    ).paddingSymmetric(horizontal: 60.h),
+                    ).paddingSymmetric(horizontal: 60.h),*/
                     50.h.H(),
                     Row(
                       children: [

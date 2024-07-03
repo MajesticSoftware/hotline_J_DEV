@@ -380,7 +380,7 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
-          homePlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
+          homePlayerName='${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
 
           for (var player in playerData.seasons) {
             if (player.type == 'REG' && player.year == DateTime.now().year) {
@@ -570,7 +570,7 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
-          awayPlayerName='${playerData.full_name.split(" ").first[0]}. ${playerData.full_name.split(" ").last}';
+          awayPlayerName='${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
 
           for (var player in playerData.seasons) {
             if (player.type == 'REG' && player.year ==  DateTime.now().year) {
@@ -616,7 +616,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: homeTeamId, seasons: DateTime.now().year.toString());
+        teamId: homeTeamId, seasons: currentYear);
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
@@ -771,7 +771,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: awayTeamId, seasons: DateTime.now().year.toString(),);
+        teamId: awayTeamId, seasons: currentYear,);
     try {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
@@ -917,7 +917,7 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: homeTeamId,
-        seasons:DateTime.now().year.toString(),
+        seasons:currentYear,
         sportKey: sportKey);
     try {
       if (result.status) {
@@ -1477,6 +1477,7 @@ class GameDetailsController extends GetxController {
               gameDetails.awayReceiversPlayer.sort((a, b) =>
                   (b.receiving?.yards ?? 0).compareTo(a.receiving?.yards ?? 0));
             }
+            update();
           }
         } else {
           isLoading.value = false;
@@ -1938,7 +1939,7 @@ class GameDetailsController extends GetxController {
             });
           }
         }
-        // isLoading.value = false;
+        isLoading.value = false;
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -2052,13 +2053,13 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
 
-      await hotlinesDataResponse(
+      /*await hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
           gameDetails: gameDetails,
           matchId: gameDetails.id ?? "",
           isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+          homeTeamId: homeTeam?.id ?? "");*/
     }
     if (sportKey == 'NCAA') {
       isLoading.value = true;

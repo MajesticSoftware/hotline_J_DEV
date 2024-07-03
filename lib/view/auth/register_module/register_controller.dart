@@ -52,9 +52,9 @@ class RegisterCon extends GetxController {
         showAppSnackBar('Please enter password');
       } else if (passCon.text.length < 6) {
         showAppSnackBar('Password must be at least six character');
-      } else if (selectedSpot.isEmpty) {
+      } /*else if (selectedSpot.isEmpty) {
         showAppSnackBar('Please selecte your favorite spots');
-      } else if (!isCheck) {
+      } */else if (!isCheck) {
         showAppSnackBar('Please accept term and conditions.');
       } else {
         ResponseItem result =
@@ -64,13 +64,15 @@ class RegisterCon extends GetxController {
           log('imageFile null');
           result = await UserStartupRepo().registrationRepo(
               email: emailCon.text,
-              favouriteSport: selectedSpot,
+              favouriteSport: 'NFL',
+              // favouriteSport: selectedSpot,
               fullName: nameCon.text,
               password: passCon.text);
         } else {
           result = await UserStartupRepo().registrationRepo(
               email: emailCon.text,
-              favouriteSport: selectedSpot,
+              // favouriteSport: selectedSpot,
+              favouriteSport: 'NFL',
               fullName: nameCon.text,
               password: passCon.text,
               profileImage: imageFile);

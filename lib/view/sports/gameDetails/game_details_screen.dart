@@ -162,9 +162,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                             mainlinesWidget(
                                 context, widget.gameDetails, awayTeam,
                                 homeTeam),
-                            hotlinesWidget(context, con, widget.gameDetails,
-                                awayTeam, homeTeam, _tabController!),
-                            20.h.H(),
+                         /*   hotlinesWidget(context, con, widget.gameDetails,
+                                awayTeam, homeTeam, _tabController!),*/
+                            // 20.h.H(),
                             StickyHeader(
                                 header: Container(
                                   decoration: BoxDecoration(

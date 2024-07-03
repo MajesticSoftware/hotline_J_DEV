@@ -30,7 +30,7 @@ final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
 
-  LeagueModel(
+ /* LeagueModel(
       sportId: 'sr:sport:2',
       gameName: 'NCAAB',
       date: formatted,
@@ -53,44 +53,22 @@ List<LeagueModel> sportsLeagueList = [
       key: 'MLB',
       sportId: 'sr:sport:3',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: true),
+      isAvailable: true),*/
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
-      date: '2024-02-11',
+      date: '2024-09-06',
       key: 'NFL',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      apiKey: '4q82NPrT1N6idZOFCMnoZ8bsZPDmaapd7mNuIOJe',
       sportId: 'sr:sport:16',
       isAvailable: true),
-  LeagueModel(
+  /*LeagueModel(
       gameImage: Assets.imagesNcaa,
       date: formatted,
       key: 'NCAA',
       gameName: 'NCAAF',
       sportId: 'sr:sport:16',
       apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: true),
-/*
-  LeagueModel(
-      sportId: 'sr:sport:2',
-      image: Assets.imagesNHL,
-      date: formatted,
-      key: 'NHL',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
-      isAvailable: false),
+      isAvailable: true),*/
 
-  LeagueModel(
-      sportId: '',
-      image: Assets.imagesGOLF,
-      date: '',
-      key: 'GOLF',
-      apiKey: '',
-      isAvailable: false),*/
-  // LeagueModel(
-  //     image: Assets.imagesUFC, date: '', key: 'UFC', isAvailable: false),
-  // LeagueModel(
-  //     image: Assets.imagesAUTO,
-  //     date: '',
-  //     key: 'AUTO RACING',
-  //     isAvailable: false),
 ];

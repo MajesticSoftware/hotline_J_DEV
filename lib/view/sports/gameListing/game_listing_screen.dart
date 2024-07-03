@@ -38,12 +38,13 @@ class SelectGameScreen extends StatelessWidget {
       Get.put(GameListingController());
   final GameDetailsController gameDetailsController =
       Get.put(GameDetailsController());
+  final SubscriptionController subscriptionController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       // await gameListingController.favoriteGameCall();
-      await gameListingController.getResponse(true, "NCAAB").then((value) {});
+      await gameListingController.getResponse(true, "NFL").then((value) {});
       if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
             .then((value) => gameListingController.getSubscriptionStatus());
@@ -101,9 +102,9 @@ class SelectGameScreen extends StatelessWidget {
                   ],
                 ),
               )),
-          Obx(() => Get.find<SubscriptionController>().isLoading.value
+          /* Obx(() => Get.find<SubscriptionController>().isLoading.value
               ? const AppProgress()
-              : const SizedBox())
+              : const SizedBox())*/
         ],
       );
     });
@@ -166,7 +167,7 @@ class SelectGameScreen extends StatelessWidget {
             Visibility(
                 visible: (PreferenceManager.getIsLogin() ?? false) == true,
                 child: commonDivider(context)),
-            drawerCard(
+            /*drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
                 color: Colors.white,
@@ -207,18 +208,18 @@ class SelectGameScreen extends StatelessWidget {
                 controller.tabClick(context, 2);
                 controller.update();
               },
-            ),
+            ),*/
             drawerCard(
               icon: Assets.imagesNfl,
               title: 'NFL',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 3);
+                controller.tabClick(context, 0);
                 controller.update();
               },
-            ),
-            drawerCard(
+            ).paddingOnly(top: 30.h),
+            /*   drawerCard(
               icon: Assets.imagesNcaa,
               title: 'NCAAF',
               context: context,
@@ -227,7 +228,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.tabClick(context, 4);
                 controller.update();
               },
-            ),
+            ),*/
             drawerCard(
               widget: Icon(
                 Icons.local_fire_department_outlined,
@@ -566,7 +567,8 @@ class SelectGameScreen extends StatelessWidget {
                                   weight: FontWeight.w800),
                               (/*controller.sportKey == "MLB"
                                       ? "'2024 season starts March 20th.'"
-                                      :*/ controller.sportKey == "NFL"
+                                      :*/
+                                      controller.sportKey == "NFL"
                                           ? "‘2024 season starts September 5th’"
                                           : controller.sportKey == "NCAA"
                                               ? "'2024 season starts August 24th.'"
@@ -771,25 +773,29 @@ class SelectGameScreen extends StatelessWidget {
                                                                     .sportKey ==
                                                                 "NBA")
                                                         ? const SizedBox()
-                                                        :*/ (DateTime.parse(spotList(controller)[index]
-                                                                            .scheduled ??
-                                                                        '')
-                                                                    .toLocal()
-                                                                    .day !=
-                                                                DateTime.parse(
-                                                                        spotList(controller)[index + 1].scheduled ??
-                                                                            '')
-                                                                    .toLocal()
-                                                                    .day)
-                                                            ? Divider(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .indicatorColor,
-                                                                thickness: 2,
-                                                              ).paddingOnly(
-                                                                top: 5.h)
-                                                            : const SizedBox()
-                                                    : SizedBox(),
+                                                        :*/
+                                                    (DateTime.parse(spotList(controller)[
+                                                                            index]
+                                                                        .scheduled ??
+                                                                    '')
+                                                                .toLocal()
+                                                                .day !=
+                                                            DateTime.parse(spotList(controller)[
+                                                                            index +
+                                                                                1]
+                                                                        .scheduled ??
+                                                                    '')
+                                                                .toLocal()
+                                                                .day)
+                                                        ? Divider(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .indicatorColor,
+                                                            thickness: 2,
+                                                          ).paddingOnly(
+                                                            top: 5.h)
+                                                        : const SizedBox()
+                                                    : const SizedBox(),
                                               ],
                                             );
                                 } catch (e) {

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -197,7 +195,8 @@ class GameWidget extends StatelessWidget {
                                         .019,
                                     weight: FontWeight.bold),
                               )
-                            ],),
+                            ],
+                          ),
                           // 10.W(),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * .02,
@@ -286,7 +285,7 @@ class GameWidget extends StatelessWidget {
                 ),
               ),
               Visibility(
-                  visible: isShowWeather&&!isShowFlam,
+                  visible: isShowWeather && !isShowFlam,
                   child: Expanded(
                     flex: 1,
                     child: Column(
@@ -358,7 +357,7 @@ class GameWidget extends StatelessWidget {
                       ],
                     ),
                   )),
-             /* Visibility(
+              /* Visibility(
                 visible: !isShowWeather&&!isShowFlam,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -516,7 +515,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'After the 30 days this subscription will automatically renew for ${(price=="0"?"\$9.99":(price ?? "\$9.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
+                      'After the 30 days this subscription will automatically renew for ${(price == "0" ? "\$9.99" : (price ?? "\$9.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -556,7 +555,9 @@ Future<dynamic> subscriptionDialog(BuildContext context,
           Visibility(
             visible: showButton,
             child: CommonAppButton(
-              title:price=="0"? "Start Free Trial": "Upgrade for ${(price ?? "\$9.99")}/mo",
+              title: price == "0"
+                  ? "Start Free Trial"
+                  : "Upgrade for ${(price ?? "\$9.99")}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),
@@ -596,17 +597,17 @@ class GameTabCard extends StatelessWidget {
   final GameListingController controller;
   final List<Color> sportSelectedColor = [
     const Color(0xff0C4981),
-    const Color(0xff1A8B47),
-    const Color(0xffEABB42),
-    Colors.orange,
-    Colors.deepPurpleAccent
+    // const Color(0xff1A8B47),
+    // const Color(0xffEABB42),
+    // Colors.orange,
+    // Colors.deepPurpleAccent
   ];
   final List<Color> sportColor = [
     const Color(0xff0C4981).withOpacity(.4),
-    const Color(0xff1A8B47).withOpacity(.4),
-    const Color(0xffEABB42).withOpacity(.4),
-    Colors.orange.withOpacity(.4),
-    Colors.deepPurpleAccent.withOpacity(.4),
+    // const Color(0xff1A8B47).withOpacity(.4),
+    // const Color(0xffEABB42).withOpacity(.4),
+    // Colors.orange.withOpacity(.4),
+    // Colors.deepPurpleAccent.withOpacity(.4),
   ];
 
   @override
@@ -693,9 +694,10 @@ class GameTabCard extends StatelessWidget {
                             sportsLeagueList[index].gameImage,
                             height: MediaQuery.of(context).size.height * .04,
                             width: MediaQuery.of(context).size.width * .01,
-                            fit: index == 1 || index == 0
+                            fit: /*index == 1 || index == 0
                                 ? BoxFit.cover
-                                : BoxFit.contain,
+                                :*/
+                                BoxFit.contain,
                             color: whiteColor,
                           ).paddingSymmetric(
                               vertical:
@@ -721,7 +723,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 5 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);

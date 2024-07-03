@@ -25,8 +25,8 @@ class ProfileController extends GetxController {
     update();
   }
 
-  List<String> spotsList = [ 'NBA','NCAAB', 'MLB','NCAAF','NFL'];
-  String selectedSpot = PreferenceManager.getFavoriteSport() ?? "NBA";
+  List<String> spotsList = [ /*'NBA','NCAAB', 'MLB','NCAAF',*/'NFL'];
+  String selectedSpot = /*PreferenceManager.getFavoriteSport() ?? "NBA"*/"NFL";
 
   RxBool isLoading = false.obs;
 

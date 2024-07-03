@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import '../../../constant/constant.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../extras/constants.dart';
+import '../../../extras/request_constants.dart';
 import '../../../model/forgot_pass_model.dart';
 import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
@@ -48,7 +49,7 @@ class GameListingController extends GetxController {
     log('I am closed');
   }
 
-  String sportId = 'sr:sport:2'
+  String sportId = 'sr:sport:16'
 
       /*((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
       ? 'sr:sport:3'
@@ -62,7 +63,7 @@ class GameListingController extends GetxController {
       _sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
           ? "NCAA"
           : PreferenceManager.getFavoriteSport()) ??*/
-      "NCAAB";
+      "NFL";
 
   String get sportKey => _sportKey;
 
@@ -72,18 +73,20 @@ class GameListingController extends GetxController {
   }
 
   favoriteGameCall() {
-    sportId = ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
+    sportId = /*((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
         ? 'sr:sport:3'
         : ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NBA') ||
                 ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NCAAB')
             ? 'sr:sport:2'
-            : 'sr:sport:16');
-    sportKey = (PreferenceManager.getFavoriteSport() == "NCAAF"
+            :*/
+        'sr:sport:16' /*)*/;
+    sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
             ? "NCAA"
             : PreferenceManager.getFavoriteSport()) ??
-        "NBA";
-    isSelected.add(PreferenceManager.getFavoriteSport() ?? "NBA");
-    isSelectedGame = PreferenceManager.getFavoriteSport() ?? "NBA";
+        "NBA"*/
+        "NFL";
+    isSelected.add(/*PreferenceManager.getFavoriteSport() ?? "NBA"*/ "NFL");
+    isSelectedGame = /* PreferenceManager.getFavoriteSport() ?? "NBA"*/ "NFL";
     Future.delayed(
       Duration.zero,
       () async {
@@ -91,10 +94,11 @@ class GameListingController extends GetxController {
         isLoading.value = true;
         await getResponse(
             true,
-            (PreferenceManager.getFavoriteSport() == "NCAAF"
+            /* (PreferenceManager.getFavoriteSport() == "NCAAF"
                     ? "NCAA"
                     : PreferenceManager.getFavoriteSport()) ??
-                "NBA");
+                "NBA"*/
+            "NFL");
       },
     );
   }
@@ -178,14 +182,17 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String apiKey = 'brcnsyc4vqhxys2xhm8kbswz';
-  String date = (PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
-      ? "2024-02-11"
+  String apiKey = '4q82NPrT1N6idZOFCMnoZ8bsZPDmaapd7mNuIOJe';
+  String
+      date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
+      ? "2024-09-06"
       : DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().subtract(const Duration(days: 1)));
+          .format(DateTime.now().subtract(const Duration(days: 1)))*/
+      "2024-09-06";
+
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
-    "NCAAB"
+    "NFL"
   ];
 
   List<String> get isSelected => _isSelected;
@@ -195,7 +202,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/ "NCAAB";
+  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/ "NFL";
 
   String get isSelectedGame => _isSelectedGame;
 
@@ -651,11 +658,13 @@ class GameListingController extends GetxController {
               } else {
                 mlbTodayEventsList.add(event);
               }
-            } else if (event.season?.id == 'sr:season:102797' &&
+            } else if (event.season?.id == 'sr:season:115087' &&
                 sportKey == 'NFL' &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed")) {
-              if (nflTodayEventsList.contains(event)) {
+              if (nflTodayEventsList
+                      .indexWhere((element) => element.id == event.id) !=
+                  -1) {
               } else {
                 nflTodayEventsList.add(event);
               }
@@ -693,6 +702,7 @@ class GameListingController extends GetxController {
         }
       });
     }
+    update();
     return getTodayList(sportKey);
   }
 
@@ -733,12 +743,16 @@ class GameListingController extends GetxController {
               } else {
                 mlbTomorrowEventsList.add(event);
               }
-            } else if (event.season?.id == 'sr:season:102797' &&
+            } else if (event.season?.id == 'sr:season:115087' &&
                 sportKey == 'NFL') {
-              if (nflTomorrowEventsList.contains(event)) {
-              } else {
-                nflTomorrowEventsList.add(event);
-              }
+              nflTomorrowEventsList.where((element) {
+                if (element.id == event.id) {
+                  return true;
+                } else {
+                  nflTomorrowEventsList.add(event);
+                  return false;
+                }
+              }).toList();
             } else if ((event.season?.id == 'sr:season:101983' ||
                     (event.season?.id == 'sr:season:101811')) &&
                 sportKey == 'NCAA') {
@@ -767,6 +781,7 @@ class GameListingController extends GetxController {
                   .compareTo(DateTime.parse(b.scheduled ?? "")));
         }
       });
+      update();
     }
   }
 
@@ -834,7 +849,7 @@ class GameListingController extends GetxController {
                 DateTime.parse(event.scheduled ?? '').toLocal().day !=
                     DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               mlbTomorrowEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:102797' &&
+            } else if (event.season?.id == 'sr:season:115087' &&
                 sportKey == 'NFL') {
               nflTomorrowEventsList.add(event);
             } else if ((event.season?.id == 'sr:season:101983' ||
@@ -1006,7 +1021,7 @@ class GameListingController extends GetxController {
             mlbSportEventsList[index].inningHalf =
                 game.outcome?.currentInningHalf.toString() ?? '';
             mlbSportEventsList[index].outs =
-                "${(game.outcome?.count?.outs??"0").toString()} Outs";
+                "${(game.outcome?.count?.outs ?? "0").toString()} Outs";
             if (game.home?.id == homeTeamId) {
               mlbSportEventsList[index].homeScore =
                   (game.home?.runs).toString();
@@ -1371,7 +1386,7 @@ class GameListingController extends GetxController {
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
             gameListingsWithLogoResponse(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (i == 12) {
               isPagination = false;
@@ -1487,7 +1502,7 @@ class GameListingController extends GetxController {
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
             gameListingsWithLogoResponse(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (i == 12) {
               isPagination = false;
@@ -1529,7 +1544,7 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    nflTodayEventsList.clear();
+    nflTodayEventsList = [];
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1547,8 +1562,8 @@ class GameListingController extends GetxController {
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
-        nflTomorrowEventsList.clear();
-        for (int i = 2; i <= 7; i++) {
+        nflTomorrowEventsList = [];
+        for (int i = 2; i <= 4; i++) {
           gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
@@ -1560,11 +1575,11 @@ class GameListingController extends GetxController {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-            if (i == 7) {
+            if (i == 4) {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (nflSportEventsList.isNotEmpty) {
               for (int i = 0; i < nflSportEventsList.length; i++) {
@@ -1632,7 +1647,7 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    nflTodayEventsList.clear();
+    nflTodayEventsList = [];
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1650,8 +1665,8 @@ class GameListingController extends GetxController {
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
-        nflTomorrowEventsList.clear();
-        for (int i = 2; i <= 7; i++) {
+        nflTomorrowEventsList = [];
+        for (int i = 2; i <= 4; i++) {
           gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
@@ -1663,11 +1678,11 @@ class GameListingController extends GetxController {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-            if (i == 7) {
+            if (i == 4) {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (nflSportEventsList.isNotEmpty) {
               for (int i = 0; i < nflSportEventsList.length; i++) {
@@ -2113,7 +2128,7 @@ class GameListingController extends GetxController {
               .then((value) {
             getAllEventList(sportKey, isLoad);
             gameListingsWithLogoResponse(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (j == 4) {
               isPagination = false;
@@ -2124,27 +2139,25 @@ class GameListingController extends GetxController {
                     index: i, sportKey: sportKey);
                 if (mlbSportEventsList[i].uuids != null) {
                   if (DateTime.parse(mlbSportEventsList[i].scheduled ?? "")
-                      .toLocal()
-                      .day ==
+                          .toLocal()
+                          .day ==
                       DateTime.now().day) {
                     boxScoreResponse(
                         homeTeamId: replaceId(
-                            mlbSportEventsList[i].competitors[0].uuids ??
-                                '') ??
+                                mlbSportEventsList[i].competitors[0].uuids ??
+                                    '') ??
                             "",
                         awayTeamId: replaceId(
-                            mlbSportEventsList[i].competitors[1].uuids ??
-                                '') ??
+                                mlbSportEventsList[i].competitors[1].uuids ??
+                                    '') ??
                             "",
                         gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
                         index: i);
                   }
-
                 }
               }
             }
           });
-
         }
         if (mlbTodayEventsList.isNotEmpty) {
           timer = Timer.periodic(const Duration(seconds: 45), (t) {
@@ -2253,7 +2266,7 @@ class GameListingController extends GetxController {
               }
             }
             gameListingsWithLogoResponse(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
           });
           if (i == 4) {
@@ -2299,7 +2312,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           isPagination = false;
           gameListingsWithLogoResponseNCAAB(
-              DateTime.now().year.toString(), sportKey,
+              currentYear, sportKey,
               isLoad: isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
 
@@ -2409,7 +2422,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           isPagination = false;
           gameListingsWithLogoResponseNCAAB(
-              DateTime.now().year.toString(), sportKey,
+              currentYear, sportKey,
               isLoad: isLoad);
           nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
 
@@ -2475,7 +2488,7 @@ class GameListingController extends GetxController {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             if (ncaabSportEventsList.isNotEmpty) {
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
@@ -2612,7 +2625,7 @@ class GameListingController extends GetxController {
             getAllEventList(sportKey, isLoad);
 
             gameListingsWithLogoResponseNCAAB(
-                DateTime.now().year.toString(), sportKey,
+                currentYear, sportKey,
                 isLoad: isLoad);
             nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
             if (ncaabSportEventsList.isNotEmpty) {
