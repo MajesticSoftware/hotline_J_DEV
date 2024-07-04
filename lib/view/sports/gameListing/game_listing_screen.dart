@@ -613,7 +613,6 @@ class SelectGameScreen extends StatelessWidget {
                                                   .scheduled ??
                                               '')
                                           .toLocal());
-
                                   return (spotList(controller).length ==
                                               index + 1 &&
                                           controller.isPagination)

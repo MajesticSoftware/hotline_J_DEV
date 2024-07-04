@@ -659,8 +659,8 @@ class GameListingController extends GetxController {
                 mlbTodayEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey == 'NFL' &&
-                (difference.inHours >= (-6)) &&
+                sportKey == 'NFL' /*&&
+                (difference.inHours >= (-6))*/ &&
                 (event.status != "closed")) {
               if (nflTodayEventsList
                       .indexWhere((element) => element.id == event.id) !=
