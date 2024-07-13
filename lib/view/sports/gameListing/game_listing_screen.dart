@@ -62,7 +62,7 @@ class SelectGameScreen extends StatelessWidget {
               body: SingleChildScrollView(
                 child: Column(
                   children: [
-                    GameTabCard(
+                  /*  GameTabCard(
                       onTapContact: () {
                         toggle = 0;
                         if (Platform.isIOS) {
@@ -79,14 +79,15 @@ class SelectGameScreen extends StatelessWidget {
                         // showDataAlert(context);
                       },
                       controller: controller,
-                    ),
+                    ),*/
+                    20.w.H(),
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
                         color: Theme.of(context).cardColor,
                       ),
                       height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).size.height * .2,
+                          MediaQuery.of(context).size.height * .13,
                       width: Get.width,
                       clipBehavior: Clip.antiAlias,
                       child: controller.isSelectedGame == 'Gambling 101'

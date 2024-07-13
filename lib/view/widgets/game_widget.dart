@@ -515,7 +515,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text:
-                      'After the 30 days this subscription will automatically renew for ${(price == "0" ? "\$9.99" : (price ?? "\$9.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
+                      'After the 30 days this subscription will automatically renew for ${(price == "0" ? "\$3.99" : (price ?? "\$3.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
                   style: GoogleFonts.nunitoSans(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
@@ -557,7 +557,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
             child: CommonAppButton(
               title: price == "0"
                   ? "Start Free Trial"
-                  : "Upgrade for ${(price ?? "\$9.99")}/mo",
+                  : "Upgrade for ${(price ?? "\$3.99")}/mo",
               textColor: blackColor,
               onTap: onTap,
             ).paddingSymmetric(horizontal: 40.h),
@@ -1196,12 +1196,28 @@ class HeaderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
               Expanded(
                 flex: mobileView.size.shortestSide < 600 ? 2 : 3,
-                child: ''.appCommonText(
-                    color: whiteColor,
-                    weight: FontWeight.w600,
-                    size: MediaQuery.of(context).size.height * .016),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      Assets.imagesNfl,
+                      height: MediaQuery.of(context).size.height * .017,
+                      width: MediaQuery.of(context).size.width * .01,
+                      fit:
+                      BoxFit.contain,
+                      color: whiteColor,
+                    ),
+                    'NFL'.appCommonText(
+                        align: TextAlign.start,
+                        color: whiteColor,
+                        weight: FontWeight.w600,
+                        size: MediaQuery.of(context).size.height * .016).paddingOnly(left: 10.w),
+                  ],
+                ).paddingOnly(left: 10.w),
               ),
               Expanded(
                 flex: 1,

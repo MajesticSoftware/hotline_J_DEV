@@ -42,8 +42,8 @@ class AppUrls {
 
   // ignore: constant_identifier_names
   // static const String NFL_APIKEY = "h4kantpwh2rhn783gdh6theg";
-  // static const String NFL_APIKEY = "sp5jxad2v7ue2t6nm5q32a27";
-  static const String NFL_APIKEY = "GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ";
+  static const String NFL_APIKEY = "Iz3Lagp15R2l9IjmmUtez12WtUCJES3V7cLVm9Ka";
+  // static const String NFL_APIKEY = "GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ";
 
   // ignore: constant_identifier_names
   static const String MLB_APIKEY = "5hnm7xhtgc8q22q2x4w6urvb";

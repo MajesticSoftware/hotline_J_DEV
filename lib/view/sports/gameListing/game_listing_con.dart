@@ -182,7 +182,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String apiKey = '4q82NPrT1N6idZOFCMnoZ8bsZPDmaapd7mNuIOJe';
+  String apiKey = 'GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ';
   String
       date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
       ? "2024-09-06"
@@ -887,6 +887,7 @@ class GameListingController extends GetxController {
     getSportEventList(sportKey).clear();
     getSportEventList(sportKey).addAll(getTodayList(sportKey));
     getSportEventList(sportKey).addAll(getTomorrowList(sportKey));
+    update();
     getSportEventList(sportKey).sort((a, b) => DateTime.parse(a.scheduled ?? "")
         .compareTo(DateTime.parse(b.scheduled ?? "")));
     for (var event in getSportEventList(sportKey)) {
@@ -994,7 +995,6 @@ class GameListingController extends GetxController {
         }
       }
     }
-
     update();
   }
 
@@ -1545,6 +1545,7 @@ class GameListingController extends GetxController {
       String date = '',
       String sportId = ''}) async {
     nflTodayEventsList = [];
+    update();
     gameListingTodayApiRes(
             key: apiKey,
             isLoad: isLoad,
@@ -1640,6 +1641,7 @@ class GameListingController extends GetxController {
         }
       });
     });
+    update();
   }
 
   Future<void> nflGameRefreshCall(bool isLoad,
@@ -1700,6 +1702,7 @@ class GameListingController extends GetxController {
         }
       });
     });
+
   }
 
   ///NFL GAME RANK API

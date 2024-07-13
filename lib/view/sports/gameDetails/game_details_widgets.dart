@@ -83,8 +83,12 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                                   null;
                                 } else {
                                   log('ON TAP');
-                                  await ctrl.buyProduct(ctrl.products[0]);
-                                  con.update();
+                                  try {
+                                    await ctrl.buyProduct(ctrl.products[0]);
+                                    con.update();
+                                  } catch (e) {
+                                    log('Error: $e');
+                                  }
                                 }
                               } else {
                                 showDialog(
