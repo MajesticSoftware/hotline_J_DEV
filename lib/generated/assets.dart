@@ -6,6 +6,7 @@ class Assets {
   static const String assetsImagesFire = 'assets/images/fire.svg';
   static const String assetsImagesLock = 'assets/images/lock.svg';
   static const String assetsImagesPITT = 'assets/images/PITT.svg';
+  static const String assetsImagesSplashImage = 'assets/images/splash_image.svg';
   static const String assetsImagesSubscriptioon = 'assets/images/subscriptioon.jpeg';
   static const String imagesAUTO = 'assets/images/AUTO.png';
   static const String imagesAppLogo = 'assets/images/app_logo.svg';
@@ -47,7 +48,7 @@ class Assets {
   static const String imagesPITT = 'assets/images/PITT.png';
   static const String imagesPopcorn = 'assets/images/popcorn.png';
   static const String imagesSOCCER = 'assets/images/SOCCER.png';
-  static const String imagesSplashImage = 'assets/images/splash_image.svg';
+  static const String imagesSplashImage = 'assets/images/splash_image.png';
   static const String imagesSportDetail = 'assets/images/sport_detail.png';
   static const String imagesSs = 'assets/images/ss.png';
   static const String imagesSub = 'assets/images/sub.png';

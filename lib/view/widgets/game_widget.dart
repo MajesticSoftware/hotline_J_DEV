@@ -1645,7 +1645,7 @@ PreferredSize commonAppBar(
                   const Icon(Icons.menu, color: Colors.transparent)
                 ],
               ),
-              controller.isSelectedGame == 'Gambling 101' ||
+              controller.isSelectedGame == 'Betting 101' ||
                       controller.isSelectedGame == 'Contact'
                   ? const SizedBox()
                   : Positioned(

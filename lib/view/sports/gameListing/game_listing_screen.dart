@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,7 +61,7 @@ class SelectGameScreen extends StatelessWidget {
               body: SingleChildScrollView(
                 child: Column(
                   children: [
-                  /*  GameTabCard(
+                    /*  GameTabCard(
                       onTapContact: () {
                         toggle = 0;
                         if (Platform.isIOS) {
@@ -90,7 +89,7 @@ class SelectGameScreen extends StatelessWidget {
                           MediaQuery.of(context).size.height * .13,
                       width: Get.width,
                       clipBehavior: Clip.antiAlias,
-                      child: controller.isSelectedGame == 'Gambling 101'
+                      child: controller.isSelectedGame == 'Betting 101'
                           ? const GamblingCard()
                           : /*controller.isSelectedGame == 'Contact'
                               ? ContactView(
@@ -236,12 +235,12 @@ class SelectGameScreen extends StatelessWidget {
                 color: whiteColor,
                 size: 35.h,
               ),
-              title: 'Gambling 101',
+              title: 'Betting 101',
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
                 toggle = 0;
-                controller.isSelectedGame = 'Gambling 101';
+                controller.isSelectedGame = 'Betting 101';
               },
             ),
             Visibility(
@@ -774,32 +773,38 @@ class SelectGameScreen extends StatelessWidget {
                                                                 "NBA")
                                                         ? const SizedBox()
                                                         :*/
-                                                    (DateTime.parse(spotList(controller)[
-                                                                            index]
-                                                                        .scheduled ??
-                                                                    '')
-                                                                .toLocal()
-                                                                .day !=
-                                                            DateTime.parse(spotList(controller)[
-                                                                            index +
-                                                                                1]
-                                                                        .scheduled ??
-                                                                    '')
-                                                                .toLocal()
-                                                                .day)
-                                                        ? Divider(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .indicatorColor,
-                                                            thickness: 2,
-                                                          ).paddingOnly(
-                                                            top: 5.h)
-                                                        : const SizedBox()
+                                                    index+1 ==
+                                                            (spotList(
+                                                                    controller)
+                                                                .length)
+                                                        ? const SizedBox()
+                                                        : (DateTime.parse(spotList(controller)[index]
+                                                                            .scheduled ??
+                                                                        '')
+                                                                    .toLocal()
+                                                                    .day !=
+                                                                DateTime.parse(
+                                                                        spotList(controller)[index + 1].scheduled ??
+                                                                            '')
+                                                                    .toLocal()
+                                                                    .day)
+                                                            ? Divider(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .indicatorColor,
+                                                                thickness: 2,
+                                                              ).paddingOnly(
+                                                                top: 5.h)
+                                                            : const SizedBox()
                                                     : const SizedBox(),
                                               ],
                                             );
                                 } catch (e) {
-                                  return const SizedBox();
+                                  log(e.toString());
+                                  return Container(
+                                    color: Colors.red,
+                                    height: 50,
+                                  );
                                 }
                               },
                             ),
@@ -1027,7 +1032,7 @@ class SelectGameScreen extends StatelessWidget {
     return (controller.sportKey == 'MLB'
         ? controller.mlbSportEventsList
         : controller.sportKey == 'NFL'
-            ? controller.nflSportEventsList
+            ? controller.nflSportEventsList.toSet().toList()
             : controller.sportKey == 'NBA'
                 ? controller.nbaSportEventsList
                 : controller.sportKey == 'NCAAB'
