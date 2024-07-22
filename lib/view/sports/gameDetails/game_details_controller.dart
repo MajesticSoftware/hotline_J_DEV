@@ -1882,9 +1882,9 @@ class GameDetailsController extends GetxController {
                     sportEvent?.awayTeamInjuredPlayer.add(
                         '${player.name?[0]}. ${player.name
                             ?.split(' ')
-                            .last}(${((player.injuries ?? []).isNotEmpty)
+                            .last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty)
                             ? (player.injuries?[0].practice?.status)
-                            : ""})');
+                            : ""}');
                   }
                 });
               }
@@ -1894,9 +1894,9 @@ class GameDetailsController extends GetxController {
                     sportEvent?.homeTeamInjuredPlayer.add(
                         '${player.name?[0]}. ${player.name
                             ?.split(' ')
-                            .last}(${((player.injuries ?? []).isNotEmpty)
+                            .last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty)
                             ? (player.injuries?[0].practice?.status)
-                            : ""})');
+                            : ""}');
                   }
                 });
               }
@@ -1911,12 +1911,12 @@ class GameDetailsController extends GetxController {
                   if (player.status != 'A') {
                     if (sportKey == "NBA") {
                       sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName}(${player
-                              .injuries?.first.status})');
+                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
+                              .injuries?.first.status}');
                     } else {
                       sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName}(${player
-                              .status})');
+                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
+                              .status}');
                     }
                   }
                 });
@@ -1926,12 +1926,12 @@ class GameDetailsController extends GetxController {
                   if (player.status != 'A') {
                     if (sportKey == "NBA") {
                       sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName}(${player
-                              .injuries?.first.status})');
+                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
+                              .injuries?.first.status}');
                     } else {
                       sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName}(${player
-                              .status})');
+                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
+                              .status}');
                     }
                   }
                 });

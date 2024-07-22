@@ -16,7 +16,6 @@ import '../../network/subscription_repo.dart';
 import '../../theme/app_color.dart';
 import '../auth/log_in_module/log_in_screen.dart';
 import '../widgets/common_dialog.dart';
-import 'app_starting_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -33,14 +32,17 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 2), () {
       checkReleaseVersion().then((value) {
         Get.to(
-            () => PreferenceManager.getSkipLogin() ?? false
-                ? (PreferenceManager.getIsFirstLoaded() == null ||
+            () => (PreferenceManager.getSkipLogin() ??
+                    false) ||
+                        /* ? (PreferenceManager.getIsFirstLoaded() == null ||
                         !PreferenceManager.getIsFirstLoaded())
                     ? const AppStartScreen()
                     : SelectGameScreen()
-                : PreferenceManager.getIsLogin() ?? false
-                    ? SelectGameScreen()
-                    : LogInScreen(),
+                : */
+                        (PreferenceManager.getIsLogin() ??
+                    false)
+                ? SelectGameScreen()
+                : LogInScreen(),
             duration: const Duration(milliseconds: 900));
       });
     });
@@ -63,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             )
           : SvgPicture.asset(
-              Assets.imagesSplashImage,
+              Assets.assetsImagesSplashImage,
               width: Get.width,
               height: Get.height,
               fit: BoxFit.cover,
@@ -80,12 +82,18 @@ class _SplashScreenState extends State<SplashScreen> {
       String requiredBuildNumber = Platform.isAndroid
           ? result.data[0]['android_release_build_num'].toString()
           : result.data[0]['ios_release_build_num'].toString();
-      String v2 =requiredVersion, v1 = PreferenceManager.getDeviceVersion().toString();
+      String v2 = requiredVersion,
+          v1 = PreferenceManager.getDeviceVersion().toString();
       int localVersion = getExtendedVersionNumber(v1); // return 102003
       int storeVersion = getExtendedVersionNumber(v2); // return 102011
       log('localVersion--$localVersion');
       log('storeVersion--$storeVersion');
-      if ((storeVersion > localVersion)||(storeVersion == localVersion&&(int.tryParse(requiredBuildNumber)??0) > (int.tryParse(PreferenceManager.getDeviceVersionNumber().toString())??0))) {
+      if ((storeVersion > localVersion) ||
+          (storeVersion == localVersion &&
+              (int.tryParse(requiredBuildNumber) ?? 0) >
+                  (int.tryParse(PreferenceManager.getDeviceVersionNumber()
+                          .toString()) ??
+                      0))) {
         log('Update required. Please update the app.');
         return updateAppDialog();
       } else {
@@ -96,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   int getExtendedVersionNumber(String version) {
     List versionCells = version.split('.');
-    versionCells = versionCells.map((i) => (int.tryParse(i)??0)).toList();
+    versionCells = versionCells.map((i) => (int.tryParse(i) ?? 0)).toList();
     return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
   }
 

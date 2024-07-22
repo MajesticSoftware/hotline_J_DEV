@@ -192,7 +192,7 @@ class SubscriptionController extends GetxController {
     return Future<bool>.value(isVerify);
   }
 
-  String price = 'Start Free Trial';
+  String price = '0';
 
   Future<void> initStoreInfo() async {
     isLoading.value = true;
@@ -238,8 +238,10 @@ class SubscriptionController extends GetxController {
           products.first as AppStoreProductDetails;
       if (details.skProduct.introductoryPrice != null) {
         price = details.skProduct.introductoryPrice!.price;
+        log("Product Price ------> $price");
       } else {
         price = details.skProduct.price;
+        log("Product Price ------> $price");
       }
     }else{
       final GooglePlayProductDetails details =

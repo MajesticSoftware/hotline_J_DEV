@@ -276,22 +276,21 @@ class SelectGameScreen extends StatelessWidget {
                       (PreferenceManager.getSubscriptionActive() ?? "0") == "1"
                           ? false
                           : true,
-                  price: Get.find<SubscriptionController>().price,
+                  price: subscriptionController.price,
                   restoreOnTap: () async {
-                    await Get.find<SubscriptionController>()
-                        .restorePurchase(context);
+                    await subscriptionController.restorePurchase(context);
                   },
                   onTap: () async {
                     Get.back();
 
                     if (PreferenceManager.getIsLogin() ?? false) {
-                      if (Get.find<SubscriptionController>().products.isEmpty) {
+                      if (subscriptionController.products.isEmpty) {
                         null;
                       } else {
                         log('ON TAP');
-                        await Get.find<SubscriptionController>().buyProduct(
-                            Get.find<SubscriptionController>().products[0]);
-                        Get.find<SubscriptionController>().update();
+                        await subscriptionController
+                            .buyProduct(subscriptionController.products[0]);
+                        subscriptionController.update();
                       }
                     } else {
                       showDialog(
@@ -773,7 +772,7 @@ class SelectGameScreen extends StatelessWidget {
                                                                 "NBA")
                                                         ? const SizedBox()
                                                         :*/
-                                                    index+1 ==
+                                                    index + 1 ==
                                                             (spotList(
                                                                     controller)
                                                                 .length)

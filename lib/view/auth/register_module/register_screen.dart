@@ -14,6 +14,7 @@ import 'package:hotlines/utils/layouts.dart';
 import 'package:hotlines/view/auth/log_in_module/log_in_controller.dart';
 import 'package:hotlines/view/auth/log_in_module/log_in_screen.dart';
 import 'package:hotlines/view/auth/register_module/register_controller.dart';
+import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 import 'package:hotlines/view/term_of_service/privacy_policy.dart';
 import 'package:hotlines/view/term_of_service/term_service_screen.dart';
 
@@ -363,7 +364,8 @@ class RegisterScreen extends StatelessWidget {
                     20.h.H(),
                     GestureDetector(
                       onTap: () {
-                        Get.to(const AppStartScreen());
+                        // Get.to(const AppStartScreen());
+                        Get.to(SelectGameScreen());
                         PreferenceManager.setSubscriptionRecUrl("");
                       },
                       child: 'Skip for now'.appCommonText(

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,33 +43,47 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: InkWell(
-                  highlightColor: Colors.transparent,
-                  onTap: () {
-                    con.isTeamReportTab = true;
-                    Get.back();
-                  },
-                  child: SvgPicture.asset(
-                    Assets.imagesBackArrow,
-                    height: 27.h,
-                    alignment: Alignment.centerLeft,
-                  ),
-                ).paddingOnly(left: 8.h),
+                flex: 1,
+
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: InkWell(
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      con.isTeamReportTab = true;
+                      Get.back();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 30.h,
+                      color: whiteColor,
+                    ),
+                  ).paddingOnly(left: 8.h),
+                ),
               ),
               Expanded(
-                child: SvgPicture.asset(Assets.imagesLogo,
-                    height: 34.w, fit: BoxFit.contain),
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SvgPicture.asset(Assets.imagesLogo,
+                      height: 34.w, fit: BoxFit.contain),),
               ),
+              (PreferenceManager.getSubscriptionActive() ?? "0") ==
+                  "1"
+                  ? Expanded(
+                flex: 1,
+                child: SizedBox(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * .028,
+                ),
+              ) :
               Expanded(
-                  child: (PreferenceManager.getSubscriptionActive() ?? "0") ==
-                      "1"
-                      ? SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * .028,
-                  ) :
-                  GetBuilder<SubscriptionController>(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: GetBuilder<SubscriptionController>(
                       builder: (ctrl) {
                         return InkWell(
                           highlightColor: Colors.transparent,
@@ -109,16 +124,28 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                               }
                             },);
                           },
-                          child: Image.asset(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: yellowColor,
+                                borderRadius: BorderRadius.circular(5.w)),
+
+                            child: 'Go Premium'.appCommonText(
+                                color: whiteColor,
+                                weight: FontWeight.w800,
+                                size: 20.sp).paddingSymmetric(
+                                horizontal: 10.w, vertical: 5.h),
+                          ),
+                          /*Image.asset(
                             Assets.imagesLock, fit: BoxFit.contain,
                             height: MediaQuery
                                 .of(context)
                                 .size
                                 .height * .028,
-                            alignment: Alignment.centerRight,),
+                            alignment: Alignment.centerRight,),*/
                         );
                       }
-                  )
+                  ),
+                ),
               ),
             ],
           ),
@@ -5241,11 +5268,29 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   ),
                 ),
               ],
-            ).paddingOnly(bottom: MediaQuery
-                .of(context)
-                .size
-                .height * .004),
-            commonDivider(context),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 0,
+                  child: Text(
+                    '@  ',
+                    style: GoogleFonts.nunitoSans(
+                      color: Theme
+                          .of(context)
+                          .highlightColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: Get.height * .016,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                    flex: mobileView.size.shortestSide < 600 ? 1 : 4,
+                    child: commonDivider(context)),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -5287,10 +5332,7 @@ Row mainLinesDataWidget(Competitors? awayTeam, SportEvents gameDetails,
                   ),
                 ),
               ],
-            ).paddingOnly(top: MediaQuery
-                .of(context)
-                .size
-                .height * .004),
+            ),
           ],
         ).paddingOnly(left: MediaQuery
             .of(context)

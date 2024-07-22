@@ -153,9 +153,9 @@ class LogInScreen extends StatelessWidget {
                       onTap: () {
                         PreferenceManager.setSkipLogin(true);
                         PreferenceManager.setSubscriptionRecUrl("");
-                        PreferenceManager.getIsFirstLoaded() == null
+                        /*PreferenceManager.getIsFirstLoaded() == null
                             ? Get.offAll(const AppStartScreen())
-                            : Get.offAll(SelectGameScreen());
+                            :*/ Get.offAll(SelectGameScreen());
                       },
                       child: 'Skip for now'.appCommonText(
                           color: whiteColor,

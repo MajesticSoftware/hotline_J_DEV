@@ -145,9 +145,9 @@ class LogInController extends GetxController {
             if (response.data != null) {
               PreferenceManager.setUserData(response.data!);
               PreferenceManager.setIsLogin(true);
-              PreferenceManager.getIsFirstLoaded() == null
+             /* PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())
-                  : Get.offAll(SelectGameScreen());
+                  :*/ Get.offAll(SelectGameScreen());
             }
           }
         } else {

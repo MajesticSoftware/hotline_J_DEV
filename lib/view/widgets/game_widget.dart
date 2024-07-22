@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +13,7 @@ import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
+import 'package:hotlines/view/subscription/subscription_controller.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
@@ -486,98 +489,103 @@ Future<dynamic> subscriptionDialog(BuildContext context,
     required Function() restoreOnTap,
     bool showButton = true,
     String? price}) {
+  log("pricepriceprice--${price}");
   return showDialog(
     context: context,
     builder: (context) {
-      return SimpleDialog(
-        contentPadding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        backgroundColor: Theme.of(context).secondaryHeaderColor,
-        title: 'Hotlines Analytics'.appCommonText(
-            decorationColor: yellowColor,
-            color: yellowColor,
-            size: Get.height * .03,
-            decoration: TextDecoration.underline,
-            weight: FontWeight.bold),
-        children: [
-          'March Madness Special! 30 Day Free Trial now available for our next level analytics that help you easily identify the biggest mismatches in every game!'
-              .appCommonText(
-                  color: whiteColor,
-                  size: Get.height * .021,
-                  weight: FontWeight.bold),
-          20.h.H(),
-          Image.asset(
-            Assets.imagesSubscriptioon,
-            height: 300,
-          ),
-          20.h.H(),
-          RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  text:
-                      'After the 30 days this subscription will automatically renew for ${(price == "0" ? "\$3.99" : (price ?? "\$3.99"))}/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
-                  style: GoogleFonts.nunitoSans(
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: Get.height * .018,
-                  ),
-                  children: [
-                    linkTextWidget(context,
-                        text: 'TOS',
-                        color: yellowColor,
-                        link: 'https://www.hotlinesmd.com/terms-of-service'),
-                    TextSpan(
-                      text: ', ',
+      return GetBuilder<SubscriptionController>(
+        builder: (ctrl) {
+          return SimpleDialog(
+            contentPadding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            backgroundColor: Theme.of(context).secondaryHeaderColor,
+            title: 'Hotlines Analytics'.appCommonText(
+                decorationColor: yellowColor,
+                color: yellowColor,
+                size: Get.height * .03,
+                decoration: TextDecoration.underline,
+                weight: FontWeight.bold),
+            children: [
+              'March Madness Special! 30 Day Free Trial now available for our next level analytics that help you easily identify the biggest mismatches in every game!'
+                  .appCommonText(
+                      color: whiteColor,
+                      size: Get.height * .021,
+                      weight: FontWeight.bold),
+              20.h.H(),
+              Image.asset(
+                Assets.imagesSubscriptioon,
+                height: 300,
+              ),
+              20.h.H(),
+              RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text:
+                          'After the 30 days this subscription will automatically renew for \$3.99/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
                       style: GoogleFonts.nunitoSans(
                         color: whiteColor,
                         fontWeight: FontWeight.bold,
                         fontSize: Get.height * .018,
                       ),
-                    ),
-                    linkTextWidget(context,
-                        text: 'EULA',
-                        color: yellowColor,
-                        link: 'https://www.hotlinesmd.com/eula'),
-                    TextSpan(
-                      text: ', and ',
-                      style: GoogleFonts.nunitoSans(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: Get.height * .018,
-                      ),
-                    ),
-                    linkTextWidget(context,
-                        text: 'Privacy Policy.',
-                        color: yellowColor,
-                        link: 'https://www.hotlinesmd.com/privacy-policy'),
-                  ])),
-          (showButton ? 20 : 0).h.H(),
-          Visibility(
-            visible: showButton,
-            child: CommonAppButton(
-              title: price == "0"
-                  ? "Start Free Trial"
-                  : "Upgrade for ${(price ?? "\$3.99")}/mo",
-              textColor: blackColor,
-              onTap: onTap,
-            ).paddingSymmetric(horizontal: 40.h),
-          ),
-          (showButton ? 10 : 0).h.H(),
-          Visibility(
-            visible: showButton,
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              onTap: restoreOnTap,
-              child: "Restore".appCommonText(
-                  color: yellowColor,
-                  size: Get.height * .022,
-                  decoration: TextDecoration.underline,
-                  decorationColor: yellowColor,
-                  weight: FontWeight.bold),
-            ),
-          ),
-        ],
+                      children: [
+                        linkTextWidget(context,
+                            text: 'TOS',
+                            color: yellowColor,
+                            link: 'https://www.hotlinesmd.com/terms-of-service'),
+                        TextSpan(
+                          text: ', ',
+                          style: GoogleFonts.nunitoSans(
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Get.height * .018,
+                          ),
+                        ),
+                        linkTextWidget(context,
+                            text: 'EULA',
+                            color: yellowColor,
+                            link: 'https://www.hotlinesmd.com/eula'),
+                        TextSpan(
+                          text: ', and ',
+                          style: GoogleFonts.nunitoSans(
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Get.height * .018,
+                          ),
+                        ),
+                        linkTextWidget(context,
+                            text: 'Privacy Policy.',
+                            color: yellowColor,
+                            link: 'https://www.hotlinesmd.com/privacy-policy'),
+                      ])),
+              (showButton ? 20 : 0).h.H(),
+              Visibility(
+                visible: showButton,
+                child: CommonAppButton(
+                  title: price == "0"
+                      ? "Start Free Trial"
+                      : "Upgrade for ${(price ?? "\$3.99")}/mo",
+                  textColor: blackColor,
+                  onTap: onTap,
+                ).paddingSymmetric(horizontal: 40.h),
+              ),
+              (showButton ? 10 : 0).h.H(),
+              Visibility(
+                visible: showButton,
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: restoreOnTap,
+                  child: "Restore".appCommonText(
+                      color: yellowColor,
+                      size: Get.height * .022,
+                      decoration: TextDecoration.underline,
+                      decorationColor: yellowColor,
+                      weight: FontWeight.bold),
+                ),
+              ),
+            ],
+          );
+        }
       );
     },
   );
@@ -1196,7 +1204,6 @@ class HeaderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               Expanded(
                 flex: mobileView.size.shortestSide < 600 ? 2 : 3,
                 child: Row(
@@ -1207,15 +1214,16 @@ class HeaderCard extends StatelessWidget {
                       Assets.imagesNfl,
                       height: MediaQuery.of(context).size.height * .017,
                       width: MediaQuery.of(context).size.width * .01,
-                      fit:
-                      BoxFit.contain,
+                      fit: BoxFit.contain,
                       color: whiteColor,
                     ),
-                    'NFL'.appCommonText(
-                        align: TextAlign.start,
-                        color: whiteColor,
-                        weight: FontWeight.w600,
-                        size: MediaQuery.of(context).size.height * .016).paddingOnly(left: 10.w),
+                    'NFL'
+                        .appCommonText(
+                            align: TextAlign.start,
+                            color: whiteColor,
+                            weight: FontWeight.w600,
+                            size: MediaQuery.of(context).size.height * .016)
+                        .paddingOnly(left: 10.w),
                   ],
                 ).paddingOnly(left: 10.w),
               ),

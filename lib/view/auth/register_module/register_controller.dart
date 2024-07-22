@@ -85,9 +85,9 @@ class RegisterCon extends GetxController {
               PreferenceManager.setUserData(response.data!);
               PreferenceManager.setIsLogin(true);
               PreferenceManager().saveSubscription(response.data!);
-              PreferenceManager.getIsFirstLoaded() == null
+              /*PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())
-                  : Get.offAll(SelectGameScreen());
+                  : */Get.offAll(SelectGameScreen());
               clearData();
             }
             isLoading.value = false;
