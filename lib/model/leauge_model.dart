@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 
 import '../generated/assets.dart';
@@ -35,7 +36,7 @@ List<LeagueModel> sportsLeagueList = [
       gameName: 'NCAAB',
       date: formatted,
       key: 'NCAAB',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   LeagueModel(
@@ -43,7 +44,7 @@ List<LeagueModel> sportsLeagueList = [
       gameName: 'NBA',
       date: formatted,
       key: 'NBA',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   LeagueModel(
@@ -52,15 +53,14 @@ List<LeagueModel> sportsLeagueList = [
       date: formatted,
       key: 'MLB',
       sportId: 'sr:sport:3',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
       isAvailable: true),*/
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
       date: '2024-09-06',
       key: 'NFL',
-      // apiKey: '4q82NPrT1N6idZOFCMnoZ8bsZPDmaapd7mNuIOJe',
-      apiKey: 'GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ',
+      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
       sportId: 'sr:sport:16',
       isAvailable: true),
   /*LeagueModel(
@@ -69,7 +69,7 @@ List<LeagueModel> sportsLeagueList = [
       key: 'NCAA',
       gameName: 'NCAAF',
       sportId: 'sr:sport:16',
-      apiKey: 'brcnsyc4vqhxys2xhm8kbswz',
+      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
       isAvailable: true),*/
 
 ];

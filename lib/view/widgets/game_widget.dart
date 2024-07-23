@@ -485,8 +485,8 @@ class GameWidget extends StatelessWidget {
 }
 
 Future<dynamic> subscriptionDialog(BuildContext context,
-    {required Function() onTap,
-    required Function() restoreOnTap,
+    {required VoidCallback onTap,
+    required VoidCallback restoreOnTap,
     bool showButton = true,
     String? price}) {
   log("pricepriceprice--${price}");
@@ -565,7 +565,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                       ? "Start Free Trial"
                       : "Upgrade for ${(price ?? "\$3.99")}/mo",
                   textColor: blackColor,
-                  onTap: onTap,
+                  onTap: () => onTap(),
                 ).paddingSymmetric(horizontal: 40.h),
               ),
               (showButton ? 10 : 0).h.H(),
@@ -574,7 +574,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   splashFactory: NoSplash.splashFactory,
-                  onTap: restoreOnTap,
+                  onTap: () => restoreOnTap(),
                   child: "Restore".appCommonText(
                       color: yellowColor,
                       size: Get.height * .022,

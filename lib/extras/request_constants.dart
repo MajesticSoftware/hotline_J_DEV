@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppUrls {
   // ignore: constant_identifier_names
   static const bool IS_LIVE = false;
@@ -38,21 +40,19 @@ class AppUrls {
       "https://api.sportradar.us/ncaafb/production/v7/en/";
 
   // ignore: constant_identifier_names
-  static const String NCAA_APIKEY = "qucqbyh68myd733tsxtfnbau";
+  static  String NCAA_APIKEY = dotenv.env['NCAA_APIKEY']??"";
 
   // ignore: constant_identifier_names
-  // static const String NFL_APIKEY = "h4kantpwh2rhn783gdh6theg";
-  static const String NFL_APIKEY = "Iz3Lagp15R2l9IjmmUtez12WtUCJES3V7cLVm9Ka";
-  // static const String NFL_APIKEY = "GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ";
+  static  String NFL_APIKEY = dotenv.env['NFL_APIKEY']??"";
 
   // ignore: constant_identifier_names
-  static const String MLB_APIKEY = "5hnm7xhtgc8q22q2x4w6urvb";
+  static  String MLB_APIKEY =  dotenv.env['MLB_APIKEY']??"";
 
   // ignore: constant_identifier_names
-  static const String NBA_APIKEY = "pddyppr3qun2b2zbskn8fymc";
+  static  String NBA_APIKEY =  dotenv.env['NBA_APIKEY']??"";
 
   // ignore: constant_identifier_names
-  static const String NCAAB_APIKEY = "tfkmznsbvq8h7evtx9yc2xkh";
+  static  String NCAAB_APIKEY =  dotenv.env['NCAAB_APIKEY']??"";
   static const String imageUrl =
       "http://134.209.79.197/hotlines/api/app_images/profile_images/";
 }

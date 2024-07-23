@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/model/leauge_model.dart';
@@ -182,7 +183,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String apiKey = 'GXce1iTx4O6rlLkrY8iFG70fmvd4V4vL7SZuVcPQ';
+  String apiKey = dotenv.env['GAME_LISTING_APIKEY']??"";
   String
       date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
       ? "2024-09-06"

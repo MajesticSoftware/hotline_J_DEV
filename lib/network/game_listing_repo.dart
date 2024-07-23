@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hotlines/extras/extras.dart';
 
 import '../model/response_item.dart';
@@ -293,7 +294,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(
-        'https://api.sportradar.com/oddscomparison-player-props/production/v2/en/sport_events/$matchId/players_props.json?api_key=u647s6e6thkuae4n63kkcvhz');
+        'https://api.sportradar.com/oddscomparison-player-props/production/v2/en/sport_events/$matchId/players_props.json?api_key=${dotenv.env['HOTLINES_APIKEY']??""}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -400,7 +401,7 @@ class GameListingRepo {
     parameter = uri.replace(queryParameters: params);
 
     result = await BaseApiHelper.getRequest(parameter, {
-      'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
+      'X-RapidAPI-Key': dotenv.env['X-RapidAPI-Key']??"",
       'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
     });
     return result;
@@ -412,7 +413,7 @@ class GameListingRepo {
 
     Uri parameter;
     Uri uri = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=528e561ab8ff57968a6dafb3558d7574');
+        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=${dotenv.env['WEATHER_APIKEY']??""}');
     parameter = uri.replace();
 
     result = await BaseApiHelper.getRequest(parameter, {});
@@ -428,7 +429,7 @@ class GameListingRepo {
     parameter = uri.replace();
 
     result = await BaseApiHelper.getRequest(parameter, {
-      'X-RapidAPI-Key': '08caae6c2bmsh572aebe4b01a829p14475ejsn8e6b0956f735',
+      'X-RapidAPI-Key': dotenv.env['X-RapidAPI-Key']??"",
       'X-RapidAPI-Host': 'sports-information.p.rapidapi.com'
     });
     return result;
