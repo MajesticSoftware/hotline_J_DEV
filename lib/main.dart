@@ -21,6 +21,7 @@ Future<void> main() async {
   // FlutterBranchSdk.validateSDKIntegration();
   await dotenv.load(fileName: "assets/.env");
   runApp(const MyApp());
+
 }
 
 // ignore: must_be_immutable
