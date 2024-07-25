@@ -3,9 +3,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AppUrls {
   // ignore: constant_identifier_names
   static const bool IS_LIVE = false;
+  static const bool IS_SANDBOX = true;
 
   // ignore: constant_identifier_names
   static const String _DEV_BASE_URL = "http://134.209.79.197/hotlines/api/dev";
+  static const String _SANDBOX_BASE_URL =
+      "http://134.209.79.197/hotlines/api/sandbox";
 
   // ignore: constant_identifier_names
   static const String _LIVE_BASE_URL =
@@ -13,7 +16,7 @@ class AppUrls {
 
   // ignore: constant_identifier_names
   static const String AUTH_BASE_URL =
-      "${IS_LIVE ? _LIVE_BASE_URL : _DEV_BASE_URL}/Service.php?";
+      "${IS_LIVE ? _LIVE_BASE_URL : IS_SANDBOX ? _SANDBOX_BASE_URL : _DEV_BASE_URL}/Service.php?";
 
   // ignore: constant_identifier_names
   static const String BASE_URL =
@@ -40,19 +43,19 @@ class AppUrls {
       "https://api.sportradar.us/ncaafb/production/v7/en/";
 
   // ignore: constant_identifier_names
-  static  String NCAA_APIKEY = dotenv.env['NCAA_APIKEY']??"";
+  static String NCAA_APIKEY = dotenv.env['NCAA_APIKEY'] ?? "";
 
   // ignore: constant_identifier_names
-  static  String NFL_APIKEY = dotenv.env['NFL_APIKEY']??"";
+  static String NFL_APIKEY = dotenv.env['NFL_APIKEY'] ?? "";
 
   // ignore: constant_identifier_names
-  static  String MLB_APIKEY =  dotenv.env['MLB_APIKEY']??"";
+  static String MLB_APIKEY = dotenv.env['MLB_APIKEY'] ?? "";
 
   // ignore: constant_identifier_names
-  static  String NBA_APIKEY =  dotenv.env['NBA_APIKEY']??"";
+  static String NBA_APIKEY = dotenv.env['NBA_APIKEY'] ?? "";
 
   // ignore: constant_identifier_names
-  static  String NCAAB_APIKEY =  dotenv.env['NCAAB_APIKEY']??"";
+  static String NCAAB_APIKEY = dotenv.env['NCAAB_APIKEY'] ?? "";
   static const String imageUrl =
       "http://134.209.79.197/hotlines/api/app_images/profile_images/";
 }
@@ -62,7 +65,7 @@ class RequestParam {
 // static const showError = "show_error"; // -> bool in String
 }
 
-String currentYear = (DateTime.now().year-1).toString();
+String currentYear = (DateTime.now().year).toString();
 
 class MethodNames {
   static const userRegistration = "userRegistration";

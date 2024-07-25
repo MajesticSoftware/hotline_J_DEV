@@ -389,6 +389,22 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///NFL ROSTER API
+  Future<ResponseItem> getRosterPlayer({required String teamId}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    Uri uri = Uri.parse('${AppUrls.NFL_BASE_URL}teams/$teamId/full_roster.json?api_key=${AppUrls.NFL_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///OTHER APIS--LOGOS
   Future<ResponseItem> gameListingsWithLogo(
       String year, String sportKey) async {

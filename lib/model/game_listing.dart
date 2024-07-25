@@ -1,5 +1,6 @@
 import 'game_model.dart';
 import 'nba_statics_model.dart' as pro;
+import 'nfl_roster_player_model.dart' as rost;
 import 'nfl_statics_model.dart';
 
 class GameListingDataModel {
@@ -149,6 +150,10 @@ class SportEvents {
   List<Players> homeReceiversPlayer = [];
   List<Players> awayRunningBackPlayer = [];
   List<Players> homeRunningBackPlayer = [];
+  List<rost.Players> nflAwayReceiversPlayer = [];
+  List<rost.Players> nflHomeReceiversPlayer = [];
+  List<rost.Players> nflAwayRunningBackPlayer = [];
+  List<rost.Players> nflHomeRunningBackPlayer = [];
   List<pro.Players> homeRushingPlayer = [];
   List<pro.Players> awayRushingPlayer = [];
   List homeTeamInjuredPlayer = [];

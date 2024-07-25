@@ -1,9 +1,11 @@
 import 'dart:developer';
-import 'package:hotlines/model/game_listing.dart';
+
 import 'package:get/get.dart';
+import 'package:hotlines/model/game_listing.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 import 'package:hotlines/utils/utils.dart';
+
 import '../../../constant/constant.dart';
 import '../../../extras/request_constants.dart';
 import '../../../model/game_model.dart';
@@ -11,6 +13,7 @@ import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
+import '../../../model/nfl_roster_player_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
@@ -20,8 +23,6 @@ import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
-
-
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',
@@ -199,7 +200,6 @@ class GameDetailsController extends GetxController {
     'RYG',
     'RTG',
     'IG',
-
   ];
   List teamQuarterBacksDefence = [
     'Passing Yards Allowed/Game',
@@ -215,7 +215,6 @@ class GameDetailsController extends GetxController {
     'RTAG',
     'IG',
   ];
-
 
   bool _isTeamReportTab = true;
 
@@ -267,7 +266,6 @@ class GameDetailsController extends GetxController {
 
   String _homePlayerName = '';
 
-
   String get homePlayerName => _homePlayerName;
 
   set homePlayerName(String value) {
@@ -276,7 +274,6 @@ class GameDetailsController extends GetxController {
   }
 
   String _whipHome = '0';
-
 
   String get whipHome => _whipHome;
 
@@ -380,11 +377,17 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
-          homePlayerName='${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
+          homePlayerName =
+          '${playerData.fullName
+              .split(" ")
+              .first[0]}. ${playerData.fullName
+              .split(" ")
+              .last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == 'REG' && player.year == DateTime.now().year) {
-
+            if (player.type == 'REG' && player.year == DateTime
+                .now()
+                .year) {
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
               homeBb =
@@ -570,10 +573,17 @@ class GameDetailsController extends GetxController {
           PlayerProfileModel response =
           PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
-          awayPlayerName='${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
+          awayPlayerName =
+          '${playerData.fullName
+              .split(" ")
+              .first[0]}. ${playerData.fullName
+              .split(" ")
+              .last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == 'REG' && player.year ==  DateTime.now().year) {
+            if (player.type == 'REG' && player.year == DateTime
+                .now()
+                .year) {
               whipAway =
                   player.totals.statistics.pitching.overall.whip.toString();
               awayBb =
@@ -615,8 +625,8 @@ class GameDetailsController extends GetxController {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().mlbStaticsRepo(
-        teamId: homeTeamId, seasons: currentYear);
+    result = await GameListingRepo()
+        .mlbStaticsRepo(teamId: homeTeamId, seasons: currentYear);
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
@@ -639,21 +649,29 @@ class GameDetailsController extends GetxController {
                 hitterHomePlayerMainList.add(
                   HitterPlayerStatMainModel(
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
-                      avg: player.statistics?.hitting?.overall?.avg??"0",
-                      bb: '${player.statistics?.hitting?.overall?.onbase?.bb??"0"}',
+                      avg: player.statistics?.hitting?.overall?.avg ?? "0",
+                      bb:
+                      '${player.statistics?.hitting?.overall?.onbase?.bb ??
+                          "0"}',
                       hAbValue:
-                      '${player.statistics?.hitting?.overall?.onbase
-                          ?.h??"0"}-${player.statistics?.hitting?.overall?.ab??"0"}',
-                      hr: '${player.statistics?.hitting?.overall?.onbase?.hr??"0"}',
-                      position: player.position??"0",
-                      rbi: '${player.statistics?.hitting?.overall?.rbi??"0"}',
+                      '${player.statistics?.hitting?.overall?.onbase?.h ??
+                          "0"}-${player.statistics?.hitting?.overall?.ab ??
+                          "0"}',
+                      hr:
+                      '${player.statistics?.hitting?.overall?.onbase?.hr ??
+                          "0"}',
+                      position: player.position ?? "0",
+                      rbi: '${player.statistics?.hitting?.overall?.rbi ?? "0"}',
                       sb:
-                      '${player.statistics?.hitting?.overall?.steal?.stolen??"0"}',
+                      '${player.statistics?.hitting?.overall?.steal?.stolen ??
+                          "0"}',
                       obp: 'OBP',
-                      obpValue: '${player.statistics?.hitting?.overall?.obp??"0"}',
+                      obpValue:
+                      '${player.statistics?.hitting?.overall?.obp ?? "0"}',
                       hAb: 'H-AB',
                       slg: 'SLG',
-                      slgValue: '${player.statistics?.hitting?.overall?.slg??"0"}',
+                      slgValue:
+                      '${player.statistics?.hitting?.overall?.slg ?? "0"}',
                       run: 'Runs/Game',
                       runValue: ((int.parse(player
                           .statistics?.hitting?.overall?.runs?.total
@@ -669,7 +687,7 @@ class GameDetailsController extends GetxController {
                           totalGame)
                           .toStringAsFixed(2)),
                       stolenBase: 'Stolen Bases/Game',
-                      ab: '${player.statistics?.hitting?.overall?.ab??"0"}',
+                      ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                       stolenBaseValue: ((int.parse(
                           player.statistics?.hitting?.overall?.steal?.stolen
                               .toString() ?? "0") /
@@ -771,7 +789,9 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
-        teamId: awayTeamId, seasons: currentYear,);
+      teamId: awayTeamId,
+      seasons: currentYear,
+    );
     try {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
@@ -793,21 +813,27 @@ class GameDetailsController extends GetxController {
             if (player.position != 'P') {
               hitterAwayPlayerMainList.add(
                 HitterPlayerStatMainModel(
-                    bb: '${player.statistics?.hitting?.overall?.onbase?.bb??"0"}',
+                    bb:
+                    '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                     playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: player.statistics?.hitting?.overall?.avg??"0",
+                    avg: player.statistics?.hitting?.overall?.avg ?? "0",
                     hAbValue:
-                    '${player.statistics?.hitting?.overall?.onbase?.h??"0"}-${player
-                        .statistics?.hitting?.overall?.ab??"0"}',
-                    hr: '${player.statistics?.hitting?.overall?.onbase?.hr??"0"}',
-                    position: player.position??"0",
-                    rbi: '${player.statistics?.hitting?.overall?.rbi??"0"}',
-                    sb: '${player.statistics?.hitting?.overall?.steal?.stolen??"0"}',
+                    '${player.statistics?.hitting?.overall?.onbase?.h ??
+                        "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
+                    hr:
+                    '${player.statistics?.hitting?.overall?.onbase?.hr ?? "0"}',
+                    position: player.position ?? "0",
+                    rbi: '${player.statistics?.hitting?.overall?.rbi ?? "0"}',
+                    sb:
+                    '${player.statistics?.hitting?.overall?.steal?.stolen ??
+                        "0"}',
                     obp: 'OBP',
-                    obpValue: '${player.statistics?.hitting?.overall?.obp??"0"}',
+                    obpValue:
+                    '${player.statistics?.hitting?.overall?.obp ?? "0"}',
                     hAb: 'H-AB',
                     slg: 'SLG',
-                    slgValue: '${player.statistics?.hitting?.overall?.slg??"0"}',
+                    slgValue:
+                    '${player.statistics?.hitting?.overall?.slg ?? "0"}',
                     run: 'Runs/Game',
                     runValue: ((int.parse(player
                         .statistics?.hitting?.overall?.runs?.total
@@ -823,7 +849,7 @@ class GameDetailsController extends GetxController {
                         totalGame)
                         .toStringAsFixed(2)),
                     stolenBase: 'Stolen Bases/Game',
-                    ab: '${player.statistics?.hitting?.overall?.ab??"0"}',
+                    ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     stolenBaseValue: ((int.parse(
                         player.statistics?.hitting?.overall?.steal?.stolen
                             .toString() ?? "0") /
@@ -850,7 +876,7 @@ class GameDetailsController extends GetxController {
           ((int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
           awayHitting?.avg ?? "0",
-          '.${((awayHitting?.slg??"0")
+          '.${((awayHitting?.slg ?? "0")
               .toString()
               .split('.')
               .last)}',
@@ -916,9 +942,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
-        teamId: homeTeamId,
-        seasons:currentYear,
-        sportKey: sportKey);
+        teamId: homeTeamId, seasons: currentYear, sportKey: sportKey);
     try {
       if (result.status) {
         if (result.data != null) {
@@ -1323,7 +1347,6 @@ class GameDetailsController extends GetxController {
     update();
   }*/
 
-
   /* Future getNFLQBSRank({String awayTeamId = '',
     String homeTeamId = '',
     required SportEvents gameDetails,
@@ -1391,9 +1414,7 @@ class GameDetailsController extends GetxController {
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
-        teamId: awayTeamId,
-        seasons: currentYear,
-        sportKey: sportKey);
+        teamId: awayTeamId, seasons: currentYear, sportKey: sportKey);
     try {
       if (result.status) {
         if (result.data != null) {
@@ -1495,33 +1516,76 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  ///HOTLINES DATA
-  // List<HotlinesModel> _hotlinesFData = [];
-  //
-  // List<HotlinesModel> get hotlinesFData => _hotlinesFData;
-  //
-  // set hotlinesFData(List<HotlinesModel> value) {
-  //   _hotlinesFData = value;
-  //   update();
-  // }
+/*  Future getRosterPlayer({String awayTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getRosterPlayer(teamId: awayTeamId);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NFLRosterPlayerModel response =
+          NFLRosterPlayerModel.fromJson(result.data);
+          gameDetails.nflAwayReceiversPlayer.clear();
+          gameDetails.nflAwayRunningBackPlayer.clear();
+          if (response.players != null) {
+            for (int i = 0; i <= (response.players!.length); i++) {
+              if (response.players?[i].position == 'RB' &&
+                  response.players?[i].draft?.team?.id == awayTeamId) {
+                gameDetails.nflAwayRunningBackPlayer.add(response.players![i]);
+              }
+              if (response.players?[i].position == 'WR' &&
+                  response.players?[i].draft?.team?.id == awayTeamId ||
+                  response.players?[i].position == 'TE' &&
+                      response.players?[i].draft?.team?.id == awayTeamId) {
+                gameDetails.nflAwayReceiversPlayer.add(response.players![i]);
+              }
+            }
+          } else {
+            isLoading.value = false;
+          }
+        } else {
+          isLoading.value = false;
+        }
+      }
+      } catch (e) {
+      isLoading.value = false;
+      log('ERROR NFL AWAY STATICS------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }*/
 
-  int _hotlinesIndex = 0;
+    ///HOTLINES DATA
+    // List<HotlinesModel> _hotlinesFData = [];
+    //
+    // List<HotlinesModel> get hotlinesFData => _hotlinesFData;
+    //
+    // set hotlinesFData(List<HotlinesModel> value) {
+    //   _hotlinesFData = value;
+    //   update();
+    // }
 
-  int get hotlinesIndex => _hotlinesIndex;
+    int _hotlinesIndex = 0;
 
-  set hotlinesIndex(int value) {
+    int get hotlinesIndex => _hotlinesIndex;
+
+    set hotlinesIndex(int value) {
     _hotlinesIndex = value;
     update();
-  }
+    }
 
+    String hotlinesOdd = '';
+    String hotlinesDecimal = '';
+    String hotlinesDec = '';
+    String hotlinesType = '';
 
-  String hotlinesOdd = '';
-  String hotlinesDecimal = '';
-  String hotlinesDec = '';
-  String hotlinesType = '';
-
-
-  Future hotlinesDataResponse({String awayTeamId = '',
+    Future hotlinesDataResponse(
+    {String awayTeamId = '',
     String sportId = '',
     required SportEvents gameDetails,
     String matchId = '',
@@ -1533,260 +1597,245 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().hotlinesDataRepo(matchId: matchId);
     try {
-      if (result.status) {
-        hotlines.HotlinesDataModel response =
-        hotlines.HotlinesDataModel.fromJson(result.data);
-        final sportScheduleSportEventsPlayersProps =
-            response.sportEventPlayersProps;
-        if (sportScheduleSportEventsPlayersProps != null) {
-          sportScheduleSportEventsPlayersProps.playersProps
-              ?.forEach((playersProp) {
-            playersProp.markets?.forEach((market) {
-              market.books?.forEach((book) {
-                if (book.id == 'sr:book:18186' ||
-                    book.id == 'sr:book:18149' ||
-                    book.id == 'sr:book:17324') {
-                  book.outcomes?.forEach((outcome) {
-                    if (outcome.oddsAmerican != null) {
-                      if (!int
-                          .parse(outcome.oddsAmerican ?? '')
-                          .isNegative) {
-                        gameDetails.hotlinesMainData.add(HotlinesModel(
-                            teamId: playersProp.player?.competitorId ?? "",
-                            teamName:
-                            '${playersProp.player?.name
-                                ?.split(',')
-                                .last
-                                .removeAllWhitespace ?? ''} ${playersProp.player
-                                ?.name
-                                ?.split(',')
-                                .first
-                                .removeAllWhitespace ?? ''} ${outcome.type
-                                .toString()
-                                .capitalizeFirst} ${outcome.total} ${market.name
-                                ?.split('(')
-                                .first
-                                .toString()
-                                .capitalize}',
-                            tittle: market.name
-                                ?.split('(')
-                                .first
-                                .toString()
-                                .capitalize ??
-                                '',
-                            playerName:
-                            playersProp.player?.name
-                                ?.split(',')
-                                .last ?? '',
-                            bookId: book.id ?? '',
-                            value: '${outcome.oddsAmerican}'));
-                        gameDetails.hotlinesFData.clear();
-                        gameDetails.hotlinesDData.clear();
-                        gameDetails.hotlinesMData.clear();
-                        gameDetails.hotlinesMainData.sort((a, b) =>
-                            int.parse(b.value).compareTo(int.parse(a.value)));
-                        for (var element in gameDetails.hotlinesMainData) {
-                          if (element.bookId == 'sr:book:18149') {
-                            if (!(gameDetails.hotlinesDData.indexWhere((
-                                fData) =>
-                            fData.playerName == element.playerName) >=
-                                0)) {
-                              if (!(gameDetails.hotlinesDData.indexWhere((
-                                  fData) =>
-                              fData.tittle == element.tittle) >=
-                                  0)) {
-                                gameDetails.hotlinesDData.add(element);
-                              }
-                            }
-                          }
-                          if (element.bookId == 'sr:book:17324') {
-                            if (!(gameDetails.hotlinesMData.indexWhere((
-                                fData) =>
-                            fData.playerName == element.playerName) >=
-                                0)) {
-                              if (!(gameDetails.hotlinesMData.indexWhere((
-                                  fData) =>
-                              fData.tittle == element.tittle) >=
-                                  0)) {
-                                gameDetails.hotlinesMData.add(element);
-                              }
-                            }
-                          }
-                          if (element.bookId == 'sr:book:18186') {
-                            if (!(gameDetails.hotlinesFData.indexWhere((
-                                fData) =>
-                            fData.playerName == element.playerName) >=
-                                0)) {
-                              if (!(gameDetails.hotlinesFData.indexWhere((
-                                  fData) =>
-                              fData.tittle == element.tittle) >=
-                                  0)) {
-                                gameDetails.hotlinesFData.add(element);
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  });
-                }
-              });
-            });
-          });
+    if (result.status) {
+    hotlines.HotlinesDataModel response =
+    hotlines.HotlinesDataModel.fromJson(result.data);
+    final sportScheduleSportEventsPlayersProps =
+    response.sportEventPlayersProps;
+    if (sportScheduleSportEventsPlayersProps != null) {
+    sportScheduleSportEventsPlayersProps.playersProps
+        ?.forEach((playersProp) {
+    playersProp.markets?.forEach((market) {
+    market.books?.forEach((book) {
+    if (book.id == 'sr:book:18186' ||
+    book.id == 'sr:book:18149' ||
+    book.id == 'sr:book:17324') {
+    book.outcomes?.forEach((outcome) {
+    if (outcome.oddsAmerican != null) {
+    if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
+    gameDetails.hotlinesMainData.add(HotlinesModel(
+    teamId: playersProp.player?.competitorId ?? "",
+    teamName:
+    '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+    tittle: market.name
+        ?.split('(')
+        .first
+        .toString()
+        .capitalize ??
+    '',
+    playerName:
+    playersProp.player?.name?.split(',').last ?? '',
+    bookId: book.id ?? '',
+    value: '${outcome.oddsAmerican}'));
+    gameDetails.hotlinesFData.clear();
+    gameDetails.hotlinesDData.clear();
+    gameDetails.hotlinesMData.clear();
+    gameDetails.hotlinesMainData.sort((a, b) =>
+    int.parse(b.value).compareTo(int.parse(a.value)));
+    for (var element in gameDetails.hotlinesMainData) {
+    if (element.bookId == 'sr:book:18149') {
+    if (!(gameDetails.hotlinesDData.indexWhere(
+    (fData) =>
+    fData.playerName ==
+    element.playerName) >=
+    0)) {
+    if (!(gameDetails.hotlinesDData.indexWhere(
+    (fData) =>
+    fData.tittle == element.tittle) >=
+    0)) {
+    gameDetails.hotlinesDData.add(element);
+    }
+    }
+    }
+    if (element.bookId == 'sr:book:17324') {
+    if (!(gameDetails.hotlinesMData.indexWhere(
+    (fData) =>
+    fData.playerName ==
+    element.playerName) >=
+    0)) {
+    if (!(gameDetails.hotlinesMData.indexWhere(
+    (fData) =>
+    fData.tittle == element.tittle) >=
+    0)) {
+    gameDetails.hotlinesMData.add(element);
+    }
+    }
+    }
+    if (element.bookId == 'sr:book:18186') {
+    if (!(gameDetails.hotlinesFData.indexWhere(
+    (fData) =>
+    fData.playerName ==
+    element.playerName) >=
+    0)) {
+    if (!(gameDetails.hotlinesFData.indexWhere(
+    (fData) =>
+    fData.tittle == element.tittle) >=
+    0)) {
+    gameDetails.hotlinesFData.add(element);
+    }
+    }
+    }
+    }
+    }
+    }
+    });
+    }
+    });
+    });
+    });
 
-          List<HotlinesModel> hotlinesFinalData = [];
-          hotlinesFinalData =
-              gameDetails.hotlinesDData + gameDetails.hotlinesFData +
-                  gameDetails.hotlinesMData;
-          gameDetails.hotlinesData = [];
-          hotlinesFinalData
-              .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
-          if (hotlinesFinalData.isNotEmpty) {
-            gameDetails.hotlinesData.add(hotlinesFinalData[0]);
-            for (int i = 1; i < hotlinesFinalData.length; i++) {
-              if (!(gameDetails.hotlinesData.indexWhere((element) =>
-              element.teamName == hotlinesFinalData[i].teamName) >=
-                  0)) {
-                if (gameDetails.hotlinesData
-                    .where((element) =>
-                element.bookId == hotlinesFinalData[i].bookId)
-                    .toList()
-                    .length <
-                    2) {
-                  if (gameDetails.hotlinesData
-                      .where((element) =>
-                  element.teamId == hotlinesFinalData[i].teamId)
-                      .toList()
-                      .length <
-                      3) {
-                    gameDetails.hotlinesData.add(hotlinesFinalData[i]);
-                  }
-                }
-              }
-            }
-          }
-          gameDetails.hotlinesData
-              .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
-          update();
-        }
-      } else {
-        // isHotlines = false;
-        isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
-      }
+    List<HotlinesModel> hotlinesFinalData = [];
+    hotlinesFinalData = gameDetails.hotlinesDData +
+    gameDetails.hotlinesFData +
+    gameDetails.hotlinesMData;
+    gameDetails.hotlinesData = [];
+    hotlinesFinalData
+        .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
+    if (hotlinesFinalData.isNotEmpty) {
+    gameDetails.hotlinesData.add(hotlinesFinalData[0]);
+    for (int i = 1; i < hotlinesFinalData.length; i++) {
+    if (!(gameDetails.hotlinesData.indexWhere((element) =>
+    element.teamName == hotlinesFinalData[i].teamName) >=
+    0)) {
+    if (gameDetails.hotlinesData
+        .where((element) =>
+    element.bookId == hotlinesFinalData[i].bookId)
+        .toList()
+        .length <
+    2) {
+    if (gameDetails.hotlinesData
+        .where((element) =>
+    element.teamId == hotlinesFinalData[i].teamId)
+        .toList()
+        .length <
+    3) {
+    gameDetails.hotlinesData.add(hotlinesFinalData[i]);
+    }
+    }
+    }
+    }
+    }
+    gameDetails.hotlinesData
+        .sort((a, b) => int.parse(b.value).compareTo(int.parse(a.value)));
+    update();
+    }
+    } else {
+    // isHotlines = false;
+    isLoading.value = false;
+    // showAppSnackBar(
+    //   result.message,
+    // );
+    }
     } catch (e) {
-      // isHotlines = false;
-      isLoading.value = false;
-      log('ERROR HOTLINES DATA------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+    // isHotlines = false;
+    isLoading.value = false;
+    log('ERROR HOTLINES DATA------$e');
+    // showAppSnackBar(
+    //   errorText,
+    // );
     }
     update();
     isLoading.value = false;
     return gameDetails.hotlinesData;
-  }
+    }
 
-  ///GET NCAA AND NFL RECORDS
-  Future recordsOfNCAAAndNFL({
+    ///GET NCAA AND NFL RECORDS
+    Future recordsOfNCAAAndNFL({
     String homeId = '',
     String awayId = '',
     bool isLoad = false,
     required SportEvents sportEvent,
     String key = '',
-  }) async {
+    }) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().recordRepoNCAA(sportKey: key);
     try {
-      if (result.status) {
-        if (key == 'NFL' || key == "NBA") {
-          NFLTeamRecordModel response =
-          NFLTeamRecordModel.fromJson(result.data);
-          final game = response.conferences;
-          if (game != null) {
-            for (var element in game) {
-              element.divisions?.forEach((division) {
-                division.teams?.forEach((team) {
-                  if (team.id == homeId) {
-                    sportEvent.homeWin = (team.wins ?? "0").toString();
-                    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
-                  }
-                  if (team.id == awayId) {
-                    sportEvent.awayWin = (team.wins ?? "0").toString();
-                    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
-                  }
-                });
-              });
-            }
-          }
-        } else if (key == "NCAA") {
-          TeamRecordModel response = TeamRecordModel.fromJson(result.data);
-          final game = response.divisions;
-          if (game != null) {
-            for (var element in game) {
-              element.conferences?.forEach((division) {
-                division.teams?.forEach((team) {
-                  if (team.id == homeId) {
-                    sportEvent.homeWin = (team.wins ?? "0").toString();
-                    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
-                  }
-                  if (team.id == awayId) {
-                    sportEvent.awayWin = (team.wins ?? "0").toString();
-                    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
-                  }
-                });
-              });
-            }
-          }
-        } else if (key == "NCAAB") {
-          NCAABStandingsModel response =
-          NCAABStandingsModel.fromJson(result.data);
-          final game = response.conferences;
-          if (game != null) {
-            for (var element in game) {
-              element.teams?.forEach((team) {
-                if (team.id == homeId) {
-                  sportEvent.homeWin = (team.wins ?? "0").toString();
-                  sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
-                }
-                if (team.id == awayId) {
-                  sportEvent.awayWin = (team.wins ?? "0").toString();
-                  sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
-                }
-              });
-            }
-          }
-        }
-      } else {
-        isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
-      }
+    if (result.status) {
+    if (key == 'NFL' || key == "NBA") {
+    NFLTeamRecordModel response =
+    NFLTeamRecordModel.fromJson(result.data);
+    final game = response.conferences;
+    if (game != null) {
+    for (var element in game) {
+    element.divisions?.forEach((division) {
+    division.teams?.forEach((team) {
+    if (team.id == homeId) {
+    sportEvent.homeWin = (team.wins ?? "0").toString();
+    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+    }
+    if (team.id == awayId) {
+    sportEvent.awayWin = (team.wins ?? "0").toString();
+    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+    }
+    });
+    });
+    }
+    }
+    } else if (key == "NCAA") {
+    TeamRecordModel response = TeamRecordModel.fromJson(result.data);
+    final game = response.divisions;
+    if (game != null) {
+    for (var element in game) {
+    element.conferences?.forEach((division) {
+    division.teams?.forEach((team) {
+    if (team.id == homeId) {
+    sportEvent.homeWin = (team.wins ?? "0").toString();
+    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+    }
+    if (team.id == awayId) {
+    sportEvent.awayWin = (team.wins ?? "0").toString();
+    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+    }
+    });
+    });
+    }
+    }
+    } else if (key == "NCAAB") {
+    NCAABStandingsModel response =
+    NCAABStandingsModel.fromJson(result.data);
+    final game = response.conferences;
+    if (game != null) {
+    for (var element in game) {
+    element.teams?.forEach((team) {
+    if (team.id == homeId) {
+    sportEvent.homeWin = (team.wins ?? "0").toString();
+    sportEvent.homeLoss = '${team.losses ?? "0"}'.toString();
+    }
+    if (team.id == awayId) {
+    sportEvent.awayWin = (team.wins ?? "0").toString();
+    sportEvent.awayLoss = '${team.losses ?? "0"}'.toString();
+    }
+    });
+    }
+    }
+    }
+    } else {
+    isLoading.value = false;
+    // showAppSnackBar(
+    //   result.message,
+    // );
+    }
     } catch (e) {
-      isLoading.value = false;
-      log('ERROR RECORD NFL && NCAA--------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+    isLoading.value = false;
+    log('ERROR RECORD NFL && NCAA--------$e');
+    // showAppSnackBar(
+    //   errorText,
+    // );
     }
 
     update();
-  }
+    }
 
-  ///NBA STATICS API
+    ///NBA STATICS API
 
-
-  Future staticsAwayNBA({
+    Future staticsAwayNBA({
     String awayId = '',
     bool isLoad = false,
     required SportEvents gameDetails,
     String key = '',
-  }) async {
+    }) async {
     gameDetails.awayRushingPlayer.clear();
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
@@ -1794,72 +1843,71 @@ class GameDetailsController extends GetxController {
     result =
     await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
     try {
-      if (result.status) {
-        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+    if (result.status) {
+    NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
 
-        if (response.players != null) {
-          response.players?.forEach((player) {
-            gameDetails.awayRushingPlayer.add(player);
-          });
-        }
-        (gameDetails.awayRushingPlayer).sort((a, b) =>
-            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
-        update();
-      } else {
-        isLoading.value = false;
-      }
+    if (response.players != null) {
+    response.players?.forEach((player) {
+    gameDetails.awayRushingPlayer.add(player);
+    });
+    }
+    (gameDetails.awayRushingPlayer).sort((a, b) =>
+    (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
+    update();
+    } else {
+    isLoading.value = false;
+    }
     } catch (e) {
-      isLoading.value = false;
-      log('ERROR RECORD NFL && NCAA--------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+    isLoading.value = false;
+    log('ERROR RECORD NFL && NCAA--------$e');
+    // showAppSnackBar(
+    //   errorText,
+    // );
     }
     update();
-  }
+    }
 
-
-  Future staticsHomeNBA({
+    Future staticsHomeNBA({
     String homeId = '',
     bool isLoad = false,
     required SportEvents gameDetails,
     String sportKey = '',
-  }) async {
+    }) async {
     gameDetails.homeRushingPlayer.clear();
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
     ResponseItem(data: null, message: errorText.tr, status: false);
-    result =
-    await GameListingRepo().nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
+    result = await GameListingRepo()
+        .nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
     try {
-      if (result.status) {
-        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+    if (result.status) {
+    NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
 
-
-        if (response.players != null) {
-          response.players?.forEach((player) {
-            gameDetails.homeRushingPlayer.add(player);
-          });
-        }
-        (gameDetails.homeRushingPlayer).sort((a, b) =>
-            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
-      } else {
-        isLoading.value = false;
-      }
-      update();
+    if (response.players != null) {
+    response.players?.forEach((player) {
+    gameDetails.homeRushingPlayer.add(player);
+    });
+    }
+    (gameDetails.homeRushingPlayer).sort((a, b) =>
+    (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
+    } else {
+    isLoading.value = false;
+    }
+    update();
     } catch (e) {
-      isLoading.value = false;
-      log('ERROR RECORD NFL && NCAA--------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
+    isLoading.value = false;
+    log('ERROR RECORD NFL && NCAA--------$e');
+    // showAppSnackBar(
+    //   errorText,
+    // );
     }
 
     update();
-  }
+    }
 
-  ///MLB INJURY REPORT
-  Future mlbInjuriesResponse({String awayTeamId = '',
+    ///MLB INJURY REPORT
+    Future mlbInjuriesResponse(
+    {String awayTeamId = '',
     String homeTeamId = '',
     String sportKey = '',
     SportEvents? sportEvent,
@@ -1869,96 +1917,84 @@ class GameDetailsController extends GetxController {
     ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbInjuriesRepo(sportKey);
     try {
-      sportEvent?.homeTeamInjuredPlayer.clear();
-      sportEvent?.awayTeamInjuredPlayer.clear();
-      if (result.status) {
-        if (sportKey == "NFL") {
-          NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
-          if (response.teams != null) {
-            response.teams?.forEach((team) {
-              if (team.id == awayTeamId) {
-                team.players?.forEach((player) {
-                  if (player.position != 'A') {
-                    sportEvent?.awayTeamInjuredPlayer.add(
-                        '${player.name?[0]}. ${player.name
-                            ?.split(' ')
-                            .last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty)
-                            ? (player.injuries?[0].practice?.status)
-                            : ""}');
-                  }
-                });
-              }
-              if (team.id == homeTeamId) {
-                team.players?.forEach((player) {
-                  if (player.position != 'A') {
-                    sportEvent?.homeTeamInjuredPlayer.add(
-                        '${player.name?[0]}. ${player.name
-                            ?.split(' ')
-                            .last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty)
-                            ? (player.injuries?[0].practice?.status)
-                            : ""}');
-                  }
-                });
-              }
-            });
-          }
-        } else {
-          MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
-          if (response.teams != null) {
-            response.teams?.forEach((team) {
-              if (team.id == awayTeamId) {
-                team.players?.forEach((player) {
-                  if (player.status != 'A') {
-                    if (sportKey == "NBA") {
-                      sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
-                              .injuries?.first.status}');
-                    } else {
-                      sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
-                              .status}');
-                    }
-                  }
-                });
-              }
-              if (team.id == homeTeamId) {
-                team.players?.forEach((player) {
-                  if (player.status != 'A') {
-                    if (sportKey == "NBA") {
-                      sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
-                              .injuries?.first.status}');
-                    } else {
-                      sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player
-                              .status}');
-                    }
-                  }
-                });
-              }
-            });
-          }
-        }
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
-      }
+    sportEvent?.homeTeamInjuredPlayer.clear();
+    sportEvent?.awayTeamInjuredPlayer.clear();
+    if (result.status) {
+    if (sportKey == "NFL") {
+    NFLInjuryModel response = NFLInjuryModel.fromJson(result.data);
+    if (response.teams != null) {
+    response.teams?.forEach((team) {
+    if (team.id == awayTeamId) {
+    team.players?.forEach((player) {
+    if (player.position != 'A') {
+    sportEvent?.awayTeamInjuredPlayer.add(
+    '${player.name?[0]}. ${player.name?.split(' ').last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""}');
+    }
+    });
+    }
+    if (team.id == homeTeamId) {
+    team.players?.forEach((player) {
+    if (player.position != 'A') {
+    sportEvent?.homeTeamInjuredPlayer.add(
+    '${player.name?[0]}. ${player.name?.split(' ').last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""}');
+    }
+    });
+    }
+    });
+    }
+    } else {
+    MLBInjuriesModel response = MLBInjuriesModel.fromJson(result.data);
+    if (response.teams != null) {
+    response.teams?.forEach((team) {
+    if (team.id == awayTeamId) {
+    team.players?.forEach((player) {
+    if (player.status != 'A') {
+    if (sportKey == "NBA") {
+    sportEvent?.awayTeamInjuredPlayer.add(
+    '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.injuries?.first.status}');
+    } else {
+    sportEvent?.awayTeamInjuredPlayer.add(
+    '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.status}');
+    }
+    }
+    });
+    }
+    if (team.id == homeTeamId) {
+    team.players?.forEach((player) {
+    if (player.status != 'A') {
+    if (sportKey == "NBA") {
+    sportEvent?.homeTeamInjuredPlayer.add(
+    '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.injuries?.first.status}');
+    } else {
+    sportEvent?.homeTeamInjuredPlayer.add(
+    '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.status}');
+    }
+    }
+    });
+    }
+    });
+    }
+    }
+    isLoading.value = false;
+    } else {
+    isLoading.value = false;
+    // showAppSnackBar(
+    //   result.message,
+    // );
+    }
     } catch (e) {
-      isLoading.value = false;
-      log('ERROR MLB INJURIES-----$e');
-      showAppSnackBar(
-        errorText,
-      );
+    isLoading.value = false;
+    log('ERROR MLB INJURIES-----$e');
+    showAppSnackBar(
+    errorText,
+    );
     }
     update();
-  }
+    }
 
-
-  ///GET RESPONSE
-  Future getResponse({required bool isLoad,
+    ///GET RESPONSE
+    Future getResponse(
+    {required bool isLoad,
     required String sportId,
     required String date,
     required String hotLinesDate,
@@ -1972,49 +2008,49 @@ class GameDetailsController extends GetxController {
     gameDetails.hotlinesData.clear();
 
     if (sportKey == 'MLB') {
-      awayIp="0";
-      homeIp="0";
-      whipAway="0";
-      whipHome="0";
-      awayKk="0";
-      homeKk="0";
-      awayBb="0";
-      homeBb="0";
-      awayH="0";
-      homeH="0";
-      mlbStaticsAwayTeamResponse(
-          isLoad: false,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          gameDetails: gameDetails);
-      mlbStaticsHomeTeamResponse(
-          isLoad: false,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''),
-          gameDetails: gameDetails);
-      mlbInjuriesResponse(
-          sportKey: 'MLB',
-          isLoad: false,
-          sportEvent: gameDetails,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      if ((gameDetails.awayPlayerId).isNotEmpty) {
-        profileAwayResponse(
-          isLoad: false,
-          awayTeamId: gameDetails.awayPlayerId,
-        );
-      }
-      if ((gameDetails.homePlayerId).isNotEmpty) {
-        profileHomeResponse(
-          isLoad: false,
-          homeTeamId: gameDetails.homePlayerId,
-        );
-      }
-      await hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+    awayIp = "0";
+    homeIp = "0";
+    whipAway = "0";
+    whipHome = "0";
+    awayKk = "0";
+    homeKk = "0";
+    awayBb = "0";
+    homeBb = "0";
+    awayH = "0";
+    homeH = "0";
+    mlbStaticsAwayTeamResponse(
+    isLoad: false,
+    awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+    gameDetails: gameDetails);
+    mlbStaticsHomeTeamResponse(
+    isLoad: false,
+    homeTeamId: replaceId(homeTeam?.uuids ?? ''),
+    gameDetails: gameDetails);
+    mlbInjuriesResponse(
+    sportKey: 'MLB',
+    isLoad: false,
+    sportEvent: gameDetails,
+    awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+    homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+    if ((gameDetails.awayPlayerId).isNotEmpty) {
+    profileAwayResponse(
+    isLoad: false,
+    awayTeamId: gameDetails.awayPlayerId,
+    );
+    }
+    if ((gameDetails.homePlayerId).isNotEmpty) {
+    profileHomeResponse(
+    isLoad: false,
+    homeTeamId: gameDetails.homePlayerId,
+    );
+    }
+    await hotlinesDataResponse(
+    awayTeamId: awayTeam?.id ?? "",
+    sportId: sportId,
+    gameDetails: gameDetails,
+    matchId: gameDetails.id ?? "",
+    isLoad: isLoad,
+    homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
@@ -2053,7 +2089,7 @@ class GameDetailsController extends GetxController {
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
 
-      /*await hotlinesDataResponse(
+    /*await hotlinesDataResponse(
           awayTeamId: awayTeam?.id ?? "",
           sportId: sportId,
           gameDetails: gameDetails,
@@ -2062,67 +2098,67 @@ class GameDetailsController extends GetxController {
           homeTeamId: homeTeam?.id ?? "");*/
     }
     if (sportKey == 'NCAA') {
-      isLoading.value = true;
-      recordsOfNCAAAndNFL(
-          isLoad: false,
-          sportEvent: gameDetails,
-          key: sportKey,
-          awayId: replaceId(awayTeam?.uuids ?? ''),
-          homeId: replaceId(homeTeam?.uuids ?? ''));
-      nflStaticsAwayTeamResponse(
-          isLoad: false,
-          gameDetails: gameDetails,
-          sportKey: sportKey,
-          awayTeamId: replaceId(awayTeam?.uuids ?? ''));
-      nflStaticsHomeTeamResponse(
-          isLoad: false,
-          gameDetails: gameDetails,
-          sportKey: sportKey,
-          homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+    isLoading.value = true;
+    recordsOfNCAAAndNFL(
+    isLoad: false,
+    sportEvent: gameDetails,
+    key: sportKey,
+    awayId: replaceId(awayTeam?.uuids ?? ''),
+    homeId: replaceId(homeTeam?.uuids ?? ''));
+    nflStaticsAwayTeamResponse(
+    isLoad: false,
+    gameDetails: gameDetails,
+    sportKey: sportKey,
+    awayTeamId: replaceId(awayTeam?.uuids ?? ''));
+    nflStaticsHomeTeamResponse(
+    isLoad: false,
+    gameDetails: gameDetails,
+    sportKey: sportKey,
+    homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+    hotlinesDataResponse(
+    awayTeamId: awayTeam?.id ?? "",
+    sportId: sportId,
+    gameDetails: gameDetails,
+    matchId: gameDetails.id ?? "",
+    isLoad: isLoad,
+    homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
-      staticsAwayNBA(
-        gameDetails: gameDetails,
-        isLoad: isLoad,
-        key: sportKey,
-        awayId: replaceId(awayTeam?.uuids ?? ''),
-      );
+    staticsAwayNBA(
+    gameDetails: gameDetails,
+    isLoad: isLoad,
+    key: sportKey,
+    awayId: replaceId(awayTeam?.uuids ?? ''),
+    );
 
-      staticsHomeNBA(
-        gameDetails: gameDetails,
-        isLoad: isLoad,
-        sportKey: sportKey,
-        homeId: replaceId(homeTeam?.uuids ?? ''),
-      );
-      recordsOfNCAAAndNFL(
-          isLoad: false,
-          sportEvent: gameDetails,
-          key: sportKey,
-          awayId: replaceId(awayTeam?.uuids ?? ''),
-          homeId: replaceId(homeTeam?.uuids ?? ''));
-      if (sportKey == "NBA") {
-        mlbInjuriesResponse(
-            isLoad: false,
-            sportKey: "NBA",
-            sportEvent: gameDetails,
-            awayTeamId: replaceId(awayTeam?.uuids ?? ''),
-            homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      }
-      hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
-      /*   await nbaRosterStaticsHomeResponse(
+    staticsHomeNBA(
+    gameDetails: gameDetails,
+    isLoad: isLoad,
+    sportKey: sportKey,
+    homeId: replaceId(homeTeam?.uuids ?? ''),
+    );
+    recordsOfNCAAAndNFL(
+    isLoad: false,
+    sportEvent: gameDetails,
+    key: sportKey,
+    awayId: replaceId(awayTeam?.uuids ?? ''),
+    homeId: replaceId(homeTeam?.uuids ?? ''));
+    if (sportKey == "NBA") {
+    mlbInjuriesResponse(
+    isLoad: false,
+    sportKey: "NBA",
+    sportEvent: gameDetails,
+    awayTeamId: replaceId(awayTeam?.uuids ?? ''),
+    homeTeamId: replaceId(homeTeam?.uuids ?? ''));
+    }
+    hotlinesDataResponse(
+    awayTeamId: awayTeam?.id ?? "",
+    sportId: sportId,
+    gameDetails: gameDetails,
+    matchId: gameDetails.id ?? "",
+    isLoad: isLoad,
+    homeTeamId: homeTeam?.id ?? "");
+    /*   await nbaRosterStaticsHomeResponse(
         gameDetails: gameDetails,
         sportKey: sportKey,
         isLoad: isLoad,
@@ -2153,14 +2189,14 @@ class GameDetailsController extends GetxController {
       }*/
     }
     update();
+    }
   }
-}
 
-class StartingQBModel {
+  class StartingQBModel {
   String playerId;
   String playerName;
   String teamId;
 
   StartingQBModel(
-      {required this.playerId, required this.playerName, required this.teamId});
-}
+  {required this.playerId, required this.playerName, required this.teamId});
+  }
