@@ -19,7 +19,7 @@ Future<void> main() async {
   await GetStorage.init();
   await PreferenceManager().putAppDeviceInfo();
   // FlutterBranchSdk.validateSDKIntegration();
-  await dotenv.load(fileName: "assets/..env");
+  await dotenv.load(fileName: "assets/.env");
   runApp(const MyApp());
 }
 
