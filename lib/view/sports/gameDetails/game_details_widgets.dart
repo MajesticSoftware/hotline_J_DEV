@@ -44,7 +44,6 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
             children: [
               Expanded(
                 flex: 1,
-
                 child: Align(
                   alignment: Alignment.bottomLeft,
                   child: InkWell(
@@ -53,10 +52,16 @@ PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
                       con.isTeamReportTab = true;
                       Get.back();
                     },
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 30.h,
-                      color: whiteColor,
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SizedBox(
+                        height: 30,width: 30,
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          size: 30.h,
+                          color: whiteColor,
+                        ),
+                      ),
                     ),
                   ).paddingOnly(left: 8.h),
                 ),
