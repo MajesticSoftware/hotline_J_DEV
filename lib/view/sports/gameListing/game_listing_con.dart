@@ -183,7 +183,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String apiKey = dotenv.env['GAME_LISTING_APIKEY']??"";
+  String apiKey = dotenv.env['ODDS_COMPARISON_REGULAR_API']??"";
   String
       date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
       ? "2024-09-06"

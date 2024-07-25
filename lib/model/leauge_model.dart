@@ -36,7 +36,7 @@ List<LeagueModel> sportsLeagueList = [
       gameName: 'NCAAB',
       date: formatted,
       key: 'NCAAB',
-      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   LeagueModel(
@@ -44,7 +44,7 @@ List<LeagueModel> sportsLeagueList = [
       gameName: 'NBA',
       date: formatted,
       key: 'NBA',
-      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   LeagueModel(
@@ -53,14 +53,14 @@ List<LeagueModel> sportsLeagueList = [
       date: formatted,
       key: 'MLB',
       sportId: 'sr:sport:3',
-      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true),*/
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
       date: '2024-09-06',
       key: 'NFL',
-      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       sportId: 'sr:sport:16',
       isAvailable: true),
   /*LeagueModel(
@@ -69,7 +69,7 @@ List<LeagueModel> sportsLeagueList = [
       key: 'NCAA',
       gameName: 'NCAAF',
       sportId: 'sr:sport:16',
-      apiKey: dotenv.env['GAME_LISTING_APIKEY']??"",
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true),*/
 
 ];
