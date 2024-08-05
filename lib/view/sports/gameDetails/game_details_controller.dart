@@ -1026,364 +1026,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-/*  List<StartingQBModel> qbsList = [
-    StartingQBModel(
-      playerId: "7738fea8-7ea2-4c4c-b589-bca90b070819",
-      playerName: "Nick Mullens",
-      teamId: "33405046-04ee-4058-a950-d606f8c30852",
-    ),
-    StartingQBModel(
-      playerId: "f2f29019-7306-4b1c-a9d8-e9f802cb06e0",
-      playerName: "Jake Browning",
-      teamId: "ad4ae08f-d808-42d5-a1e6-e9bc4e34d123",
-    ),
-    StartingQBModel(
-      playerId: "dabb52c0-455b-48fe-996b-abf758120623",
-      playerName: "Gardner Minshew",
-      teamId: "82cf9565-6eb9-4f01-bdbd-5aa0d472fcd9",
-    ),
-    StartingQBModel(
-      playerId: "a1ae8db0-eb91-11ed-a4cb-cd397e2b413c",
-      playerName: "Tommy DeVito",
-      teamId: "04aa1c9d-66da-489d-b16a-1dee3f2eec4d",
-    ),
-    StartingQBModel(
-      playerId: "4c8a2f7e-f982-4eca-9d52-cf53df6985a4",
-      playerName: "Will Levis",
-      teamId: "d26a1ca5-722d-4274-8f97-c92e49c96315",
-    ),
-    StartingQBModel(
-      playerId: "dd5a6b6e-ffae-45a5-b8e6-718a9251f374",
-      playerName: "Kyler Murray",
-      teamId: "de760528-1dc0-416a-a978-b510d20692ff",
-    ),
-    StartingQBModel(
-      playerId: "64797df2-efd3-4b27-86ee-1d48f7edb09f",
-      playerName: "Joe Flacco",
-      teamId: "d5a2eb42-8065-4174-ab79-0a6fa820e35e",
-    ),
-    // StartingQBModel(
-    //   playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
-    //   playerName: "Joshua Dobbs",
-    //   teamId: "33405046-04ee-4058-a950-d606f8c30852",
-    // ),
-    StartingQBModel(
-      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
-      playerName: "Aidan O'Connell",
-      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
-    ),
-    StartingQBModel(
-      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
-      playerName: "Aidan O'Connell",
-      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
-    ),
-    StartingQBModel(
-      playerId: "7a1b8f1a-9024-4897-86b0-01c63e00305e",
-      playerName: "Mitch Trubisky",
-      teamId: "cb2f9f1f-ac67-424e-9e72-1475cb0ed398",
-    ),
-    StartingQBModel(
-      playerId: "14926860-abef-45a9-b8f6-e66103ca6029",
-      playerName: "Bailey Zappe",
-      teamId: "97354895-8c77-4fd4-a860-32e62ea7382a",
-    ),
-    StartingQBModel(
-      playerId: "af291d43-a51f-44ce-b8ac-430ec68c78c8",
-      playerName: "Easton Stick",
-      teamId: "1f6dcffb-9823-43cd-9ff4-e7a8466749b5",
-    ),
-    StartingQBModel(
-      playerId: "2c259733-ec2c-4e3c-bb7b-34dc0d37dc34",
-      playerName: "Taylor Heinicke",
-      teamId: "e6aa13a4-0055-48a9-bc41-be28dc106929",
-    ),
-
-  ];
-
-  Future depthChartResponse({String homeTeamId = '',
-    String awayTeamId = '',
-    required SportEvents gameDetails,
-    bool isLoad = false,
-    String sportKey = ''}) async {
-    // isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().depthChartRepo(sportKey: sportKey);
-
-    int homeInd = qbsList.indexWhere((element) => element.teamId == homeTeamId);
-    if (homeInd >= 0) {
-      gameDetails.homePlayerName = qbsList[homeInd].playerName;
-      gameDetails.homePlayerId = qbsList[homeInd].playerId;
-    } else {
-      try {
-        if (result.status) {
-          if (result.data != null) {
-            DepthChartModel response = DepthChartModel.fromJson(result.data);
-            if (response.teams != null) {
-              int homeIndex = response.teams?.indexWhere(
-                      (element) => (element.id ?? 0) == homeTeamId) ??
-                  -1;
-              if ((homeIndex) >= 0) {
-                response.teams?[homeIndex].offense?.forEach((position) {
-                  if (position.position?.name == 'QB') {
-                    position.position?.players?.forEach((player) {
-                      if (player.depth == 1 && player.position == "QB") {
-                        gameDetails.homePlayerName =
-                            (player.name ?? "").toString();
-                        gameDetails.homePlayerId = (player.id ?? "").toString();
-                      }
-                    });
-                  }
-                });
-              }
-            }
-          } else {
-            showAppSnackBar(
-              result.message,
-            );
-            isLoading.value = false;
-          }
-        } else {
-          isLoading.value = false;
-          showAppSnackBar(
-            result.message,
-          );
-        }
-
-        // isLoading.value = false;
-      } catch (e) {
-        isLoading.value = false;
-        log('ERROR NFL HOME STATICS-----------$e');
-        showAppSnackBar(
-          errorText,
-        );
-      }
-    }
-    int awayInd = qbsList.indexWhere((element) => element.teamId == awayTeamId);
-    if (awayInd >= 0) {
-      gameDetails.awayPlayerName = qbsList[awayInd].playerName;
-      gameDetails.awayPlayerId = qbsList[awayInd].playerId;
-    } else {
-      try {
-        if (result.status) {
-          if (result.data != null) {
-            DepthChartModel response = DepthChartModel.fromJson(result.data);
-            if (response.teams != null) {
-              int awayIndex = response.teams?.indexWhere(
-                      (element) => (element.id ?? 0) == awayTeamId) ??
-                  -1;
-              if ((awayIndex) >= 0) {
-                response.teams?[awayIndex].offense?.forEach((position) {
-                  if (position.position?.name == 'QB') {
-                    position.position?.players?.forEach((player) {
-                      if (player.depth == 1 && player.position == "QB") {
-                        gameDetails.awayPlayerName =
-                            (player.name ?? "").toString();
-                        gameDetails.awayPlayerId = (player.id ?? "").toString();
-                      }
-                    });
-                  }
-                });
-              }
-            }
-          } else {
-            showAppSnackBar(
-              result.message,
-            );
-            isLoading.value = false;
-          }
-        } else {
-          isLoading.value = false;
-          showAppSnackBar(
-            result.message,
-          );
-        }
-
-        // isLoading.value = false;
-      } catch (e) {
-        isLoading.value = false;
-        log('ERROR NFL HOME STATICS-----------$e');
-        showAppSnackBar(
-          errorText,
-        );
-      }
-    }
-    update();
-  }*/
-
-  ///NFL GAME RANK API
-/*  Future nflGameRankApi({String awayTeamId = '',
-    String homeTeamId = '',
-    required SportEvents gameDetails,
-    bool isLoad = false,
-    String sportKey = ''}) async {
-    ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().nflGameRankApi(sportKey);
-    try {
-      if (result.status) {
-        NFLGameRankModel response = NFLGameRankModel.fromJson(result.toJson());
-        if (response.data != null) {
-          response.data?.forEach((team) {
-            if (awayTeamId == replaceId(team.teamId ?? "")) {
-              gameDetails.awayPointOffenseRank = team.pointOffenceRank ?? 0;
-              gameDetails.awayPointDefenseRank = team.pointsDefenseRank ?? 0;
-              gameDetails.awayRushingOffenseRank = team.rushingOffenseRank ?? 0;
-              gameDetails.awayRushingDefenseRank = team.rushingDefenseRank ?? 0;
-              gameDetails.awayPointOffense = team.pointsOffense ?? 0;
-              gameDetails.awayPointDefense = team.pointsDefense ?? 0;
-              gameDetails.awayRushingOffense = team.rushingOffense ?? 0;
-              gameDetails.awayRushingDefense = team.rushingDefense ?? 0;
-              gameDetails.awayPassingYardOffense=team.passingYardOffense??0;
-              gameDetails.awayPassingYardDefense=team.passingYardDefense??0;
-              gameDetails.awayRushingTDSOffense=team.rushingTDSOffense??0;
-              gameDetails.awayRushingTDSDefence=team.rushingTDSDefence??0;
-              gameDetails.awayPassingTDSOffense=team.passingTDSOffense??0;
-              gameDetails.awayPassingTDSDefence=team.passingTDSDefence??0;
-              gameDetails.awayRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
-              gameDetails.awayOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
-              gameDetails.awayThirdDownOffence=team.thirdDownOffence??0;
-              gameDetails.awayOpponentThirdDown=team.opponentThirdDown??0;
-              gameDetails.awayFourthDownOffense=team.fourthDownOffense??0;
-              gameDetails.awayOpponentFourthDown=team.opponentFourtDown??0;
-              gameDetails.awayFieldGoalOffense=team.fieldGoalOffense??0;
-              gameDetails.awayFieldGoalDefense=team.fieldGoalDefense??0;
-              gameDetails.awayTernOverOffense=team.ternoverOffense??0;
-              gameDetails.awayTernOverDefense=team.ternoverDefense??0;
-              gameDetails.awayPassingYardOffenseRank=team.passingYardOffenseRank??0;
-              gameDetails.awayPassingYardDefenseRank=team.passingYardDefenseRank??0;
-              gameDetails.awayRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
-              gameDetails.awayRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
-              gameDetails.awayPassingTDSOffenseRank=team.passingTDSOffenseRank??0;
-              gameDetails.awayPassingTDSDefenceRank=team.passingTDSDefenceRank??0;
-              gameDetails.awayRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
-              gameDetails.awayOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
-              gameDetails.awayThirdDownOffenceRank=team.thirdDownOffenceRank??0;
-              gameDetails.awayOpponentThirdDownRank=team.opponentThirdDownRank??0;
-              gameDetails.awayFourthDownOffenseRank=team.fourthDownOffenseRank??0;
-              gameDetails.awayOpponentFourthDownRank=team.opponentFourtDownRank??0;
-              gameDetails.awayFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
-              gameDetails.awayFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
-              gameDetails.awayTernOverOffenseRank=team.ternoverOffenseRank??0;
-              gameDetails.awayTernOverDefenseRank=team.ternoverDefenseRank??0;
-              gameDetails.awayInterceptionDefenseRank=team.interceptionDefenseRank??0;
-            }
-            if (homeTeamId == replaceId(team.teamId ?? "")) {
-              gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
-              gameDetails.homePointDefenseRank = team.pointsDefenseRank ?? 0;
-              gameDetails.homeRushingOffenseRank = team.rushingOffenseRank ?? 0;
-              gameDetails.homeRushingDefenseRank = team.rushingDefenseRank ?? 0;
-              gameDetails.homePointOffense = team.pointsOffense ?? 0;
-              gameDetails.homePointDefense = team.pointsDefense ?? 0;
-              gameDetails.homeRushingOffense = team.rushingOffense ?? 0;
-              gameDetails.homeRushingDefense = team.rushingDefense ?? 0;
-              gameDetails.homePassingYardOffense=team.passingYardOffense??0;
-              gameDetails.homePassingYardDefense=team.passingYardDefense??0;
-              gameDetails.homeRushingTDSOffense=team.rushingTDSOffense??0;
-              gameDetails.homeRushingTDSDefence=team.rushingTDSDefence??0;
-              gameDetails.homePassingTDSOffense=team.passingTDSOffense??0;
-              gameDetails.homePassingTDSDefence=team.passingTDSDefence??0;
-              gameDetails.homeRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
-              gameDetails.homeOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
-              gameDetails.homeThirdDownOffence=team.thirdDownOffence??0;
-              gameDetails.homeOpponentThirdDown=team.opponentThirdDown??0;
-              gameDetails.homeFourthDownOffense=team.fourthDownOffense??0;
-              gameDetails.homeOpponentFourthDown=team.opponentFourtDown??0;
-              gameDetails.homeFieldGoalOffense=team.fieldGoalOffense??0;
-              gameDetails.homeFieldGoalDefense=team.fieldGoalDefense??0;
-              gameDetails.homeTernOverOffense=team.ternoverOffense??0;
-              gameDetails.homeTernOverDefense=team.ternoverDefense??0;
-              gameDetails.homePassingYardOffenseRank=team.passingYardOffenseRank??0;
-              gameDetails.homePassingYardDefenseRank=team.passingYardDefenseRank??0;
-              gameDetails.homeRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
-              gameDetails.homeRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
-              gameDetails.homePassingTDSOffenseRank=team.passingTDSOffenseRank??0;
-              gameDetails.homePassingTDSDefenceRank=team.passingTDSDefenceRank??0;
-              gameDetails.homeRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
-              gameDetails.homeOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
-              gameDetails.homeThirdDownOffenceRank=team.thirdDownOffenceRank??0;
-              gameDetails.homeOpponentThirdDownRank=team.opponentThirdDownRank??0;
-              gameDetails.homeFourthDownOffenseRank=team.fourthDownOffenseRank??0;
-              gameDetails.homeOpponentFourthDownRank=team.opponentFourtDownRank??0;
-              gameDetails.homeFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
-              gameDetails.homeFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
-              gameDetails.homeTernOverOffenseRank=team.ternoverOffenseRank??0;
-              gameDetails.homeTernOverDefenseRank=team.ternoverDefenseRank??0;
-              gameDetails.homeInterceptionDefenseRank=team.interceptionDefenseRank??0;
-            }
-          });
-        }
-      } else {
-        isLoading.value = false;
-      }
-    } catch (e) {
-      log('ERROR NFL GAME RANK-----$e');
-      showAppSnackBar(errorText);
-    }
-    update();
-  }*/
-
-
-  /* Future getNFLQBSRank({String awayTeamId = '',
-    String homeTeamId = '',
-    required SportEvents gameDetails,
-    bool isLoad = false,
-    String sportKey = ''}) async {
-    ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().getNFLQBSRank(sportKey);
-    try {
-      if (result.status) {
-        NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
-        if (response.data != null) {
-          response.data?.forEach((element) {
-            if (homeTeamId == element.teamId) {
-              gameDetails.homePlayerName=element.playerName??"";
-              gameDetails.homePlayerId=element.playerId??"";
-              gameDetails.homeQb = [
-                (element.passingYardOffense??0).toString(),
-                (element.passingTDSOffense??0).toString(),
-                (element.rushingYardOffense??0).toString(),
-                (element.rushingTDsOffense??0).toString(),
-                (element.interceptionOffense??0).toString(),
-              ];
-              gameDetails.homeQbRank = [
-                (element.passingYardOffenseRank??0).toString(),
-                (element.passingTDSOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.interceptionOffenseRank??0).toString(),
-              ];
-            }if (awayTeamId == element.teamId) {
-              gameDetails.awayPlayerName=element.playerName??"";
-              gameDetails.awayPlayerId=element.playerId??"";
-              gameDetails.awayQb = [
-                (element.passingYardOffense??0).toString(),
-                (element.passingTDSOffense??0).toString(),
-                (element.rushingYardOffense??0).toString(),
-                (element.rushingTDsOffense??0).toString(),
-                (element.interceptionOffense??0).toString(),
-              ];gameDetails.awayQbRank = [
-                (element.passingYardOffenseRank??0).toString(),
-                (element.passingTDSOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.rushingTDsOffenseRank??0).toString(),
-                (element.interceptionOffenseRank??0).toString(),
-              ];
-            }
-          });
-        }
-
-      } else {
-        isLoading.value = false;
-      }
-    } catch (e) {
-      log('ERROR NFL GAME RANK-----$e');
-      showAppSnackBar(errorText);
-    }
-    update();
-  }*/
-
   Future nflStaticsAwayTeamResponse({String awayTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
@@ -1495,15 +1137,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  ///HOTLINES DATA
-  // List<HotlinesModel> _hotlinesFData = [];
-  //
-  // List<HotlinesModel> get hotlinesFData => _hotlinesFData;
-  //
-  // set hotlinesFData(List<HotlinesModel> value) {
-  //   _hotlinesFData = value;
-  //   update();
-  // }
 
   int _hotlinesIndex = 0;
 
@@ -2154,13 +1787,373 @@ class GameDetailsController extends GetxController {
     }
     update();
   }
+
+///HOTLINES DATA
+// List<HotlinesModel> _hotlinesFData = [];
+//
+// List<HotlinesModel> get hotlinesFData => _hotlinesFData;
+//
+// set hotlinesFData(List<HotlinesModel> value) {
+//   _hotlinesFData = value;
+//   update();
+// }
 }
 
-class StartingQBModel {
-  String playerId;
-  String playerName;
-  String teamId;
 
-  StartingQBModel(
-      {required this.playerId, required this.playerName, required this.teamId});
-}
+/*  List<StartingQBModel> qbsList = [
+    StartingQBModel(
+      playerId: "7738fea8-7ea2-4c4c-b589-bca90b070819",
+      playerName: "Nick Mullens",
+      teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    ),
+    StartingQBModel(
+      playerId: "f2f29019-7306-4b1c-a9d8-e9f802cb06e0",
+      playerName: "Jake Browning",
+      teamId: "ad4ae08f-d808-42d5-a1e6-e9bc4e34d123",
+    ),
+    StartingQBModel(
+      playerId: "dabb52c0-455b-48fe-996b-abf758120623",
+      playerName: "Gardner Minshew",
+      teamId: "82cf9565-6eb9-4f01-bdbd-5aa0d472fcd9",
+    ),
+    StartingQBModel(
+      playerId: "a1ae8db0-eb91-11ed-a4cb-cd397e2b413c",
+      playerName: "Tommy DeVito",
+      teamId: "04aa1c9d-66da-489d-b16a-1dee3f2eec4d",
+    ),
+    StartingQBModel(
+      playerId: "4c8a2f7e-f982-4eca-9d52-cf53df6985a4",
+      playerName: "Will Levis",
+      teamId: "d26a1ca5-722d-4274-8f97-c92e49c96315",
+    ),
+    StartingQBModel(
+      playerId: "dd5a6b6e-ffae-45a5-b8e6-718a9251f374",
+      playerName: "Kyler Murray",
+      teamId: "de760528-1dc0-416a-a978-b510d20692ff",
+    ),
+    StartingQBModel(
+      playerId: "64797df2-efd3-4b27-86ee-1d48f7edb09f",
+      playerName: "Joe Flacco",
+      teamId: "d5a2eb42-8065-4174-ab79-0a6fa820e35e",
+    ),
+    // StartingQBModel(
+    //   playerId: "15bedebc-839e-450a-86f6-1f5ad1f4f820",
+    //   playerName: "Joshua Dobbs",
+    //   teamId: "33405046-04ee-4058-a950-d606f8c30852",
+    // ),
+    StartingQBModel(
+      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
+      playerName: "Aidan O'Connell",
+      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
+    ),
+    StartingQBModel(
+      playerId: "5891a917-9071-4bc2-a652-7f702c44cbd2",
+      playerName: "Aidan O'Connell",
+      teamId: "7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576",
+    ),
+    StartingQBModel(
+      playerId: "7a1b8f1a-9024-4897-86b0-01c63e00305e",
+      playerName: "Mitch Trubisky",
+      teamId: "cb2f9f1f-ac67-424e-9e72-1475cb0ed398",
+    ),
+    StartingQBModel(
+      playerId: "14926860-abef-45a9-b8f6-e66103ca6029",
+      playerName: "Bailey Zappe",
+      teamId: "97354895-8c77-4fd4-a860-32e62ea7382a",
+    ),
+    StartingQBModel(
+      playerId: "af291d43-a51f-44ce-b8ac-430ec68c78c8",
+      playerName: "Easton Stick",
+      teamId: "1f6dcffb-9823-43cd-9ff4-e7a8466749b5",
+    ),
+    StartingQBModel(
+      playerId: "2c259733-ec2c-4e3c-bb7b-34dc0d37dc34",
+      playerName: "Taylor Heinicke",
+      teamId: "e6aa13a4-0055-48a9-bc41-be28dc106929",
+    ),
+
+  ];
+
+  Future depthChartResponse({String homeTeamId = '',
+    String awayTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    // isLoading.value = !isLoad ? false : true;
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().depthChartRepo(sportKey: sportKey);
+
+    int homeInd = qbsList.indexWhere((element) => element.teamId == homeTeamId);
+    if (homeInd >= 0) {
+      gameDetails.homePlayerName = qbsList[homeInd].playerName;
+      gameDetails.homePlayerId = qbsList[homeInd].playerId;
+    } else {
+      try {
+        if (result.status) {
+          if (result.data != null) {
+            DepthChartModel response = DepthChartModel.fromJson(result.data);
+            if (response.teams != null) {
+              int homeIndex = response.teams?.indexWhere(
+                      (element) => (element.id ?? 0) == homeTeamId) ??
+                  -1;
+              if ((homeIndex) >= 0) {
+                response.teams?[homeIndex].offense?.forEach((position) {
+                  if (position.position?.name == 'QB') {
+                    position.position?.players?.forEach((player) {
+                      if (player.depth == 1 && player.position == "QB") {
+                        gameDetails.homePlayerName =
+                            (player.name ?? "").toString();
+                        gameDetails.homePlayerId = (player.id ?? "").toString();
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          } else {
+            showAppSnackBar(
+              result.message,
+            );
+            isLoading.value = false;
+          }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(
+            result.message,
+          );
+        }
+
+        // isLoading.value = false;
+      } catch (e) {
+        isLoading.value = false;
+        log('ERROR NFL HOME STATICS-----------$e');
+        showAppSnackBar(
+          errorText,
+        );
+      }
+    }
+    int awayInd = qbsList.indexWhere((element) => element.teamId == awayTeamId);
+    if (awayInd >= 0) {
+      gameDetails.awayPlayerName = qbsList[awayInd].playerName;
+      gameDetails.awayPlayerId = qbsList[awayInd].playerId;
+    } else {
+      try {
+        if (result.status) {
+          if (result.data != null) {
+            DepthChartModel response = DepthChartModel.fromJson(result.data);
+            if (response.teams != null) {
+              int awayIndex = response.teams?.indexWhere(
+                      (element) => (element.id ?? 0) == awayTeamId) ??
+                  -1;
+              if ((awayIndex) >= 0) {
+                response.teams?[awayIndex].offense?.forEach((position) {
+                  if (position.position?.name == 'QB') {
+                    position.position?.players?.forEach((player) {
+                      if (player.depth == 1 && player.position == "QB") {
+                        gameDetails.awayPlayerName =
+                            (player.name ?? "").toString();
+                        gameDetails.awayPlayerId = (player.id ?? "").toString();
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          } else {
+            showAppSnackBar(
+              result.message,
+            );
+            isLoading.value = false;
+          }
+        } else {
+          isLoading.value = false;
+          showAppSnackBar(
+            result.message,
+          );
+        }
+
+        // isLoading.value = false;
+      } catch (e) {
+        isLoading.value = false;
+        log('ERROR NFL HOME STATICS-----------$e');
+        showAppSnackBar(
+          errorText,
+        );
+      }
+    }
+    update();
+  }*/
+
+///NFL GAME RANK API
+/*  Future nflGameRankApi({String awayTeamId = '',
+    String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nflGameRankApi(sportKey);
+    try {
+      if (result.status) {
+        NFLGameRankModel response = NFLGameRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          response.data?.forEach((team) {
+            if (awayTeamId == replaceId(team.teamId ?? "")) {
+              gameDetails.awayPointOffenseRank = team.pointOffenceRank ?? 0;
+              gameDetails.awayPointDefenseRank = team.pointsDefenseRank ?? 0;
+              gameDetails.awayRushingOffenseRank = team.rushingOffenseRank ?? 0;
+              gameDetails.awayRushingDefenseRank = team.rushingDefenseRank ?? 0;
+              gameDetails.awayPointOffense = team.pointsOffense ?? 0;
+              gameDetails.awayPointDefense = team.pointsDefense ?? 0;
+              gameDetails.awayRushingOffense = team.rushingOffense ?? 0;
+              gameDetails.awayRushingDefense = team.rushingDefense ?? 0;
+              gameDetails.awayPassingYardOffense=team.passingYardOffense??0;
+              gameDetails.awayPassingYardDefense=team.passingYardDefense??0;
+              gameDetails.awayRushingTDSOffense=team.rushingTDSOffense??0;
+              gameDetails.awayRushingTDSDefence=team.rushingTDSDefence??0;
+              gameDetails.awayPassingTDSOffense=team.passingTDSOffense??0;
+              gameDetails.awayPassingTDSDefence=team.passingTDSDefence??0;
+              gameDetails.awayRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
+              gameDetails.awayOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
+              gameDetails.awayThirdDownOffence=team.thirdDownOffence??0;
+              gameDetails.awayOpponentThirdDown=team.opponentThirdDown??0;
+              gameDetails.awayFourthDownOffense=team.fourthDownOffense??0;
+              gameDetails.awayOpponentFourthDown=team.opponentFourtDown??0;
+              gameDetails.awayFieldGoalOffense=team.fieldGoalOffense??0;
+              gameDetails.awayFieldGoalDefense=team.fieldGoalDefense??0;
+              gameDetails.awayTernOverOffense=team.ternoverOffense??0;
+              gameDetails.awayTernOverDefense=team.ternoverDefense??0;
+              gameDetails.awayPassingYardOffenseRank=team.passingYardOffenseRank??0;
+              gameDetails.awayPassingYardDefenseRank=team.passingYardDefenseRank??0;
+              gameDetails.awayRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
+              gameDetails.awayRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
+              gameDetails.awayPassingTDSOffenseRank=team.passingTDSOffenseRank??0;
+              gameDetails.awayPassingTDSDefenceRank=team.passingTDSDefenceRank??0;
+              gameDetails.awayRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
+              gameDetails.awayOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
+              gameDetails.awayThirdDownOffenceRank=team.thirdDownOffenceRank??0;
+              gameDetails.awayOpponentThirdDownRank=team.opponentThirdDownRank??0;
+              gameDetails.awayFourthDownOffenseRank=team.fourthDownOffenseRank??0;
+              gameDetails.awayOpponentFourthDownRank=team.opponentFourtDownRank??0;
+              gameDetails.awayFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
+              gameDetails.awayFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
+              gameDetails.awayTernOverOffenseRank=team.ternoverOffenseRank??0;
+              gameDetails.awayTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.awayInterceptionDefenseRank=team.interceptionDefenseRank??0;
+            }
+            if (homeTeamId == replaceId(team.teamId ?? "")) {
+              gameDetails.homePointOffenseRank = team.pointOffenceRank ?? 0;
+              gameDetails.homePointDefenseRank = team.pointsDefenseRank ?? 0;
+              gameDetails.homeRushingOffenseRank = team.rushingOffenseRank ?? 0;
+              gameDetails.homeRushingDefenseRank = team.rushingDefenseRank ?? 0;
+              gameDetails.homePointOffense = team.pointsOffense ?? 0;
+              gameDetails.homePointDefense = team.pointsDefense ?? 0;
+              gameDetails.homeRushingOffense = team.rushingOffense ?? 0;
+              gameDetails.homeRushingDefense = team.rushingDefense ?? 0;
+              gameDetails.homePassingYardOffense=team.passingYardOffense??0;
+              gameDetails.homePassingYardDefense=team.passingYardDefense??0;
+              gameDetails.homeRushingTDSOffense=team.rushingTDSOffense??0;
+              gameDetails.homeRushingTDSDefence=team.rushingTDSDefence??0;
+              gameDetails.homePassingTDSOffense=team.passingTDSOffense??0;
+              gameDetails.homePassingTDSDefence=team.passingTDSDefence??0;
+              gameDetails.homeRedZonEfficiencyOffence=team.redzonEfficiencyOffence??0;
+              gameDetails.homeOpponentRedZonEfficiency=team.opponentRedzonEfficiency??0;
+              gameDetails.homeThirdDownOffence=team.thirdDownOffence??0;
+              gameDetails.homeOpponentThirdDown=team.opponentThirdDown??0;
+              gameDetails.homeFourthDownOffense=team.fourthDownOffense??0;
+              gameDetails.homeOpponentFourthDown=team.opponentFourtDown??0;
+              gameDetails.homeFieldGoalOffense=team.fieldGoalOffense??0;
+              gameDetails.homeFieldGoalDefense=team.fieldGoalDefense??0;
+              gameDetails.homeTernOverOffense=team.ternoverOffense??0;
+              gameDetails.homeTernOverDefense=team.ternoverDefense??0;
+              gameDetails.homePassingYardOffenseRank=team.passingYardOffenseRank??0;
+              gameDetails.homePassingYardDefenseRank=team.passingYardDefenseRank??0;
+              gameDetails.homeRushingTDSOffenseRank=team.rushingTDSOffenseRank??0;
+              gameDetails.homeRushingTDSDefenceRank=team.rushingTDSDefenceRank??0;
+              gameDetails.homePassingTDSOffenseRank=team.passingTDSOffenseRank??0;
+              gameDetails.homePassingTDSDefenceRank=team.passingTDSDefenceRank??0;
+              gameDetails.homeRedZonEfficiencyOffenceRank=team.redzonEfficiencyOffenceRank??0;
+              gameDetails.homeOpponentRedZonEfficiencyRank=team.opponentRedzonEfficiencyRank??0;
+              gameDetails.homeThirdDownOffenceRank=team.thirdDownOffenceRank??0;
+              gameDetails.homeOpponentThirdDownRank=team.opponentThirdDownRank??0;
+              gameDetails.homeFourthDownOffenseRank=team.fourthDownOffenseRank??0;
+              gameDetails.homeOpponentFourthDownRank=team.opponentFourtDownRank??0;
+              gameDetails.homeFieldGoalOffenseRank=team.fieldGoalOffenseRank??0;
+              gameDetails.homeFieldGoalDefenseRank=team.fieldGoalDefenseRank??0;
+              gameDetails.homeTernOverOffenseRank=team.ternoverOffenseRank??0;
+              gameDetails.homeTernOverDefenseRank=team.ternoverDefenseRank??0;
+              gameDetails.homeInterceptionDefenseRank=team.interceptionDefenseRank??0;
+            }
+          });
+        }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
+  }*/
+
+
+/* Future getNFLQBSRank({String awayTeamId = '',
+    String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getNFLQBSRank(sportKey);
+    try {
+      if (result.status) {
+        NFLQBsRankModel response = NFLQBsRankModel.fromJson(result.toJson());
+        if (response.data != null) {
+          response.data?.forEach((element) {
+            if (homeTeamId == element.teamId) {
+              gameDetails.homePlayerName=element.playerName??"";
+              gameDetails.homePlayerId=element.playerId??"";
+              gameDetails.homeQb = [
+                (element.passingYardOffense??0).toString(),
+                (element.passingTDSOffense??0).toString(),
+                (element.rushingYardOffense??0).toString(),
+                (element.rushingTDsOffense??0).toString(),
+                (element.interceptionOffense??0).toString(),
+              ];
+              gameDetails.homeQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }if (awayTeamId == element.teamId) {
+              gameDetails.awayPlayerName=element.playerName??"";
+              gameDetails.awayPlayerId=element.playerId??"";
+              gameDetails.awayQb = [
+                (element.passingYardOffense??0).toString(),
+                (element.passingTDSOffense??0).toString(),
+                (element.rushingYardOffense??0).toString(),
+                (element.rushingTDsOffense??0).toString(),
+                (element.interceptionOffense??0).toString(),
+              ];gameDetails.awayQbRank = [
+                (element.passingYardOffenseRank??0).toString(),
+                (element.passingTDSOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.rushingTDsOffenseRank??0).toString(),
+                (element.interceptionOffenseRank??0).toString(),
+              ];
+            }
+          });
+        }
+
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NFL GAME RANK-----$e');
+      showAppSnackBar(errorText);
+    }
+    update();
+  }*/

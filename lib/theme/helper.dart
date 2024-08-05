@@ -3,10 +3,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hotlines/theme/theme.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'app_color.dart';
 
 showAppSnackBar(String tittle, {bool status = false}) {
   return Get.showSnackbar(GetSnackBar(
