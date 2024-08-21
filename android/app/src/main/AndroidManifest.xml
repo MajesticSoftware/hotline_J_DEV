@@ -60,4 +60,11 @@
         <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="secret_live_NxaB8BjgS1yAQHvIc4iN4DwTueoSzQKn" />
         <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
     </application>
+    <!-- Provide required visibility configuration for API level 30 and above -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 </manifest>

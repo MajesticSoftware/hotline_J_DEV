@@ -16,6 +16,7 @@ import '../../widgets/common_dialog.dart';
 import '../../widgets/game_widget.dart';
 import 'game_details_controller.dart';
 import 'game_details_widgets.dart';
+import '../../widgets/sportsbooks_buttons.dart';
 
 // ignore: must_be_immutable
 class SportDetailsScreen extends StatefulWidget {
@@ -162,6 +163,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                             mainlinesWidget(
                                 context, widget.gameDetails, awayTeam,
                                 homeTeam),
+                            SportsBooksButtons(),
                          /*   hotlinesWidget(context, con, widget.gameDetails,
                                 awayTeam, homeTeam, _tabController!),*/
                             // 20.h.H(),
