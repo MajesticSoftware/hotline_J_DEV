@@ -127,12 +127,12 @@ class GameListingRepo {
     String message = "";
 
     Uri uri = Uri.parse(sportKey == "NCAA"
-        ? '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/REG/standings/season.json?api_key=${AppUrls.NCAA_APIKEY}'
+        ? '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/$SEASONS/standings/season.json?api_key=${AppUrls.NCAA_APIKEY}'
         : sportKey == "NBA"
-            ? "${AppUrls.NBA_BASE_URL}seasons/$currentYear/REG/standings.json?api_key=${AppUrls.NBA_APIKEY}"
+            ? "${AppUrls.NBA_BASE_URL}seasons/$currentYear/$SEASONS/standings.json?api_key=${AppUrls.NBA_APIKEY}"
             : sportKey == "NCAAB"
-                ? "${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/REG/standings.json?api_key=${AppUrls.NCAAB_APIKEY}"
-                : "${AppUrls.NFL_BASE_URL}seasons/$currentYear/REG/standings/season.json?api_key=${AppUrls.NFL_APIKEY}");
+                ? "${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/$SEASONS/standings.json?api_key=${AppUrls.NCAAB_APIKEY}"
+                : "${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/standings/season.json?api_key=${AppUrls.NFL_APIKEY}");
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -150,7 +150,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(
-        '${AppUrls.MLB_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.MLB_APIKEY}');
+        '${AppUrls.MLB_BASE_URL}seasons/$seasons/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.MLB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -202,8 +202,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "NFL"
-        ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NFL_APIKEY}'
-        : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NCAA_APIKEY}');
+        ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NFL_APIKEY}'
+        : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -221,8 +221,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "NBA"
-        ? '${AppUrls.NBA_BASE_URL}seasons/$currentYear/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NBA_APIKEY}'
-        : '${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/REG/teams/$teamId/statistics.json?api_key=${AppUrls.NCAAB_APIKEY}');
+        ? '${AppUrls.NBA_BASE_URL}seasons/$currentYear/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NBA_APIKEY}'
+        : '${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -257,8 +257,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     Uri uri = Uri.parse(sportKey == "NFL"
-        ? '${AppUrls.NFL_BASE_URL}seasons/$currentYear/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NFL_APIKEY}'
-        : '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/REG/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NCAA_APIKEY}');
+        ? '${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NFL_APIKEY}'
+        : '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/$SEASONS/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -314,7 +314,7 @@ class GameListingRepo {
         ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=${AppUrls.MLB_APIKEY}'
         : sportKey == "NBA"
             ? '${AppUrls.NBA_BASE_URL}league/injuries.json?api_key=${AppUrls.NBA_APIKEY}'
-            : '${AppUrls.NFL_BASE_URL}seasons/$currentYear/REG/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
+            : '${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;

@@ -66,6 +66,7 @@ class RequestParam {
 }
 
 String currentYear = (DateTime.now().year).toString();
+String SEASONS = 'REG';
 
 class MethodNames {
   static const userRegistration = "userRegistration";
