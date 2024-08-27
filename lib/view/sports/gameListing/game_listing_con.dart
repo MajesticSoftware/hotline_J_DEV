@@ -379,7 +379,7 @@ class GameListingController extends GetxController {
   List<SportEvents> get searchList => _searchList;
 
   set searchList(List<SportEvents> value) {
-    _searchList = value;
+    _searchList = value.toSet().toList();
     update();
   }
 
@@ -442,6 +442,7 @@ class GameListingController extends GetxController {
   }
 
   searchData(String text, String sportKey) {
+    searchList= [];
     searchList.clear();
     if (text.isNotEmpty) {
       for (var element in (getSportEventList(sportKey))) {
