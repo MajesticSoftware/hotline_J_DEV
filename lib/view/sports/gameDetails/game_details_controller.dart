@@ -937,12 +937,12 @@ class GameDetailsController extends GetxController {
               gameDetails.homeReceiversPlayer.clear();
               if (response.players != null) {
                 response.players?.forEach((player) {
-                  if (player.position == 'RB' && player.gamesPlayed != 0) {
+                  if (player.position == 'RB' ) {
                     gameDetails.homeRunningBackPlayer.add(player);
                     // runningBacksHomeList.add(RunningBacks(carries: carries, yard: yard, avgCarry: avgCarry, tds: tds, longestRun: longestRun, fumbles: fumbles))
                   }
-                  if (player.position == 'WR' && player.gamesPlayed != 0 ||
-                      player.position == 'TE' && player.gamesPlayed != 0) {
+                  if (player.position == 'WR'  ||
+                      player.position == 'TE' ) {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
                   /* if (sportKey == "NCAA") {
@@ -1411,11 +1411,11 @@ class GameDetailsController extends GetxController {
               gameDetails.awayRunningBackPlayer.clear();
               if (response.players != null) {
                 response.players?.forEach((player) {
-                  if (player.position == 'RB' && player.gamesPlayed != 0) {
+                  if (player.position == 'RB' ) {
                     gameDetails.awayRunningBackPlayer.add(player);
                   }
-                  if (player.position == 'WR' && player.gamesPlayed != 0 ||
-                      player.position == 'TE' && player.gamesPlayed != 0) {
+                  if (player.position == 'WR'  ||
+                      player.position == 'TE' ) {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
                   /* if (sportKey == "NCAA") {

@@ -1555,7 +1555,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                               "0") == "1",
                           child: (gameDetails.awayQbRank.isEmpty ||
                               gameDetails.awayQbDefenseRank.isEmpty
-                              ? "0"
+                              ? ""
                               : con.isTeamReportTab
                               ? ' (${dateWidget(
                               gameDetails.awayQbRank[index])})'
@@ -1650,7 +1650,7 @@ Widget quarterBacksData(GameDetailsController con, BuildContext context,
                               "0") == "1",
                           child: (gameDetails.homeQbDefenseRank.isEmpty ||
                               gameDetails.homeQbRank.isEmpty
-                              ? "0"
+                              ? ""
                               : con.isTeamReportTab
                           // : !con.isQuarterBacksTab
                               ? ' (${dateWidget(
