@@ -13,6 +13,7 @@ import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
 import '../../../model/nba_statics_model.dart';
 import '../../../model/ncaab_standings_model.dart';
+import '../../../model/nfl_roster_player_model.dart';
 import '../../../model/nfl_statics_model.dart';
 import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
@@ -367,20 +368,27 @@ class GameDetailsController extends GetxController {
       {String homeTeamId = '', bool isLoad = false}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result =
-        await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: homeTeamId);
+    await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: homeTeamId);
     try {
       if (result.status) {
         if (result.data != null) {
           PlayerProfileModel response =
-              PlayerProfileModel.fromJson(result.data);
+          PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
           homePlayerName =
-              '${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
+          '${playerData.fullName
+              .split(" ")
+              .first[0]}. ${playerData.fullName
+              .split(" ")
+              .last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == '$SEASONS' && player.year == DateTime.now().year) {
+            if (player.type == '$SEASONS' &&
+                player.year == DateTime
+                    .now()
+                    .year) {
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
               homeBb =
@@ -388,7 +396,7 @@ class GameDetailsController extends GetxController {
                       .toString();
               homeKk =
                   (player.totals.statistics.pitching.overall.outs?.ktotal ??
-                          "0")
+                      "0")
                       .toString();
               homeH =
                   (player.totals.statistics.pitching.overall.onbase?.h ?? "0")
@@ -557,20 +565,27 @@ class GameDetailsController extends GetxController {
       {String awayTeamId = '', bool isLoad = false}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result =
-        await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: awayTeamId);
+    await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: awayTeamId);
     try {
       if (result.status) {
         if (result.data != null) {
           PlayerProfileModel response =
-              PlayerProfileModel.fromJson(result.data);
+          PlayerProfileModel.fromJson(result.data);
           final playerData = response.player;
           awayPlayerName =
-              '${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
+          '${playerData.fullName
+              .split(" ")
+              .first[0]}. ${playerData.fullName
+              .split(" ")
+              .last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == '$SEASONS' && player.year == DateTime.now().year) {
+            if (player.type == '$SEASONS' &&
+                player.year == DateTime
+                    .now()
+                    .year) {
               whipAway =
                   player.totals.statistics.pitching.overall.whip.toString();
               awayBb =
@@ -578,7 +593,7 @@ class GameDetailsController extends GetxController {
                       .toString();
               awayKk =
                   (player.totals.statistics.pitching.overall.outs?.ktotal ??
-                          "0")
+                      "0")
                       .toString();
               awayH =
                   (player.totals.statistics.pitching.overall.onbase?.h ?? "0")
@@ -606,31 +621,30 @@ class GameDetailsController extends GetxController {
   }
 
   ///MLB STATICS
-  Future mlbStaticsHomeTeamResponse(
-      {String homeTeamId = '',
-      bool isLoad = false,
-      required SportEvents gameDetails}) async {
+  Future mlbStaticsHomeTeamResponse({String homeTeamId = '',
+    bool isLoad = false,
+    required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .mlbStaticsRepo(teamId: homeTeamId, seasons: currentYear);
     try {
       hitterHomePlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
-            stat.MLBStaticsModel.fromJson(result.data);
+        stat.MLBStaticsModel.fromJson(result.data);
         if (response.statistics != null) {
           mlbStaticsHomeList = response.statistics;
           mlbPlayerPitchingData = response.players ?? [];
           var homeHitting = mlbStaticsHomeList?.hitting?.overall;
           var homePitching = mlbStaticsHomeList?.pitching?.overall;
           int totalGame = int.parse(gameDetails.homeLoss) +
-                      int.parse(gameDetails.homeWin) ==
-                  0
+              int.parse(gameDetails.homeWin) ==
+              0
               ? 1
               : int.parse(gameDetails.homeLoss) +
-                  int.parse(gameDetails.homeWin);
+              int.parse(gameDetails.homeWin);
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
               if (player.position != "P") {
@@ -639,41 +653,47 @@ class GameDetailsController extends GetxController {
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
                       avg: player.statistics?.hitting?.overall?.avg ?? "0",
                       bb:
-                          '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.onbase?.bb ??
+                          "0"}',
                       hAbValue:
-                          '${player.statistics?.hitting?.overall?.onbase?.h ?? "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.onbase?.h ??
+                          "0"}-${player.statistics?.hitting?.overall?.ab ??
+                          "0"}',
                       hr:
-                          '${player.statistics?.hitting?.overall?.onbase?.hr ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.onbase?.hr ??
+                          "0"}',
                       position: player.position ?? "0",
                       rbi: '${player.statistics?.hitting?.overall?.rbi ?? "0"}',
                       sb:
-                          '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.steal?.stolen ??
+                          "0"}',
                       obp: 'OBP',
                       obpValue:
-                          '${player.statistics?.hitting?.overall?.obp ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.obp ?? "0"}',
                       hAb: 'H-AB',
                       slg: 'SLG',
                       slgValue:
-                          '${player.statistics?.hitting?.overall?.slg ?? "0"}',
+                      '${player.statistics?.hitting?.overall?.slg ?? "0"}',
                       run: 'Runs/Game',
                       runValue: ((int.parse(player
-                                      .statistics?.hitting?.overall?.runs?.total
-                                      .toString() ??
-                                  "0") /
-                              totalGame)
+                          .statistics?.hitting?.overall?.runs?.total
+                          .toString() ??
+                          "0") /
+                          totalGame)
                           .toStringAsFixed(2)),
                       totalBase: 'Total Bases/Game',
                       totalBaseValue: ((int.parse(player
-                                      .statistics?.hitting?.overall?.onbase?.tb
-                                      .toString() ??
-                                  "0") /
-                              totalGame)
+                          .statistics?.hitting?.overall?.onbase?.tb
+                          .toString() ??
+                          "0") /
+                          totalGame)
                           .toStringAsFixed(2)),
                       stolenBase: 'Stolen Bases/Game',
                       ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                       stolenBaseValue: ((int.parse(
-                                  player.statistics?.hitting?.overall?.steal?.stolen.toString() ?? "0") /
-                              totalGame)
+                          player.statistics?.hitting?.overall?.steal?.stolen
+                              .toString() ?? "0") /
+                          totalGame)
                           .toStringAsFixed(2))),
                 );
               }
@@ -692,13 +712,16 @@ class GameDetailsController extends GetxController {
             ((int.parse(homeHitting?.onbase?.bb.toString() ?? "0") / totalGame)
                 .toStringAsFixed(2)),
             ((int.parse(homeHitting?.outs?.ktotal.toString() ?? "0") /
-                    totalGame)
+                totalGame)
                 .toStringAsFixed(2)),
             ((int.parse(homeHitting?.steal?.stolen.toString() ?? "0") /
-                    totalGame)
+                totalGame)
                 .toStringAsFixed(2)),
             homeHitting?.avg ?? "0",
-            '.${(homeHitting?.slg ?? 0).toString().split('.').last}',
+            '.${(homeHitting?.slg ?? 0)
+                .toString()
+                .split('.')
+                .last}',
             '${homeHitting?.ops ?? '0'}',
             ((int.parse(homeHitting?.outs?.gidp.toString() ?? "0") / totalGame)
                 .toStringAsFixed(2)),
@@ -707,21 +730,28 @@ class GameDetailsController extends GetxController {
           mlbHomePitchingList = [
             '${homePitching?.era ?? '0'}',
             '${homePitching?.games?.shutout ?? '0'}',
-            '.${(((homePitching?.games?.save ?? 0) / (homePitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
+            '.${(((homePitching?.games?.save ?? 0) /
+                (homePitching?.games?.svo ?? 0))
+                .toStringAsFixed(3)
+                .split('.')
+                .last)}',
             '${homePitching?.games?.blownSave ?? '0'}',
             '${homePitching?.games?.qstart ?? '0'}',
             ((int.parse(homePitching?.runs?.total.toString() ?? "0") /
-                    totalGame)
+                totalGame)
                 .toStringAsFixed(2)),
             ((int.parse(homePitching?.onbase?.hr.toString() ?? "0") / totalGame)
                 .toStringAsFixed(2)),
             ((int.parse(homePitching?.onbase?.bb.toString() ?? "0") / totalGame)
                 .toStringAsFixed(2)),
             ((int.parse(homePitching?.outs?.ktotal.toString() ?? "0") /
-                    totalGame)
+                totalGame)
                 .toStringAsFixed(2)),
             '${homePitching?.whip ?? "0"}',
-            '.${(homePitching?.oba ?? 0).toString().split('.').last}',
+            '.${(homePitching?.oba ?? 0)
+                .toString()
+                .split('.')
+                .last}',
             ((int.parse(homePitching?.outs?.gidp.toString() ?? "0") / totalGame)
                 .toStringAsFixed(2)),
           ];
@@ -754,13 +784,12 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  Future mlbStaticsAwayTeamResponse(
-      {String awayTeamId = '',
-      bool isLoad = false,
-      required SportEvents gameDetails}) async {
+  Future mlbStaticsAwayTeamResponse({String awayTeamId = '',
+    bool isLoad = false,
+    required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
       teamId: awayTeamId,
       seasons: currentYear,
@@ -769,14 +798,14 @@ class GameDetailsController extends GetxController {
       hitterAwayPlayerMainList.clear();
       if (result.status) {
         stat.MLBStaticsModel response =
-            stat.MLBStaticsModel.fromJson(result.data);
+        stat.MLBStaticsModel.fromJson(result.data);
         if (response.statistics != null) {
           mlbStaticsAwayList = response.statistics;
           mlbPlayerPitchingData = response.players ?? [];
         }
         int totalGame = int.parse(gameDetails.awayLoss) +
-                    int.parse(gameDetails.awayWin) ==
-                0
+            int.parse(gameDetails.awayWin) ==
+            0
             ? 1
             : int.parse(gameDetails.awayLoss) + int.parse(gameDetails.awayWin);
         var awayHitting = mlbStaticsAwayList?.hitting?.overall;
@@ -787,43 +816,46 @@ class GameDetailsController extends GetxController {
               hitterAwayPlayerMainList.add(
                 HitterPlayerStatMainModel(
                     bb:
-                        '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                     playerName: '${player.firstName?[0]}. ${player.lastName}',
                     avg: player.statistics?.hitting?.overall?.avg ?? "0",
                     hAbValue:
-                        '${player.statistics?.hitting?.overall?.onbase?.h ?? "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.onbase?.h ??
+                        "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     hr:
-                        '${player.statistics?.hitting?.overall?.onbase?.hr ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.onbase?.hr ?? "0"}',
                     position: player.position ?? "0",
                     rbi: '${player.statistics?.hitting?.overall?.rbi ?? "0"}',
                     sb:
-                        '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.steal?.stolen ??
+                        "0"}',
                     obp: 'OBP',
                     obpValue:
-                        '${player.statistics?.hitting?.overall?.obp ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.obp ?? "0"}',
                     hAb: 'H-AB',
                     slg: 'SLG',
                     slgValue:
-                        '${player.statistics?.hitting?.overall?.slg ?? "0"}',
+                    '${player.statistics?.hitting?.overall?.slg ?? "0"}',
                     run: 'Runs/Game',
                     runValue: ((int.parse(player
-                                    .statistics?.hitting?.overall?.runs?.total
-                                    .toString() ??
-                                "0") /
-                            totalGame)
+                        .statistics?.hitting?.overall?.runs?.total
+                        .toString() ??
+                        "0") /
+                        totalGame)
                         .toStringAsFixed(2)),
                     totalBase: 'Total Bases/Game',
                     totalBaseValue: ((int.parse(player
-                                    .statistics?.hitting?.overall?.onbase?.tb
-                                    .toString() ??
-                                "0") /
-                            totalGame)
+                        .statistics?.hitting?.overall?.onbase?.tb
+                        .toString() ??
+                        "0") /
+                        totalGame)
                         .toStringAsFixed(2)),
                     stolenBase: 'Stolen Bases/Game',
                     ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     stolenBaseValue: ((int.parse(
-                                player.statistics?.hitting?.overall?.steal?.stolen.toString() ?? "0") /
-                            totalGame)
+                        player.statistics?.hitting?.overall?.steal?.stolen
+                            .toString() ?? "0") /
+                        totalGame)
                         .toStringAsFixed(2))),
               );
             }
@@ -846,7 +878,10 @@ class GameDetailsController extends GetxController {
           ((int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
           awayHitting?.avg ?? "0",
-          '.${((awayHitting?.slg ?? "0").toString().split('.').last)}',
+          '.${((awayHitting?.slg ?? "0")
+              .toString()
+              .split('.')
+              .last)}',
           '${awayHitting?.ops ?? '0'}',
           ((int.parse(awayHitting?.outs?.gidp.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
@@ -855,7 +890,11 @@ class GameDetailsController extends GetxController {
         mlbAwayPitchingList = [
           '${awayPitching?.era ?? '0'}',
           '${awayPitching?.games?.shutout ?? '0'}',
-          '.${(((awayPitching?.games?.save ?? 0) / (awayPitching?.games?.svo ?? 1)).toStringAsFixed(3).split('.').last)}',
+          '.${(((awayPitching?.games?.save ?? 0) /
+              (awayPitching?.games?.svo ?? 1))
+              .toStringAsFixed(3)
+              .split('.')
+              .last)}',
           '${awayPitching?.games?.blownSave ?? '0'}',
           '${awayPitching?.games?.qstart ?? '0'}',
           ((int.parse(awayPitching?.runs?.total.toString() ?? "0") / totalGame)
@@ -867,7 +906,10 @@ class GameDetailsController extends GetxController {
           ((int.parse(awayPitching?.outs?.ktotal.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
           '${awayPitching?.whip ?? "0"}',
-          '.${(awayPitching?.oba ?? 0).toString().split('.').last}',
+          '.${(awayPitching?.oba ?? 0)
+              .toString()
+              .split('.')
+              .last}',
           ((int.parse(awayPitching?.outs?.gidp.toString() ?? "0") / totalGame)
               .toStringAsFixed(2)),
         ];
@@ -894,14 +936,13 @@ class GameDetailsController extends GetxController {
   List<RunningBacks> runningBacksAwayList = [];
   List<RunningBacks> runningBacksHomeList = [];
 
-  Future nflStaticsHomeTeamResponse(
-      {String homeTeamId = '',
-      required SportEvents gameDetails,
-      bool isLoad = false,
-      String sportKey = ''}) async {
+  Future nflStaticsHomeTeamResponse({String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: homeTeamId, seasons: currentYear, sportKey: sportKey);
     try {
@@ -915,34 +956,33 @@ class GameDetailsController extends GetxController {
               num totalGame = offenciveData?.gamesPlayed ?? 1;
               gameDetails.homeDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
-                        totalGame)
+                    totalGame)
                     .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
-                        totalGame)
+                    totalGame)
                     .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2)),
                 (int.parse(defenciveData?.defense?.interceptions.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2),
               ];
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
               if (response.players != null) {
                 response.players?.forEach((player) {
-                  if (player.position == 'RB' ) {
+                  if (player.position == 'RB') {
                     gameDetails.homeRunningBackPlayer.add(player);
                     // runningBacksHomeList.add(RunningBacks(carries: carries, yard: yard, avgCarry: avgCarry, tds: tds, longestRun: longestRun, fumbles: fumbles))
                   }
-                  if (player.position == 'WR'  ||
-                      player.position == 'TE' ) {
+                  if (player.position == 'WR' || player.position == 'TE') {
                     gameDetails.homeReceiversPlayer.add(player);
                   }
                   /* if (sportKey == "NCAA") {
@@ -1368,13 +1408,12 @@ class GameDetailsController extends GetxController {
     update();
   }*/
 
-  Future nflStaticsAwayTeamResponse(
-      {String awayTeamId = '',
-      required SportEvents gameDetails,
-      bool isLoad = false,
-      String sportKey = ''}) async {
+  Future nflStaticsAwayTeamResponse({String awayTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflStaticsRepo(
         teamId: awayTeamId, seasons: currentYear, sportKey: sportKey);
     try {
@@ -1388,22 +1427,22 @@ class GameDetailsController extends GetxController {
               num totalGame = offenciveData?.gamesPlayed ?? 1;
               gameDetails.awayDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
-                        totalGame)
+                    totalGame)
                     .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.passing?.touchdowns.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.rushing?.yards.toString() ?? "0") /
-                        totalGame)
+                    totalGame)
                     .toStringAsFixed(1)),
                 ((int.parse(defenciveData?.rushing?.touchdowns.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2)),
                 ((int.parse(defenciveData?.defense?.interceptions.toString() ??
-                            "0") /
-                        totalGame)
+                    "0") /
+                    totalGame)
                     .toStringAsFixed(2)),
                 // (offenciveData?.defense?.interceptions ?? "0").toString(),
               ];
@@ -1411,11 +1450,10 @@ class GameDetailsController extends GetxController {
               gameDetails.awayRunningBackPlayer.clear();
               if (response.players != null) {
                 response.players?.forEach((player) {
-                  if (player.position == 'RB' ) {
+                  if (player.position == 'RB') {
                     gameDetails.awayRunningBackPlayer.add(player);
                   }
-                  if (player.position == 'WR'  ||
-                      player.position == 'TE' ) {
+                  if (player.position == 'WR' || player.position == 'TE') {
                     gameDetails.awayReceiversPlayer.add(player);
                   }
                   /* if (sportKey == "NCAA") {
@@ -1478,7 +1516,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-/*  Future getRosterPlayer({String awayTeamId = '',
+  Future getRosterAwayPlayer({String awayTeamId = '',
     required SportEvents gameDetails,
     bool isLoad = false,
     String sportKey = ''}) async {
@@ -1493,7 +1531,7 @@ class GameDetailsController extends GetxController {
           gameDetails.nflAwayReceiversPlayer.clear();
           gameDetails.nflAwayRunningBackPlayer.clear();
           if (response.players != null) {
-            for (int i = 0; i <= (response.players!.length); i++) {
+            for (int i = 0; i < (response.players!.length); i++) {
               if (response.players?[i].position == 'RB' &&
                   response.players?[i].draft?.team?.id == awayTeamId) {
                 gameDetails.nflAwayRunningBackPlayer.add(response.players![i]);
@@ -1512,15 +1550,59 @@ class GameDetailsController extends GetxController {
           isLoading.value = false;
         }
       }
-      } catch (e) {
+    } catch (e) {
       isLoading.value = false;
-      log('ERROR NFL AWAY STATICS------$e');
+      log('ERROR NFL AWAY FULL ROSTER-----$e');
       showAppSnackBar(
         errorText,
       );
     }
     update();
-  }*/
+  }
+
+  Future getRosterHomePlayer({String homeTeamId = '',
+    required SportEvents gameDetails,
+    bool isLoad = false,
+    String sportKey = ''}) async {
+    ResponseItem result =
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getRosterPlayer(teamId: homeTeamId);
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          NFLRosterPlayerModel response =
+          NFLRosterPlayerModel.fromJson(result.data);
+          gameDetails.nflHomeReceiversPlayer.clear();
+          gameDetails.nflHomeRunningBackPlayer.clear();
+          if (response.players != null) {
+            for (int i = 0; i < (response.players!.length); i++) {
+              if (response.players?[i].position == 'RB' &&
+                  response.players?[i].draft?.team?.id == homeTeamId) {
+                gameDetails.nflHomeRunningBackPlayer.add(response.players![i]);
+              }
+              if (response.players?[i].position == 'WR' &&
+                  response.players?[i].draft?.team?.id == homeTeamId ||
+                  response.players?[i].position == 'TE' &&
+                      response.players?[i].draft?.team?.id == homeTeamId) {
+                gameDetails.nflHomeReceiversPlayer.add(response.players![i]);
+              }
+            }
+          } else {
+            isLoading.value = false;
+          }
+        } else {
+          isLoading.value = false;
+        }
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log('ERROR NFL HOME FULL ROSTER------$e');
+      showAppSnackBar(
+        errorText,
+      );
+    }
+    update();
+  }
 
   ///HOTLINES DATA
   // List<HotlinesModel> _hotlinesFData = [];
@@ -1546,22 +1628,21 @@ class GameDetailsController extends GetxController {
   String hotlinesDec = '';
   String hotlinesType = '';
 
-  Future hotlinesDataResponse(
-      {String awayTeamId = '',
-      String sportId = '',
-      required SportEvents gameDetails,
-      String matchId = '',
-      bool isLoad = false,
-      String homeTeamId = ''}) async {
+  Future hotlinesDataResponse({String awayTeamId = '',
+    String sportId = '',
+    required SportEvents gameDetails,
+    String matchId = '',
+    bool isLoad = false,
+    String homeTeamId = ''}) async {
     // isHotlines = true;
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().hotlinesDataRepo(matchId: matchId);
     try {
       if (result.status) {
         hotlines.HotlinesDataModel response =
-            hotlines.HotlinesDataModel.fromJson(result.data);
+        hotlines.HotlinesDataModel.fromJson(result.data);
         final sportScheduleSportEventsPlayersProps =
             response.sportEventPlayersProps;
         if (sportScheduleSportEventsPlayersProps != null) {
@@ -1574,19 +1655,36 @@ class GameDetailsController extends GetxController {
                     book.id == 'sr:book:17324') {
                   book.outcomes?.forEach((outcome) {
                     if (outcome.oddsAmerican != null) {
-                      if (!int.parse(outcome.oddsAmerican ?? '').isNegative) {
+                      if (!int
+                          .parse(outcome.oddsAmerican ?? '')
+                          .isNegative) {
                         gameDetails.hotlinesMainData.add(HotlinesModel(
                             teamId: playersProp.player?.competitorId ?? "",
                             teamName:
-                                '${playersProp.player?.name?.split(',').last.removeAllWhitespace ?? ''} ${playersProp.player?.name?.split(',').first.removeAllWhitespace ?? ''} ${outcome.type.toString().capitalizeFirst} ${outcome.total} ${market.name?.split('(').first.toString().capitalize}',
+                            '${playersProp.player?.name
+                                ?.split(',')
+                                .last
+                                .removeAllWhitespace ?? ''} ${playersProp.player
+                                ?.name
+                                ?.split(',')
+                                .first
+                                .removeAllWhitespace ?? ''} ${outcome.type
+                                .toString()
+                                .capitalizeFirst} ${outcome.total} ${market.name
+                                ?.split('(')
+                                .first
+                                .toString()
+                                .capitalize}',
                             tittle: market.name
-                                    ?.split('(')
-                                    .first
-                                    .toString()
-                                    .capitalize ??
+                                ?.split('(')
+                                .first
+                                .toString()
+                                .capitalize ??
                                 '',
                             playerName:
-                                playersProp.player?.name?.split(',').last ?? '',
+                            playersProp.player?.name
+                                ?.split(',')
+                                .last ?? '',
                             bookId: book.id ?? '',
                             value: '${outcome.oddsAmerican}'));
                         gameDetails.hotlinesFData.clear();
@@ -1598,12 +1696,12 @@ class GameDetailsController extends GetxController {
                           if (element.bookId == 'sr:book:18149') {
                             if (!(gameDetails.hotlinesDData.indexWhere(
                                     (fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
+                                fData.playerName ==
+                                    element.playerName) >=
                                 0)) {
                               if (!(gameDetails.hotlinesDData.indexWhere(
                                       (fData) =>
-                                          fData.tittle == element.tittle) >=
+                                  fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesDData.add(element);
                               }
@@ -1612,12 +1710,12 @@ class GameDetailsController extends GetxController {
                           if (element.bookId == 'sr:book:17324') {
                             if (!(gameDetails.hotlinesMData.indexWhere(
                                     (fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
+                                fData.playerName ==
+                                    element.playerName) >=
                                 0)) {
                               if (!(gameDetails.hotlinesMData.indexWhere(
                                       (fData) =>
-                                          fData.tittle == element.tittle) >=
+                                  fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesMData.add(element);
                               }
@@ -1626,12 +1724,12 @@ class GameDetailsController extends GetxController {
                           if (element.bookId == 'sr:book:18186') {
                             if (!(gameDetails.hotlinesFData.indexWhere(
                                     (fData) =>
-                                        fData.playerName ==
-                                        element.playerName) >=
+                                fData.playerName ==
+                                    element.playerName) >=
                                 0)) {
                               if (!(gameDetails.hotlinesFData.indexWhere(
                                       (fData) =>
-                                          fData.tittle == element.tittle) >=
+                                  fData.tittle == element.tittle) >=
                                   0)) {
                                 gameDetails.hotlinesFData.add(element);
                               }
@@ -1657,19 +1755,19 @@ class GameDetailsController extends GetxController {
             gameDetails.hotlinesData.add(hotlinesFinalData[0]);
             for (int i = 1; i < hotlinesFinalData.length; i++) {
               if (!(gameDetails.hotlinesData.indexWhere((element) =>
-                      element.teamName == hotlinesFinalData[i].teamName) >=
+              element.teamName == hotlinesFinalData[i].teamName) >=
                   0)) {
                 if (gameDetails.hotlinesData
-                        .where((element) =>
-                            element.bookId == hotlinesFinalData[i].bookId)
-                        .toList()
-                        .length <
+                    .where((element) =>
+                element.bookId == hotlinesFinalData[i].bookId)
+                    .toList()
+                    .length <
                     2) {
                   if (gameDetails.hotlinesData
-                          .where((element) =>
-                              element.teamId == hotlinesFinalData[i].teamId)
-                          .toList()
-                          .length <
+                      .where((element) =>
+                  element.teamId == hotlinesFinalData[i].teamId)
+                      .toList()
+                      .length <
                       3) {
                     gameDetails.hotlinesData.add(hotlinesFinalData[i]);
                   }
@@ -1711,13 +1809,13 @@ class GameDetailsController extends GetxController {
   }) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().recordRepoNCAA(sportKey: key);
     try {
       if (result.status) {
         if (key == 'NFL' || key == "NBA") {
           NFLTeamRecordModel response =
-              NFLTeamRecordModel.fromJson(result.data);
+          NFLTeamRecordModel.fromJson(result.data);
           final game = response.conferences;
           if (game != null) {
             for (var element in game) {
@@ -1756,7 +1854,7 @@ class GameDetailsController extends GetxController {
           }
         } else if (key == "NCAAB") {
           NCAABStandingsModel response =
-              NCAABStandingsModel.fromJson(result.data);
+          NCAABStandingsModel.fromJson(result.data);
           final game = response.conferences;
           if (game != null) {
             for (var element in game) {
@@ -1801,9 +1899,9 @@ class GameDetailsController extends GetxController {
     gameDetails.awayRushingPlayer.clear();
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result =
-        await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
+    await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
@@ -1838,7 +1936,7 @@ class GameDetailsController extends GetxController {
     gameDetails.homeRushingPlayer.clear();
     isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
     try {
@@ -1868,15 +1966,14 @@ class GameDetailsController extends GetxController {
   }
 
   ///MLB INJURY REPORT
-  Future mlbInjuriesResponse(
-      {String awayTeamId = '',
-      String homeTeamId = '',
-      String sportKey = '',
-      SportEvents? sportEvent,
-      bool isLoad = false}) async {
+  Future mlbInjuriesResponse({String awayTeamId = '',
+    String homeTeamId = '',
+    String sportKey = '',
+    SportEvents? sportEvent,
+    bool isLoad = false}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbInjuriesRepo(sportKey);
     try {
       sportEvent?.homeTeamInjuredPlayer.clear();
@@ -1890,7 +1987,11 @@ class GameDetailsController extends GetxController {
                 team.players?.forEach((player) {
                   if (player.position != 'A') {
                     sportEvent?.awayTeamInjuredPlayer.add(
-                        '${player.name?[0]}. ${player.name?.split(' ').last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""}');
+                        '${player.name?[0]}. ${player.name
+                            ?.split(' ')
+                            .last} - ${player.position} - ${((player.injuries ??
+                            []).isNotEmpty) ? (player.injuries?[0].practice
+                            ?.status) : ""}');
                   }
                 });
               }
@@ -1898,7 +1999,11 @@ class GameDetailsController extends GetxController {
                 team.players?.forEach((player) {
                   if (player.position != 'A') {
                     sportEvent?.homeTeamInjuredPlayer.add(
-                        '${player.name?[0]}. ${player.name?.split(' ').last} - ${player.position} - ${((player.injuries ?? []).isNotEmpty) ? (player.injuries?[0].practice?.status) : ""}');
+                        '${player.name?[0]}. ${player.name
+                            ?.split(' ')
+                            .last} - ${player.position} - ${((player.injuries ??
+                            []).isNotEmpty) ? (player.injuries?[0].practice
+                            ?.status) : ""}');
                   }
                 });
               }
@@ -1913,10 +2018,14 @@ class GameDetailsController extends GetxController {
                   if (player.status != 'A') {
                     if (sportKey == "NBA") {
                       sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.injuries?.first.status}');
+                          '${player.firstName?[0]}. ${player
+                              .lastName} - ${player.position} - ${player
+                              .injuries?.first.status}');
                     } else {
                       sportEvent?.awayTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.status}');
+                          '${player.firstName?[0]}. ${player
+                              .lastName} - ${player.position} - ${player
+                              .status}');
                     }
                   }
                 });
@@ -1926,10 +2035,14 @@ class GameDetailsController extends GetxController {
                   if (player.status != 'A') {
                     if (sportKey == "NBA") {
                       sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.injuries?.first.status}');
+                          '${player.firstName?[0]}. ${player
+                              .lastName} - ${player.position} - ${player
+                              .injuries?.first.status}');
                     } else {
                       sportEvent?.homeTeamInjuredPlayer.add(
-                          '${player.firstName?[0]}. ${player.lastName} - ${player.position} - ${player.status}');
+                          '${player.firstName?[0]}. ${player
+                              .lastName} - ${player.position} - ${player
+                              .status}');
                     }
                   }
                 });
@@ -1955,15 +2068,14 @@ class GameDetailsController extends GetxController {
   }
 
   ///GET RESPONSE
-  Future getResponse(
-      {required bool isLoad,
-      required String sportId,
-      required String date,
-      required String hotLinesDate,
-      required SportEvents gameDetails,
-      required String sportKey,
-      Competitors? homeTeam,
-      Competitors? awayTeam}) async {
+  Future getResponse({required bool isLoad,
+    required String sportId,
+    required String date,
+    required String hotLinesDate,
+    required SportEvents gameDetails,
+    required String sportKey,
+    Competitors? homeTeam,
+    Competitors? awayTeam}) async {
     gameDetails.hotlinesDData.clear();
     gameDetails.hotlinesFData.clear();
     gameDetails.hotlinesMData.clear();
@@ -2033,6 +2145,20 @@ class GameDetailsController extends GetxController {
           homeId: homeTeam?.abbreviation == 'LV'
               ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
               : replaceId(homeTeam?.uuids ?? ''));
+      getRosterAwayPlayer(
+          awayTeamId: awayTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(awayTeam?.uuids ?? ''),
+          gameDetails: gameDetails,
+          isLoad: isLoad,
+          sportKey: sportKey);
+      getRosterHomePlayer(
+          homeTeamId: homeTeam?.abbreviation == 'LV'
+              ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+              : replaceId(homeTeam?.uuids ?? ''),
+          gameDetails: gameDetails,
+          isLoad: isLoad,
+          sportKey: sportKey);
       nflStaticsHomeTeamResponse(
           isLoad: false,
           gameDetails: gameDetails,

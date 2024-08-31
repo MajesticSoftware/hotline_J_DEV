@@ -287,7 +287,11 @@ class Players {
   num? experience;
   Draft? draft;
   String? preferredName;
+  Rushing? rushing;
   String? nameSuffix;
+  Receiving? receiving;
+  Fumbles? fumbles;
+
 
   Players(
       {this.id,
@@ -305,10 +309,13 @@ class Players {
         this.college,
         this.collegeConf,
         this.rookieYear,
+        this.rushing,
         this.status,
         this.srId,
         this.experience,
+        this.receiving,
         this.draft,
+        this.fumbles,
         this.preferredName,
         this.nameSuffix});
 
@@ -322,6 +329,10 @@ class Players {
     birthDate = json['birth_date'];
     weight = json['weight'];
     height = json['height'];
+    receiving = json['receiving'] != null
+        ? Receiving.fromJson(json['receiving'])
+        : null;
+    fumbles = json['fumbles'] != null ? Fumbles.fromJson(json['fumbles']) : null;
     position = json['position'];
     birthPlace = json['birth_place'];
     highSchool = json['high_school'];
@@ -330,6 +341,8 @@ class Players {
     rookieYear = json['rookie_year'];
     status = json['status'];
     srId = json['sr_id'];
+    rushing =
+    json['rushing'] != null ? Rushing.fromJson(json['rushing']) : null;
     experience = json['experience'];
     draft = json['draft'] != null ? Draft.fromJson(json['draft']) : null;
     preferredName = json['preferred_name'];
@@ -344,6 +357,15 @@ class Players {
     data['last_name'] = lastName;
     data['first_name'] = firstName;
     data['abbr_name'] = abbrName;
+    if (receiving != null) {
+      data['receiving'] = receiving!.toJson();
+    }
+    if (rushing != null) {
+      data['rushing'] = rushing!.toJson();
+    }
+    if(fumbles != null){
+      data['fumbles'] = fumbles!.toJson();
+    }
     data['birth_date'] = birthDate;
     data['weight'] = weight;
     data['height'] = height;
@@ -416,6 +438,195 @@ class Team {
     data['market'] = market;
     data['alias'] = alias;
     data['sr_id'] = srId;
+    return data;
+  }
+}
+
+class Receiving {
+  num? targets;
+  num? receptions;
+  num? avgYards;
+  num? yards;
+  num? touchdowns;
+  num? yardsAfterCatch;
+  num? longest;
+  num? longestTouchdown;
+  num? redzoneTargets;
+  num? airYards;
+  num? brokenTackles;
+  num? droppedPasses;
+  num? catchablePasses;
+  num? yardsAfterContact;
+
+  Receiving(
+      {this.targets,
+        this.receptions,
+        this.avgYards,
+        this.yards,
+        this.touchdowns,
+        this.yardsAfterCatch,
+        this.longest,
+        this.longestTouchdown,
+        this.redzoneTargets,
+        this.airYards,
+        this.brokenTackles,
+        this.droppedPasses,
+        this.catchablePasses,
+        this.yardsAfterContact});
+
+  Receiving.fromJson(Map<String, dynamic> json) {
+    targets = json['targets'];
+    receptions = json['receptions'];
+    avgYards = json['avg_yards'];
+    yards = json['yards'];
+    touchdowns = json['touchdowns'];
+    yardsAfterCatch = json['yards_after_catch'];
+    longest = json['longest'];
+    longestTouchdown = json['longest_touchdown'];
+    redzoneTargets = json['redzone_targets'];
+    airYards = json['air_yards'];
+    brokenTackles = json['broken_tackles'];
+    droppedPasses = json['dropped_passes'];
+    catchablePasses = json['catchable_passes'];
+    yardsAfterContact = json['yards_after_contact'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['targets'] = targets;
+    data['receptions'] = receptions;
+    data['avg_yards'] = avgYards;
+    data['yards'] = yards;
+    data['touchdowns'] = touchdowns;
+    data['yards_after_catch'] = yardsAfterCatch;
+    data['longest'] = longest;
+    data['longest_touchdown'] = longestTouchdown;
+    data['redzone_targets'] = redzoneTargets;
+    data['air_yards'] = airYards;
+    data['broken_tackles'] = brokenTackles;
+    data['dropped_passes'] = droppedPasses;
+    data['catchable_passes'] = catchablePasses;
+    data['yards_after_contact'] = yardsAfterContact;
+    return data;
+  }
+}
+class Rushing {
+  num? avgYards;
+  num? attempts;
+  num? touchdowns;
+  num? tlost;
+  num? tlostYards;
+  num? yards;
+  num? longest;
+  num? longestTouchdown;
+  num? redzoneAttempts;
+  num? brokenTackles;
+  num? kneelDowns;
+  num? scrambles;
+  num? yardsAfterContact;
+
+  Rushing(
+      {this.avgYards,
+        this.attempts,
+        this.touchdowns,
+        this.tlost,
+        this.tlostYards,
+        this.yards,
+        this.longest,
+        this.longestTouchdown,
+        this.redzoneAttempts,
+        this.brokenTackles,
+        this.kneelDowns,
+        this.scrambles,
+        this.yardsAfterContact});
+
+  Rushing.fromJson(Map<String, dynamic> json) {
+    avgYards = json['avg_yards'];
+    attempts = json['attempts'];
+    touchdowns = json['touchdowns'];
+    tlost = json['tlost'];
+    tlostYards = json['tlost_yards'];
+    yards = json['yards'];
+    longest = json['longest'];
+    longestTouchdown = json['longest_touchdown'];
+    redzoneAttempts = json['redzone_attempts'];
+    brokenTackles = json['broken_tackles'];
+    kneelDowns = json['kneel_downs'];
+    scrambles = json['scrambles'];
+    yardsAfterContact = json['yards_after_contact'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['avg_yards'] = avgYards;
+    data['attempts'] = attempts;
+    data['touchdowns'] = touchdowns;
+    data['tlost'] = tlost;
+    data['tlost_yards'] = tlostYards;
+    data['yards'] = yards;
+    data['longest'] = longest;
+    data['longest_touchdown'] = longestTouchdown;
+    data['redzone_attempts'] = redzoneAttempts;
+    data['broken_tackles'] = brokenTackles;
+    data['kneel_downs'] = kneelDowns;
+    data['scrambles'] = scrambles;
+    data['yards_after_contact'] = yardsAfterContact;
+    return data;
+  }
+}
+class Fumbles {
+  num? fumbles;
+  num? lostFumbles;
+  num? ownRec;
+  num? ownRecYards;
+  num? oppRec;
+  num? oppRecYards;
+  num? outOfBounds;
+  num? forcedFumbles;
+  num? ownRecTds;
+  num? oppRecTds;
+  num? ezRecTds;
+
+  Fumbles(
+      {this.fumbles,
+        this.lostFumbles,
+        this.ownRec,
+        this.ownRecYards,
+        this.oppRec,
+        this.oppRecYards,
+        this.outOfBounds,
+        this.forcedFumbles,
+        this.ownRecTds,
+        this.oppRecTds,
+        this.ezRecTds});
+
+  Fumbles.fromJson(Map<String, dynamic> json) {
+    fumbles = json['fumbles'];
+    lostFumbles = json['lost_fumbles'];
+    ownRec = json['own_rec'];
+    ownRecYards = json['own_rec_yards'];
+    oppRec = json['opp_rec'];
+    oppRecYards = json['opp_rec_yards'];
+    outOfBounds = json['out_of_bounds'];
+    forcedFumbles = json['forced_fumbles'];
+    ownRecTds = json['own_rec_tds'];
+    oppRecTds = json['opp_rec_tds'];
+    ezRecTds = json['ez_rec_tds'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['fumbles'] = fumbles;
+    data['lost_fumbles'] = lostFumbles;
+    data['own_rec'] = ownRec;
+    data['own_rec_yards'] = ownRecYards;
+    data['opp_rec'] = oppRec;
+    data['opp_rec_yards'] = oppRecYards;
+    data['out_of_bounds'] = outOfBounds;
+    data['forced_fumbles'] = forcedFumbles;
+    data['own_rec_tds'] = ownRecTds;
+    data['opp_rec_tds'] = oppRecTds;
+    data['ez_rec_tds'] = ezRecTds;
     return data;
   }
 }
