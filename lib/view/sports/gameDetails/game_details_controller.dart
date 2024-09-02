@@ -1532,20 +1532,22 @@ class GameDetailsController extends GetxController {
           gameDetails.nflAwayRunningBackPlayer.clear();
           if (response.players != null) {
             for (int i = 0; i < (response.players!.length); i++) {
-              if (response.players?[i].position == 'RB' &&
-                  response.players?[i].draft?.team?.id == awayTeamId) {
+              if (response.players?[i].position == 'RB'
+              ) {
                 gameDetails.nflAwayRunningBackPlayer.add(response.players![i]);
               }
-              if (response.players?[i].position == 'WR' &&
-                  response.players?[i].draft?.team?.id == awayTeamId ||
-                  response.players?[i].position == 'TE' &&
-                      response.players?[i].draft?.team?.id == awayTeamId) {
+              if ((response.players?[i].position == 'WR' ||
+                  response.players?[i].position == 'TE') ) {
                 gameDetails.nflAwayReceiversPlayer.add(response.players![i]);
               }
             }
           } else {
             isLoading.value = false;
           }
+          gameDetails.nflAwayRunningBackPlayer.sort((a, b) =>
+              (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
+          gameDetails.nflAwayReceiversPlayer.sort((a, b) =>
+              (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
         } else {
           isLoading.value = false;
         }
@@ -1576,20 +1578,21 @@ class GameDetailsController extends GetxController {
           gameDetails.nflHomeRunningBackPlayer.clear();
           if (response.players != null) {
             for (int i = 0; i < (response.players!.length); i++) {
-              if (response.players?[i].position == 'RB' &&
-                  response.players?[i].draft?.team?.id == homeTeamId) {
+              if (response.players?[i].position == 'RB' ) {
                 gameDetails.nflHomeRunningBackPlayer.add(response.players![i]);
               }
-              if (response.players?[i].position == 'WR' &&
-                  response.players?[i].draft?.team?.id == homeTeamId ||
-                  response.players?[i].position == 'TE' &&
-                      response.players?[i].draft?.team?.id == homeTeamId) {
+              if ((response.players?[i].position == 'WR' ||
+                  response.players?[i].position == 'TE') ) {
                 gameDetails.nflHomeReceiversPlayer.add(response.players![i]);
               }
             }
           } else {
             isLoading.value = false;
           }
+          gameDetails.nflHomeRunningBackPlayer.sort((a, b) =>
+              (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
+          gameDetails.nflHomeReceiversPlayer.sort((a, b) =>
+              (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
         } else {
           isLoading.value = false;
         }
