@@ -216,6 +216,7 @@ class GameDetailsController extends GetxController {
     'IG',
   ];
 
+
   bool _isTeamReportTab = true;
 
   bool get isTeamReportTab => _isTeamReportTab;
@@ -1626,6 +1627,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+
   String hotlinesOdd = '';
   String hotlinesDecimal = '';
   String hotlinesDec = '';
@@ -2281,6 +2283,16 @@ class GameDetailsController extends GetxController {
     }
     update();
   }
+
+///HOTLINES DATA
+// List<HotlinesModel> _hotlinesFData = [];
+//
+// List<HotlinesModel> get hotlinesFData => _hotlinesFData;
+//
+// set hotlinesFData(List<HotlinesModel> value) {
+//   _hotlinesFData = value;
+//   update();
+// }
 }
 
 class StartingQBModel {

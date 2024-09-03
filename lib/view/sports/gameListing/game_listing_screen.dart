@@ -564,14 +564,9 @@ class SelectGameScreen extends StatelessWidget {
                                   color: Theme.of(context).secondaryHeaderColor,
                                   size: Get.height * .022,
                                   weight: FontWeight.w800),
-                              (/*controller.sportKey == "MLB"
-                                      ? "'2024 season starts March 20th.'"
-                                      :*/
-                                      controller.sportKey == "NFL"
-                                          ? "‘2024 season starts September 5th’"
-                                          : controller.sportKey == "NCAA"
-                                              ? "'2024 season starts August 24th.'"
-                                              : "")
+                              (controller.sportKey == "NCAA"
+                                          ? "'2024 season starts August 24th.'"
+                                          : "")
                                   .appCommonText(
                                       color: Theme.of(context)
                                           .secondaryHeaderColor,

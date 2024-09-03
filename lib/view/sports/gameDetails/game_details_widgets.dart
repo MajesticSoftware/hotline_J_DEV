@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/utils/extension.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/subscription/subscription_controller.dart';
+import 'package:hotlines/view/widgets/sportsbooks_buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -1102,57 +1103,62 @@ Future<dynamic> showDialogForRank(BuildContext context,
 
     builder: (context) {
       return AlertDialog(
-
         titlePadding: EdgeInsets.all(10.h),
-        content: Text.rich(
-          textAlign: TextAlign.center,
-          TextSpan(
-            children: [
-              TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
-                color: Colors.black, fontWeight: FontWeight.w700,
-              )),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text.rich(
+              textAlign: TextAlign.center,
               TextSpan(
-                text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
-                    (sportKey == "NCAAB" ? 75 : 22)
-                    ? "(poor)"
-                    : num.parse(awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                    num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                    ? "(mid)"
-                    : "(strong)"} ',
-                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
-                    color: num.parse(awayRank) > (sportKey == "NCAAB" ? 75 : 22)
-                        ? redColor
-                        : num.parse(
-                        awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                        num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                        ? yellowColor
-                        : Colors.green),
-              ),
-
-              TextSpan(text: 'in the league.\n\n $homeText ',
-                  style: GoogleFonts.nunitoSans(
+                children: [
+                  TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
                     color: Colors.black, fontWeight: FontWeight.w700,
                   )),
-              TextSpan(
-                text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
-                    (sportKey == "NCAAB" ? 75 : 22)
-                    ? "(poor)"
-                    : num.parse(homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                    num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                    ? "(mid)"
-                    : "(strong)"}. ',
-                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
-                    color: num.parse(homeRank) > (sportKey == "NCAAB" ? 75 : 22)
-                        ? redColor
-                        : num.parse(
-                        homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                  TextSpan(
+                    text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
+                        (sportKey == "NCAAB" ? 75 : 22)
+                        ? "(poor)"
+                        : num.parse(awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                        num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                        ? "(mid)"
+                        : "(strong)"} ',
+                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                        color: num.parse(awayRank) > (sportKey == "NCAAB" ? 75 : 22)
+                            ? redColor
+                            : num.parse(
+                            awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                            num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                            ? yellowColor
+                            : Colors.green),
+                  ),
+
+                  TextSpan(text: 'in the league.\n\n $homeText ',
+                      style: GoogleFonts.nunitoSans(
+                        color: Colors.black, fontWeight: FontWeight.w700,
+                      )),
+                  TextSpan(
+                    text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
+                        (sportKey == "NCAAB" ? 75 : 22)
+                        ? "(poor)"
+                        : num.parse(homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
                         num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                        ? yellowColor
-                        : Colors.green),
+                        ? "(mid)"
+                        : "(strong)"}. ',
+                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                        color: num.parse(homeRank) > (sportKey == "NCAAB" ? 75 : 22)
+                            ? redColor
+                            : num.parse(
+                            homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                            num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                            ? yellowColor
+                            : Colors.green),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ).paddingAll(20.h),
+            ).paddingAll(20.h),
+            SportsBooksButtons()
+          ]
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(
@@ -1163,8 +1169,7 @@ Future<dynamic> showDialogForRank(BuildContext context,
         shadowColor: Theme
             .of(context)
             .secondaryHeaderColor,
-        contentPadding: EdgeInsets.all(20.h),
-
+        contentPadding: const EdgeInsets.all(0.0),
       );
     },
   );

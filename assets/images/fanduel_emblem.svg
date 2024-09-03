@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="981.06805"
+   width="986.35742"
+   viewBox="0 -2.82 785.53505 783.05074"
+   version="1.1"
+   id="svg853"
+   sodipodi:docname="fanduel_emblem.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)">
+  <metadata
+     id="metadata859">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs857" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     id="namedview855"
+     showgrid="false"
+     inkscape:zoom="0.34740464"
+     inkscape:cx="493.96784"
+     inkscape:cy="898.10035"
+     inkscape:window-x="827"
+     inkscape:window-y="1431"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g851" />
+  <g
+     fill="#0078ff"
+     id="g851"
+     transform="translate(-598.78186,-2.8242532)">
+    <path
+       d="m 765.86,300.77 c 52.31,-24.21 107.44,-39.05 161.51,-45.41 5.83,-0.88 8.31,3.18 7.6,7.95 -6.89,41.53 -11.49,83.76 -13.25,126.35 -0.35,4.77 -3,8.13 -8.48,9.01 -30.04,5.83 -59.37,15.2 -91.71,29.86 29.16,50.54 64.15,96.66 103.02,135.54 4.42,4.59 7.07,9.54 8.31,17.32 10.07,64.85 27.74,130.24 51.07,192.26 1.41,3.36 1.41,5.83 -0.53,7.95 -2.3,1.94 -5.65,1.94 -8.84,0 C 740.24,638.99 598.87,383.12 596.58,114.69 c 0,-6.54 2.3,-11.31 7.6,-14.31 124.4,-69.62 264.35,-103.2 404.84,-100.19 6.18,0.18 8.48,5.65 6.01,10.78 -19.44,40.11 -35.52,81.11 -48.24,122.11 -1.41,4.77 -4.42,7.25 -9.72,7.42 -75.1,3.89 -148.26,20.85 -215.23,48.6 4.77,38.17 13.08,75.46 24.03,111.5 v 0.18 z"
+       id="path847"
+       style="fill:#25431e;fill-opacity:0.972549" />
+    <path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-feature-settings:normal;font-variation-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;shape-margin:0;inline-size:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#25431e;fill-opacity:0.972549;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+       d="m 1025.28,141.02 c -4.59,-0.35 -7.95,-4.59 -6.54,-9.37 14.67,-42.76 31.63,-83.23 50.89,-120.69 2.3,-4.42 6.01,-6.18 11.31,-5.65 105.85,11.84 206.04,45.24 295.28,95.07 5.48,3 7.95,7.95 7.6,14.31 -1.77,254.11 -129,497.26 -343.35,644.29 -4.06,2.83 -9.37,1.24 -11.13,-3.36 -15.55,-41.88 -28.27,-84.29 -37.29,-125.29 -1.24,-5.48 0,-9.72 4.24,-12.9 129.71,-102.14 220.54,-254.64 242.27,-428.17 -66.09,-27.21 -137.48,-44.18 -213.47,-48.24 h 0.18 z"
+       id="path849" />
+  </g>
+</svg>

@@ -379,7 +379,7 @@ class GameListingController extends GetxController {
   List<SportEvents> get searchList => _searchList;
 
   set searchList(List<SportEvents> value) {
-    _searchList = value;
+    _searchList = value.toSet().toList();
     update();
   }
 
@@ -392,32 +392,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-/*  bool _isBack = false;
 
-  bool get isBack => _isBack;
-
-  setIsBack(bool value) {
-    _isBack = value;
-    update();
-  }
-
-  bool _isBackNFL = false;
-
-  bool get isBackNFL => _isBackNFL;
-
-  setIsBackNFL(bool value) {
-    _isBackNFL = value;
-    update();
-  }
-
-  bool _isBackNCAA = false;
-
-  bool get isBackNCAA => _isBackNCAA;
-
-  setIsBackNCAA(bool value) {
-    _isBackNCAA = value;
-    update();
-  }*/
 
   bool _isCallApi = false;
 
@@ -467,6 +442,7 @@ class GameListingController extends GetxController {
   }
 
   searchData(String text, String sportKey) {
+    searchList= [];
     searchList.clear();
     if (text.isNotEmpty) {
       for (var element in (getSportEventList(sportKey))) {
@@ -492,14 +468,6 @@ class GameListingController extends GetxController {
     update();
   }
 
-  /* List<SportEvents> get sportEventList => sportEventList
-      .where((id) => (getShovlerJobListByIndex(selectedTab) == "ALL"
-          ? true
-          : (status.status == getShovlerJobListByIndex(selectedTab) ||
-              (selectedTab == 2 &&
-                  status.isArrive &&
-                  status.status == 'ACTIVE'))))
-      .toList();*/
 
   List<SportEvents> _nflTodayEventsList = [];
 
@@ -829,62 +797,6 @@ class GameListingController extends GetxController {
                     : ncaaSportEventsList;
   }
 
-  /*Future gameListingTomorrowApiRes(
-      {String sportId = '',
-      String date = "",
-      String sportKey = "",
-      bool isLoad = false,
-      String key = ''}) async {
-    // isLoading.value = !isLoad ? false : true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo()
-        .gameListingRepo(key: key, date: date, spotId: sportId);
-    try {
-      // getTomorrowList(sportKey).clear();
-      if (result.status) {
-        GameListingDataModel response =
-            GameListingDataModel.fromJson(result.data);
-        final sportEvents = response.sportEvents;
-        if (sportEvents != null) {
-          for (var event in sportEvents) {
-            if (event.season?.id == 'sr:season:100127' &&
-                sportKey == 'MLB' &&
-                DateTime.parse(event.scheduled ?? '').toLocal().day !=
-                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
-              mlbTomorrowEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey == 'NFL') {
-              nflTomorrowEventsList.add(event);
-            } else if ((event.season?.id == 'sr:season:101983' ||
-                    (event.season?.id == 'sr:season:101811')) &&
-                sportKey == 'NCAA') {
-              ncaaTomorrowEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:104319' &&
-                sportKey == 'NCAAB') {
-              ncaabTomorrowEventsList.add(event);
-            } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == 'NBA') {
-              nbaTomorrowEventsList.add(event);
-            }
-          }
-        }
-        getTomorrowList(sportKey).sort((a, b) =>
-            DateTime.parse(a.scheduled ?? "")
-                .compareTo(DateTime.parse(b.scheduled ?? "")));
-      } else {
-        isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
-      }
-    } catch (e) {
-      // isLoading.value = false;
-      log('ERROR TOMORROW GAME LISTING-----$e');
-      showAppSnackBar(errorText);
-    }
-    update();
-  }*/
 
   ///GET ALL EVENT BY HOME AWAY FILTER
   getAllEventList(String sportKey, bool isLoad) {
