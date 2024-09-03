@@ -40,6 +40,6 @@ class AppTheme {
       disabledColor: whiteColor,
       canvasColor: darkBackGroundColor,
       highlightColor: whiteColor,
-      hoverColor: darkBackGroundColor,
+      hoverColor: exdarkBackGroundColor,
       dividerColor: whiteColor,);
 }
