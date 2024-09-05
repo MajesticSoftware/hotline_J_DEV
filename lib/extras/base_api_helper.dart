@@ -4,9 +4,12 @@ import 'dart:developer';
 import 'dart:io';
 
 // ignore: depend_on_referenced_packages
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../constant/shred_preference.dart';
 import '../model/response_item.dart';
 import '../utils/utils.dart';
+import '../view/auth/log_in_module/log_in_screen.dart';
 import 'extras.dart';
 
 class BaseApiHelper {
@@ -113,8 +116,8 @@ class BaseApiHelper {
       } else {
         printData(tittle: "logout", val: responseData.forceLogout);
         if (responseData.forceLogout!) {
-          // PreferenceManager.clearData();
-          // Get.offAll(const LogInScreen());
+          PreferenceManager.clearData();
+          Get.offAll(LogInScreen());
         }
       }
     } else {

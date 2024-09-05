@@ -58,7 +58,7 @@ List<LeagueModel> sportsLeagueList = [
   LeagueModel(
       gameImage: Assets.imagesNfl,
       gameName: 'NFL',
-      date: '2024-09-06',
+      date: formatted,
       key: 'NFL',
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       sportId: 'sr:sport:16',

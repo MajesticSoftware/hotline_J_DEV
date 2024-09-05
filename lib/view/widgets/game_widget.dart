@@ -499,14 +499,14 @@ Future<dynamic> subscriptionDialog(BuildContext context,
             contentPadding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             backgroundColor: Theme.of(context).secondaryHeaderColor,
-            title: 'Hotlines Analytics'.appCommonText(
+            title: hotlinesAnalytics.appCommonText(
                 decorationColor: yellowColor,
                 color: yellowColor,
                 size: Get.height * .03,
                 decoration: TextDecoration.underline,
                 weight: FontWeight.bold),
             children: [
-              'March Madness Special! 30 Day Free Trial now available for our next level analytics that help you easily identify the biggest mismatches in every game!'
+              subscriptionDescText
                   .appCommonText(
                       color: whiteColor,
                       size: Get.height * .021,
@@ -521,7 +521,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                   textAlign: TextAlign.center,
                   text: TextSpan(
                       text:
-                          'After the 30 days this subscription will automatically renew for \$3.99/mo. You can cancel at any time. By upgrading you agree to Hotlines ',
+                      subSubTitleText,
                       style: GoogleFonts.nunitoSans(
                         color: whiteColor,
                         fontWeight: FontWeight.bold,
@@ -529,7 +529,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                       ),
                       children: [
                         linkTextWidget(context,
-                            text: 'TOS',
+                            text: TOS,
                             color: yellowColor,
                             link: 'https://www.hotlinesmd.com/terms-of-service'),
                         TextSpan(
@@ -541,7 +541,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                           ),
                         ),
                         linkTextWidget(context,
-                            text: 'EULA',
+                            text: EULA,
                             color: yellowColor,
                             link: 'https://www.hotlinesmd.com/eula'),
                         TextSpan(
@@ -553,7 +553,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                           ),
                         ),
                         linkTextWidget(context,
-                            text: 'Privacy Policy.',
+                            text: privacyPolicy,
                             color: yellowColor,
                             link: 'https://www.hotlinesmd.com/privacy-policy'),
                       ])),
@@ -562,8 +562,8 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                 visible: showButton,
                 child: CommonAppButton(
                   title: price == "0"
-                      ? "Start Free Trial"
-                      : "Upgrade for ${(price ?? "\$3.99")}/mo",
+                      ? startFreeTrial
+                      : "$upgradeFor${(price ?? "\$3.99")}/mo",
                   textColor: blackColor,
                   onTap: () => onTap(),
                 ).paddingSymmetric(horizontal: 40.h),
@@ -575,7 +575,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
                   highlightColor: Colors.transparent,
                   splashFactory: NoSplash.splashFactory,
                   onTap: () => restoreOnTap(),
-                  child: "Restore".appCommonText(
+                  child: restore.appCommonText(
                       color: yellowColor,
                       size: Get.height * .022,
                       decoration: TextDecoration.underline,

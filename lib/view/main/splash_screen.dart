@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../constant/app_strings.dart';
 import '../../constant/shred_preference.dart';
 import '../../extras/constants.dart';
 import '../../generated/assets.dart';
@@ -32,15 +33,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 2), () {
       checkReleaseVersion().then((value) {
         Get.to(
-            () => (PreferenceManager.getSkipLogin() ??
-                    false) ||
-                        /* ? (PreferenceManager.getIsFirstLoaded() == null ||
+            () => (PreferenceManager.getSkipLogin() ?? false) ||
+                    /* ? (PreferenceManager.getIsFirstLoaded() == null ||
                         !PreferenceManager.getIsFirstLoaded())
                     ? const AppStartScreen()
                     : SelectGameScreen()
                 : */
-                        (PreferenceManager.getIsLogin() ??
-                    false)
+                    (PreferenceManager.getIsLogin() ?? false)
                 ? SelectGameScreen()
                 : LogInScreen(),
             duration: const Duration(milliseconds: 900));
@@ -117,9 +116,8 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           buttonText: '',
           isUpdateApp: true,
-          title: 'New Version',
-          subtitle:
-              'There is a new version of the app available. please go to the app store to update',
+          title: newVersion,
+          subtitle: updateVersionText,
           onTap: () {
             if (Platform.isAndroid || Platform.isIOS) {
               final appId =

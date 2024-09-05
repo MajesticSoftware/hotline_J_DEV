@@ -68,7 +68,7 @@ class LogInController extends GetxController {
         }
       } catch (e) {
         isLoading.value = false;
-        showAppSnackBar(errorText);
+        showAppSnackBar(e.toString());
       }
       isLoading.value = false;
       update();

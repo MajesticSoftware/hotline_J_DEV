@@ -53,8 +53,6 @@ class SubscriptionRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-
-
   static Future<ResponseItem> getReceiptStatus() async {
     ResponseItem result;
     bool status = true;
@@ -69,7 +67,9 @@ class SubscriptionRepo {
     message = result.message;
 
     return ResponseItem(data: data, message: message, status: status);
-  }static Future<ResponseItem> getReleaseVersion() async {
+  }
+
+  static Future<ResponseItem> getReleaseVersion() async {
     ResponseItem result;
     bool status = true;
     dynamic data;

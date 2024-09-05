@@ -155,8 +155,11 @@ class GameListingController extends GetxController {
           PreferenceManager().saveSubscription(subscriptionModel);
           update();
         }
+      } else {
+        showAppSnackBar(result.message);
       }
     } catch (e) {
+      showAppSnackBar(e.toString());
       debugPrint(e.toString());
     }
     // isLoading.value = false;
@@ -183,13 +186,13 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String apiKey = dotenv.env['ODDS_COMPARISON_REGULAR_API']??"";
+  String apiKey = dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "";
   String
       date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
       ? "2024-09-06"
-      : DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().subtract(const Duration(days: 1)))*/
-      "2024-09-06";
+      :*/
+      DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().subtract(const Duration(days: 1)));
 
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
@@ -392,8 +395,6 @@ class GameListingController extends GetxController {
     update();
   }
 
-
-
   bool _isCallApi = false;
 
   bool get isCallApi => _isCallApi;
@@ -442,7 +443,7 @@ class GameListingController extends GetxController {
   }
 
   searchData(String text, String sportKey) {
-    searchList= [];
+    searchList = [];
     searchList.clear();
     if (text.isNotEmpty) {
       for (var element in (getSportEventList(sportKey))) {
@@ -467,7 +468,6 @@ class GameListingController extends GetxController {
     }
     update();
   }
-
 
   List<SportEvents> _nflTodayEventsList = [];
 
@@ -759,14 +759,14 @@ class GameListingController extends GetxController {
 
   List<SportEvents> getTodayList(sportKey) {
     return (sportKey == 'NFL'
-            ? nflTodayEventsList
+            ? nflTodayEventsList.toSet()
             : sportKey == 'MLB'
-                ? mlbTodayEventsList
+                ? mlbTodayEventsList.toSet()
                 : sportKey == 'NBA'
-                    ? nbaTodayEventsList
+                    ? nbaTodayEventsList.toSet()
                     : sportKey == 'NCAAB'
-                        ? ncaabTodayEventsList
-                        : ncaaTodayEventsList)
+                        ? ncaabTodayEventsList.toSet()
+                        : ncaaTodayEventsList.toSet())
         .toSet()
         .toList();
   }
@@ -775,12 +775,12 @@ class GameListingController extends GetxController {
     return (sportKey == 'NFL'
             ? nflTomorrowEventsList.toSet()
             : sportKey == 'MLB'
-                ? mlbTomorrowEventsList
+                ? mlbTomorrowEventsList.toSet()
                 : sportKey == 'NBA'
-                    ? nbaTomorrowEventsList
+                    ? nbaTomorrowEventsList.toSet()
                     : sportKey == 'NCAAB'
-                        ? ncaabTomorrowEventsList
-                        : ncaaTomorrowEventsList)
+                        ? ncaabTomorrowEventsList.toSet()
+                        : ncaaTomorrowEventsList.toSet())
         .toSet()
         .toList();
   }
@@ -796,7 +796,6 @@ class GameListingController extends GetxController {
                     ? nbaSportEventsList
                     : ncaaSportEventsList;
   }
-
 
   ///GET ALL EVENT BY HOME AWAY FILTER
   getAllEventList(String sportKey, bool isLoad) {
