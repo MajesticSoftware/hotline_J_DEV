@@ -416,7 +416,7 @@ class GameDetailsController extends GetxController {
       // isLoading.value = false;
       log('ERROR PROFILE HOME RES------------$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -615,7 +615,7 @@ class GameDetailsController extends GetxController {
       // isLoading.value = false;
       log('ERROR PROFILE AWAY RES----$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -926,7 +926,7 @@ class GameDetailsController extends GetxController {
       // isLoading.value = false;
       log('ERROR AWAY STATIC RES -------$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -1046,7 +1046,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERROR NFL HOME STATICS-----------$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -1511,7 +1511,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERROR NFL AWAY STATICS------$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -1557,7 +1557,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERROR NFL AWAY FULL ROSTER-----$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -1602,7 +1602,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERROR NFL HOME FULL ROSTER------$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();
@@ -2066,7 +2066,7 @@ class GameDetailsController extends GetxController {
       isLoading.value = false;
       log('ERROR MLB INJURIES-----$e');
       showAppSnackBar(
-        errorText,
+        e.toString(),
       );
     }
     update();

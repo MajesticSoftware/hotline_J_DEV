@@ -13,7 +13,6 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../constant/app_strings.dart';
 import '../../../model/response_item.dart';
 import '../../../network/auth_repo.dart';
-import '../../main/app_starting_screen.dart';
 import '../../sports/gameListing/game_listing_screen.dart';
 
 class LogInController extends GetxController {
@@ -156,13 +155,13 @@ class LogInController extends GetxController {
         }
       } catch (e) {
         isLoading.value = false;
-        showAppSnackBar(errorText);
+        showAppSnackBar(e.toString());
       }
       isLoading.value = false;
       update();
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
   }
 
@@ -199,7 +198,7 @@ class LogInController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     isLoading.value = false;
     update();

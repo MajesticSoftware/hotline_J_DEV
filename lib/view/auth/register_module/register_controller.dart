@@ -102,7 +102,7 @@ class RegisterCon extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }

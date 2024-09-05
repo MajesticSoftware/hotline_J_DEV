@@ -46,7 +46,8 @@ class ForgotPassController extends GetxController {
           showAppSnackBar(result.message);
         }
       } catch (e) {
-        showAppSnackBar(errorText);
+        isLoading.value = false;
+        showAppSnackBar(e.toString());
       }
 
       update();
@@ -71,10 +72,11 @@ class ForgotPassController extends GetxController {
         showAppSnackBar(result.message);
       }
     } catch (e) {
-      showAppSnackBar(errorText);
+      isLoading.value = false;
+      showAppSnackBar(e.toString());
 
-      update();
     }
+    update();
   }
 
   void resetPassResponse(BuildContext context) async {
@@ -112,7 +114,7 @@ class ForgotPassController extends GetxController {
         }
       } catch (e) {
         isLoading.value = false;
-        showAppSnackBar(errorText);
+        showAppSnackBar(e.toString());
       }
 
       update();

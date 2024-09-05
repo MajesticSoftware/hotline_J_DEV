@@ -285,7 +285,7 @@ class SubscriptionController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(result.message);
+      showAppSnackBar(e.toString());
     }
     isLoading.value = false;
     update();
@@ -312,7 +312,7 @@ class SubscriptionController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
       update();
     }
     isLoading.value = false;

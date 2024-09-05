@@ -282,7 +282,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }
@@ -316,7 +316,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }
@@ -586,7 +586,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       log('ERROR__------$e');
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     return [];
   }
@@ -1764,7 +1764,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       log('ERROR NFL GAME RANK-----$e');
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }
@@ -1841,7 +1841,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       log('ERROR NFL GAME RANK-----$e');
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }
@@ -2000,7 +2000,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       log('ERROR NFL GAME RANK-----$e');
-      showAppSnackBar(errorText);
+      showAppSnackBar(e.toString());
     }
     update();
   }
