@@ -1475,7 +1475,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
         isPagination = isLoad;
         nflTomorrowEventsList = [];
-        for (int i = 2; i <= 4; i++) {
+        for (int i = 2; i <= 6; i++) {
           gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
@@ -1487,7 +1487,7 @@ class GameListingController extends GetxController {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-            if (i == 4) {
+            if (i == 6) {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
@@ -1578,7 +1578,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
         isPagination = isLoad;
         nflTomorrowEventsList = [];
-        for (int i = 2; i <= 4; i++) {
+        for (int i = 2; i <= 6; i++) {
           gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
@@ -1590,7 +1590,7 @@ class GameListingController extends GetxController {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
             getNFLQBSRank(isLoad: isLoad, sportKey: sportKey);
-            if (i == 4) {
+            if (i == 6) {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
