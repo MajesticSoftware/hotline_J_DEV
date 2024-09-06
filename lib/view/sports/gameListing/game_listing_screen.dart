@@ -565,8 +565,8 @@ class SelectGameScreen extends StatelessWidget {
                                   size: Get.height * .022,
                                   weight: FontWeight.w800),
                               (controller.sportKey == "NCAA"
-                                          ? "'2024 season starts August 24th.'"
-                                          : "")
+                                      ? "'2024 season starts August 24th.'"
+                                      : "")
                                   .appCommonText(
                                       color: Theme.of(context)
                                           .secondaryHeaderColor,
@@ -603,6 +603,11 @@ class SelectGameScreen extends StatelessWidget {
                                               '')
                                           .toLocal());
                                   String dateTime = DateFormat.jm().format(
+                                      DateTime.parse(spotList(controller)[index]
+                                                  .scheduled ??
+                                              '')
+                                          .toLocal());
+                                  String time = DateFormat('hh:mm').format(
                                       DateTime.parse(spotList(controller)[index]
                                                   .scheduled ??
                                               '')
@@ -704,7 +709,7 @@ class SelectGameScreen extends StatelessWidget {
                                                                       .sportKey ==
                                                                   "NBA")
                                                           ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                                                          : '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].outs}'
+                                                          : '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, $time'
                                                       : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
                                                       spotList(
@@ -820,6 +825,10 @@ class SelectGameScreen extends StatelessWidget {
                                       DateTime.parse(
                                               competitors.scheduled ?? '')
                                           .toLocal());
+                                  String time = DateFormat('hh:mm').format(
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
+                                          .toLocal());
                                   return Visibility(
                                     visible: (competitors.status != 'closed') ||
                                         (competitors.status != 'postponed'),
@@ -865,7 +874,7 @@ class SelectGameScreen extends StatelessWidget {
                                           ? (controller.sportKey == "NCAAB" ||
                                                   controller.sportKey == "NBA")
                                               ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
-                                              : '${competitors.inningHalf}${competitors.inning}, ${competitors.outs}'
+                                              : '${competitors.inningHalf}${competitors.inning}, $time'
                                           : '$date, $dateTime',
                                       awayTeamImageUrl: awayLogo(
                                           competitors, controller, index),

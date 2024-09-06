@@ -511,6 +511,11 @@ Padding wrPlayersWidget(BuildContext context,
               .of(context)
               .canvasColor),
       child: GetBuilder<GameDetailsController>(builder: (controller) {
+        gameDetails.nflAwayReceiversPlayer.sort((a, b) =>
+            (b.receiving?.yards ?? 0).compareTo(a.receiving?.yards ?? 0));
+        gameDetails.nflHomeReceiversPlayer.sort((a, b) =>
+            (b.receiving?.yards ?? 0).compareTo(a.receiving?.yards ?? 0));
+
         return StickyHeader(
             header:
             customTabBar1(context, con, gameDetails, awayTeam, homeTeam),
@@ -1105,59 +1110,65 @@ Future<dynamic> showDialogForRank(BuildContext context,
       return AlertDialog(
         titlePadding: EdgeInsets.all(10.h),
         content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text.rich(
-              textAlign: TextAlign.center,
-              TextSpan(
-                children: [
-                  TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
-                    color: Colors.black, fontWeight: FontWeight.w700,
-                  )),
-                  TextSpan(
-                    text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
-                        (sportKey == "NCAAB" ? 75 : 22)
-                        ? "(poor)"
-                        : num.parse(awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                        num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                        ? "(mid)"
-                        : "(strong)"} ',
-                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
-                        color: num.parse(awayRank) > (sportKey == "NCAAB" ? 75 : 22)
-                            ? redColor
-                            : num.parse(
-                            awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                            num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                            ? yellowColor
-                            : Colors.green),
-                  ),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text.rich(
+                textAlign: TextAlign.center,
+                TextSpan(
+                  children: [
+                    TextSpan(text: '$awayText ', style: GoogleFonts.nunitoSans(
+                      color: Colors.black, fontWeight: FontWeight.w700,
+                    )),
+                    TextSpan(
+                      text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
+                          (sportKey == "NCAAB" ? 75 : 22)
+                          ? "(poor)"
+                          : num.parse(awayRank) >
+                          (sportKey == "NCAAB" ? 50 : 11) &&
+                          num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                          ? "(mid)"
+                          : "(strong)"} ',
+                      style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                          color: num.parse(awayRank) >
+                              (sportKey == "NCAAB" ? 75 : 22)
+                              ? redColor
+                              : num.parse(
+                              awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                              num.parse(awayRank) <=
+                                  (sportKey == "NCAAB" ? 75 : 22)
+                              ? yellowColor
+                              : Colors.green),
+                    ),
 
-                  TextSpan(text: 'in the league.\n\n $homeText ',
-                      style: GoogleFonts.nunitoSans(
-                        color: Colors.black, fontWeight: FontWeight.w700,
-                      )),
-                  TextSpan(
-                    text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
-                        (sportKey == "NCAAB" ? 75 : 22)
-                        ? "(poor)"
-                        : num.parse(homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                        num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                        ? "(mid)"
-                        : "(strong)"}. ',
-                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
-                        color: num.parse(homeRank) > (sportKey == "NCAAB" ? 75 : 22)
-                            ? redColor
-                            : num.parse(
-                            homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
-                            num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
-                            ? yellowColor
-                            : Colors.green),
-                  ),
-                ],
-              ),
-            ).paddingAll(20.h),
-            SportsBooksButtons()
-          ]
+                    TextSpan(text: 'in the league.\n\n $homeText ',
+                        style: GoogleFonts.nunitoSans(
+                          color: Colors.black, fontWeight: FontWeight.w700,
+                        )),
+                    TextSpan(
+                      text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
+                          (sportKey == "NCAAB" ? 75 : 22)
+                          ? "(poor)"
+                          : num.parse(homeRank) >
+                          (sportKey == "NCAAB" ? 50 : 11) &&
+                          num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                          ? "(mid)"
+                          : "(strong)"}. ',
+                      style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                          color: num.parse(homeRank) >
+                              (sportKey == "NCAAB" ? 75 : 22)
+                              ? redColor
+                              : num.parse(
+                              homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                              num.parse(homeRank) <=
+                                  (sportKey == "NCAAB" ? 75 : 22)
+                              ? yellowColor
+                              : Colors.green),
+                    ),
+                  ],
+                ),
+              ).paddingAll(20.h),
+              SportsBooksButtons()
+            ]
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
@@ -2271,6 +2282,10 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
 
 ListView runningBacksCard(GameDetailsController con,
     SportEvents gameDetails,) {
+  gameDetails.nflHomeRunningBackPlayer.sort((a, b) =>
+      (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
+  gameDetails.nflAwayRunningBackPlayer.sort((a, b) =>
+      (b.rushing?.yards ?? 0).compareTo(a.rushing?.yards ?? 0));
   return ListView.separated(
     shrinkWrap: true,
     padding: EdgeInsets.zero,
@@ -2355,15 +2370,15 @@ ListView runningBacksCard(GameDetailsController con,
                           '${gameDetails.nflAwayRunningBackPlayer[i].fumbles
                               ?.fumbles ?? "0"}'),
                       expandableTileCardRunning(context, con,
-                          value1:gameDetails
+                          value1: gameDetails
                               .nflAwayRunningBackPlayer[i]
-                              .rushing!=null? (num.parse(gameDetails
+                              .rushing != null ? (num.parse(gameDetails
                               .nflAwayRunningBackPlayer[i]
                               .rushing
                               ?.avgYards
                               .toString() ??
                               '0')
-                              .toStringAsFixed(2)):"0",
+                              .toStringAsFixed(2)) : "0",
                           title1: 'Average Carry',
                           title2: '',
                           value2: ""),
@@ -2427,13 +2442,13 @@ ListView runningBacksCard(GameDetailsController con,
                     expandableTileCardRunning(context, con,
                         value1: gameDetails
                             .nflHomeRunningBackPlayer[i]
-                            .rushing!=null?(num.parse(gameDetails
+                            .rushing != null ? (num.parse(gameDetails
                             .nflHomeRunningBackPlayer[i]
                             .rushing
                             ?.avgYards
                             .toString() ??
                             '0')
-                            .toStringAsFixed(2)):"0",
+                            .toStringAsFixed(2)) : "0",
                         title1: 'Average Carry',
                         title2: 'Fumbles',
                         value2:

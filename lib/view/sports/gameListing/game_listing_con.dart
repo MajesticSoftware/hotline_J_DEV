@@ -1257,6 +1257,7 @@ class GameListingController extends GetxController {
         }
       }
     }
+    update();
   }
 
   ///GAME LISTING FOR ALL GAME
