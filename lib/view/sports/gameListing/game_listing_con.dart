@@ -631,8 +631,8 @@ class GameListingController extends GetxController {
                 sportKey ==
                     'NFL' /*&&
                 (difference.inHours >= (-6))*/
-                &&
-                (event.status != "closed")) {
+                /*&&
+                (event.status != "closed")*/) {
               if (nflTodayEventsList
                       .indexWhere((element) => element.id == event.id) !=
                   -1) {

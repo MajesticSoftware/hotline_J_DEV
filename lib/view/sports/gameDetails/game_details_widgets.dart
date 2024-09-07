@@ -6090,6 +6090,9 @@ headerWidget(BuildContext context, SportEvents gameDetails,
               .format((DateTime.parse(gameDetails.scheduled ?? '')).toLocal());
           String month = DateFormat.MMM()
               .format((DateTime.parse(gameDetails.scheduled ?? '')).toLocal());
+          String time = DateFormat('hh:mm').format(
+              DateTime.parse(gameDetails.scheduled ?? '')
+                  .toLocal());
           // String year = DateFormat.y().format(
           //     (DateTime.parse(gameDetails.scheduled ?? '')).toLocal());
           String day = DateFormat
