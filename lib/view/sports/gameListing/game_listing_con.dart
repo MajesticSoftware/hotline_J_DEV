@@ -1799,18 +1799,18 @@ class GameListingController extends GetxController {
                 sportData.homePlayerName = element.playerName ?? "";
                 sportData.homePlayerId = element.playerId ?? "";
                 sportData.homeQbRank = [
-                  (element.passingYardOffenseRank ?? 0).toString(),
-                  (element.passingTDSOffenseRank ?? 0).toString(),
-                  (element.rushingYardOffenseRank ?? 0).toString(),
-                  (element.rushingTDsOffenseRank ?? 0).toString(),
-                  (element.interceptionOffenseRank ?? 0).toString(),
+                  (element.passingYardOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.passingTDSOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.rushingYardOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.rushingTDsOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.interceptionOffenseRank ?? 0).toStringAsFixed(1),
                 ];
                 sportData.homeQb = [
-                  (element.passingYardOffense ?? 0).toString(),
-                  (element.passingTDSOffense ?? 0).toString(),
-                  (element.rushingYardOffense ?? 0).toString(),
-                  (element.rushingTDsOffense ?? 0).toString(),
-                  (element.interceptionOffense ?? 0).toString(),
+                  (element.passingYardOffense ?? 0).toStringAsFixed(1),
+                  (element.passingTDSOffense ?? 0).toStringAsFixed(1),
+                  (element.rushingYardOffense ?? 0).toStringAsFixed(1),
+                  (element.rushingTDsOffense ?? 0).toStringAsFixed(1),
+                  (element.interceptionOffense ?? 0).toStringAsFixed(1),
                 ];
               }
               if ((awayTeam?.abbreviation == 'LV'
@@ -1820,18 +1820,18 @@ class GameListingController extends GetxController {
                 sportData.awayPlayerName = element.playerName ?? "";
                 sportData.awayPlayerId = element.playerId ?? "";
                 sportData.awayQbRank = [
-                  (element.passingYardOffenseRank ?? 0).toString(),
-                  (element.passingTDSOffenseRank ?? 0).toString(),
-                  (element.rushingYardOffenseRank ?? 0).toString(),
-                  (element.rushingTDsOffenseRank ?? 0).toString(),
-                  (element.interceptionOffenseRank ?? 0).toString(),
+                  (element.passingYardOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.passingTDSOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.rushingYardOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.rushingTDsOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.interceptionOffenseRank ?? 0).toStringAsFixed(1),
                 ];
                 sportData.awayQb = [
-                  (element.passingYardOffense ?? 0).toString(),
-                  (element.passingTDSOffense ?? 0).toString(),
-                  (element.rushingYardOffense ?? 0).toString(),
-                  (element.rushingTDsOffense ?? 0).toString(),
-                  (element.interceptionOffense ?? 0).toString(),
+                  (element.passingYardOffense ?? 0).toStringAsFixed(1),
+                  (element.passingTDSOffense ?? 0).toStringAsFixed(1),
+                  (element.rushingYardOffense ?? 0).toStringAsFixed(1),
+                  (element.rushingTDsOffense ?? 0).toStringAsFixed(1),
+                  (element.interceptionOffense ?? 0).toStringAsFixed(1),
                 ];
               }
             });

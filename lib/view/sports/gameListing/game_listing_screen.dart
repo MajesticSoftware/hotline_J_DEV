@@ -709,8 +709,17 @@ class SelectGameScreen extends StatelessWidget {
                                                                       .sportKey ==
                                                                   "NBA")
                                                           ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                                                          : '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, $time'
-                                                      : '$date, $dateTime',
+                                                          : spotList(controller)[
+                                                                  index]
+                                                              .currentTime
+                                                              .split(',')
+                                                              .first
+                                                      : spotList(controller)[
+                                                                      index]
+                                                                  .status ==
+                                                              'closed'
+                                                          ? "Completed"
+                                                          : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
                                                       spotList(
                                                           controller)[index],
@@ -875,6 +884,10 @@ class SelectGameScreen extends StatelessWidget {
                                                   controller.sportKey == "NBA")
                                               ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
                                               : '${competitors.inningHalf}${competitors.inning}, $time'
+                                          : competitors
+                                          .status ==
+                                          'closed'
+                                          ? "Completed"
                                           : '$date, $dateTime',
                                       awayTeamImageUrl: awayLogo(
                                           competitors, controller, index),
