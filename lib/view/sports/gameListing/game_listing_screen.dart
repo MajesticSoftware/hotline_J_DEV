@@ -718,7 +718,7 @@ class SelectGameScreen extends StatelessWidget {
                                                                       index]
                                                                   .status ==
                                                               'closed'
-                                                          ? "Completed"
+                                                          ? "Final"
                                                           : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
                                                       spotList(
@@ -887,7 +887,7 @@ class SelectGameScreen extends StatelessWidget {
                                           : competitors
                                           .status ==
                                           'closed'
-                                          ? "Completed"
+                                          ? "Final"
                                           : '$date, $dateTime',
                                       awayTeamImageUrl: awayLogo(
                                           competitors, controller, index),
