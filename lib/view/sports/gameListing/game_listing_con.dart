@@ -156,7 +156,7 @@ class GameListingController extends GetxController {
           update();
         }
       } else {
-        showAppSnackBar(result.message);
+        // showAppSnackBar(result.message);
       }
     } catch (e) {
       showAppSnackBar(e.toString());
@@ -1799,11 +1799,11 @@ class GameListingController extends GetxController {
                 sportData.homePlayerName = element.playerName ?? "";
                 sportData.homePlayerId = element.playerId ?? "";
                 sportData.homeQbRank = [
-                  (element.passingYardOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.passingTDSOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.rushingYardOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.rushingTDsOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.interceptionOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.passingYardOffenseRank ?? 0).toString(),
+                  (element.passingTDSOffenseRank ?? 0).toString(),
+                  (element.rushingYardOffenseRank ?? 0).toString(),
+                  (element.rushingTDsOffenseRank ?? 0).toString(),
+                  (element.interceptionOffenseRank ?? 0).toString(),
                 ];
                 sportData.homeQb = [
                   (element.passingYardOffense ?? 0).toStringAsFixed(1),
@@ -1820,11 +1820,11 @@ class GameListingController extends GetxController {
                 sportData.awayPlayerName = element.playerName ?? "";
                 sportData.awayPlayerId = element.playerId ?? "";
                 sportData.awayQbRank = [
-                  (element.passingYardOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.passingTDSOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.rushingYardOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.rushingTDsOffenseRank ?? 0).toStringAsFixed(1),
-                  (element.interceptionOffenseRank ?? 0).toStringAsFixed(1),
+                  (element.passingYardOffenseRank ?? 0).toString(),
+                  (element.passingTDSOffenseRank ?? 0).toString(),
+                  (element.rushingYardOffenseRank ?? 0).toString(),
+                  (element.rushingTDsOffenseRank ?? 0).toString(),
+                  (element.interceptionOffenseRank ?? 0).toString(),
                 ];
                 sportData.awayQb = [
                   (element.passingYardOffense ?? 0).toStringAsFixed(1),

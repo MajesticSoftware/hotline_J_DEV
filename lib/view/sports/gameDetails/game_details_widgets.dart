@@ -2157,10 +2157,10 @@ SizedBox receivingHomePlayerCard(BuildContext context, SportEvents gameDetails,
                     .height * .014)),
         Expanded(
             flex: 2,
-            child:_calculateStat(
+            child: _calculateStat(
               gameDetails.nflHomeReceiversPlayer[index].receiving?.yards,
               totalPlay,
-            ) .appCommonText(
+            ).appCommonText(
                 color: Theme
                     .of(context)
                     .highlightColor,
@@ -2171,7 +2171,7 @@ SizedBox receivingHomePlayerCard(BuildContext context, SportEvents gameDetails,
                     .height * .014)),
         Expanded(
             flex: 2,
-            child:_calculateStat(
+            child: _calculateStat(
               gameDetails.nflHomeReceiversPlayer[index].receiving?.receptions,
               totalPlay,
             ).toString()
@@ -6308,7 +6308,9 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                 .size
                                 .height * .048,
                             weight: FontWeight.w700),
-                        (((sportKey == 'NFL' || sportKey == 'NCAA') &&
+                        (gameDetails.status == "closed"
+                            ? 'Final'
+                            : ((sportKey == 'NFL' || sportKey == 'NCAA') &&
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${((gameDetails.status ==
