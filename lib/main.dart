@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,6 +17,8 @@ import 'view/sports/gameListing/game_listing_con.dart';
 
 Future<void> main() async {
   await ScreenUtil.ensureScreenSize();
+  final facebookAppEvents = FacebookAppEvents();
+  facebookAppEvents.setAdvertiserTracking(enabled: true);
   await GetStorage.init();
   await PreferenceManager().putAppDeviceInfo();
   // FlutterBranchSdk.validateSDKIntegration();

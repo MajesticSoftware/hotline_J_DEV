@@ -382,8 +382,7 @@ class GameDetailsController extends GetxController {
               '${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
 
           for (var player in playerData.seasons) {
-            if (player.type == '$SEASONS' &&
-                player.year == DateTime.now().year) {
+            if (player.type == SEASONS && player.year == DateTime.now().year) {
               whipHome =
                   player.totals.statistics.pitching.overall.whip.toString();
               homeBb =
@@ -421,7 +420,7 @@ class GameDetailsController extends GetxController {
       String sportKey = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
-    // isLoading.value = !isLoad ? false : true;
+    isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -437,6 +436,9 @@ class GameDetailsController extends GetxController {
                   season.year.toString() == currentYear) {
                 players.receiving = season.teams?[0].statistics?.receiving;
                 players.rushing = season.teams?[0].statistics?.rushing;
+                players.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.receiving?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.rushing?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
               }
             }
           }
@@ -462,7 +464,7 @@ class GameDetailsController extends GetxController {
       String sportKey = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
-    // isLoading.value = !isLoad ? false : true;
+    isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -478,6 +480,9 @@ class GameDetailsController extends GetxController {
                   season.year.toString() == currentYear) {
                 players.receiving = season.teams?[0].statistics?.receiving;
                 players.rushing = season.teams?[0].statistics?.rushing;
+                players.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.receiving?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.rushing?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
               }
             }
           }
@@ -1456,15 +1461,14 @@ class GameDetailsController extends GetxController {
               }
             }
           } else {
-            isLoading.value = false;
+            // isLoading.value = false;
           }
-
         } else {
-          isLoading.value = false;
+          // isLoading.value = false;
         }
       }
     } catch (e) {
-      isLoading.value = false;
+      // isLoading.value = false;
       log('ERROR NFL AWAY FULL ROSTER-----$e');
       showAppSnackBar(
         e.toString(),
@@ -1492,6 +1496,7 @@ class GameDetailsController extends GetxController {
             for (int i = 0; i < (response.players!.length); i++) {
               if (response.players?[i].position == 'RB') {
                 gameDetails.nflHomeRunningBackPlayer.add(response.players![i]);
+
                 profileHomeTeamResponse(
                     gameDetails: gameDetails,
                     players: response.players![i],
@@ -1500,12 +1505,14 @@ class GameDetailsController extends GetxController {
               if ((response.players?[i].position == 'WR' ||
                   response.players?[i].position == 'TE')) {
                 gameDetails.nflHomeReceiversPlayer.add(response.players![i]);
+
                 profileHomeTeamResponse(
                     gameDetails: gameDetails,
                     players: response.players![i],
                     sportKey: sportKey);
               }
             }
+
           } else {
             isLoading.value = false;
           }

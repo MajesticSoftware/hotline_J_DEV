@@ -269,6 +269,7 @@ class Coaches {
 }
 
 class Players {
+  num? gamesPlayed;
   String? id;
   String? name;
   String? jersey;
@@ -298,6 +299,7 @@ class Players {
   Players(
       {this.id,
         this.name,
+        this.gamesPlayed=0,
         this.jersey,
         this.lastName,
         this.firstName,

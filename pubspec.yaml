@@ -66,6 +66,7 @@ dependencies:
   in_app_purchase_storekit: ^0.3.7
 #  for key security
   flutter_dotenv: ^5.1.0
+  facebook_app_events: ^0.16.0
 
 
 

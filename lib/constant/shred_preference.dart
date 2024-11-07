@@ -8,6 +8,7 @@ import '../model/user_model.dart';
 
 class PreferenceManager {
   static GetStorage getStorage = GetStorage();
+
   static Future setIsOpenDialog(bool isOpenDialog) async {
     await getStorage.write("isOpenDialog", isOpenDialog);
   }
@@ -82,6 +83,15 @@ class PreferenceManager {
     return getStorage.read("userEmail");
   }
 
+  ///userFreeSubscriber
+  static Future setFreeSubscriber(int freeSubscriber) async {
+    await getStorage.write("freeSubscriber", freeSubscriber);
+  }
+
+  static getFreeSubscriber() {
+    return getStorage.read("freeSubscriber");
+  }
+
   ///userProfile
   static Future setUserProfile(String userProfile) async {
     await getStorage.write("userProfile", userProfile);
@@ -115,7 +125,8 @@ class PreferenceManager {
   static getDeviceVersion() {
     return getStorage.read("deviceVersion");
   }
-static Future setDeviceVersionNumber(String deviceVersionNumber) async {
+
+  static Future setDeviceVersionNumber(String deviceVersionNumber) async {
     await getStorage.write("deviceVersionNumber", deviceVersionNumber);
   }
 
@@ -161,10 +172,11 @@ static Future setDeviceVersionNumber(String deviceVersionNumber) async {
   static setUserData(UserData response) {
     setUserName(response.userName ?? "");
     setUserEmail(response.userEmail ?? "");
+    setFreeSubscriber(response.isFreeSubscriber ?? 0);
     setAuthToken(response.authToken ?? "");
     setUserToken(response.userToken ?? "");
     setUserProfile(response.userProfilePic ?? "");
-    setFavoriteSport(/*response.favouriteSport ?? */"NBA");
+    setFavoriteSport(/*response.favouriteSport ?? */ "NBA");
     setLoginType(response.loginType ?? "");
     setDeviceType(Platform.isIOS ? "iOS" : "android");
     setUserId(response.userId ?? 0);

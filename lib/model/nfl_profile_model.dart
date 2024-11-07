@@ -1,3 +1,5 @@
+
+
 class NFLProfileModel {
   String? id;
   String? name;
@@ -24,27 +26,27 @@ class NFLProfileModel {
 
   NFLProfileModel(
       {this.id,
-        this.name,
-        this.jersey,
-        this.lastName,
-        this.firstName,
-        this.abbrName,
-        this.birthDate,
-        this.weight,
-        this.height,
-        this.position,
-        this.birthPlace,
-        this.highSchool,
-        this.college,
-        this.collegeConf,
-        this.rookieYear,
-        this.status,
-        this.srId,
-        this.experience,
-        this.team,
-        this.draft,
-        this.seasons,
-        this.sComment});
+      this.name,
+      this.jersey,
+      this.lastName,
+      this.firstName,
+      this.abbrName,
+      this.birthDate,
+      this.weight,
+      this.height,
+      this.position,
+      this.birthPlace,
+      this.highSchool,
+      this.college,
+      this.collegeConf,
+      this.rookieYear,
+      this.status,
+      this.srId,
+      this.experience,
+      this.team,
+      this.draft,
+      this.seasons,
+      this.sComment});
 
   NFLProfileModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -210,11 +212,11 @@ class Teams {
 
   Teams(
       {this.id,
-        this.name,
-        this.market,
-        this.alias,
-        this.srId,
-        this.statistics});
+      this.name,
+      this.market,
+      this.alias,
+      this.srId,
+      this.statistics});
 
   Teams.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -253,19 +255,19 @@ class Statistics {
 
   Statistics(
       {this.gamesPlayed,
-        this.gamesStarted,
-        this.rushing,
-        this.receiving,
-        this.kickReturns,
-        this.defense,
-        this.penalties,
-        this.fumbles});
+      this.gamesStarted,
+      this.rushing,
+      this.receiving,
+      this.kickReturns,
+      this.defense,
+      this.penalties,
+      this.fumbles});
 
   Statistics.fromJson(Map<String, dynamic> json) {
     gamesPlayed = json['games_played'];
     gamesStarted = json['games_started'];
     rushing =
-    json['rushing'] != null ? Rushing.fromJson(json['rushing']) : null;
+        json['rushing'] != null ? Rushing.fromJson(json['rushing']) : null;
     receiving = json['receiving'] != null
         ? Receiving.fromJson(json['receiving'])
         : null;
@@ -273,12 +275,12 @@ class Statistics {
         ? KickReturns.fromJson(json['kick_returns'])
         : null;
     defense =
-    json['defense'] != null ? Defense.fromJson(json['defense']) : null;
+        json['defense'] != null ? Defense.fromJson(json['defense']) : null;
     penalties = json['penalties'] != null
         ? Penalties.fromJson(json['penalties'])
         : null;
     fumbles =
-    json['fumbles'] != null ? Fumbles.fromJson(json['fumbles']) : null;
+        json['fumbles'] != null ? Fumbles.fromJson(json['fumbles']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -309,6 +311,7 @@ class Statistics {
 
 class Rushing {
   num? avgYards;
+  num? gamesPlayed;
   num? attempts;
   num? touchdowns;
   num? yards;
@@ -325,19 +328,20 @@ class Rushing {
 
   Rushing(
       {this.avgYards,
-        this.attempts,
-        this.touchdowns,
-        this.yards,
-        this.longest,
-        this.longestTouchdown,
-        this.redzoneAttempts,
-        this.tlost,
-        this.tlostYards,
-        this.firstDowns,
-        this.brokenTackles,
-        this.kneelDowns,
-        this.scrambles,
-        this.yardsAfterContact});
+      this.attempts,
+      this.gamesPlayed,
+      this.touchdowns,
+      this.yards,
+      this.longest,
+      this.longestTouchdown,
+      this.redzoneAttempts,
+      this.tlost,
+      this.tlostYards,
+      this.firstDowns,
+      this.brokenTackles,
+      this.kneelDowns,
+      this.scrambles,
+      this.yardsAfterContact});
 
   Rushing.fromJson(Map<String, dynamic> json) {
     avgYards = json['avg_yards'];
@@ -378,6 +382,7 @@ class Rushing {
 
 class Receiving {
   num? receptions;
+  num? gamesPlayed;
   num? targets;
   num? yards;
   num? avgYards;
@@ -393,22 +398,34 @@ class Receiving {
   num? catchablePasses;
   num? yardsAfterContact;
 
+  num get touchdownsPerGame {
+    return num.parse(_calculateStat(touchdowns, gamesPlayed ?? 0));
+  }
+
+  String _calculateStat(num? value, num totalPlay) {
+    if (value == null) return '0';
+    return ((value / totalPlay).toStringAsFixed(1) == '0.0'
+        ? "0"
+        : (value / totalPlay).toStringAsFixed(1));
+  }
+
   Receiving(
       {this.receptions,
-        this.targets,
-        this.yards,
-        this.avgYards,
-        this.longest,
-        this.touchdowns,
-        this.longestTouchdown,
-        this.yardsAfterCatch,
-        this.redzoneTargets,
-        this.airYards,
-        this.firstDowns,
-        this.brokenTackles,
-        this.droppedPasses,
-        this.catchablePasses,
-        this.yardsAfterContact});
+      this.targets,
+      this.gamesPlayed,
+      this.yards,
+      this.avgYards,
+      this.longest,
+      this.touchdowns,
+      this.longestTouchdown,
+      this.yardsAfterCatch,
+      this.redzoneTargets,
+      this.airYards,
+      this.firstDowns,
+      this.brokenTackles,
+      this.droppedPasses,
+      this.catchablePasses,
+      this.yardsAfterContact});
 
   Receiving.fromJson(Map<String, dynamic> json) {
     receptions = json['receptions'];
@@ -460,12 +477,12 @@ class KickReturns {
 
   KickReturns(
       {this.returns,
-        this.yards,
-        this.avgYards,
-        this.touchdowns,
-        this.longest,
-        this.faircatches,
-        this.longestTouchdown});
+      this.yards,
+      this.avgYards,
+      this.touchdowns,
+      this.longest,
+      this.faircatches,
+      this.longestTouchdown});
 
   KickReturns.fromJson(Map<String, dynamic> json) {
     returns = json['returns'];
@@ -525,36 +542,36 @@ class Defense {
 
   Defense(
       {this.tackles,
-        this.assists,
-        this.combined,
-        this.sacks,
-        this.sackYards,
-        this.interceptions,
-        this.passesDefended,
-        this.forcedFumbles,
-        this.fumbleRecoveries,
-        this.qbHits,
-        this.tloss,
-        this.tlossYards,
-        this.safeties,
-        this.spTackles,
-        this.spAssists,
-        this.spForcedFumbles,
-        this.spFumbleRecoveries,
-        this.spBlocks,
-        this.miscTackles,
-        this.miscAssists,
-        this.miscForcedFumbles,
-        this.miscFumbleRecoveries,
-        this.defTargets,
-        this.defComps,
-        this.blitzes,
-        this.hurries,
-        this.knockdowns,
-        this.missedTackles,
-        this.battedPasses,
-        this.spOwnFumbleRecoveries,
-        this.spOppFumbleRecoveries});
+      this.assists,
+      this.combined,
+      this.sacks,
+      this.sackYards,
+      this.interceptions,
+      this.passesDefended,
+      this.forcedFumbles,
+      this.fumbleRecoveries,
+      this.qbHits,
+      this.tloss,
+      this.tlossYards,
+      this.safeties,
+      this.spTackles,
+      this.spAssists,
+      this.spForcedFumbles,
+      this.spFumbleRecoveries,
+      this.spBlocks,
+      this.miscTackles,
+      this.miscAssists,
+      this.miscForcedFumbles,
+      this.miscFumbleRecoveries,
+      this.defTargets,
+      this.defComps,
+      this.blitzes,
+      this.hurries,
+      this.knockdowns,
+      this.missedTackles,
+      this.battedPasses,
+      this.spOwnFumbleRecoveries,
+      this.spOppFumbleRecoveries});
 
   Defense.fromJson(Map<String, dynamic> json) {
     tackles = json['tackles'];
@@ -664,16 +681,16 @@ class Fumbles {
 
   Fumbles(
       {this.fumbles,
-        this.lostFumbles,
-        this.ownRec,
-        this.ownRecYards,
-        this.oppRec,
-        this.oppRecYards,
-        this.outOfBounds,
-        this.forcedFumbles,
-        this.ownRecTds,
-        this.oppRecTds,
-        this.ezRecTds});
+      this.lostFumbles,
+      this.ownRec,
+      this.ownRecYards,
+      this.oppRec,
+      this.oppRecYards,
+      this.outOfBounds,
+      this.forcedFumbles,
+      this.ownRecTds,
+      this.oppRecTds,
+      this.ezRecTds});
 
   Fumbles.fromJson(Map<String, dynamic> json) {
     fumbles = json['fumbles'];

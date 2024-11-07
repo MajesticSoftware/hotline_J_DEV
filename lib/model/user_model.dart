@@ -46,31 +46,33 @@ class UserData {
   String? isAndroidPurchased;
   String? subscriptionEndDate;
   String? subscriptionStartDate;
+  int? isFreeSubscriber;
 
   UserData(
       {this.userId,
-        this.userToken,
-        this.authToken,
-        this.userName,
-        this.userEmail,
-        this.userPassword,
-        this.userProfilePic,
-        this.loginType,
-        this.appleSocialId,
-        this.googleSocialId,
-        this.favouriteSport,
-        this.isLoggedOut,
-        this.verifyForgotCode,
-        this.clientSecret,
-        this.accessToken,
-        this.authorizationCode,
-        this.receiptUrl,
-        this.isSubscriptionActivated,
-        this.originalTransactionId,
-        this.subscriptionProduct,
-        this.isAndroidPurchased,
-        this.subscriptionEndDate,
-        this.subscriptionStartDate});
+      this.userToken,
+      this.authToken,
+      this.userName,
+      this.userEmail,
+      this.userPassword,
+      this.userProfilePic,
+      this.loginType,
+      this.appleSocialId,
+      this.googleSocialId,
+      this.favouriteSport,
+      this.isLoggedOut,
+      this.isFreeSubscriber,
+      this.verifyForgotCode,
+      this.clientSecret,
+      this.accessToken,
+      this.authorizationCode,
+      this.receiptUrl,
+      this.isSubscriptionActivated,
+      this.originalTransactionId,
+      this.subscriptionProduct,
+      this.isAndroidPurchased,
+      this.subscriptionEndDate,
+      this.subscriptionStartDate});
 
   UserData.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
@@ -82,6 +84,7 @@ class UserData {
     userProfilePic = json['user_profile_pic'];
     loginType = json['login_type'];
     appleSocialId = json['apple_social_id'];
+    isFreeSubscriber = json['is_free_subscriber'];
     googleSocialId = json['google_social_id'];
     favouriteSport = json['favourite_sport'];
     isLoggedOut = json['is_logged_out'];
@@ -105,6 +108,7 @@ class UserData {
     data['auth_token'] = authToken;
     data['user_name'] = userName;
     data['user_email'] = userEmail;
+    data['is_free_subscriber'] = isFreeSubscriber;
     data['user_password'] = userPassword;
     data['user_profile_pic'] = userProfilePic;
     data['login_type'] = loginType;

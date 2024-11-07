@@ -511,156 +511,178 @@ Padding wrPlayersWidget(BuildContext context,
               .of(context)
               .canvasColor),
       child: GetBuilder<GameDetailsController>(builder: (controller) {
-        gameDetails.nflAwayReceiversPlayer.sort((a, b) {
-          num touchdownsA = a.receiving?.touchdowns ?? 0;
-          num touchdownsB = b.receiving?.touchdowns ?? 0;
-
-          if (touchdownsA != touchdownsB) {
-            return touchdownsB.compareTo(
-                touchdownsA); // Sort by touchdowns descending
-          }
-
-          // If touchdowns are equal or both are zero/null, sort by yards
-          num yardsA = a.receiving?.yards ?? 0;
-          num yardsB = b.receiving?.yards ?? 0;
-          return yardsB.compareTo(yardsA); // Sort by yards descending
-        });
-
-// Sort home receivers by touchdowns first, then by yards if touchdowns are null or zero
-        gameDetails.nflHomeReceiversPlayer.sort((a, b) {
-          num touchdownsA = a.receiving?.touchdowns ?? 0;
-          num touchdownsB = b.receiving?.touchdowns ?? 0;
-
-          if (touchdownsA != touchdownsB) {
-            return touchdownsB.compareTo(
-                touchdownsA); // Sort by touchdowns descending
-          }
-
-          // If touchdowns are equal or both are zero/null, sort by yards
-          num yardsA = a.receiving?.yards ?? 0;
-          num yardsB = b.receiving?.yards ?? 0;
-          return yardsB.compareTo(yardsA); // Sort by yards descending
-        });
-
-
         return StickyHeader(
-            header:
-            customTabBar1(context, con, gameDetails, awayTeam, homeTeam),
-            content: Column(
-              children: [
-                headerOfWRPlayers(context),
-                commonDivider(context),
-                ListView.separated(
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, i) {
-                    num totalPlay = con.isTeamReportTab
-                        ? num.parse(gameDetails.awayWin) +
-                        num.parse(gameDetails.awayLoss)
-                        : num.parse(gameDetails.homeWin) +
-                        num.parse(gameDetails.homeLoss);
-                    return con.isTeamReportTab
-                        ? ExpandableNotifier(
-                      initialExpanded: i == con.isExpand,
-                      child: ScrollOnExpand(
-                        child: Column(
-                          children: [
-                            ExpandablePanel(
-                                theme: const ExpandableThemeData(
-                                    hasIcon: false),
-                                header: receivingAwayPlayerCard(
-                                    context, gameDetails, i, totalPlay),
-                                collapsed: const SizedBox(),
-                                expanded: Column(
-                                  children: [
-                                    expandableTileCardRunning(
-                                        context, con,
-                                        value2: (gameDetails
-                                            .nflAwayReceiversPlayer[i]
-                                            .receiving
-                                            ?.yards ?? 0).toStringAsFixed(1),
-                                        title2: 'Yards',
-                                        title1: 'Longest Catch',
-                                        value1:
-                                        (gameDetails.nflAwayReceiversPlayer[i]
-                                            .receiving?.longest ?? 0)
-                                            .toStringAsFixed(1)),
-                                    expandableTileCardRunning(
-                                        context, con,
-                                        value1:
-                                        (gameDetails.nflAwayReceiversPlayer[i]
-                                            .receiving?.avgYards ?? 0)
-                                            .toStringAsFixed(1),
-                                        title1: 'Average Catch',
-                                        title2: 'Drops',
-                                        value2:
-                                        (gameDetails.nflAwayReceiversPlayer[i]
-                                            .receiving?.droppedPasses ?? 0)
-                                            .toStringAsFixed(1)),
-                                  ],
-                                ))
-                          ],
-                        ),
-                      ),
-                    )
-                        : ExpandableNotifier(
-                      key: Key(i.toString()),
-                      initialExpanded: i == con.isExpand,
-                      child: ScrollOnExpand(
-                        child: Column(
-                          children: [
-                            ExpandablePanel(
-                              theme: const ExpandableThemeData(
-                                  hasIcon: false),
-                              header: receivingHomePlayerCard(
-                                  context, gameDetails, i, totalPlay),
-                              collapsed: const SizedBox(),
-                              expanded: Column(
-                                children: [
-                                  expandableTileCardRunning(context, con,
-                                      value2: (gameDetails
-                                          .nflHomeReceiversPlayer[i]
-                                          .receiving
-                                          ?.yards ??
-                                          0).toStringAsFixed(1),
-                                      title2: 'Yards',
-                                      title1: 'Longest Catch',
-                                      value1:
-                                      (gameDetails.nflHomeReceiversPlayer[i]
-                                          .receiving?.longest ?? 0)
-                                          .toStringAsFixed(1)),
-                                  expandableTileCardRunning(context, con,
-                                      value1:
-                                      (gameDetails.nflHomeReceiversPlayer[i]
-                                          .receiving?.avgYards ?? 0)
-                                          .toStringAsFixed(1),
-                                      title1: 'Average Catch',
-                                      title2: 'Drops',
-                                      value2:
-                                      (gameDetails.nflHomeReceiversPlayer[i]
-                                          .receiving?.droppedPasses ?? 0)
-                                          .toStringAsFixed(1)),
-                                ],
-                              ),
+          header: customTabBar1(context, con, gameDetails, awayTeam, homeTeam),
+          content: Column(
+            children: [
+              headerOfWRPlayers(context),
+              commonDivider(context),
+              ListView.separated(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, i) {
+                  // Determine total plays
+                  num totalPlay = (con.isTeamReportTab
+                      ? (gameDetails.nflAwayReceiversPlayer[i].gamesPlayed == 0
+                      ? 1
+                      : (gameDetails.nflAwayReceiversPlayer[i].gamesPlayed ??
+                      1))
+                      : (gameDetails.nflHomeReceiversPlayer[i].gamesPlayed == 0
+                      ? 1
+                      : (gameDetails.nflHomeReceiversPlayer[i].gamesPlayed ??
+                      1)));
+                  sortPlayers(gameDetails, totalPlay);
+                  return con.isTeamReportTab
+                      ? ExpandableNotifier(
+                    initialExpanded: i == con.isExpand,
+                    child: ScrollOnExpand(
+                      child: Column(
+                        children: [
+                          ExpandablePanel(
+                            theme: const ExpandableThemeData(hasIcon: false),
+                            header: receivingAwayPlayerCard(
+                                context, gameDetails, i, totalPlay),
+                            collapsed: const SizedBox(),
+                            expanded: Column(
+                              children: [
+                                expandableTileCardRunning(
+                                  context,
+                                  con,
+                                  value2: (gameDetails.nflAwayReceiversPlayer[i]
+                                      .receiving?.yards ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                  title2: 'Yards',
+                                  title1: 'Longest Catch',
+                                  value1: (gameDetails.nflAwayReceiversPlayer[i]
+                                      .receiving?.longest ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                ),
+                                expandableTileCardRunning(
+                                  context,
+                                  con,
+                                  value1: (gameDetails
+                                      .nflAwayReceiversPlayer[i]
+                                      .receiving?.avgYards ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                  title1: 'Average Catch',
+                                  title2: 'Drops',
+                                  value2: (gameDetails.nflAwayReceiversPlayer[i]
+                                      .receiving?.droppedPasses ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return commonDivider(context);
-                  },
-                  itemCount: con.isTeamReportTab
-                      ? gameDetails.nflAwayReceiversPlayer.length
-                      : gameDetails.nflHomeReceiversPlayer.length,
-                )
-              ],
-            ));
+                    ),
+                  )
+                      : ExpandableNotifier(
+                    key: Key(i.toString()),
+                    initialExpanded: i == con.isExpand,
+                    child: ScrollOnExpand(
+                      child: Column(
+                        children: [
+                          ExpandablePanel(
+                            theme: const ExpandableThemeData(hasIcon: false),
+                            header: receivingHomePlayerCard(
+                                context, gameDetails, i, totalPlay),
+                            collapsed: const SizedBox(),
+                            expanded: Column(
+                              children: [
+                                expandableTileCardRunning(
+                                  context,
+                                  con,
+                                  value2: (gameDetails.nflHomeReceiversPlayer[i]
+                                      .receiving?.yards ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                  title2: 'Yards',
+                                  title1: 'Longest Catch',
+                                  value1: (gameDetails.nflHomeReceiversPlayer[i]
+                                      .receiving?.longest ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                ),
+                                expandableTileCardRunning(
+                                  context,
+                                  con,
+                                  value1: (gameDetails
+                                      .nflHomeReceiversPlayer[i]
+                                      .receiving?.avgYards ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                  title1: 'Average Catch',
+                                  title2: 'Drops',
+                                  value2: (gameDetails.nflHomeReceiversPlayer[i]
+                                      .receiving?.droppedPasses ??
+                                      0)
+                                      .toStringAsFixed(1),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return commonDivider(context);
+                },
+                itemCount: con.isTeamReportTab
+                    ? gameDetails.nflAwayReceiversPlayer.length
+                    : gameDetails.nflHomeReceiversPlayer.length,
+              ),
+            ],
+          ),
+        )
+        ;
       }),
     ),
   );
+}
+
+void sortPlayers(SportEvents gameDetails, num totlePlay) {
+  // Sort away receivers by touchdowns (descending), then by yards (descending)
+  gameDetails.nflAwayReceiversPlayer.sort((a, b) {
+    // Sort by touchdowns first (descending order)
+    num touchdownsA = a.receiving?.touchdownsPerGame ?? 0;
+    num touchdownsB = b.receiving?.touchdownsPerGame ?? 0;
+
+    int result = touchdownsB.compareTo(touchdownsA); // Sorting descending
+    if (result == 0) {
+      // If touchdowns are the same, sort by yards (descending)
+      num yardsA = a.receiving?.yards == null ? 0 : (a.receiving?.yards ?? 0);
+      num yardsB = b.receiving?.yards == null ? 0 : (b.receiving?.yards ?? 0);
+      result = yardsB.compareTo(yardsA); // Sorting descending
+    }
+
+    return result;
+  });
+
+  // Sort home receivers by touchdowns (descending), then by yards (descending)
+  gameDetails.nflHomeReceiversPlayer.sort((a, b) {
+    // Sort by touchdowns first (descending order)
+    num touchdownsA = a.receiving?.touchdownsPerGame ?? 0;
+    num touchdownsB = b.receiving?.touchdownsPerGame ?? 0;
+
+
+    int result = touchdownsB.compareTo(touchdownsA); // Sorting descending
+    if (result == 0) {
+      // If touchdowns are the same, sort by yards (descending)
+      num yardsA = a.receiving?.yards == null ? 0 : (a.receiving?.yards ?? 0);
+      num yardsB = b.receiving?.yards == null ? 0 : (b.receiving?.yards ?? 0);
+      result = yardsB.compareTo(yardsA); // Sorting descending
+    }
+
+    return result;
+  });
 }
 
 Widget teamReportNFL(BuildContext context,
@@ -2052,8 +2074,9 @@ SizedBox receivingAwayPlayerCard(BuildContext context, SportEvents gameDetails,
         _buildStatCell(
           context,
           _calculateStat(
-            gameDetails.nflAwayReceiversPlayer[index].receiving?.touchdowns,
-            totalPlay,
+            gameDetails.nflAwayReceiversPlayer[index].receiving
+                ?.touchdownsPerGame,
+            1,
           ),
           color: Theme
               .of(context)
@@ -2142,8 +2165,9 @@ SizedBox receivingHomePlayerCard(BuildContext context, SportEvents gameDetails,
         Expanded(
             flex: 2,
             child: _calculateStat(
-              gameDetails.nflHomeReceiversPlayer[index].receiving?.touchdowns,
-              totalPlay,
+              gameDetails.nflHomeReceiversPlayer[index].receiving
+                  ?.touchdownsPerGame,
+              1,
             )
                 .toString()
                 .appCommonText(
@@ -2292,50 +2316,22 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
 
 ListView runningBacksCard(GameDetailsController con,
     SportEvents gameDetails,) {
-  // Sort home running backs by touchdowns first, then by yards if touchdowns are null or zero
-  gameDetails.nflHomeRunningBackPlayer.sort((a, b) {
-    // Extract touchdowns or default to 0 if null
-    num touchdownsA = a.rushing?.touchdowns ?? 0;
-    num touchdownsB = b.rushing?.touchdowns ?? 0;
-
-    if (touchdownsA != touchdownsB) {
-      return touchdownsB.compareTo(
-          touchdownsA); // Sort by touchdowns descending
-    }
-
-    // If touchdowns are equal or both are zero/null, sort by yards
-    num yardsA = a.rushing?.yards ?? 0;
-    num yardsB = b.rushing?.yards ?? 0;
-    return yardsB.compareTo(yardsA); // Sort by yards descending
-  });
-
-// Sort away running backs by touchdowns first, then by yards if touchdowns are null or zero
-  gameDetails.nflAwayRunningBackPlayer.sort((a, b) {
-    // Extract touchdowns or default to 0 if null
-    num touchdownsA = a.rushing?.touchdowns ?? 0;
-    num touchdownsB = b.rushing?.touchdowns ?? 0;
-
-    if (touchdownsA != touchdownsB) {
-      return touchdownsB.compareTo(
-          touchdownsA); // Sort by touchdowns descending
-    }
-
-    // If touchdowns are equal or both are zero/null, sort by yards
-    num yardsA = a.rushing?.yards ?? 0;
-    num yardsB = b.rushing?.yards ?? 0;
-    return yardsB.compareTo(yardsA); // Sort by yards descending
-  });
-
   return ListView.separated(
     shrinkWrap: true,
     padding: EdgeInsets.zero,
     physics: const BouncingScrollPhysics(),
     itemBuilder: (context, i) {
-      num totalPlay = con.isTeamReportTab
-          ? num.parse(gameDetails.awayWin) + num.parse(gameDetails.awayLoss)
-          : num.parse(gameDetails.homeWin) + num.parse(gameDetails.homeLoss);
+      num totalPlay = (con.isTeamReportTab
+          ? (gameDetails.nflAwayRunningBackPlayer[i].gamesPlayed == 0
+          ? 1
+          : (gameDetails.nflAwayRunningBackPlayer[i].gamesPlayed ??
+          1))
+          : (gameDetails.nflHomeRunningBackPlayer[i].gamesPlayed == 0
+          ? 1
+          : (gameDetails.nflHomeRunningBackPlayer[i].gamesPlayed ??
+          1)));
 
-      // return con.isTab
+      sortRushingPlayer(gameDetails);
       return con.isTeamReportTab
           ? ExpandableNotifier(
         initialExpanded: i == con.isExpand,
@@ -2405,10 +2401,10 @@ ListView runningBacksCard(GameDetailsController con,
                               totalPlay)
                               .toStringAsFixed(1)) : "0",
                           title1: 'Rec TDs/Game',
-                          title2: 'Fumbles',
+                          title2: 'Fumbles/Game',
                           value2:
-                          '${gameDetails.nflAwayRunningBackPlayer[i].fumbles
-                              ?.fumbles ?? "0"}'),
+                          ((gameDetails.nflAwayRunningBackPlayer[i].fumbles
+                              ?.fumbles ?? 1) / totalPlay).toStringAsFixed(1)),
                       expandableTileCardRunning(context, con,
                           value1: gameDetails
                               .nflAwayRunningBackPlayer[i]
@@ -2466,6 +2462,27 @@ ListView runningBacksCard(GameDetailsController con,
                     expandableTileCardRunning(context, con,
                         value1: gameDetails
                             .nflHomeRunningBackPlayer[i]
+                            .receiving != null ? (((int.parse(gameDetails
+                            .nflHomeRunningBackPlayer[i]
+                            .receiving
+                            ?.yards
+                            .toString() ??
+                            "0") + int.parse(gameDetails
+                            .nflHomeRunningBackPlayer[i]
+                            .rushing
+                            ?.yards
+                            .toString() ??
+                            "0")) /
+                            totalPlay)
+                            .toStringAsFixed(1)) : "0",
+                        title1: 'All Purp Yrd/Game',
+                        title2: 'Longest Run',
+                        value2:
+                        '${gameDetails.nflHomeRunningBackPlayer[i].rushing
+                            ?.longest ?? "0"}'),
+                    expandableTileCardRunning(context, con,
+                        value1: gameDetails
+                            .nflHomeRunningBackPlayer[i]
                             .receiving != null ? ((int.parse(gameDetails
                             .nflHomeRunningBackPlayer[i]
                             .receiving
@@ -2475,10 +2492,10 @@ ListView runningBacksCard(GameDetailsController con,
                             totalPlay)
                             .toStringAsFixed(1)) : "0",
                         title1: 'Rec TDs/Game',
-                        title2: 'Longest Run',
+                        title2: 'Fumbles/Game',
                         value2:
-                        '${gameDetails.nflHomeRunningBackPlayer[i].rushing
-                            ?.longest ?? "0"}'),
+                        ((gameDetails.nflHomeRunningBackPlayer[i].fumbles
+                            ?.fumbles ?? 1) / totalPlay).toStringAsFixed(1)),
                     expandableTileCardRunning(context, con,
                         value1: gameDetails
                             .nflHomeRunningBackPlayer[i]
@@ -2490,10 +2507,9 @@ ListView runningBacksCard(GameDetailsController con,
                             '0')
                             .toStringAsFixed(1)) : "0",
                         title1: 'Average Carry',
-                        title2: 'Fumbles',
+                        title2: '',
                         value2:
-                        '${gameDetails.nflHomeRunningBackPlayer[i].fumbles
-                            ?.fumbles ?? "0"}'),
+                        ""),
                   ],
                 ),
               ),
@@ -2512,6 +2528,42 @@ ListView runningBacksCard(GameDetailsController con,
         ? gameDetails.nflAwayRunningBackPlayer.length
         : gameDetails.nflHomeRunningBackPlayer.length,
   );
+}
+
+sortRushingPlayer(SportEvents gameDetails) {
+  // Sort home running backs by touchdowns first, then by yards if touchdowns are null or zero
+  gameDetails.nflHomeRunningBackPlayer.sort((a, b) {
+    // Extract touchdowns or default to 0 if null
+    num touchdownsA = a.rushing?.touchdowns ?? 0;
+    num touchdownsB = b.rushing?.touchdowns ?? 0;
+
+    if (touchdownsA != touchdownsB) {
+      return touchdownsB.compareTo(
+          touchdownsA); // Sort by touchdowns descending
+    }
+
+    // If touchdowns are equal or both are zero/null, sort by yards
+    num yardsA = a.rushing?.yards ?? 0;
+    num yardsB = b.rushing?.yards ?? 0;
+    return yardsB.compareTo(yardsA); // Sort by yards descending
+  });
+
+// Sort away running backs by touchdowns first, then by yards if touchdowns are null or zero
+  gameDetails.nflAwayRunningBackPlayer.sort((a, b) {
+    // Extract touchdowns or default to 0 if null
+    num touchdownsA = a.rushing?.touchdowns ?? 0;
+    num touchdownsB = b.rushing?.touchdowns ?? 0;
+
+    if (touchdownsA != touchdownsB) {
+      return touchdownsB.compareTo(
+          touchdownsA); // Sort by touchdowns descending
+    }
+
+    // If touchdowns are equal or both are zero/null, sort by yards
+    num yardsA = a.rushing?.yards ?? 0;
+    num yardsB = b.rushing?.yards ?? 0;
+    return yardsB.compareTo(yardsA); // Sort by yards descending
+  });
 }
 
 ListView nbaRushingCard(GameDetailsController con,
@@ -3066,7 +3118,10 @@ SizedBox runningHomeHeader(BuildContext context,
             flex: 2,
             child: (gameDetails
                 .nflHomeRunningBackPlayer[index]
-                .rushing != null ? (num.parse(((num.parse((gameDetails
+                .rushing != null ? gameDetails
+                .nflHomeRunningBackPlayer[index]
+                .rushing
+                ?.touchdowns == 0.0 ? "0" : (num.parse(((num.parse((gameDetails
                 .nflHomeRunningBackPlayer[index]
                 .rushing
                 ?.touchdowns ??
@@ -3097,11 +3152,7 @@ SizedBox runningHomeHeader(BuildContext context,
                 .rushing
                 ?.yards ??
                 "0")
-                .toString()) +
-                num.parse((gameDetails.nflHomeRunningBackPlayer[index]
-                    .receiving?.yards ??
-                    "0")
-                    .toString())) /
+                .toString())) /
                 totalPlay)
                 .toString())
                 .toStringAsFixed(1)) : "0")
@@ -3354,7 +3405,10 @@ SizedBox runningAwayHeader(BuildContext context,
             flex: 2,
             child: (gameDetails
                 .nflAwayRunningBackPlayer[index]
-                .rushing != null ? (num.parse(((num.parse((gameDetails
+                .rushing != null ? gameDetails
+                .nflAwayRunningBackPlayer[index]
+                .rushing
+                ?.touchdowns == 0.0 ? "0" : (num.parse(((num.parse((gameDetails
                 .nflAwayRunningBackPlayer[index]
                 .rushing
                 ?.touchdowns ??
@@ -3658,7 +3712,7 @@ SizedBox headerOfWRPlayers(BuildContext context) {
                     .height * .016)),
         Expanded(
             flex: 2,
-            child: 'Yds/Gm'.appCommonText(
+            child: 'RecYds/Gm'.appCommonText(
                 color: Theme
                     .of(context)
                     .highlightColor,

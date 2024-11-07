@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(const Duration(seconds: 2), () {
       checkReleaseVersion().then((value) {
-        Get.to(
+        Get.offAll(
             () => (PreferenceManager.getSkipLogin() ?? false) ||
                     /* ? (PreferenceManager.getIsFirstLoaded() == null ||
                         !PreferenceManager.getIsFirstLoaded())

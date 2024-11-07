@@ -59,6 +59,7 @@ class Sport {
 
 class SportEvents {
   String? id;
+  num? gamesPlayed;
   String currentTime = "";
   String? scheduled;
   bool? startTimeTbd;
@@ -162,6 +163,7 @@ class SportEvents {
 
   SportEvents({
     this.id,
+    this.gamesPlayed,
     this.scheduled,
     this.outs="0",
     this.startTimeTbd,
