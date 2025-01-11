@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_string_interpolations, unused_local_variable
+
 import 'dart:developer';
 
 import 'package:get/get.dart';
@@ -864,7 +866,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-              gameDetails.homeDefense = [
+             /* gameDetails.homeDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -883,7 +885,7 @@ class GameDetailsController extends GetxController {
                             "0") /
                         totalGame)
                     .toStringAsFixed(1),
-              ];
+              ];*/
               gameDetails.homeRunningBackPlayer.clear();
               gameDetails.homeReceiversPlayer.clear();
               if (response.players != null) {
@@ -1336,7 +1338,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-              gameDetails.awayDefense = [
+             /* gameDetails.awayDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -1356,7 +1358,7 @@ class GameDetailsController extends GetxController {
                         totalGame)
                     .toStringAsFixed(1)),
                 // (offenciveData?.defense?.interceptions ?? "0").toString(),
-              ];
+              ];*/
               gameDetails.awayReceiversPlayer.clear();
               gameDetails.awayRunningBackPlayer.clear();
               if (response.players != null) {
@@ -1781,6 +1783,7 @@ class GameDetailsController extends GetxController {
             }
           }
         }
+        isLoading.value = false;
       } else {
         isLoading.value = false;
         // showAppSnackBar(
@@ -2014,13 +2017,13 @@ class GameDetailsController extends GetxController {
           homeTeamId: gameDetails.homePlayerId,
         );
       }
-      await hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+      // await hotlinesDataResponse(
+      //     awayTeamId: awayTeam?.id ?? "",
+      //     sportId: sportId,
+      //     gameDetails: gameDetails,
+      //     matchId: gameDetails.id ?? "",
+      //     isLoad: isLoad,
+      //     homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NFL') {
       isLoading.value = true;
@@ -2099,13 +2102,13 @@ class GameDetailsController extends GetxController {
           gameDetails: gameDetails,
           sportKey: sportKey,
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
-      hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+      // hotlinesDataResponse(
+      //     awayTeamId: awayTeam?.id ?? "",
+      //     sportId: sportId,
+      //     gameDetails: gameDetails,
+      //     matchId: gameDetails.id ?? "",
+      //     isLoad: isLoad,
+      //     homeTeamId: homeTeam?.id ?? "");
     }
     if (sportKey == 'NBA' || sportKey == "NCAAB") {
       staticsAwayNBA(
@@ -2135,13 +2138,13 @@ class GameDetailsController extends GetxController {
             awayTeamId: replaceId(awayTeam?.uuids ?? ''),
             homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       }
-      hotlinesDataResponse(
-          awayTeamId: awayTeam?.id ?? "",
-          sportId: sportId,
-          gameDetails: gameDetails,
-          matchId: gameDetails.id ?? "",
-          isLoad: isLoad,
-          homeTeamId: homeTeam?.id ?? "");
+      // hotlinesDataResponse(
+      //     awayTeamId: awayTeam?.id ?? "",
+      //     sportId: sportId,
+      //     gameDetails: gameDetails,
+      //     matchId: gameDetails.id ?? "",
+      //     isLoad: isLoad,
+      //     homeTeamId: homeTeam?.id ?? "");
       /*   await nbaRosterStaticsHomeResponse(
         gameDetails: gameDetails,
         sportKey: sportKey,

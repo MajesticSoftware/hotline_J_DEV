@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../theme/app_color.dart';
@@ -146,11 +147,12 @@ class _AnimSearchBarState extends State<AnimSearchBar>
 
       ///Using Animated container to expand and shrink the widget
       child: AnimatedContainer(
+
         duration: Duration(milliseconds: widget.animationDurationInMilli),
-        height: MediaQuery.sizeOf(context).height * .035,
+        height: MediaQuery.sizeOf(context).height * .038,
         width: (toggle == 0)
-            ? MediaQuery.sizeOf(context).height * .035
-            : widget.width,
+            ? MediaQuery.sizeOf(context).height * .038
+            : widget.width-48.w,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           /// can add custom  color or the color will be white
@@ -182,7 +184,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 opacity: (toggle == 0) ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 200),
                 child: Container(
-                  padding: const EdgeInsets.all(2.0),
+                  padding: const EdgeInsets.all(3.0),
                   decoration: BoxDecoration(
                     /// can add custom color or the color will be white
                     color: widget.color,
@@ -253,7 +255,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 opacity: (toggle == 0) ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 200),
                 child: Container(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(left: 5),
                   alignment: Alignment.topCenter,
                   width: widget.width / 1.7,
                   child: TextField(
@@ -333,7 +335,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                                   // search icon color when closed
                                   color: widget.searchIconColor,
                                   size:
-                                      MediaQuery.of(context).size.height * .02,
+                                      MediaQuery.of(context).size.height * .025,
                                 ),
                               )
                             : Icon(

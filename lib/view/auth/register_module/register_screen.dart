@@ -1,4 +1,5 @@
-import 'dart:developer';
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
@@ -22,7 +23,6 @@ import '../../../constant/shred_preference.dart';
 import '../../../extras/request_constants.dart';
 import '../../../generated/assets.dart';
 import '../../../utils/file_picker_utils.dart';
-import '../../main/app_starting_screen.dart';
 import '../../widgets/common_widget.dart';
 import '../../widgets/text_field_widget.dart';
 

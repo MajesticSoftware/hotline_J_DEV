@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, deprecated_member_use, use_key_in_widget_constructors
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

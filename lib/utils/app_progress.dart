@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,15 +10,18 @@ class AppProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        height: Get.height,
-        color: blackColor.withOpacity(0.3),
-        child: Center(
-            child: CircularProgressIndicator(
-                color: Theme
-                    .of(context)
-                    .primaryColor)));
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+      child: Container(
+          width: double.infinity,
+          height: Get.height,
+          color: blackColor.withOpacity(0.4),
+          child: Center(
+              child: CircularProgressIndicator(
+                  color: Theme
+                      .of(context)
+                      .secondaryHeaderColor))),
+    );
   }
 }
 

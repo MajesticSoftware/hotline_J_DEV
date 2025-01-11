@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotlines/theme/app_color.dart';
 
+import '../../constant/shred_preference.dart';
 import '../../utils/extension.dart';
 
 class CommonTextField extends StatelessWidget {
@@ -47,6 +48,9 @@ class CommonTextField extends StatelessWidget {
         controller: controller ?? TextEditingController(),
         maxLines: maxLine,
         autofocus: false,
+        keyboardAppearance: (PreferenceManager.getIsDarkMode() ?? false)
+            ? Brightness.dark
+            : Brightness.light,
         style: GoogleFonts.nunitoSans(
           fontSize: MediaQuery.of(context).size.height * .018,
           color: Theme.of(context).secondaryHeaderColor,

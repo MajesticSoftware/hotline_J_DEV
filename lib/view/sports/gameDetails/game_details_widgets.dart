@@ -1,8 +1,11 @@
+// ignore_for_file: unnecessary_import, unused_local_variable
+
 import 'dart:developer';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -28,138 +31,98 @@ import '../../widgets/common_dialog.dart';
 import '../../widgets/game_widget.dart';
 import 'game_details_controller.dart';
 
-PreferredSize commonAppBarWidget(BuildContext context, bool isDark,
+AppBar commonAppBarWidget(BuildContext context, bool isDark,
     GameDetailsController con) {
-  return PreferredSize(
-      preferredSize: Size.fromHeight(125.w),
-      child: AnimatedContainer(
-        alignment: Alignment.bottomCenter,
-        color: Theme
-            .of(context)
-            .secondaryHeaderColor,
-        duration: const Duration(milliseconds: 500),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      con.isTeamReportTab = true;
-                      Get.back();
-                    },
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SizedBox(
-                        height: 30, width: 30,
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          size: 30.h,
-                          color: whiteColor,
-                        ),
-                      ),
-                    ),
-                  ).paddingOnly(left: 8.h),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SvgPicture.asset(Assets.imagesLogo,
-                      height: 34.w, fit: BoxFit.contain),),
-              ),
-              (PreferenceManager.getSubscriptionActive() ?? "0") ==
-                  "1"
-                  ? Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * .028,
-                ),
-              ) :
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: GetBuilder<SubscriptionController>(
-                      builder: (ctrl) {
-                        return InkWell(
-                          highlightColor: Colors.transparent,
-                          splashFactory: NoSplash.splashFactory,
-                          onTap: () {
-                            subscriptionDialog(context, restoreOnTap: () async {
-                              await ctrl.restorePurchase(context);
-                            }, price: ctrl.price, onTap: () async {
-                              Get.back();
-                              if (PreferenceManager.getIsLogin() ?? false) {
-                                if (ctrl.products.isEmpty) {
-                                  null;
-                                } else {
-                                  log('ON TAP');
-                                  try {
-                                    await ctrl.buyProduct(ctrl.products[0]);
-                                    con.update();
-                                  } catch (e) {
-                                    log('Error: $e');
-                                  }
-                                }
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return exitApp(
-                                      context,
-                                      buttonText: 'Login',
-                                      cancelText: 'Cancel',
-                                      title: 'Error',
-                                      subtitle: 'You have to login for Subscription!',
-                                      onTap: () {
-                                        Get.offAll(LogInScreen());
-                                      },
-                                    );
-                                  },
-                                );
-                              }
-                            },);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: yellowColor,
-                                borderRadius: BorderRadius.circular(5.w)),
-
-                            child: 'Go Premium'.appCommonText(
-                                color: whiteColor,
-                                weight: FontWeight.w800,
-                                size: 20.sp).paddingSymmetric(
-                                horizontal: 10.w, vertical: 5.h),
-                          ),
-                          /*Image.asset(
-                            Assets.imagesLock, fit: BoxFit.contain,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * .028,
-                            alignment: Alignment.centerRight,),*/
-                        );
-                      }
-                  ),
-                ),
-              ),
-            ],
-          ),
+  return AppBar(
+    centerTitle: true,
+    backgroundColor: Theme
+        .of(context)
+        .secondaryHeaderColor,
+    leading: InkWell(
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        con.isTeamReportTab = true;
+        Get.back();
+      },
+      child: SizedBox(
+        height: 30, width: 30,
+        child: Icon(
+          Icons.arrow_back_ios,
+          size: 30.h,
+          color: whiteColor,
         ),
-      ));
+      ),
+    ),
+    actions: [
+      Visibility(
+        visible: (PreferenceManager.getSubscriptionActive() ?? "0") !=
+            "1",
+        child: GetBuilder<SubscriptionController>(
+            builder: (ctrl) {
+              return InkWell(
+                highlightColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  subscriptionDialog(context, restoreOnTap: () async {
+                    await ctrl.restorePurchase(context);
+                  }, price: ctrl.price, onTap: () async {
+                    Get.back();
+                    if (PreferenceManager.getIsLogin() ?? false) {
+                      if (ctrl.products.isEmpty) {
+                        null;
+                      } else {
+                        log('ON TAP');
+                        try {
+                          await ctrl.buyProduct(ctrl.products[0]);
+                          con.update();
+                        } catch (e) {
+                          log('Error: $e');
+                        }
+                      }
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return exitApp(
+                            context,
+                            buttonText: 'Login',
+                            cancelText: 'Cancel',
+                            title: 'Error',
+                            subtitle: 'You have to login for Subscription!',
+                            onTap: () {
+                              Get.offAll(LogInScreen());
+                            },
+                          );
+                        },
+                      );
+                    }
+                  },);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: yellowColor,
+                      borderRadius: BorderRadius.circular(5.w)),
+
+                  child: 'Go Premium'.appCommonText(
+                      color: whiteColor,
+                      weight: FontWeight.w800,
+                      size: 20.sp).paddingSymmetric(
+                      horizontal: 10.w, vertical: 5.h),
+                ),
+
+              ).paddingOnly(right: 24.w);
+            }
+        ),
+      )
+    ],
+    title: SvgPicture.asset(Assets.imagesLogo,
+        height: 34.w, fit: BoxFit.contain),
+  );
 }
 
-Padding teamReportWidget(BuildContext context, String sportKey,
+
+Widget teamReportWidget(BuildContext context, String sportKey,
     SportEvents gameDetails, Competitors? awayTeam, Competitors? homeTeam) {
   return Padding(
     padding: EdgeInsets.all(MediaQuery

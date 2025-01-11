@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const String cameraText = "   Camera";
 const String selectImageText = "Select Image";
 const String photoLibraryText = "   Photo library";

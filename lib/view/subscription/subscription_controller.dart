@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
@@ -16,7 +18,6 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../network/subscription_repo.dart';
-import '../../constant/app_strings.dart';
 import '../../model/response_item.dart';
 import '../../model/user_model.dart';
 import '../../theme/app_color.dart';

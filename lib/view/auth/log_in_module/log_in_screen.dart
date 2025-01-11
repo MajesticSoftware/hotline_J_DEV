@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +14,6 @@ import '../../../generated/assets.dart';
 import '../../../theme/app_color.dart';
 import '../../../utils/app_progress.dart';
 import '../../../utils/layouts.dart';
-import '../../main/app_starting_screen.dart';
 import '../../widgets/common_widget.dart';
 import '../../widgets/text_field_widget.dart';
 import '../forgot_pass/forgot_pass_screen.dart';

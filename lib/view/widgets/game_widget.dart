@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore, unnecessary_brace_in_string_interps
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -493,100 +495,98 @@ Future<dynamic> subscriptionDialog(BuildContext context,
   return showDialog(
     context: context,
     builder: (context) {
-      return GetBuilder<SubscriptionController>(
-        builder: (ctrl) {
-          return SimpleDialog(
-            contentPadding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            backgroundColor: Theme.of(context).secondaryHeaderColor,
-            title: hotlinesAnalytics.appCommonText(
-                decorationColor: yellowColor,
-                color: yellowColor,
-                size: Get.height * .03,
-                decoration: TextDecoration.underline,
+      return GetBuilder<SubscriptionController>(builder: (ctrl) {
+        return SimpleDialog(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 30.h, vertical: 30.h),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          backgroundColor: Theme.of(context).secondaryHeaderColor,
+          title: hotlinesAnalytics.appCommonText(
+              decorationColor: yellowColor,
+              color: yellowColor,
+              size: Get.height * .03,
+              decoration: TextDecoration.underline,
+              weight: FontWeight.bold),
+          children: [
+            subscriptionDescText.appCommonText(
+                color: whiteColor,
+                size: Get.height * .021,
                 weight: FontWeight.bold),
-            children: [
-              subscriptionDescText
-                  .appCommonText(
+            20.h.H(),
+            Image.asset(
+              Assets.imagesSubscriptioon,
+              height: 300,
+            ),
+            20.h.H(),
+            RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    text: subSubTitleText,
+                    style: GoogleFonts.nunitoSans(
                       color: whiteColor,
-                      size: Get.height * .021,
-                      weight: FontWeight.bold),
-              20.h.H(),
-              Image.asset(
-                Assets.imagesSubscriptioon,
-                height: 300,
-              ),
-              20.h.H(),
-              RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text:
-                      subSubTitleText,
-                      style: GoogleFonts.nunitoSans(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: Get.height * .018,
+                      fontWeight: FontWeight.bold,
+                      fontSize: Get.height * .018,
+                    ),
+                    children: [
+                      linkTextWidget(context,
+                          text: TOS,
+                          color: yellowColor,
+                          link: 'https://www.hotlinesmd.com/terms-of-service'),
+                      TextSpan(
+                        text: ', ',
+                        style: GoogleFonts.nunitoSans(
+                          color: whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .018,
+                        ),
                       ),
-                      children: [
-                        linkTextWidget(context,
-                            text: TOS,
-                            color: yellowColor,
-                            link: 'https://www.hotlinesmd.com/terms-of-service'),
-                        TextSpan(
-                          text: ', ',
-                          style: GoogleFonts.nunitoSans(
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: Get.height * .018,
-                          ),
+                      linkTextWidget(context,
+                          text: EULA,
+                          color: yellowColor,
+                          link: 'https://www.hotlinesmd.com/eula'),
+                      TextSpan(
+                        text: ', and ',
+                        style: GoogleFonts.nunitoSans(
+                          color: whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Get.height * .018,
                         ),
-                        linkTextWidget(context,
-                            text: EULA,
-                            color: yellowColor,
-                            link: 'https://www.hotlinesmd.com/eula'),
-                        TextSpan(
-                          text: ', and ',
-                          style: GoogleFonts.nunitoSans(
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: Get.height * .018,
-                          ),
-                        ),
-                        linkTextWidget(context,
-                            text: privacyPolicy,
-                            color: yellowColor,
-                            link: 'https://www.hotlinesmd.com/privacy-policy'),
-                      ])),
-              (showButton ? 20 : 0).h.H(),
-              Visibility(
-                visible: showButton,
-                child: CommonAppButton(
-                  title: price == "0"
-                      ? startFreeTrial
-                      : "$upgradeFor${(price ?? "\$3.99")}/mo",
-                  textColor: blackColor,
-                  onTap: () => onTap(),
-                ).paddingSymmetric(horizontal: 40.h),
+                      ),
+                      linkTextWidget(context,
+                          text: privacyPolicy,
+                          color: yellowColor,
+                          link: 'https://www.hotlinesmd.com/privacy-policy'),
+                    ])),
+            (showButton ? 20 : 0).h.H(),
+            Visibility(
+              visible: showButton,
+              child: CommonAppButton(
+                title: price == "0"
+                    ? startFreeTrial
+                    : "$upgradeFor${(price ?? "\$3.99")}/mo",
+                textColor: blackColor,
+                onTap: () => onTap(),
+              ).paddingSymmetric(horizontal: 40.h),
+            ),
+            (showButton ? 10 : 0).h.H(),
+            Visibility(
+              visible: showButton,
+              child: InkWell(
+                highlightColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () => restoreOnTap(),
+                child: restore.appCommonText(
+                    color: yellowColor,
+                    size: Get.height * .022,
+                    decoration: TextDecoration.underline,
+                    decorationColor: yellowColor,
+                    weight: FontWeight.bold),
               ),
-              (showButton ? 10 : 0).h.H(),
-              Visibility(
-                visible: showButton,
-                child: InkWell(
-                  highlightColor: Colors.transparent,
-                  splashFactory: NoSplash.splashFactory,
-                  onTap: () => restoreOnTap(),
-                  child: restore.appCommonText(
-                      color: yellowColor,
-                      size: Get.height * .022,
-                      decoration: TextDecoration.underline,
-                      decorationColor: yellowColor,
-                      weight: FontWeight.bold),
-                ),
-              ),
-            ],
-          );
-        }
-      );
+            ),
+          ],
+        );
+      });
     },
   );
 }
@@ -605,14 +605,14 @@ class GameTabCard extends StatelessWidget {
   final GameListingController controller;
   final List<Color> sportSelectedColor = [
     const Color(0xff0C4981),
-    // const Color(0xff1A8B47),
+    const Color(0xff1A8B47),
     // const Color(0xffEABB42),
     // Colors.orange,
     // Colors.deepPurpleAccent
   ];
   final List<Color> sportColor = [
-    const Color(0xff0C4981).withOpacity(.4),
-    // const Color(0xff1A8B47).withOpacity(.4),
+    const Color(0xff0C4981).withOpacity(.3),
+    const Color(0xff1A8B47).withOpacity(.3),
     // const Color(0xffEABB42).withOpacity(.4),
     // Colors.orange.withOpacity(.4),
     // Colors.deepPurpleAccent.withOpacity(.4),
@@ -702,10 +702,9 @@ class GameTabCard extends StatelessWidget {
                             sportsLeagueList[index].gameImage,
                             height: MediaQuery.of(context).size.height * .04,
                             width: MediaQuery.of(context).size.width * .01,
-                            fit: /*index == 1 || index == 0
+                            fit: index == 1 /*|| index == 0*/
                                 ? BoxFit.cover
-                                :*/
-                                BoxFit.contain,
+                                : BoxFit.contain,
                             color: whiteColor,
                           ).paddingSymmetric(
                               vertical:
@@ -715,11 +714,13 @@ class GameTabCard extends StatelessWidget {
                           sportsLeagueList[index]
                               .gameName
                               .appCommonText(
+
                                   color: Colors.white,
                                   align: TextAlign.start,
                                   size:
-                                      MediaQuery.of(context).size.height * .018,
-                                  weight: FontWeight.w700)
+                                      MediaQuery.of(context).size.height * .02,
+                                  weight: controller.isSelectedGame ==
+                                      sportsLeagueList[index].gameName?FontWeight.bold:FontWeight.w500)
                               .paddingOnly(
                                   right:
                                       MediaQuery.of(context).size.height * .020)
@@ -731,267 +732,13 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 2 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
   }
 }
 
-/*class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      width: MediaQuery.of(context).size.height * .35,
-      backgroundColor: Theme.of(context).secondaryHeaderColor,
-      child: GetBuilder<GameListingController>(builder: (controller) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            110.h.H(),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  commonCachedNetworkImage(
-                    imageUrl:
-                        ('${AppUrls.imageUrl}${PreferenceManager.getUserProfile()}'),
-                    height: MediaQuery.of(context).size.height * .12,
-                    width: MediaQuery.of(context).size.height * .12,
-                  ),
-                  10.h.H(),
-                  (PreferenceManager.getUserName() ?? "Name")
-                      .toString()
-                      .appCommonText(
-                          color: yellowColor,
-                          align: TextAlign.start,
-                          weight: FontWeight.w700,
-                          size: MediaQuery.of(context).size.height * .02),
-                  (PreferenceManager.getUserEmail() ?? 'name@gmail.com')
-                      .toString()
-                      .appCommonText(
-                          color: yellowColor,
-                          align: TextAlign.start,
-                          weight: FontWeight.w700,
-                          size: MediaQuery.of(context).size.height * .022),
-                ],
-              ),
-            ),
-            20.h.H(),
-            commonDivider(context),
-            30.h.H(),
-            drawerCard(
-              icon: Assets.imagesNfl,
-              title: 'NFL',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                controller.isSelectedGame = sportsLeagueList[0].gameName;
-                controller.date = sportsLeagueList[0].date;
-                controller.sportKey = sportsLeagueList[0].key;
-                controller.apiKey = sportsLeagueList[0].apiKey;
-                controller.sportId = sportsLeagueList[0].sportId;
-                if (controller.isSelected
-                    .contains(sportsLeagueList[0].gameName)) {
-                } else {
-                  controller.isSelected.add(sportsLeagueList[0].gameName);
-                  Future.delayed(const Duration(seconds: 0), () {
-                    controller.isLoading.value = true;
-                    controller.isPagination = true;
-                    controller.getResponse(true, sportsLeagueList[0].key);
-                  });
-                }
-                controller.update();
-              },
-            ),
-            drawerCard(
-              icon: Assets.imagesNcaa,
-              title: 'NCAAF',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                controller.isSelectedGame = sportsLeagueList[1].gameName;
-                controller.date = sportsLeagueList[1].date;
-                controller.sportKey = sportsLeagueList[1].key;
-                controller.apiKey = sportsLeagueList[1].apiKey;
-                controller.sportId = sportsLeagueList[1].sportId;
-                if (controller.isSelected
-                    .contains(sportsLeagueList[1].gameName)) {
-                } else {
-                  controller.isSelected.add(sportsLeagueList[1].gameName);
-                  Future.delayed(const Duration(seconds: 0), () {
-                    controller.isLoading.value = true;
-                    controller.isPagination = true;
-                    controller.getResponse(true, sportsLeagueList[1].key);
-                  });
-                }
-                controller.update();
-              },
-            ),
-            drawerCard(
-              icon: Assets.imagesMlb,
-              title: 'MLB',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                controller.isSelectedGame = sportsLeagueList[2].gameName;
-                controller.date = sportsLeagueList[2].date;
-                controller.sportKey = sportsLeagueList[2].key;
-                controller.apiKey = sportsLeagueList[2].apiKey;
-                controller.sportId = sportsLeagueList[2].sportId;
-                if (controller.isSelected
-                    .contains(sportsLeagueList[2].gameName)) {
-                } else {
-                  controller.isSelected.add(sportsLeagueList[2].gameName);
-                  Future.delayed(const Duration(seconds: 0), () {
-                    controller.isLoading.value = true;
-                    controller.isPagination = true;
-                    controller.getResponse(true, sportsLeagueList[2].key);
-                  });
-                }
-                controller.update();
-              },
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.local_fire_department_outlined,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .06,
-              ),
-              title: 'Gambling 101',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState!.closeDrawer();
-                toggle = 0;
-                controller.isSelectedGame = 'Gambling 101';
-              },
-            ),
-            Visibility(
-              visible: (PreferenceManager.getIsLogin() ?? false) == true,
-              child: drawerCard(
-                widget: Icon(
-                  Icons.person_outline_rounded,
-                  color: whiteColor,
-                  size: MediaQuery.of(context).size.width * .06,
-                ),
-                title: 'Profile',
-                context: context,
-                onTap: () {
-                  scaffoldKey.currentState!.closeDrawer();
-                  Get.to(ProfileScreen());
-                },
-              ),
-            ),
-            drawerCard(
-              widget: Icon(
-                Icons.logout,
-                color: whiteColor,
-                size: MediaQuery.of(context).size.width * .05,
-              ),
-              title: 'Logout',
-              context: context,
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return exitApp(
-                      context,
-                      onTap: () {
-                        controller.logOut(context);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-            20.h.H(),
-            Container(
-              width: 160.w,
-              height: 70.w,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100.r),
-                  color: Theme.of(context).bottomAppBarColor),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      PreferenceManager.setIsDarkMod(false);
-                      Get.changeThemeMode(ThemeMode.light);
-                      // controller.isDarkMode = false;
-                      // isDark = false;
-                      controller.update();
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(2.sp),
-                      child: Container(
-                        width: 60.w,
-                        height: 50.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.horizontal(
-                                left: Radius.circular(100.r)),
-                            color: Theme.of(context).cardColor),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              Assets.imagesSunLight,
-                              // ignore: deprecated_member_use
-                              color: Theme.of(context).hintColor,
-                              width: 35.w,
-                              height: 35.w,
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      PreferenceManager.setIsDarkMod(true);
-                      Get.changeThemeMode(ThemeMode.dark);
-                      // controller.isDarkMode = true;
-                      // isDark = true;
-                      controller.update();
-                    },
-                    child: Container(
-                      width: 60.w,
-                      height: 50.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.horizontal(
-                              right: Radius.circular(100.r)),
-                          color: Theme.of(context).bottomAppBarColor),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            Assets.imagesMoon,
-                            // ignore: deprecated_member_use
-                            color: PreferenceManager.getIsDarkMode() ?? false
-                                ? whiteColor
-                                : greyDarkColor,
-                            width: 35.w,
-                            height: 35.w,
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ).paddingSymmetric(
-                horizontal: MediaQuery.of(Get.context!).size.width * .05),
-          ],
-        );
-      }),
-    );
-  }
-}*/
 
 Widget drawerCard(
     {String title = '',
@@ -1190,7 +937,8 @@ class NoGameWidget extends StatelessWidget {
 }
 
 class HeaderCard extends StatelessWidget {
-  const HeaderCard({Key? key}) : super(key: key);
+  const HeaderCard({Key? key, required this.sportName}) : super(key: key);
+  final String sportName;
 
   @override
   Widget build(BuildContext context) {
@@ -1211,13 +959,19 @@ class HeaderCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
-                      Assets.imagesNfl,
-                      height: MediaQuery.of(context).size.height * .017,
-                      width: MediaQuery.of(context).size.width * .01,
-                      fit: BoxFit.contain,
+                      sportName == 'NFL'
+                          ? Assets.imagesNfl
+                          : Assets.imagesNcaab,
+                      height: sportName == 'NFL'
+                          ? MediaQuery.of(context).size.height * .017
+                          : MediaQuery.of(context).size.height * .02,
+                      width: sportName == 'NFL'
+                          ? MediaQuery.of(context).size.width * .01
+                          : MediaQuery.of(context).size.width * .01,
+                      fit: BoxFit.cover,
                       color: whiteColor,
                     ),
-                    'NFL'
+                    sportName
                         .appCommonText(
                             align: TextAlign.start,
                             color: whiteColor,
@@ -1619,51 +1373,29 @@ class TransperCard extends StatelessWidget {
 
 var scaffoldKey = GlobalKey<ScaffoldState>();
 
-PreferredSize commonAppBar(
+AppBar commonAppBar(
     BuildContext context, GameListingController controller) {
-  return PreferredSize(
-      preferredSize: Size.fromHeight(125.w),
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        color: Theme.of(context).secondaryHeaderColor,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        scaffoldKey.currentState!.openDrawer();
-                      },
-                      child: Icon(
-                        Icons.menu,
-                        color: yellowColor,
-                        size: 35.h,
-                      )),
-                  Expanded(
-                    child: SvgPicture.asset(Assets.imagesLogo,
-                        height: 34.w, fit: BoxFit.contain),
-                  ),
-                  // const TransperCard(),
-                  const Icon(Icons.menu, color: Colors.transparent)
-                ],
-              ),
-              controller.isSelectedGame == 'Betting 101' ||
-                      controller.isSelectedGame == 'Contact'
-                  ? const SizedBox()
-                  : Positioned(
-                      right: 0,
-                      left: -9.h,
-                      child: buildAnimSearchBar(controller, context)),
-            ],
-          ),
-        ),
-      ));
+  return AppBar(
+    backgroundColor: Theme.of(context).secondaryHeaderColor,
+    actions: [
+      buildAnimSearchBar(controller, context),
+      (24.w).W(),
+    ],
+    centerTitle: true,
+    title: SvgPicture.asset(Assets.imagesLogo,
+        height: 34.w, fit: BoxFit.contain),
+    leading: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          scaffoldKey.currentState!.openDrawer();
+        },
+        child: Icon(
+          Icons.menu,
+          color: yellowColor,
+          size: 35.h,
+        )),
+  );
 }
 
 AnimSearchBar buildAnimSearchBar(

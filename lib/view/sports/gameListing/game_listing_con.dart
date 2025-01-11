@@ -192,7 +192,7 @@ class GameListingController extends GetxController {
       ? "2024-09-06"
       :*/
       DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().subtract(const Duration(days: 1)));
+          .format(DateTime.now() /*.subtract(const Duration(days: 1))*/);
 
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
@@ -628,11 +628,12 @@ class GameListingController extends GetxController {
                 mlbTodayEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey ==
-                    'NFL' /*&&
+                    sportKey ==
+                        'NFL' /*&&
                 (difference.inHours >= (-6))*/
                 /*&&
-                (event.status != "closed")*/) {
+                (event.status != "closed")*/
+                ) {
               if (nflTodayEventsList
                       .indexWhere((element) => element.id == event.id) !=
                   -1) {
@@ -644,16 +645,19 @@ class GameListingController extends GetxController {
                 sportKey == 'NCAA' &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed")) {
-              if (ncaaTodayEventsList.contains(event)) {
+              if (ncaaTodayEventsList
+                      .indexWhere((element) => element.id == event.id) !=
+                  -1) {
               } else {
                 ncaaTodayEventsList.add(event);
               }
-            } else if (((event.season?.id == 'sr:season:104319' ||
-                    event.season?.id == 'sr:season:104315') &&
+            } else if (((event.season?.id == 'sr:season:117435') &&
                 sportKey == 'NCAAB' &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed"))) {
-              if (ncaabTodayEventsList.contains(event)) {
+              if (ncaabTodayEventsList
+                      .indexWhere((element) => element.id == event.id) !=
+                  -1) {
               } else {
                 ncaabTodayEventsList.add(event);
               }
@@ -732,12 +736,16 @@ class GameListingController extends GetxController {
               } else {
                 ncaaTomorrowEventsList.add(event);
               }
-            } else if ((event.season?.id == 'sr:season:104319' ||
-                    event.season?.id == 'sr:season:104315') &&
+            } else if ((event.season?.id == 'sr:season:117435') &&
                 sportKey == 'NCAAB') {
-              if (ncaabTomorrowEventsList.contains(event)) {
+              if (ncaabSportEventsList
+                      .indexWhere((element) => element.id == event.id) !=
+                  -1) {
               } else {
-                ncaabTomorrowEventsList.add(event);
+                if (ncaabTomorrowEventsList.contains(event)) {
+                } else {
+                  ncaabTomorrowEventsList.add(event);
+                }
               }
             } else if (event.season?.id == 'sr:season:106289' &&
                 sportKey == 'NBA' &&
@@ -1689,6 +1697,14 @@ class GameListingController extends GetxController {
                   (team.fieldGoalDefense ?? 0).toString(),
                   (team.ternoverDefense ?? 0).toString(),
                 ];
+                element.awayDefense = [
+                  (team.passingYardDefense ?? 0).toString(),
+                  (team.passingTDSDefence ?? 0).toString(),
+                  (team.rushingDefense ?? 0).toString(),
+                  (team.rushingTDSDefence ?? 0).toString(),
+                  (team.interceptionDefense ?? 0).toString(),
+                  // (offenciveData?.defense?.interceptions ?? "0").toString(),
+                ];
                 element.awayQbDefenseRank = [
                   (team.passingYardDefenseRank ?? 0).toString(),
                   (team.passingTDSDefenceRank ?? 0).toString(),
@@ -1748,6 +1764,14 @@ class GameListingController extends GetxController {
                   ('${team.opponentFourtDown ?? 0}%').toString(),
                   (team.fieldGoalDefense ?? 0).toString(),
                   (team.ternoverDefense ?? 0).toString(),
+                ];
+                element.homeDefense = [
+                  (team.passingYardDefense ?? 0).toString(),
+                  (team.passingTDSDefence ?? 0).toString(),
+                  (team.rushingDefense ?? 0).toString(),
+                  (team.rushingTDSDefence ?? 0).toString(),
+                  (team.interceptionDefense ?? 0).toString(),
+                  // (offenciveData?.defense?.interceptions ?? "0").toString(),
                 ];
                 element.homeQbDefenseRank = [
                   (team.passingYardDefenseRank ?? 0).toString(),

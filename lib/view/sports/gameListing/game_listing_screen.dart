@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore, unused_local_variable
+
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,35 +61,34 @@ class SelectGameScreen extends StatelessWidget {
               appBar: commonAppBar(context, controller),
               drawer: buildDrawer(context, controller),
               drawerEnableOpenDragGesture: false,
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    /*  GameTabCard(
-                      onTapContact: () {
-                        toggle = 0;
-                        if (Platform.isIOS) {
-                          controller.launchEmailSubmission();
-                        } else {
-                          controller.isSelectedGame = 'Contact';
-                        }
-                        controller.update();
-                      },
-                      onTapGambling: () {
-                        toggle = 0;
-                        controller.isSelectedGame = 'Gambling 101';
-                        controller.update();
-                        // showDataAlert(context);
-                      },
-                      controller: controller,
-                    ),*/
-                    20.w.H(),
-                    Container(
+              body: Column(
+                children: [
+                  GameTabCard(
+                    onTapContact: () {
+                      toggle = 0;
+                      if (Platform.isIOS) {
+                        controller.launchEmailSubmission();
+                      } else {
+                        controller.isSelectedGame = 'Contact';
+                      }
+                      controller.update();
+                    },
+                    onTapGambling: () {
+                      toggle = 0;
+                      controller.isSelectedGame = 'Gambling 101';
+                      controller.update();
+                      // showDataAlert(context);
+                    },
+                    controller: controller,
+                  ),
+                  10.w.H(),
+                  Expanded(
+                    child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
                         color: Theme.of(context).cardColor,
                       ),
-                      height: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).size.height * .13,
+                      margin: const EdgeInsets.only(bottom: 10),
                       width: Get.width,
                       clipBehavior: Clip.antiAlias,
                       child: controller.isSelectedGame == 'Betting 101'
@@ -99,8 +101,8 @@ class SelectGameScreen extends StatelessWidget {
                           tableDetailWidget(context, controller),
                     ).paddingSymmetric(
                         horizontal: MediaQuery.of(context).size.width * .03),
-                  ],
-                ),
+                  ),
+                ],
               )),
           /* Obx(() => Get.find<SubscriptionController>().isLoading.value
               ? const AppProgress()
@@ -167,23 +169,8 @@ class SelectGameScreen extends StatelessWidget {
             Visibility(
                 visible: (PreferenceManager.getIsLogin() ?? false) == true,
                 child: commonDivider(context)),
-            /*drawerCard(
-              widget: SvgPicture.asset(
-                Assets.imagesNcaab,
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height * .035,
-                width: MediaQuery.of(context).size.width * .035,
-                fit: BoxFit.cover,
-              ),
-              title: 'NCAAB',
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 0);
-                controller.update();
-              },
-            ).paddingOnly(top: 30.h),
-            drawerCard(
+
+            /* drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
                 color: Colors.white,
@@ -219,6 +206,22 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),
+            drawerCard(
+              widget: SvgPicture.asset(
+                Assets.imagesNcaab,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .035,
+                width: MediaQuery.of(context).size.width * .035,
+                fit: BoxFit.cover,
+              ),
+              title: 'NCAAB',
+              context: context,
+              onTap: () {
+                scaffoldKey.currentState?.closeDrawer();
+                controller.tabClick(context, 1);
+                controller.update();
+              },
+            ),
             /*   drawerCard(
               icon: Assets.imagesNcaa,
               title: 'NCAAF',
@@ -525,10 +528,10 @@ class SelectGameScreen extends StatelessWidget {
     // log("spotList(controller)--${spotList(controller).length}");
     return Stack(
       children: [
-        const HeaderCard(),
-        Column(
+        Column (
           children: [
-            (MediaQuery.of(context).size.height * .06).H(),
+             HeaderCard(sportName: controller.sportKey,),
+            (MediaQuery.of(context).size.height * .01).H(),
             /*   Visibility(
               visible: (controller.sportKey == 'MLB' &&
                   !(controller.mlbSportEventsList.indexWhere((element) =>
@@ -568,8 +571,7 @@ class SelectGameScreen extends StatelessWidget {
                                       ? "'2024 season starts August 24th.'"
                                       : "")
                                   .appCommonText(
-                                      color: Theme.of(context)
-                                          .secondaryHeaderColor,
+                                      color: Theme.of(context).secondaryHeaderColor,
                                       size: Get.height * .02,
                                       weight: FontWeight.w800)
                             ],
@@ -580,8 +582,7 @@ class SelectGameScreen extends StatelessWidget {
                         ? Expanded(
                             child: RefreshIndicator(
                             onRefresh: () async {
-                              Future.delayed(const Duration(seconds: 0),
-                                  () async {
+                              Future.delayed(const Duration(seconds: 0), () async {
                                 if (!controller.isCallApi) {
                                   controller.isCallApi = true;
                                   await controller.getRefreshResponse(
@@ -622,22 +623,20 @@ class SelectGameScreen extends StatelessWidget {
                                           : Column(
                                               children: [
                                                 GameWidget(
-                                                  status: spotList(
-                                                          controller)[index]
-                                                      .status
-                                                      .toString(),
+                                                  status:
+                                                      spotList(controller)[index]
+                                                          .status
+                                                          .toString(),
                                                   flameNumber: controller
                                                               .sportKey !=
                                                           "MLB"
-                                                      ? spotList(
-                                                              controller)[index]
+                                                      ? spotList(controller)[index]
                                                           .getFlameValue
                                                       : 0,
-                                                  isShowWeather:
-                                                      controller.sportKey !=
-                                                              "NCAAB" ||
-                                                          controller.sportKey !=
-                                                              "NBA",
+                                                  isShowWeather: controller
+                                                              .sportKey !=
+                                                          "NCAAB" ||
+                                                      controller.sportKey != "NBA",
                                                   onTap: () {
                                                     controller.gameOnClick(
                                                         context, index);
@@ -645,50 +644,45 @@ class SelectGameScreen extends StatelessWidget {
                                                   isShowFlam:
                                                       (controller.sportKey !=
                                                           "MLB"),
-                                                  awayTeamMoneyLine: spotList(
-                                                          controller)[index]
-                                                      .awayMoneyLineValue,
-                                                  homeTeamMoneyLine: spotList(
-                                                          controller)[index]
-                                                      .homeMoneyLineValue,
-                                                  awayTeamOU: spotList(
-                                                          controller)[index]
-                                                      .awayOUValue,
-                                                  homeTeamOU: spotList(
-                                                          controller)[index]
-                                                      .homeOUValue,
-                                                  weather: spotList(
-                                                          controller)[index]
-                                                      .weather,
+                                                  awayTeamMoneyLine:
+                                                      spotList(controller)[index]
+                                                          .awayMoneyLineValue,
+                                                  homeTeamMoneyLine:
+                                                      spotList(controller)[index]
+                                                          .homeMoneyLineValue,
+                                                  awayTeamOU:
+                                                      spotList(controller)[index]
+                                                          .awayOUValue,
+                                                  homeTeamOU:
+                                                      spotList(controller)[index]
+                                                          .homeOUValue,
+                                                  weather:
+                                                      spotList(controller)[index]
+                                                          .weather,
                                                   homeTeamSpread: spotList(
                                                               controller)[index]
                                                           .homeSpreadValue
                                                           .contains('-')
-                                                      ? spotList(
-                                                              controller)[index]
+                                                      ? spotList(controller)[index]
                                                           .homeSpreadValue
                                                       : '+${spotList(controller)[index].homeSpreadValue}',
                                                   awayTeamSpread: spotList(
                                                               controller)[index]
                                                           .awaySpreadValue
                                                           .contains('-')
-                                                      ? spotList(
-                                                              controller)[index]
+                                                      ? spotList(controller)[index]
                                                           .awaySpreadValue
                                                       : '+${spotList(controller)[index].awaySpreadValue}',
-                                                  temp: spotList(
-                                                          controller)[index]
+                                                  temp: spotList(controller)[index]
                                                       .tmpInFahrenheit,
-                                                  isLive: (spotList(controller)[
-                                                                  index]
+                                                  isLive: (spotList(
+                                                                  controller)[index]
                                                               .status ==
                                                           'live' ||
-                                                      spotList(controller)[
-                                                                  index]
+                                                      spotList(controller)[index]
                                                               .status ==
                                                           'inprogress' ||
-                                                      spotList(controller)[
-                                                                  index]
+                                                      spotList(controller)[index]
                                                               .status ==
                                                           'halftime'),
                                                   dateTime: (spotList(controller)[
@@ -705,73 +699,61 @@ class SelectGameScreen extends StatelessWidget {
                                                               'halftime')
                                                       ? (controller.sportKey ==
                                                                   "NCAAB" ||
-                                                              controller
-                                                                      .sportKey ==
+                                                              controller.sportKey ==
                                                                   "NBA")
                                                           ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                                                          : spotList(controller)[
-                                                                  index]
+                                                          : spotList(
+                                                                  controller)[index]
                                                               .currentTime
                                                               .split(',')
                                                               .first
-                                                      : spotList(controller)[
-                                                                      index]
+                                                      : spotList(controller)[index]
                                                                   .status ==
                                                               'closed'
                                                           ? "Final"
                                                           : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
-                                                      spotList(
-                                                          controller)[index],
+                                                      spotList(controller)[index],
                                                       controller,
                                                       index),
-                                                  awayTeamRank:
-                                                      (spotList(controller)[
-                                                                      index]
-                                                                  .awayRank ==
-                                                              '0'
-                                                          ? ''
-                                                          : spotList(controller)[
-                                                                  index]
-                                                              .awayRank),
-                                                  awayTeamAbb: (mobileView.size
-                                                              .shortestSide <
+                                                  awayTeamRank: (spotList(
+                                                                  controller)[index]
+                                                              .awayRank ==
+                                                          '0'
+                                                      ? ''
+                                                      : spotList(controller)[index]
+                                                          .awayRank),
+                                                  awayTeamAbb: (mobileView
+                                                              .size.shortestSide <
                                                           600
-                                                      ? spotList(
-                                                              controller)[index]
+                                                      ? spotList(controller)[index]
                                                           .awayTeamAbb
-                                                      : spotList(
-                                                              controller)[index]
+                                                      : spotList(controller)[index]
                                                           .awayTeam),
-                                                  awayTeamScore: (spotList(
-                                                          controller)[index]
-                                                      .awayScore),
+                                                  awayTeamScore:
+                                                      (spotList(controller)[index]
+                                                          .awayScore),
                                                   homeTeamImageUrl: homeLogo(
-                                                      spotList(
-                                                          controller)[index],
+                                                      spotList(controller)[index],
                                                       controller,
                                                       index),
-                                                  homeTeamRank:
-                                                      (spotList(controller)[
-                                                                      index]
-                                                                  .homeRank ==
-                                                              '0'
-                                                          ? ''
-                                                          : spotList(controller)[
-                                                                  index]
-                                                              .homeRank),
-                                                  homeTeamAbb: (mobileView.size
-                                                              .shortestSide <
+                                                  homeTeamRank: (spotList(
+                                                                  controller)[index]
+                                                              .homeRank ==
+                                                          '0'
+                                                      ? ''
+                                                      : spotList(controller)[index]
+                                                          .homeRank),
+                                                  homeTeamAbb: (mobileView
+                                                              .size.shortestSide <
                                                           600
-                                                      ? spotList(
-                                                              controller)[index]
+                                                      ? spotList(controller)[index]
                                                           .homeTeamAbb
-                                                      : spotList(
-                                                              controller)[index]
+                                                      : spotList(controller)[index]
                                                           .homeTeam),
-                                                  homeTeamScore: spotList(
-                                                          controller)[index]
-                                                      .homeScore,
+                                                  homeTeamScore:
+                                                      spotList(controller)[index]
+                                                          .homeScore,
                                                 ),
                                                 spotList(controller).length >= 2
                                                     ? /*(controller.sportKey ==
@@ -782,18 +764,20 @@ class SelectGameScreen extends StatelessWidget {
                                                         ? const SizedBox()
                                                         :*/
                                                     index + 1 ==
-                                                            (spotList(
-                                                                    controller)
+                                                            (spotList(controller)
                                                                 .length)
                                                         ? const SizedBox()
-                                                        : (DateTime.parse(spotList(controller)[index]
+                                                        : (DateTime.parse(spotList(controller)[
+                                                                                index]
                                                                             .scheduled ??
                                                                         '')
                                                                     .toLocal()
                                                                     .day !=
-                                                                DateTime.parse(
-                                                                        spotList(controller)[index + 1].scheduled ??
-                                                                            '')
+                                                                DateTime.parse(spotList(controller)[
+                                                                                index +
+                                                                                    1]
+                                                                            .scheduled ??
+                                                                        '')
                                                                     .toLocal()
                                                                     .day)
                                                             ? Divider(
@@ -827,24 +811,20 @@ class SelectGameScreen extends StatelessWidget {
                                   SportEvents competitors =
                                       controller.searchList[index];
                                   String date = DateFormat.MMMd().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
+                                      DateTime.parse(competitors.scheduled ?? '')
                                           .toLocal());
                                   String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
+                                      DateTime.parse(competitors.scheduled ?? '')
                                           .toLocal());
                                   String time = DateFormat('hh:mm').format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
+                                      DateTime.parse(competitors.scheduled ?? '')
                                           .toLocal());
                                   return Visibility(
                                     visible: (competitors.status != 'closed') ||
                                         (competitors.status != 'postponed'),
                                     child: GameWidget(
                                       status: competitors.status.toString(),
-                                      isShowFlam:
-                                          (controller.sportKey != "MLB"),
+                                      isShowFlam: (controller.sportKey != "MLB"),
                                       flameNumber: controller.sportKey != "MLB"
                                           ? competitors.getFlameValue
                                           : 0,
@@ -862,35 +842,30 @@ class SelectGameScreen extends StatelessWidget {
                                       awayTeamOU: competitors.awayOUValue,
                                       homeTeamOU: competitors.homeOUValue,
                                       weather: competitors.weather,
-                                      homeTeamSpread: competitors
-                                              .homeSpreadValue
-                                              .contains('-')
-                                          ? competitors.homeSpreadValue
-                                          : '+${competitors.homeSpreadValue}',
-                                      awayTeamSpread: competitors
-                                              .awaySpreadValue
-                                              .contains('-')
-                                          ? competitors.awaySpreadValue
-                                          : '+${competitors.awaySpreadValue}',
+                                      homeTeamSpread:
+                                          competitors.homeSpreadValue.contains('-')
+                                              ? competitors.homeSpreadValue
+                                              : '+${competitors.homeSpreadValue}',
+                                      awayTeamSpread:
+                                          competitors.awaySpreadValue.contains('-')
+                                              ? competitors.awaySpreadValue
+                                              : '+${competitors.awaySpreadValue}',
                                       temp: competitors.tmpInFahrenheit,
                                       isLive: (competitors.status == 'live' ||
                                           competitors.status == "inprogress" ||
                                           competitors.status == "halftime"),
                                       dateTime: (competitors.status == 'live' ||
-                                              competitors.status ==
-                                                  "inprogress" ||
+                                              competitors.status == "inprogress" ||
                                               competitors.status == "halftime")
                                           ? (controller.sportKey == "NCAAB" ||
                                                   controller.sportKey == "NBA")
                                               ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
                                               : '${competitors.inningHalf}${competitors.inning}, $time'
-                                          : competitors
-                                          .status ==
-                                          'closed'
-                                          ? "Final"
-                                          : '$date, $dateTime',
-                                      awayTeamImageUrl: awayLogo(
-                                          competitors, controller, index),
+                                          : competitors.status == 'closed'
+                                              ? "Final"
+                                              : '$date, $dateTime',
+                                      awayTeamImageUrl:
+                                          awayLogo(competitors, controller, index),
                                       awayTeamRank: (competitors.awayRank == '0'
                                           ? ''
                                           : competitors.awayRank),
@@ -899,8 +874,8 @@ class SelectGameScreen extends StatelessWidget {
                                               ? competitors.awayTeamAbb
                                               : competitors.awayTeam),
                                       awayTeamScore: (competitors.awayScore),
-                                      homeTeamImageUrl: homeLogo(
-                                          competitors, controller, index),
+                                      homeTeamImageUrl:
+                                          homeLogo(competitors, controller, index),
                                       homeTeamRank: (competitors.homeRank == '0'
                                           ? ''
                                           : competitors.homeRank),
@@ -918,10 +893,11 @@ class SelectGameScreen extends StatelessWidget {
                             ),
                           ),
             (MediaQuery.of(context).size.height * .01).H(),
+
           ],
         ),
         Obx(() =>
-            controller.isLoading.value ? const AppProgress() : const SizedBox())
+        controller.isLoading.value ? const AppProgress() : const SizedBox())
       ],
     );
   }
@@ -930,7 +906,9 @@ class SelectGameScreen extends StatelessWidget {
       SportEvents competitors, GameListingController controller, int index) {
     return competitors.awayTeam == 'North Carolina State Wolfpack'
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-        : competitors.awayTeamAbb == 'ALBY'
+        : competitors.awayTeamAbb == 'UAG'
+            ? "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/399.png&h=200&w=200"
+            : competitors.awayTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
             : competitors.awayTeamAbb == 'LINW'
                 ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
@@ -987,10 +965,14 @@ class SelectGameScreen extends StatelessWidget {
 
   String homeLogo(
       SportEvents competitors, GameListingController controller, int index) {
-    return competitors.homeTeam == 'North Carolina State Wolfpack'
+    return competitors.homeTeamAbb == 'IUI'
+        ? 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/85.png&h=200&w=200'
+        :competitors.homeTeam == 'North Carolina State Wolfpack'
         ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
         : competitors.homeTeamAbb == 'ALBY'
             ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
+            : competitors.homeTeamAbb == 'MTU'
+            ? "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200"
             : competitors.homeTeamAbb == 'LMC'
                 ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
                 : competitors.homeTeamAbb == 'IUN'

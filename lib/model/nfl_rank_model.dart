@@ -72,6 +72,7 @@ class NFLGameRank {
   num? ternoverOffenseRank;
   num? ternoverDefenseRank;
   num? interceptionDefenseRank;
+  num? interceptionDefense;
 
   NFLGameRank(
       {this.id,
@@ -117,6 +118,7 @@ class NFLGameRank {
         this.fieldGoalDefenseRank,
         this.ternoverOffenseRank,
         this.interceptionDefenseRank,
+        this.interceptionDefense,
         this.ternoverDefenseRank});
 
   NFLGameRank.fromJson(Map<String, dynamic> json) {
@@ -164,6 +166,7 @@ class NFLGameRank {
     ternoverOffenseRank = json['ternover_offense_rank'];
     ternoverDefenseRank = json['ternover_defense_rank'];
     interceptionDefenseRank = json['interception_defense_rank'];
+    interceptionDefense = json['interception_defense'];
   }
 
   Map<String, dynamic> toJson() {
@@ -212,6 +215,7 @@ class NFLGameRank {
     data['ternover_offense_rank'] = ternoverOffenseRank;
     data['ternover_defense_rank'] = ternoverDefenseRank;
     data['interception_defense_rank'] = interceptionDefenseRank;
+    data['interception_defense'] = interceptionDefense;
     return data;
   }
 }

@@ -11,7 +11,6 @@ import '../../../constant/app_strings.dart';
 import '../../../constant/shred_preference.dart';
 import '../../../model/response_item.dart';
 import '../../../theme/helper.dart';
-import '../../main/app_starting_screen.dart';
 import '../../sports/gameListing/game_listing_screen.dart';
 
 class RegisterCon extends GetxController {

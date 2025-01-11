@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, duplicate_ignore, non_constant_identifier_names
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppUrls {
@@ -65,7 +67,7 @@ class RequestParam {
 // static const showError = "show_error"; // -> bool in String
 }
 
-String currentYear = (DateTime.now().year).toString();
+String currentYear = (DateTime.now().year-1).toString();
 String SEASONS = 'REG';
 
 class MethodNames {

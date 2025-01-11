@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ? Container(
               height: Get.height,
               width: Get.width,
-              color: appColor,
+              color: Theme.of(context).secondaryHeaderColor,
               child: Padding(
                 padding: const EdgeInsets.all(60),
                 child: Center(
