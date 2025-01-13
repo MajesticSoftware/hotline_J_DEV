@@ -152,7 +152,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
         height: MediaQuery.sizeOf(context).height * .038,
         width: (toggle == 0)
             ? MediaQuery.sizeOf(context).height * .038
-            : widget.width-48.w,
+            : widget.width-MediaQuery.sizeOf(context).height * .038,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           /// can add custom  color or the color will be white

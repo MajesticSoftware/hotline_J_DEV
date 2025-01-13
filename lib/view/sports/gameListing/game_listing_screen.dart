@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -58,7 +59,7 @@ class SelectGameScreen extends StatelessWidget {
           Scaffold(
               key: scaffoldKey,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: commonAppBar(context, controller),
+              appBar: isTablet(context)?commonTabletAppBarWidget(context,controller):commonAppBar(context, controller),
               drawer: buildDrawer(context, controller),
               drawerEnableOpenDragGesture: false,
               body: Column(
@@ -111,6 +112,7 @@ class SelectGameScreen extends StatelessWidget {
       );
     });
   }
+
 
   Drawer buildDrawer(BuildContext context, GameListingController controller) {
     return Drawer(
@@ -206,7 +208,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),
-            drawerCard(
+            /*drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
                 color: Colors.white,
@@ -222,7 +224,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ),
-            /*   drawerCard(
+             drawerCard(
               icon: Assets.imagesNcaa,
               title: 'NCAAF',
               context: context,

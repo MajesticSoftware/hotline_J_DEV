@@ -732,7 +732,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 2 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
@@ -1375,27 +1375,88 @@ var scaffoldKey = GlobalKey<ScaffoldState>();
 
 AppBar commonAppBar(
     BuildContext context, GameListingController controller) {
+
   return AppBar(
     backgroundColor: Theme.of(context).secondaryHeaderColor,
     actions: [
       buildAnimSearchBar(controller, context),
-      (24.w).W(),
+      SizedBox(width: 24.w), // Using SizedBox for consistent spacing
     ],
     centerTitle: true,
-    title: SvgPicture.asset(Assets.imagesLogo,
-        height: 34.w, fit: BoxFit.contain),
+    title: SvgPicture.asset(
+      Assets.imagesLogo,
+      height: 34.w,
+      fit: BoxFit.contain,
+    ),
     leading: InkWell(
-        splashFactory: NoSplash.splashFactory,
-        highlightColor: Colors.transparent,
-        onTap: () {
-          scaffoldKey.currentState!.openDrawer();
-        },
-        child: Icon(
-          Icons.menu,
-          color: yellowColor,
-          size: 35.h,
-        )),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        scaffoldKey.currentState!.openDrawer();
+      },
+      child: Icon(
+        Icons.menu,
+        color: yellowColor,
+        size: 35.h,
+      ),
+    ),
   );
+}
+
+
+bool isTablet(BuildContext context) {
+  var size = MediaQuery.of(context).size;
+  var aspectRatio = size.width / size.height;
+
+  // Check if the device has a typical tablet aspect ratio and size
+  return (size.shortestSide > 600) && (aspectRatio < 1.6);
+}
+
+PreferredSize commonTabletAppBarWidget(
+    BuildContext context, GameListingController controller) {
+  return PreferredSize(
+      preferredSize: Size.fromHeight(110.w),
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        color: Theme.of(context).secondaryHeaderColor,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 27.w, left: 24.w, right: 24.w),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        scaffoldKey.currentState!.openDrawer();
+                      },
+                      child: Icon(
+                        Icons.menu,
+                        color: yellowColor,
+                        size: 35.h,
+                      )),
+                  Expanded(
+                    child: SvgPicture.asset(Assets.imagesLogo,
+                        height: 34.w, fit: BoxFit.contain),
+                  ),
+                  // const TransperCard(),
+                  const Icon(Icons.menu, color: Colors.transparent)
+                ],
+              ),
+              controller.isSelectedGame == 'Betting 101' ||
+                  controller.isSelectedGame == 'Contact'
+                  ? const SizedBox()
+                  : Positioned(
+                  right: 0,
+                  left: -9.h,
+                  child: buildAnimSearchBar(controller, context)),
+            ],
+          ),
+        ),
+      ));
 }
 
 AnimSearchBar buildAnimSearchBar(
