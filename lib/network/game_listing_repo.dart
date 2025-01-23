@@ -268,7 +268,7 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
-  ///NBA RUSHING ROSTER
+  ///NBA PROFILE
   Future<ResponseItem> nbaRosterRepo(
       {String teamId = '', String seasons = '', String sportKey = ''}) async {
     ResponseItem result;

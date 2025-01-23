@@ -564,7 +564,7 @@ Future<dynamic> subscriptionDialog(BuildContext context,
               child: CommonAppButton(
                 title: price == "0"
                     ? startFreeTrial
-                    : "$upgradeFor${(price ?? "\$3.99")}/mo",
+                    : "$upgradeFor${(price ?? "\$5.99")}/mo",
                 textColor: blackColor,
                 onTap: () => onTap(),
               ).paddingSymmetric(horizontal: 40.h),
@@ -732,7 +732,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 2 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);

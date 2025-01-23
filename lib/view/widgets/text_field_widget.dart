@@ -56,6 +56,7 @@ class CommonTextField extends StatelessWidget {
           color: Theme.of(context).secondaryHeaderColor,
           fontWeight: FontWeight.w700,
         ),
+        cursorColor: Theme.of(context).secondaryHeaderColor,
         inputFormatters: inputFormatters,
         obscureText: obscureText ?? false,
         textInputAction: TextInputAction.done,

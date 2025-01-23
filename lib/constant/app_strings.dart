@@ -69,5 +69,5 @@ const newVersion  = 'New Version';
 const updateVersionText  = 'There is a new version of the app available. please go to the app store to update';
 const startFreeTrial = 'Start Free Trial';
 const privacyPolicy = 'Privacy Policy.';
-const subSubTitleText = "After the 30 days this subscription will automatically renew for \$3.99/mo. You can cancel at any time. By upgrading you agree to Hotlines ";
+const subSubTitleText = "After the 30 days this subscription will automatically renew for \$5.99/mo. You can cancel at any time. By upgrading you agree to Hotlines ";
 const subscriptionDescText = "30 Day Free Trial now available for our next level analytics that help you easily identify the biggest mismatches in every game!";

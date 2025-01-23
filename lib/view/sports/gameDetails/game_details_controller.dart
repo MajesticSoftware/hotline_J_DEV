@@ -38,6 +38,9 @@ class GameDetailsController extends GetxController {
     'Field goal Percentage',
     'Turnovers / Game',
   ];
+
+  List<String> statics = ['Pts/Gm', 'Rbs/Gm', 'Asst/Gm'];
+
   List shortOffensive = [
     'PPG',
     'RYG',
@@ -50,19 +53,21 @@ class GameDetailsController extends GetxController {
     'FGP',
     'TG',
   ];
+
   List nbaOffensive = [
     'Points/Game',
-    'Rebounds/Game',
     'Assists/Game',
-    'Steals/Game',
-    'Blocks/Game',
-    'Total Turnovers/Game',
-    'Fouls/Game',
-    'FG att / made / %',
-    '3P att / made / %',
-    'FT att / made / %',
-    'True Shooting',
-    'Team PER Off',
+    'Turnovers/Game',
+    'Rebounds/Game',
+    // 'Steals/Game',
+    // 'Blocks/Game',
+    // 'Total Turnovers/Game',
+    // 'Fouls/Game',
+    'FG made / att / %',
+    '3P made / att / %',
+    'FT made / att / %',
+    // 'True Shooting',
+    // 'Team PER Off',
   ];
   List shortOffensiveNBA = [
     'PG',
@@ -132,31 +137,33 @@ class GameDetailsController extends GetxController {
   ];
   List nbaDefensive = [
     'Points Allowed/Game',
-    'Opponent Rebounds/Game',
     'Opponent Assists/Game',
-    'Opponent Steals/Game',
-    'Opponent Blocks/Game',
-    'Opponent Total Turnovers/Game',
-    'Opponent Fouls/Game',
-    'Opponent FG att / made / %',
-    'Opponent 3P att / made / %',
-    'Opponent FT att / made / %',
-    'Opponent True Shooting',
-    'Team PER Def',
+    'Opponent Turnovers/Game',
+    'Opponent Rebounds/Game',
+    // 'Opponent Steals/Game',
+    // 'Opponent Blocks/Game',
+    // 'Opponent Total Turnovers/Game',
+    // 'Opponent Fouls/Game',
+    'Opponent FG made / att / %',
+    'Opponent 3P made / att / %',
+    'Opponent FT made / att / %',
+    // 'Opponent True Shooting',
+    // 'Team PER Def',
   ];
   List nbaMobileDefensive = [
     'Points Allowed/Game',
-    'Opp Rebounds/Game',
     'Opp Assists/Game',
-    'Opp Steals/Game',
-    'Opp Blocks/Game',
-    'Opp Total Turnovers/Game',
-    'Opp Fouls/Game',
-    'Opp FG att / made / %',
-    'Opp 3P att / made / %',
-    'Opp FT att / made / %',
-    'Opp True Shooting',
-    'Team PER Def',
+    'Opp Turnovers/Game',
+    'Opp Rebounds/Game',
+    // 'Opp Steals/Game',
+    // 'Opp Blocks/Game',
+    // 'Opp Total Turnovers/Game',
+    // 'Opp Fouls/Game',
+    'Opp FG made / att / %',
+    'Opp 3P made / att / %',
+    'Opp FT made / att / %',
+    // 'Opp True Shooting',
+    // 'Team PER Def',
   ];
   List pitchingMLB = [
     'Earned Run Average (ERA)',
@@ -439,8 +446,10 @@ class GameDetailsController extends GetxController {
                 players.receiving = season.teams?[0].statistics?.receiving;
                 players.rushing = season.teams?[0].statistics?.rushing;
                 players.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
-                players.receiving?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
-                players.rushing?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.receiving?.gamesPlayed =
+                    season.teams?[0].statistics?.gamesPlayed;
+                players.rushing?.gamesPlayed =
+                    season.teams?[0].statistics?.gamesPlayed;
               }
             }
           }
@@ -483,8 +492,10 @@ class GameDetailsController extends GetxController {
                 players.receiving = season.teams?[0].statistics?.receiving;
                 players.rushing = season.teams?[0].statistics?.rushing;
                 players.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
-                players.receiving?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
-                players.rushing?.gamesPlayed = season.teams?[0].statistics?.gamesPlayed;
+                players.receiving?.gamesPlayed =
+                    season.teams?[0].statistics?.gamesPlayed;
+                players.rushing?.gamesPlayed =
+                    season.teams?[0].statistics?.gamesPlayed;
               }
             }
           }
@@ -866,7 +877,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-             /* gameDetails.homeDefense = [
+              /* gameDetails.homeDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -1338,7 +1349,7 @@ class GameDetailsController extends GetxController {
               var offenciveData = response.record;
               var defenciveData = response.opponents;
               num totalGame = offenciveData?.gamesPlayed ?? 1;
-             /* gameDetails.awayDefense = [
+              /* gameDetails.awayDefense = [
                 ((int.parse(defenciveData?.passing?.yards.toString() ?? "0") /
                         totalGame)
                     .toStringAsFixed(1)),
@@ -1514,7 +1525,6 @@ class GameDetailsController extends GetxController {
                     sportKey: sportKey);
               }
             }
-
           } else {
             isLoading.value = false;
           }
@@ -1802,30 +1812,86 @@ class GameDetailsController extends GetxController {
   }
 
   ///NBA STATICS API
-
   Future staticsAwayNBA({
     String awayId = '',
     bool isLoad = false,
     required SportEvents gameDetails,
     String key = '',
   }) async {
-    gameDetails.awayRushingPlayer.clear();
+    // Ensure this list is mutable
+    gameDetails.awayRushingPlayer = [];
+    gameDetails.startingAwayFiveList = [];
     isLoading.value = !isLoad ? false : true;
+
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result =
-        await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
+
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
-
         if (response.players != null) {
-          response.players?.forEach((player) {
-            gameDetails.awayRushingPlayer.add(player);
-          });
+          // Assign a mutable list to awayRushingPlayer
+          gameDetails.awayRushingPlayer = List.from(response.players!);
+
+          // Sorting players for awayRushingPlayer based on points
+          gameDetails.awayRushingPlayer.sort((a, b) =>
+              (b.average?.points ?? 0).compareTo(a.average?.points ?? 0));
+
+          // Finding the top two players based on minutes
+          var topPlayers = response.players!
+              .where((element) => element.position == 'G')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+
+          // Assign the first position as pgPlayer and second position as sgPlayer
+          if (topPlayers.isNotEmpty) {
+            gameDetails.pgDataAway = topPlayers[0];
+            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+              ..add(topPlayers[0]); // First position
+          }
+          if (topPlayers.length > 1) {
+            gameDetails.sgDataAway = topPlayers[1];
+            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+              ..add(topPlayers[1]); // Second position
+          }
+
+          // Finding the top 3 players based on minutes for the 'F' position
+          var topFPlayers = response.players!
+              .where((element) => element.position == 'F')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+
+          // Assign the top 3 players to respective positions if available
+          if (topFPlayers.isNotEmpty) {
+            gameDetails.sfDataAway = topFPlayers[0];
+            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+              ..add(topFPlayers[0]); // First position (most minutes)
+          }
+          if (topFPlayers.length > 1) {
+            gameDetails.pfDataAway = topFPlayers[1];
+            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+              ..add(topFPlayers[1]); // Second position
+          }
+          var topCPlayers = response.players!
+              .where((element) => element.position == 'C')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+          if (topCPlayers.isNotEmpty) {
+            gameDetails.cDataAway = topCPlayers[0];
+            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+              ..add(topCPlayers[0]); // Third position
+          }else{
+            if (topFPlayers.length > 2) {
+              gameDetails.cDataAway = topFPlayers[2];
+              gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
+                ..add(topFPlayers[2]); // Second position
+            }
+          }
         }
-        (gameDetails.awayRushingPlayer).sort((a, b) =>
-            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
         update();
       } else {
         isLoading.value = false;
@@ -1833,12 +1899,13 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERROR RECORD NFL && NCAA--------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
     }
+
     update();
   }
+
+
+
 
   Future staticsHomeNBA({
     String homeId = '',
@@ -1846,23 +1913,81 @@ class GameDetailsController extends GetxController {
     required SportEvents gameDetails,
     String sportKey = '',
   }) async {
-    gameDetails.homeRushingPlayer.clear();
+    gameDetails.homeRushingPlayer = [];
+    gameDetails.startingHomeFiveList = [];// Ensure this list is mutable
     isLoading.value = !isLoad ? false : true;
+
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
+
     try {
       if (result.status) {
         NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
-
         if (response.players != null) {
-          response.players?.forEach((player) {
-            gameDetails.homeRushingPlayer.add(player);
-          });
+          // Assign a mutable list to homeRushingPlayer
+          gameDetails.homeRushingPlayer = List.from(response.players!);
+
+          // Sorting players for homeRushingPlayer based on points
+          gameDetails.homeRushingPlayer.sort((a, b) =>
+              (b.average?.points ?? 0).compareTo(a.average?.points ?? 0));
+
+          // Finding the top two players based on minutes
+          var topPlayers = response.players!
+              .where((element) => element.position == 'G')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+
+          // Assign the first position as pgPlayer and second position as sgPlayer
+          if (topPlayers.isNotEmpty) {
+            gameDetails.pgDataHome = topPlayers[0];
+            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+              ..add(topPlayers[0]); // First position
+          }
+          if (topPlayers.length > 1) {
+            gameDetails.sgDataHome = topPlayers[1];
+            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+              ..add(topPlayers[1]); // Second position
+          }
+
+          // Finding the top 3 players based on minutes for the 'F' position
+          var topFPlayers = response.players!
+              .where((element) => element.position == 'F')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+
+          // Assign the top 3 players to respective positions if available
+          if (topFPlayers.isNotEmpty) {
+            gameDetails.sfDataHome = topFPlayers[0];
+            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+              ..add(topFPlayers[0]); // First position (most minutes)
+          }
+          if (topFPlayers.length > 1) {
+            gameDetails.pfDataHome = topFPlayers[1];
+            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+              ..add(topFPlayers[1]); // Second position
+          }
+
+          var topCPlayers = response.players!
+              .where((element) => element.position == 'C')
+              .toList()
+            ..sort((a, b) =>
+                (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
+          if (topCPlayers.isNotEmpty) {
+            gameDetails.cDataHome = topCPlayers[0];
+            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+              ..add(topCPlayers[0]); // Third position
+          }else{
+            if (topFPlayers.length > 2) {
+              gameDetails.cDataHome = topFPlayers[2];
+              gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
+                ..add(topFPlayers[2]); // Second position
+            }
+          }
         }
-        (gameDetails.homeRushingPlayer).sort((a, b) =>
-            (b.average?.points ?? 0).compareTo((a.average?.points ?? 0)));
       } else {
         isLoading.value = false;
       }
@@ -1870,13 +1995,12 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       log('ERROR RECORD NFL && NCAA--------$e');
-      // showAppSnackBar(
-      //   errorText,
-      // );
     }
 
     update();
   }
+
+
 
   ///MLB INJURY REPORT
   Future mlbInjuriesResponse(

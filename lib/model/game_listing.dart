@@ -64,11 +64,11 @@ class SportEvents {
   String? scheduled;
   bool? startTimeTbd;
   String? status;
-  List<HotlinesModel> hotlinesData =[];
-  List<HotlinesModel> hotlinesMainData =[];
-  List<HotlinesModel> hotlinesDData =[];
-  List<HotlinesModel> hotlinesFData =[];
-  List<HotlinesModel> hotlinesMData =[];
+  List<HotlinesModel> hotlinesData = [];
+  List<HotlinesModel> hotlinesMainData = [];
+  List<HotlinesModel> hotlinesDData = [];
+  List<HotlinesModel> hotlinesFData = [];
+  List<HotlinesModel> hotlinesMData = [];
   List<String> nbaAwayOffensiveList = [];
   List<String> nbaAwayDefensiveList = [];
   List<String> nbaHomeOffensiveList = [];
@@ -85,6 +85,18 @@ class SportEvents {
   List<String> nflHomeDefensiveRank = [];
   List<String> nflAwayOffensiveRank = [];
   List<String> nflAwayDefensiveRank = [];
+  pro.Players? pgDataAway;
+  pro.Players? sgDataAway;
+  pro.Players? sfDataAway;
+  pro.Players? pfDataAway;
+  pro.Players? cDataAway;
+  pro.Players? pgDataHome;
+  pro.Players? sgDataHome;
+  pro.Players? sfDataHome;
+  pro.Players? pfDataHome;
+  pro.Players? cDataHome;
+  List<pro.Players> startingHomeFiveList = const [];
+  List<pro.Players> startingAwayFiveList = const [];
   List<String> homeDefense = const [];
   List<String> awayDefense = const [];
   List<String> awayQb = const [];
@@ -165,9 +177,11 @@ class SportEvents {
     this.id,
     this.gamesPlayed,
     this.scheduled,
-    this.outs="0",
+    this.outs = "0",
     this.startTimeTbd,
     this.status,
+    this.startingHomeFiveList = const [],
+    this.startingAwayFiveList = const [],
     this.hotlinesData = const [],
     this.nbaAwayOffensiveList = const [],
     this.nbaAwayDefensiveList = const [],
@@ -185,6 +199,16 @@ class SportEvents {
     this.nflHomeDefensiveList = const [],
     this.nflAwayOffensiveList = const [],
     this.nflAwayDefensiveList = const [],
+    this.pgDataAway,
+    this.sgDataAway,
+    this.sfDataAway,
+    this.pfDataAway,
+    this.cDataAway ,
+    this.pgDataHome,
+    this.sgDataHome,
+    this.sfDataHome,
+    this.pfDataHome,
+    this.cDataHome ,
     this.homeDefense = const [],
     this.awayDefense = const [],
     this.awayQb = const [],
@@ -223,9 +247,9 @@ class SportEvents {
     this.homeLoss = '0',
     this.eraHome = "0",
     this.eraAway = "0",
-    this.inning='0',
-    this.inningHalf='',
-    this.clock='0',
+    this.inning = '0',
+    this.inningHalf = '',
+    this.clock = '0',
     this.wlHome = "0",
     this.wlAway = '0',
     this.awayRushingYard = '0',
@@ -306,22 +330,43 @@ class SportEvents {
       if (condition4 >= 15 || condition4 <= -15) {
         flamValue += 1;
       }
-    } for (int index = 0; index < 12; index++) {
-      int condition3 = (int.tryParse(
-                  nbaHomeDefensiveRank.isEmpty ? "0" : nbaHomeDefensiveRank[index]) ??
+    }
+    for (int index = 0; index < nbaHomeDefensiveRank.length; index++) {
+      int condition3 = (int.tryParse(nbaHomeDefensiveRank.isEmpty
+                  ? "0"
+                  : nbaHomeDefensiveRank[index]) ??
               0) -
-          (int.tryParse(nbaAwayOffensiveRank.isEmpty ? "0" : nbaAwayOffensiveRank[index]) ?? 0);
+          (int.tryParse(nbaAwayOffensiveRank.isEmpty
+                  ? "0"
+                  : nbaAwayOffensiveRank[index]) ??
+              0);
 
-      int condition4 =
-          (int.tryParse(nbaHomeOffensiveRank.isEmpty ? "0" : nbaHomeOffensiveRank[index]) ?? 0) -
-              (int.tryParse(nbaAwayDefensiveRank.isEmpty
-                      ? "0"
-                      : nbaAwayDefensiveRank[index]) ??
-                  0);
-      if (condition3 >= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?50:15) || condition3 <= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?-50:-15)) {
+      int condition4 = (int.tryParse(nbaHomeOffensiveRank.isEmpty
+                  ? "0"
+                  : nbaHomeOffensiveRank[index]) ??
+              0) -
+          (int.tryParse(nbaAwayDefensiveRank.isEmpty
+                  ? "0"
+                  : nbaAwayDefensiveRank[index]) ??
+              0);
+      if (condition3 >=
+              ((season?.id == 'sr:season:117435' )
+                  ? 50
+                  : 15) ||
+          condition3 <=
+              ((season?.id == 'sr:season:117435')
+                  ? -50
+                  : -15)) {
         flamValue += 1;
       }
-      if (condition4 >= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?50:15) || condition4 <= ((season?.id == 'sr:season:104319'||season?.id=='sr:season:104315')?-50:-15)) {
+      if (condition4 >=
+              ((season?.id == 'sr:season:117435')
+                  ? 50
+                  : 15) ||
+          condition4 <=
+              ((season?.id == 'sr:season:117435')
+                  ? -50
+                  : -15)) {
         flamValue += 1;
       }
     }

@@ -123,6 +123,7 @@ class Home {
   String? market;
   String? id;
   num? points;
+  num? rank;
   bool? bonus;
   String? srId;
   num? remainingTimeouts;
@@ -139,6 +140,7 @@ class Home {
       this.points,
       this.bonus,
       this.srId,
+      this.rank,
       this.remainingTimeouts,
       this.reference,
       this.record,
@@ -153,6 +155,7 @@ class Home {
     points = json['points'];
     bonus = json['bonus'];
     srId = json['sr_id'];
+    rank = json['rank'];
     remainingTimeouts = json['remaining_timeouts'];
     reference = json['reference'];
     if (json['scoring'] != null) {
@@ -175,6 +178,7 @@ class Home {
     data['points'] = points;
     data['bonus'] = bonus;
     data['sr_id'] = srId;
+    data['rank'] = rank;
     data['remaining_timeouts'] = remainingTimeouts;
     data['reference'] = reference;
     if (record != null) {

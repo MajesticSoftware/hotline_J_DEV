@@ -220,16 +220,22 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         widget.gameDetails,
                                         awayTeam,
                                         homeTeam)
-                                    : widget.sportKey == 'NBA' ||
-                                            widget.sportKey == 'NCAAB'
+                                    : widget.sportKey == 'NBA'
                                         ? const SizedBox()
-                                        : quarterBacks(
-                                            context,
-                                            con,
-                                            widget.gameDetails,
-                                            awayTeam,
-                                            homeTeam,
-                                            widget.sportKey),
+                                        : widget.sportKey == 'NCAAB'
+                                            ? FiveStatics(
+                                                con: con,
+                                                gameDetails: widget.gameDetails,
+                                                awayTeam: awayTeam,
+                                                homeTeam: homeTeam,
+                                                sportKey: widget.sportKey)
+                                            : quarterBacks(
+                                                context,
+                                                con,
+                                                widget.gameDetails,
+                                                awayTeam,
+                                                homeTeam,
+                                                widget.sportKey),
                                 hitterPlayerStatWidget(
                                     context,
                                     widget.gameDetails,

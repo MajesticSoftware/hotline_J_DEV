@@ -22,7 +22,6 @@ import '../../../model/nba_rank_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
 import '../../../model/nfl_qbs_rank_model.dart';
 import '../../../model/nfl_rank_model.dart';
-import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 import '../../../model/team_logo_model.dart';
 import '../../../model/user_model.dart';
@@ -1099,18 +1098,26 @@ class GameListingController extends GetxController {
             if (sportKey == "NBA") {
               nbaSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
+              nbaSportEventsList[index].homeRank =
+                  (game.home?.rank ?? 0).toString();
             } else {
               ncaabSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
+              ncaabSportEventsList[index].homeRank =
+                  (game.home?.rank ?? 0).toString();
             }
           }
           if (awayTeamId == game.away?.id) {
             if (sportKey == "NBA") {
               nbaSportEventsList[index].awayScore =
                   (game.away?.points ?? "0").toString();
+              nbaSportEventsList[index].awayRank =
+                  (game.away?.rank ?? 0).toString();
             } else {
               ncaabSportEventsList[index].awayScore =
                   (game.away?.points ?? "0").toString();
+              ncaabSportEventsList[index].awayRank =
+                  (game.away?.rank ?? 0).toString();
             }
           }
           if (sportKey == "NBA") {
@@ -1122,6 +1129,7 @@ class GameListingController extends GetxController {
             ncaabSportEventsList[index].inning = (game.half ?? "0").toString();
             ncaabSportEventsList[index].inningHalf = 'H';
             ncaabSportEventsList[index].status = game.status.toString();
+            ncaabSportEventsList[index].clock = (game.clock ?? "00:00");
             ncaabSportEventsList[index].clock = (game.clock ?? "00:00");
           }
         }
@@ -1140,7 +1148,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  ///NCAA RANKING
+  /*///NCAA RANKING
   Future ncaaGameRanking(
       {String awayTeamId = '',
       String homeTeamId = '',
@@ -1178,7 +1186,7 @@ class GameListingController extends GetxController {
       // );
     }
     update();
-  }
+  }*/
 
   setOdds(SportEvents event) {
     if (event.consensus != null) {
@@ -1323,7 +1331,7 @@ class GameListingController extends GetxController {
                       key: sportKey,
                       gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
                       index: i);
-                  ncaaGameRanking(
+                  /* ncaaGameRanking(
                     sportName: sportKey,
                     isLoad: false,
                     gameDetails: ncaaSportEventsList[i],
@@ -1335,7 +1343,7 @@ class GameListingController extends GetxController {
                             ncaaSportEventsList[i].competitors[1].uuids ??
                                 '') ??
                         "",
-                  );
+                  );*/
                 }
               }
             }
@@ -1437,7 +1445,7 @@ class GameListingController extends GetxController {
                       key: sportKey,
                       gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
                       index: i);
-                  ncaaGameRanking(
+                  /* ncaaGameRanking(
                     sportName: sportKey,
                     isLoad: false,
                     gameDetails: ncaaSportEventsList[i],
@@ -1449,7 +1457,7 @@ class GameListingController extends GetxController {
                             ncaaSportEventsList[i].competitors[1].uuids ??
                                 '') ??
                         "",
-                  );
+                  );*/
                 }
               }
             }
@@ -1899,122 +1907,131 @@ class GameListingController extends GetxController {
                   replaceId(team.teamId ?? "")) {
                 element.nbaAwayOffensiveList = [
                   team.pointOffense.toString(),
-                  team.reboundesOffense.toString(),
                   team.assistOffense.toString(),
-                  team.stealsOffense.toString(),
-                  team.blocksOffense.toString(),
                   team.turnOverOffense.toString(),
-                  team.foulsOffense.toString(),
-                  '${team.fgAttOffense} / ${team.fgMadeOffense} / ${team.fgOffense}%',
-                  '${team.threePAttOffense} / ${team.threePMadeOffense} / ${team.threePOffense}%',
-                  '${team.ftAttOffense} / ${team.ftMadeOffense} / ${team.ftOffense}%',
-                  '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
-                      .toString(),
-                  team.teamPerOffense.toString(),
+                  team.reboundesOffense.toString(),
+                  // team.stealsOffense.toString(),
+                  // team.blocksOffense.toString(),
+                  // team.turnOverOffense.toString(),
+                  // team.foulsOffense.toString(),
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  // '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
+                  //     .toString(),
+                  // team.teamPerOffense.toString(),
                 ];
+
                 element.nbaAwayOffensiveRank = [
                   (team.pointOffenseRank ?? 0).toString(),
-                  (team.reboundesOffenseRank ?? 0).toString(),
                   (team.assistOffenseRank ?? 0).toString(),
-                  (team.stealsOffenseRank ?? 0).toString(),
-                  (team.blocksOffenseRank ?? 0).toString(),
-                  (team.turnOverOffenseRank ?? 0).toString(),
-                  (team.foulsOffenseRank ?? 0).toString(),
+                  team.turnOverOffenseRank.toString(),
+                  (team.reboundesOffenseRank ?? 0).toString(),
+                  // (team.stealsOffenseRank ?? 0).toString(),
+                  // (team.blocksOffenseRank ?? 0).toString(),
+                  // (team.turnOverOffenseRank ?? 0).toString(),
+                  // (team.foulsOffenseRank ?? 0).toString(),
                   '${team.fgOffenseRank ?? 0}',
                   '${team.threePOffenseRank ?? 0}',
                   '${team.ftOffenseRank ?? 0}',
-                  (team.trueShootingOffenseRank ?? 0).toString(),
-                  (team.teamPerOffenseRank ?? 0).toString(),
+                  // (team.trueShootingOffenseRank ?? 0).toString(),
+                  // (team.teamPerOffenseRank ?? 0).toString(),
                 ];
                 element.nbaAwayDefensiveList = [
                   team.pointDefense.toString(),
-                  team.reboundesDefense.toString(),
                   team.assistDefense.toString(),
-                  team.stealsDefense.toString(),
-                  team.blocksDefense.toString(),
                   team.turnOverDefense.toString(),
-                  team.foulsDefense.toString(),
-                  '${team.fgAttDefense} / ${team.fgMadeDefense} / ${team.fgDefense}%',
-                  '${team.threePAttDefense} / ${team.threePMadeDefense} / ${team.threePDefense}%',
-                  '${team.ftAttDefense} / ${team.ftMadeDefense} / ${team.ftDefense}%',
-                  '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
-                      .toString(),
-                  team.teamPerDefense.toString(),
+                  team.reboundesDefense.toString(),
+                  // team.stealsDefense.toString(),
+                  // team.blocksDefense.toString(),
+                  // team.turnOverDefense.toString(),
+                  // team.foulsDefense.toString(),
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  // '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
+                  //     .toString(),
+                  // team.teamPerDefense.toString(),
                 ];
                 element.nbaAwayDefensiveRank = [
                   (team.pointDefenseRank ?? 0).toString(),
-                  (team.reboundesDefenseRank ?? 0).toString(),
                   (team.assistDefenseRank ?? 0).toString(),
-                  (team.stealsDefenseRank ?? 0).toString(),
-                  (team.blocksDefenseRank ?? 0).toString(),
-                  (team.turnOverDefenseRank ?? 0).toString(),
-                  (team.foulsDefenseRank ?? 0).toString(),
+                  team.turnOverDefenseRank.toString(),
+                  (team.reboundesDefenseRank ?? 0).toString(),
+                  // (team.stealsDefenseRank ?? 0).toString(),
+                  // (team.blocksDefenseRank ?? 0).toString(),
+                  // (team.turnOverDefenseRank ?? 0).toString(),
+                  // (team.foulsDefenseRank ?? 0).toString(),
                   '${team.fgDefenseRank ?? 0}',
                   '${team.threePDefenseRank ?? 0}',
                   '${team.ftDefenseRank ?? 0}',
-                  (team.trueShootingDefenseRank ?? 0).toString(),
-                  (team.teamPerDefenseRank ?? 0).toString(),
+                  // (team.trueShootingDefenseRank ?? 0).toString(),
+                  // (team.teamPerDefenseRank ?? 0).toString(),
                 ];
               }
               if ((replaceId(homeTeam?.uuids ?? '')) ==
                   replaceId(team.teamId ?? "")) {
                 element.nbaHomeOffensiveList = [
                   team.pointOffense.toString(),
-                  team.reboundesOffense.toString(),
                   team.assistOffense.toString(),
-                  team.stealsOffense.toString(),
-                  team.blocksOffense.toString(),
                   team.turnOverOffense.toString(),
-                  team.foulsOffense.toString(),
-                  '${team.fgAttOffense} / ${team.fgMadeOffense} / ${team.fgOffense}%',
-                  '${team.threePAttOffense} / ${team.threePMadeOffense} / ${team.threePOffense}%',
-                  '${team.ftAttOffense} / ${team.ftMadeOffense} / ${team.ftOffense}%',
-                  '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
-                      .toString(),
-                  team.teamPerOffense.toString(),
+                  team.reboundesOffense.toString(),
+                  // team.stealsOffense.toString(),
+                  // team.blocksOffense.toString(),
+                  // team.turnOverOffense.toString(),
+                  // team.foulsOffense.toString(),
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  // '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
+                  //     .toString(),
+                  // team.teamPerOffense.toString(),
                 ];
                 element.nbaHomeOffensiveRank = [
                   (team.pointOffenseRank ?? 0).toString(),
-                  (team.reboundesOffenseRank ?? 0).toString(),
                   (team.assistOffenseRank ?? 0).toString(),
-                  (team.stealsOffenseRank ?? 0).toString(),
-                  (team.blocksOffenseRank ?? 0).toString(),
-                  (team.turnOverOffenseRank ?? 0).toString(),
-                  (team.foulsOffenseRank ?? 0).toString(),
+                  team.turnOverOffenseRank.toString(),
+                  (team.reboundesOffenseRank ?? 0).toString(),
+                  // (team.stealsOffenseRank ?? 0).toString(),
+                  // (team.blocksOffenseRank ?? 0).toString(),
+                  // (team.turnOverOffenseRank ?? 0).toString(),
+                  // (team.foulsOffenseRank ?? 0).toString(),
                   '${team.fgOffenseRank ?? 0}',
                   '${team.threePOffenseRank ?? 0}',
                   '${team.ftOffenseRank ?? 0}',
-                  (team.trueShootingOffenseRank ?? 0).toString(),
-                  (team.teamPerOffenseRank ?? 0).toString(),
+                  // (team.trueShootingOffenseRank ?? 0).toString(),
+                  // (team.teamPerOffenseRank ?? 0).toString(),
                 ];
                 element.nbaHomeDefensiveList = [
                   team.pointDefense.toString(),
-                  team.reboundesDefense.toString(),
                   team.assistDefense.toString(),
-                  team.stealsDefense.toString(),
-                  team.blocksDefense.toString(),
                   team.turnOverDefense.toString(),
-                  team.foulsDefense.toString(),
-                  '${team.fgAttDefense} / ${team.fgMadeDefense} / ${team.fgDefense}%',
-                  '${team.threePAttDefense} / ${team.threePMadeDefense} / ${team.threePDefense}%',
-                  '${team.ftAttDefense} / ${team.ftMadeDefense} / ${team.ftDefense}%',
-                  '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
-                      .toString(),
-                  team.teamPerDefense.toString(),
+                  team.reboundesDefense.toString(),
+                  // team.stealsDefense.toString(),
+                  // team.blocksDefense.toString(),
+                  // team.turnOverDefense.toString(),
+                  // team.foulsDefense.toString(),
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  // '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
+                  //     .toString(),
+                  // team.teamPerDefense.toString(),
                 ];
                 element.nbaHomeDefensiveRank = [
                   (team.pointDefenseRank ?? 0).toString(),
-                  (team.reboundesDefenseRank ?? 0).toString(),
                   (team.assistDefenseRank ?? 0).toString(),
-                  (team.stealsDefenseRank ?? 0).toString(),
-                  (team.blocksDefenseRank ?? 0).toString(),
-                  (team.turnOverDefenseRank ?? 0).toString(),
-                  (team.foulsDefenseRank ?? 0).toString(),
+                  team.turnOverDefenseRank.toString(),
+                  (team.reboundesDefenseRank ?? 0).toString(),
+                  // (team.stealsDefenseRank ?? 0).toString(),
+                  // (team.blocksDefenseRank ?? 0).toString(),
+                  // (team.turnOverDefenseRank ?? 0).toString(),
+                  // (team.foulsDefenseRank ?? 0).toString(),
                   '${team.fgDefenseRank ?? 0}',
                   '${team.threePDefenseRank ?? 0}',
                   '${team.ftDefenseRank ?? 0}',
-                  (team.trueShootingDefenseRank ?? 0).toString(),
-                  (team.teamPerDefenseRank ?? 0).toString(),
+                  // (team.trueShootingDefenseRank ?? 0).toString(),
+                  // (team.teamPerDefenseRank ?? 0).toString(),
                 ];
               }
             });
@@ -2422,7 +2439,7 @@ class GameListingController extends GetxController {
             if (ncaabSportEventsList.isNotEmpty) {
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  ncaaGameRanking(
+                  /*  ncaaGameRanking(
                     sportName: sportKey,
                     isLoad: false,
                     gameDetails: ncaabSportEventsList[i],
@@ -2434,7 +2451,7 @@ class GameListingController extends GetxController {
                             ncaabSportEventsList[i].competitors[1].uuids ??
                                 '') ??
                         "",
-                  );
+                  );*/
                   if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
                           .toLocal()
                           .day ==
@@ -2559,7 +2576,7 @@ class GameListingController extends GetxController {
             if (ncaabSportEventsList.isNotEmpty) {
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  ncaaGameRanking(
+                  /*ncaaGameRanking(
                     sportName: sportKey,
                     isLoad: false,
                     gameDetails: ncaabSportEventsList[i],
@@ -2571,7 +2588,7 @@ class GameListingController extends GetxController {
                             ncaabSportEventsList[i].competitors[1].uuids ??
                                 '') ??
                         "",
-                  );
+                  );*/
                   if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
                           .toLocal()
                           .day ==

@@ -3,7 +3,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,7 +58,9 @@ class SelectGameScreen extends StatelessWidget {
           Scaffold(
               key: scaffoldKey,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: isTablet(context)?commonTabletAppBarWidget(context,controller):commonAppBar(context, controller),
+              appBar: isTablet(context)
+                  ? commonTabletAppBarWidget(context, controller)
+                  : commonAppBar(context, controller),
               drawer: buildDrawer(context, controller),
               drawerEnableOpenDragGesture: false,
               body: Column(
@@ -112,7 +113,6 @@ class SelectGameScreen extends StatelessWidget {
       );
     });
   }
-
 
   Drawer buildDrawer(BuildContext context, GameListingController controller) {
     return Drawer(
@@ -208,7 +208,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),
-            /*drawerCard(
+            drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
                 color: Colors.white,
@@ -224,7 +224,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ),
-             drawerCard(
+            /*drawerCard(
               icon: Assets.imagesNcaa,
               title: 'NCAAF',
               context: context,
@@ -530,9 +530,11 @@ class SelectGameScreen extends StatelessWidget {
     // log("spotList(controller)--${spotList(controller).length}");
     return Stack(
       children: [
-        Column (
+        Column(
           children: [
-             HeaderCard(sportName: controller.sportKey,),
+            HeaderCard(
+              sportName: controller.sportKey,
+            ),
             (MediaQuery.of(context).size.height * .01).H(),
             /*   Visibility(
               visible: (controller.sportKey == 'MLB' &&
@@ -573,7 +575,8 @@ class SelectGameScreen extends StatelessWidget {
                                       ? "'2024 season starts August 24th.'"
                                       : "")
                                   .appCommonText(
-                                      color: Theme.of(context).secondaryHeaderColor,
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor,
                                       size: Get.height * .02,
                                       weight: FontWeight.w800)
                             ],
@@ -584,7 +587,8 @@ class SelectGameScreen extends StatelessWidget {
                         ? Expanded(
                             child: RefreshIndicator(
                             onRefresh: () async {
-                              Future.delayed(const Duration(seconds: 0), () async {
+                              Future.delayed(const Duration(seconds: 0),
+                                  () async {
                                 if (!controller.isCallApi) {
                                   controller.isCallApi = true;
                                   await controller.getRefreshResponse(
@@ -625,20 +629,22 @@ class SelectGameScreen extends StatelessWidget {
                                           : Column(
                                               children: [
                                                 GameWidget(
-                                                  status:
-                                                      spotList(controller)[index]
-                                                          .status
-                                                          .toString(),
+                                                  status: spotList(
+                                                          controller)[index]
+                                                      .status
+                                                      .toString(),
                                                   flameNumber: controller
                                                               .sportKey !=
                                                           "MLB"
-                                                      ? spotList(controller)[index]
+                                                      ? spotList(
+                                                              controller)[index]
                                                           .getFlameValue
                                                       : 0,
-                                                  isShowWeather: controller
-                                                              .sportKey !=
-                                                          "NCAAB" ||
-                                                      controller.sportKey != "NBA",
+                                                  isShowWeather:
+                                                      controller.sportKey !=
+                                                              "NCAAB" ||
+                                                          controller.sportKey !=
+                                                              "NBA",
                                                   onTap: () {
                                                     controller.gameOnClick(
                                                         context, index);
@@ -646,45 +652,50 @@ class SelectGameScreen extends StatelessWidget {
                                                   isShowFlam:
                                                       (controller.sportKey !=
                                                           "MLB"),
-                                                  awayTeamMoneyLine:
-                                                      spotList(controller)[index]
-                                                          .awayMoneyLineValue,
-                                                  homeTeamMoneyLine:
-                                                      spotList(controller)[index]
-                                                          .homeMoneyLineValue,
-                                                  awayTeamOU:
-                                                      spotList(controller)[index]
-                                                          .awayOUValue,
-                                                  homeTeamOU:
-                                                      spotList(controller)[index]
-                                                          .homeOUValue,
-                                                  weather:
-                                                      spotList(controller)[index]
-                                                          .weather,
+                                                  awayTeamMoneyLine: spotList(
+                                                          controller)[index]
+                                                      .awayMoneyLineValue,
+                                                  homeTeamMoneyLine: spotList(
+                                                          controller)[index]
+                                                      .homeMoneyLineValue,
+                                                  awayTeamOU: spotList(
+                                                          controller)[index]
+                                                      .awayOUValue,
+                                                  homeTeamOU: spotList(
+                                                          controller)[index]
+                                                      .homeOUValue,
+                                                  weather: spotList(
+                                                          controller)[index]
+                                                      .weather,
                                                   homeTeamSpread: spotList(
                                                               controller)[index]
                                                           .homeSpreadValue
                                                           .contains('-')
-                                                      ? spotList(controller)[index]
+                                                      ? spotList(
+                                                              controller)[index]
                                                           .homeSpreadValue
                                                       : '+${spotList(controller)[index].homeSpreadValue}',
                                                   awayTeamSpread: spotList(
                                                               controller)[index]
                                                           .awaySpreadValue
                                                           .contains('-')
-                                                      ? spotList(controller)[index]
+                                                      ? spotList(
+                                                              controller)[index]
                                                           .awaySpreadValue
                                                       : '+${spotList(controller)[index].awaySpreadValue}',
-                                                  temp: spotList(controller)[index]
+                                                  temp: spotList(
+                                                          controller)[index]
                                                       .tmpInFahrenheit,
-                                                  isLive: (spotList(
-                                                                  controller)[index]
+                                                  isLive: (spotList(controller)[
+                                                                  index]
                                                               .status ==
                                                           'live' ||
-                                                      spotList(controller)[index]
+                                                      spotList(controller)[
+                                                                  index]
                                                               .status ==
                                                           'inprogress' ||
-                                                      spotList(controller)[index]
+                                                      spotList(controller)[
+                                                                  index]
                                                               .status ==
                                                           'halftime'),
                                                   dateTime: (spotList(controller)[
@@ -701,61 +712,69 @@ class SelectGameScreen extends StatelessWidget {
                                                               'halftime')
                                                       ? (controller.sportKey ==
                                                                   "NCAAB" ||
-                                                              controller.sportKey ==
+                                                              controller
+                                                                      .sportKey ==
                                                                   "NBA")
                                                           ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                                                          : spotList(
-                                                                  controller)[index]
+                                                          : spotList(controller)[
+                                                                  index]
                                                               .currentTime
                                                               .split(',')
                                                               .first
-                                                      : spotList(controller)[index]
+                                                      : spotList(controller)[
+                                                                      index]
                                                                   .status ==
                                                               'closed'
                                                           ? "Final"
                                                           : '$date, $dateTime',
                                                   awayTeamImageUrl: awayLogo(
-                                                      spotList(controller)[index],
-                                                      controller,
-                                                      index),
-                                                  awayTeamRank: (spotList(
-                                                                  controller)[index]
-                                                              .awayRank ==
-                                                          '0'
-                                                      ? ''
-                                                      : spotList(controller)[index]
-                                                          .awayRank),
-                                                  awayTeamAbb: (mobileView
-                                                              .size.shortestSide <
+                                                      spotList(
+                                                          controller)[index]),
+                                                  awayTeamRank:
+                                                      (spotList(controller)[
+                                                                      index]
+                                                                  .awayRank ==
+                                                              '0'
+                                                          ? ''
+                                                          : spotList(controller)[
+                                                                  index]
+                                                              .awayRank),
+                                                  awayTeamAbb: (mobileView.size
+                                                              .shortestSide <
                                                           600
-                                                      ? spotList(controller)[index]
+                                                      ? spotList(
+                                                              controller)[index]
                                                           .awayTeamAbb
-                                                      : spotList(controller)[index]
+                                                      : spotList(
+                                                              controller)[index]
                                                           .awayTeam),
-                                                  awayTeamScore:
-                                                      (spotList(controller)[index]
-                                                          .awayScore),
+                                                  awayTeamScore: (spotList(
+                                                          controller)[index]
+                                                      .awayScore),
                                                   homeTeamImageUrl: homeLogo(
-                                                      spotList(controller)[index],
-                                                      controller,
-                                                      index),
-                                                  homeTeamRank: (spotList(
-                                                                  controller)[index]
-                                                              .homeRank ==
-                                                          '0'
-                                                      ? ''
-                                                      : spotList(controller)[index]
-                                                          .homeRank),
-                                                  homeTeamAbb: (mobileView
-                                                              .size.shortestSide <
+                                                      spotList(
+                                                          controller)[index]),
+                                                  homeTeamRank:
+                                                      (spotList(controller)[
+                                                                      index]
+                                                                  .homeRank ==
+                                                              '0'
+                                                          ? ''
+                                                          : spotList(controller)[
+                                                                  index]
+                                                              .homeRank),
+                                                  homeTeamAbb: (mobileView.size
+                                                              .shortestSide <
                                                           600
-                                                      ? spotList(controller)[index]
+                                                      ? spotList(
+                                                              controller)[index]
                                                           .homeTeamAbb
-                                                      : spotList(controller)[index]
+                                                      : spotList(
+                                                              controller)[index]
                                                           .homeTeam),
-                                                  homeTeamScore:
-                                                      spotList(controller)[index]
-                                                          .homeScore,
+                                                  homeTeamScore: spotList(
+                                                          controller)[index]
+                                                      .homeScore,
                                                 ),
                                                 spotList(controller).length >= 2
                                                     ? /*(controller.sportKey ==
@@ -766,20 +785,18 @@ class SelectGameScreen extends StatelessWidget {
                                                         ? const SizedBox()
                                                         :*/
                                                     index + 1 ==
-                                                            (spotList(controller)
+                                                            (spotList(
+                                                                    controller)
                                                                 .length)
                                                         ? const SizedBox()
-                                                        : (DateTime.parse(spotList(controller)[
-                                                                                index]
+                                                        : (DateTime.parse(spotList(controller)[index]
                                                                             .scheduled ??
                                                                         '')
                                                                     .toLocal()
                                                                     .day !=
-                                                                DateTime.parse(spotList(controller)[
-                                                                                index +
-                                                                                    1]
-                                                                            .scheduled ??
-                                                                        '')
+                                                                DateTime.parse(
+                                                                        spotList(controller)[index + 1].scheduled ??
+                                                                            '')
                                                                     .toLocal()
                                                                     .day)
                                                             ? Divider(
@@ -795,10 +812,7 @@ class SelectGameScreen extends StatelessWidget {
                                             );
                                 } catch (e) {
                                   log(e.toString());
-                                  return Container(
-                                    color: Colors.red,
-                                    height: 50,
-                                  );
+                                  return const SizedBox();
                                 }
                               },
                             ),
@@ -813,20 +827,24 @@ class SelectGameScreen extends StatelessWidget {
                                   SportEvents competitors =
                                       controller.searchList[index];
                                   String date = DateFormat.MMMd().format(
-                                      DateTime.parse(competitors.scheduled ?? '')
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
                                           .toLocal());
                                   String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(competitors.scheduled ?? '')
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
                                           .toLocal());
                                   String time = DateFormat('hh:mm').format(
-                                      DateTime.parse(competitors.scheduled ?? '')
+                                      DateTime.parse(
+                                              competitors.scheduled ?? '')
                                           .toLocal());
                                   return Visibility(
                                     visible: (competitors.status != 'closed') ||
                                         (competitors.status != 'postponed'),
                                     child: GameWidget(
                                       status: competitors.status.toString(),
-                                      isShowFlam: (controller.sportKey != "MLB"),
+                                      isShowFlam:
+                                          (controller.sportKey != "MLB"),
                                       flameNumber: controller.sportKey != "MLB"
                                           ? competitors.getFlameValue
                                           : 0,
@@ -844,20 +862,23 @@ class SelectGameScreen extends StatelessWidget {
                                       awayTeamOU: competitors.awayOUValue,
                                       homeTeamOU: competitors.homeOUValue,
                                       weather: competitors.weather,
-                                      homeTeamSpread:
-                                          competitors.homeSpreadValue.contains('-')
-                                              ? competitors.homeSpreadValue
-                                              : '+${competitors.homeSpreadValue}',
-                                      awayTeamSpread:
-                                          competitors.awaySpreadValue.contains('-')
-                                              ? competitors.awaySpreadValue
-                                              : '+${competitors.awaySpreadValue}',
+                                      homeTeamSpread: competitors
+                                              .homeSpreadValue
+                                              .contains('-')
+                                          ? competitors.homeSpreadValue
+                                          : '+${competitors.homeSpreadValue}',
+                                      awayTeamSpread: competitors
+                                              .awaySpreadValue
+                                              .contains('-')
+                                          ? competitors.awaySpreadValue
+                                          : '+${competitors.awaySpreadValue}',
                                       temp: competitors.tmpInFahrenheit,
                                       isLive: (competitors.status == 'live' ||
                                           competitors.status == "inprogress" ||
                                           competitors.status == "halftime"),
                                       dateTime: (competitors.status == 'live' ||
-                                              competitors.status == "inprogress" ||
+                                              competitors.status ==
+                                                  "inprogress" ||
                                               competitors.status == "halftime")
                                           ? (controller.sportKey == "NCAAB" ||
                                                   controller.sportKey == "NBA")
@@ -866,8 +887,8 @@ class SelectGameScreen extends StatelessWidget {
                                           : competitors.status == 'closed'
                                               ? "Final"
                                               : '$date, $dateTime',
-                                      awayTeamImageUrl:
-                                          awayLogo(competitors, controller, index),
+                                      awayTeamImageUrl: awayLogo(
+                                          competitors),
                                       awayTeamRank: (competitors.awayRank == '0'
                                           ? ''
                                           : competitors.awayRank),
@@ -876,8 +897,8 @@ class SelectGameScreen extends StatelessWidget {
                                               ? competitors.awayTeamAbb
                                               : competitors.awayTeam),
                                       awayTeamScore: (competitors.awayScore),
-                                      homeTeamImageUrl:
-                                          homeLogo(competitors, controller, index),
+                                      homeTeamImageUrl: homeLogo(
+                                          competitors),
                                       homeTeamRank: (competitors.homeRank == '0'
                                           ? ''
                                           : competitors.homeRank),
@@ -895,138 +916,64 @@ class SelectGameScreen extends StatelessWidget {
                             ),
                           ),
             (MediaQuery.of(context).size.height * .01).H(),
-
           ],
         ),
         Obx(() =>
-        controller.isLoading.value ? const AppProgress() : const SizedBox())
+            controller.isLoading.value ? const AppProgress() : const SizedBox())
       ],
     );
   }
 
-  String awayLogo(
-      SportEvents competitors, GameListingController controller, int index) {
-    return competitors.awayTeam == 'North Carolina State Wolfpack'
-        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-        : competitors.awayTeamAbb == 'UAG'
-            ? "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/399.png&h=200&w=200"
-            : competitors.awayTeamAbb == 'ALBY'
-            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
-            : competitors.awayTeamAbb == 'LINW'
-                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
-                : competitors.awayTeamAbb == 'IUN'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
-                    : competitors.awayTeamAbb == 'LMC'
-                        ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
-                        : competitors.awayTeamAbb == 'ARI'
-                            ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                            : competitors.awayTeamAbb == 'SCUS'
-                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                                : competitors.awayTeamAbb == 'MCNS'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-                                    : competitors.awayTeamAbb == 'FAMU'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                                        : competitors.awayTeamAbb == 'WEBB'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                                            : competitors.awayTeamAbb == 'SIND'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                                : competitors.awayTeamAbb ==
-                                                            'WAS' &&
-                                                        competitors.id ==
-                                                            "sr:competitor:4432"
-                                                    ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                                    : competitors.awayTeamAbb ==
-                                                            'UST'
-                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
-                                                        : competitors
-                                                                    .awayTeamAbb ==
-                                                                'QUC'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                                            : competitors
-                                                                        .awayTeamAbb ==
-                                                                    'UMKC'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
-                                                                : competitors
-                                                                            .awayTeamAbb ==
-                                                                        'GC'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                                                                    : competitors.awayTeamAbb ==
-                                                                            'CSN'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                                                        : competitors.awayTeamAbb ==
-                                                                                'CSB'
-                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
-                                                                            : competitors.awayTeam == 'Louisiana-Lafayette Ragin Cajuns'
-                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                                                : competitors.awayTeam == 'CSB'
-                                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                                                    : competitors.awayTeam == 'Sam Houston State Bearkats'
-                                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                                        : competitors.gameLogoAwayLink;
+  String getTeamLogo(String? teamName, String? teamAbbreviation, String? teamId, String defaultLogo) {
+    const logoMap = {
+      'North Carolina State Wolfpack': 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
+      'MTU': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200',
+      'UAG': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/399.png&h=200&w=200',
+      'ALBY': 'https://a.espncdn.com/i/teamlogos/ncaa/500/399.png',
+      'LINW': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png',
+      'IUN': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png',
+      'LMC': 'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png',
+      'ARI': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png',
+      'SCUS': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png',
+      'MCNS': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png',
+      'FAMU': 'https://a.espncdn.com/i/teamlogos/ncaa/500/57.png',
+      'WEBB': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png',
+      'SIND': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png',
+      'WAS': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png',
+      'UST': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png',
+      'QUC': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png',
+      'UMKC': 'https://a.espncdn.com/i/teamlogos/ncaa/500/140.png',
+      'GC': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png',
+      'CSN': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png',
+      'CSB': 'https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png',
+      'Louisiana-Lafayette Ragin Cajuns': 'https://a.espncdn.com/i/teamlogos/ncaa/500/309.png',
+      'Sam Houston State Bearkats': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png',
+    };
+
+    if (teamAbbreviation == 'WAS' && teamId == 'sr:competitor:4432') {
+      return logoMap['WAS']!;
+    }
+    return logoMap[teamName] ?? logoMap[teamAbbreviation] ?? defaultLogo;
   }
 
-  String homeLogo(
-      SportEvents competitors, GameListingController controller, int index) {
-    return competitors.homeTeamAbb == 'IUI'
-        ? 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/85.png&h=200&w=200'
-        :competitors.homeTeam == 'North Carolina State Wolfpack'
-        ? 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png'
-        : competitors.homeTeamAbb == 'ALBY'
-            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png"
-            : competitors.homeTeamAbb == 'MTU'
-            ? "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200"
-            : competitors.homeTeamAbb == 'LMC'
-                ? "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png"
-                : competitors.homeTeamAbb == 'IUN'
-                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png"
-                    : competitors.homeTeamAbb == 'LINW'
-                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png"
-                        : competitors.homeTeamAbb == 'WEBB'
-                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2241.png"
-                            : competitors.homeTeamAbb == 'ARI'
-                                ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png"
-                                : competitors.homeTeamAbb == 'SCUS'
-                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png"
-                                    : competitors.homeTeamAbb == 'MCNS'
-                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png"
-                                        : competitors.homeTeamAbb == 'FAMU'
-                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/57.png"
-                                            : competitors.homeTeamAbb == 'UMKC'
-                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/140.png"
-                                                : competitors.homeTeamAbb ==
-                                                        'CSN'
-                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                                    : competitors.homeTeamAbb ==
-                                                                'WAS' &&
-                                                            competitors.id ==
-                                                                "sr:competitor:4432"
-                                                        ? "https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/wsh.png"
-                                                        : competitors
-                                                                    .homeTeamAbb ==
-                                                                'QUC'
-                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2511.png"
-                                                            : competitors
-                                                                        .homeTeamAbb ==
-                                                                    'CSB'
-                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png"
-                                                                : competitors
-                                                                            .homeTeamAbb ==
-                                                                        'SIND'
-                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png"
-                                                                    : competitors.homeTeamAbb ==
-                                                                            'UST'
-                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2900.png"
-                                                                        : competitors.homeTeamAbb ==
-                                                                                'GC'
-                                                                            ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png"
-                                                                            : competitors.homeTeamAbb == 'CSB'
-                                                                                ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2934.png"
-                                                                                : competitors.homeTeam == 'Louisiana-Lafayette Ragin Cajuns'
-                                                                                    ? "https://a.espncdn.com/i/teamlogos/ncaa/500/309.png"
-                                                                                    : competitors.homeTeam == 'Sam Houston State Bearkats'
-                                                                                        ? "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png"
-                                                                                        : competitors.gameHomeLogoLink;
+  String awayLogo(SportEvents competitors) {
+    return getTeamLogo(
+      competitors.awayTeam,
+      competitors.awayTeamAbb,
+      competitors.id,
+      competitors.gameLogoAwayLink,
+    );
   }
+
+  String homeLogo(SportEvents competitors) {
+    return getTeamLogo(
+      competitors.homeTeam,
+      competitors.homeTeamAbb,
+      competitors.id,
+      competitors.gameHomeLogoLink,
+    );
+  }
+
 
   List<SportEvents> spotList(GameListingController controller) {
     return (controller.sportKey == 'MLB'
