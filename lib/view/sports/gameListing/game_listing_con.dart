@@ -261,21 +261,20 @@ class GameListingController extends GetxController {
   List<SportEvents> _ncaaTomorrowEventsList = [];
 
   ///GAME LISTING API
-  Future<List<SportEvents>> fetchListingData(
-      {String sportId = '',
-      String date = "",
-      String sportKey = "",
-      int start = 0,
-      bool isLoad = false,
-      String key = ''}) async {
+  Future<List<SportEvents>> fetchListingData({String sportId = '',
+    String date = "",
+    String sportKey = "",
+    int start = 0,
+    bool isLoad = false,
+    String key = ''}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .gameListingRepo(key: key, date: date, spotId: sportId, start: start);
     try {
       if (result.status) {
         GameListingDataModel response =
-            GameListingDataModel.fromJson(result.data);
+        GameListingDataModel.fromJson(result.data);
         final sportEvents = response.sportEvents;
         return sportEvents?.toSet().toList() ?? [];
       }
@@ -297,10 +296,16 @@ class GameListingController extends GetxController {
         .format(DateTime.now() /*.subtract(const Duration(days: 2))*/);
     if (sportKey == SportName.MLB.name) {
       return await getGameListingForMLBRes(isLoad,
-          apiKey: apiKey, sportKey: SportName.MLB.name, date: date, sportId: sportId);
+          apiKey: apiKey,
+          sportKey: SportName.MLB.name,
+          date: date,
+          sportId: sportId);
     } else if (sportKey == SportName.NFL.name) {
       return await getGameListingForNFLGame(isLoad,
-          apiKey: apiKey, sportKey: SportName.NFL.name, date: date, sportId: sportId);
+          apiKey: apiKey,
+          sportKey: SportName.NFL.name,
+          date: date,
+          sportId: sportId);
     } else if (sportKey == SportName.NCAA.name) {
       return getGameListingForNCAAGame(isLoad,
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
@@ -316,10 +321,16 @@ class GameListingController extends GetxController {
   Future<void> getRefreshResponse(bool isLoad, String sportKey) async {
     if (sportKey == SportName.MLB.name) {
       return await mlbGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: SportName.MLB.name, date: date, sportId: sportId);
+          apiKey: apiKey,
+          sportKey: SportName.MLB.name,
+          date: date,
+          sportId: sportId);
     } else if (sportKey == SportName.NFL.name) {
       return await nflGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: SportName.NFL.name, date: date, sportId: sportId);
+          apiKey: apiKey,
+          sportKey: SportName.NFL.name,
+          date: date,
+          sportId: sportId);
     } else if (sportKey == SportName.NCAA.name) {
       return ncaaGameRefreshCall(isLoad,
           apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
@@ -338,14 +349,14 @@ class GameListingController extends GetxController {
     if (text.isNotEmpty) {
       for (var element in gameList) {
         if (((mobileView.size.shortestSide < 600
-                    ? element.homeTeamAbb
-                    : element.homeTeam)
-                .toString()
-                .toLowerCase()
-                .contains(text.trim().toString().toLowerCase())) ||
+            ? element.homeTeamAbb
+            : element.homeTeam)
+            .toString()
+            .toLowerCase()
+            .contains(text.trim().toString().toLowerCase())) ||
             ((mobileView.size.shortestSide < 600
-                    ? element.awayTeamAbb
-                    : element.awayTeam)
+                ? element.awayTeamAbb
+                : element.awayTeam)
                 .toString()
                 .toLowerCase()
                 .contains(text.trim().toString().toLowerCase()))) {
@@ -383,7 +394,7 @@ class GameListingController extends GetxController {
     isSelectedGame = SportName.NCAAB.name;
     Future.delayed(
       Duration.zero,
-      () async {
+          () async {
         isPagination = true;
         isLoading.value = true;
         await getResponse(true, SportName.NCAAB.name);
@@ -399,8 +410,7 @@ class GameListingController extends GetxController {
     sportKey = sportsLeagueList[index].key;
     apiKey = sportsLeagueList[index].apiKey;
     sportId = sportsLeagueList[index].sportId;
-    if (isSelected.contains(sportsLeagueList[index].gameName)) {
-    } else {
+    if (isSelected.contains(sportsLeagueList[index].gameName)) {} else {
       isSelected.add(sportsLeagueList[index].gameName);
       Future.delayed(const Duration(seconds: 0), () {
         isLoading.value = true;
@@ -487,13 +497,13 @@ class GameListingController extends GetxController {
   void logOut(BuildContext context) async {
     isLoading.value = true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await UserStartupRepo().logOutApp();
     try {
       if (result.status) {
         log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
-            ForgotPasswordResModel.fromJson(result.toJson());
+        ForgotPasswordResModel.fromJson(result.toJson());
         bool isDark = PreferenceManager.getIsDarkMode() ?? false;
         Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
             ? ThemeMode.dark
@@ -522,13 +532,13 @@ class GameListingController extends GetxController {
   void deleteAc(BuildContext context) async {
     isLoading.value = true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await UserStartupRepo().deleteAc();
     try {
       if (result.status) {
         log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
-            ForgotPasswordResModel.fromJson(result.toJson());
+        ForgotPasswordResModel.fromJson(result.toJson());
         bool isDark = PreferenceManager.getIsDarkMode() ?? false;
         Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
             ? ThemeMode.dark
@@ -562,23 +572,22 @@ class GameListingController extends GetxController {
     launchInBrowser(Uri.parse(url));
   }
 
-  gameListingTodayApiRes(
-      {String sportId = '',
-      String date = "",
-      String sportKey = "",
-      int start = 0,
-      bool isLoad = false,
-      String key = ''}) async {
+  gameListingTodayApiRes({String sportId = '',
+    String date = "",
+    String sportKey = "",
+    int start = 0,
+    bool isLoad = false,
+    String key = ''}) async {
     isLoading.value = isLoad;
     int pageIndex = 0;
     for (int i = 0; i <= pageIndex; i++) {
       await fetchListingData(
-              start: i * 100,
-              key: key,
-              date: date,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              sportId: sportId)
+          start: i * 100,
+          key: key,
+          date: date,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          sportId: sportId)
           .then((value) {
         if (value.isNotEmpty) {
           if (value.length >= 95) {
@@ -588,56 +597,50 @@ class GameListingController extends GetxController {
           for (var event in sportEvents) {
             DateTime time = (DateTime.parse(event.scheduled ?? ''));
             var difference =
-                (time.toUtc().difference((DateTime.now().toUtc())));
-            if ((event.season?.id == 'sr:season:100127' ||
-                    event.season?.id == 'sr:season:114297') &&
+            (time.toUtc().difference((DateTime.now().toUtc())));
+              if ((mlbGameSeasonId.contains(event.season?.id.toString())) &&
                 sportKey == SportName.MLB.name &&
                 (difference.inHours >= (-6)) &&
-                (event.status != "closed")) {
-              if (mlbTodayEventsList.contains(event)) {
-              } else {
+                (event.status != GameStatus.closed.name)) {
+              if (mlbTodayEventsList.contains(event)) {} else {
                 mlbTodayEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:115087' &&
-                    sportKey ==
-                        SportName.NFL.name /*&&
-                (difference.inHours >= (-6))*/
-                /*&&
-                (event.status != "closed")*/
-                ) {
+                sportKey ==
+                    SportName.NFL.name &&
+                (difference.inHours >= (-6))
+                &&
+                (event.status != GameStatus.closed.name)
+            ) {
               if (nflTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
+                  .indexWhere((element) => element.id == event.id) !=
+                  -1) {} else {
                 nflTodayEventsList.add(event);
               }
             } else if ((event.season?.id == 'sr:season:101983' ||
-                    event.season?.id == "sr:season:101811") &&
+                event.season?.id == "sr:season:101811") &&
                 sportKey == SportName.NCAA.name &&
                 (difference.inHours >= (-6)) &&
-                (event.status != "closed")) {
+                (event.status != GameStatus.closed.name)) {
               if (ncaaTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
+                  .indexWhere((element) => element.id == event.id) !=
+                  -1) {} else {
                 ncaaTodayEventsList.add(event);
               }
-            } else if (((event.season?.id == 'sr:season:117435') &&
+            } else if (((ncaabGameSeasonId.contains(event.season?.id.toString())) &&
                 sportKey == SportName.NCAAB.name &&
                 (difference.inHours >= (-6)) &&
-                (event.status != "closed"))) {
+                (event.status != GameStatus.closed.name))) {
               if (ncaabTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
+                  .indexWhere((element) => element.id == event.id) !=
+                  -1) {} else {
                 ncaabTodayEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:106289' &&
                 sportKey == SportName.NBA.name &&
                 (difference.inHours >= (-6)) &&
-                (event.status != "closed")) {
-              if (nbaTodayEventsList.contains(event)) {
-              } else {
+                (event.status != GameStatus.closed.name)) {
+              if (nbaTodayEventsList.contains(event)) {} else {
                 nbaTodayEventsList.add(event);
               }
             }
@@ -652,24 +655,23 @@ class GameListingController extends GetxController {
     return getTodayList(sportKey);
   }
 
-  gameListingTomorrowApiRes(
-      {String sportId = '',
-      String date = "",
-      String sportKey = "",
-      int start = 0,
-      bool isLoad = false,
-      String key = ''}) async {
+  gameListingTomorrowApiRes({String sportId = '',
+    String date = "",
+    String sportKey = "",
+    int start = 0,
+    bool isLoad = false,
+    String key = ''}) async {
     isPagination = isLoad;
     isLoading.value = false;
     int pageIndex = 0;
     for (int i = 0; i <= pageIndex; i++) {
       await fetchListingData(
-              start: i * 100,
-              key: key,
-              date: date,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              sportId: sportId)
+          start: i * 100,
+          key: key,
+          date: date,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          sportId: sportId)
           .then((List<SportEvents> value) {
         if (value.isNotEmpty) {
           if (value.length >= 95) {
@@ -679,50 +681,50 @@ class GameListingController extends GetxController {
           for (var event in sportEvents.toSet()) {
             DateTime time = (DateTime.parse(event.scheduled ?? ''));
             var difference =
-                (time.toUtc().difference((DateTime.now().toUtc())));
-            if ((event.season?.id == 'sr:season:100127' ||
-                    event.season?.id == 'sr:season:114297') &&
+            (time.toUtc().difference((DateTime.now().toUtc())));
+            if ((mlbGameSeasonId.contains(event.season?.id.toString())) &&
                 sportKey == SportName.MLB.name &&
-                DateTime.parse(event.scheduled ?? '').toLocal().day !=
-                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
-              if (mlbTomorrowEventsList.contains(event)) {
-              } else {
+                DateTime
+                    .parse(event.scheduled ?? '')
+                    .toLocal()
+                    .day !=
+                    DateTime
+                        .now()
+                        .add(const Duration(days: 1))
+                        .toLocal()
+                        .day) {
+              if (mlbTomorrowEventsList.contains(event)) {} else {
                 mlbTomorrowEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:115087' &&
                 sportKey == SportName.NFL.name) {
               if (nflSportEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                if (nflTomorrowEventsList.contains(event)) {
-                } else {
+                  .indexWhere((element) => element.id == event.id) !=
+                  -1) {} else {
+                if (nflTomorrowEventsList.contains(event)) {} else {
                   nflTomorrowEventsList.add(event);
                 }
               }
             } else if ((event.season?.id == 'sr:season:101983' ||
-                    (event.season?.id == 'sr:season:101811')) &&
+                (event.season?.id == 'sr:season:101811')) &&
                 sportKey == SportName.NCAA.name) {
-              if (ncaaTomorrowEventsList.contains(event)) {
-              } else {
+              if (ncaaTomorrowEventsList.contains(event)) {} else {
                 ncaaTomorrowEventsList.add(event);
               }
-            } else if ((event.season?.id == 'sr:season:117435') &&
+            } else if (ncaabGameSeasonId.contains(event.season?.id.toString()) &&
                 sportKey == SportName.NCAAB.name) {
               if (ncaabSportEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                if (ncaabTomorrowEventsList.contains(event)) {
-                } else {
+                  .indexWhere((element) => element.id == event.id) !=
+                  -1) {} else {
+                if (ncaabTomorrowEventsList.contains(event)) {} else {
                   ncaabTomorrowEventsList.add(event);
                 }
               }
             } else if (event.season?.id == 'sr:season:106289' &&
                 sportKey == SportName.NBA.name &&
-                (difference.inHours <= (16))) {
-              if (nbaTomorrowEventsList.contains(event)) {
-              } else {
+                (difference.inHours <= (16)
+                )) {
+              if (nbaTomorrowEventsList.contains(event)) {} else {
                 nbaTomorrowEventsList.add(event);
               }
             }
@@ -738,28 +740,28 @@ class GameListingController extends GetxController {
 
   List<SportEvents> getTodayList(sportKey) {
     return (sportKey == SportName.NFL.name
-            ? nflTodayEventsList.toSet()
-            : sportKey == SportName.MLB.name
-                ? mlbTodayEventsList.toSet()
-                : sportKey == SportName.NBA.name
-                    ? nbaTodayEventsList.toSet()
-                    : sportKey == SportName.NCAAB.name
-                        ? ncaabTodayEventsList.toSet()
-                        : ncaaTodayEventsList.toSet())
+        ? nflTodayEventsList.toSet()
+        : sportKey == SportName.MLB.name
+        ? mlbTodayEventsList.toSet()
+        : sportKey == SportName.NBA.name
+        ? nbaTodayEventsList.toSet()
+        : sportKey == SportName.NCAAB.name
+        ? ncaabTodayEventsList.toSet()
+        : ncaaTodayEventsList.toSet())
         .toSet()
         .toList();
   }
 
   List<SportEvents> getTomorrowList(sportKey) {
     return (sportKey == SportName.NFL.name
-            ? nflTomorrowEventsList.toSet()
-            : sportKey == SportName.MLB.name
-                ? mlbTomorrowEventsList.toSet()
-                : sportKey == SportName.NBA.name
-                    ? nbaTomorrowEventsList.toSet()
-                    : sportKey == SportName.NCAAB.name
-                        ? ncaabTomorrowEventsList.toSet()
-                        : ncaaTomorrowEventsList.toSet())
+        ? nflTomorrowEventsList.toSet()
+        : sportKey == SportName.MLB.name
+        ? mlbTomorrowEventsList.toSet()
+        : sportKey == SportName.NBA.name
+        ? nbaTomorrowEventsList.toSet()
+        : sportKey == SportName.NCAAB.name
+        ? ncaabTomorrowEventsList.toSet()
+        : ncaaTomorrowEventsList.toSet())
         .toSet()
         .toList();
   }
@@ -772,12 +774,12 @@ class GameListingController extends GetxController {
     return sportKey == SportName.NFL.name
         ? nflSportEventsList
         : sportKey == SportName.MLB.name
-            ? mlbSportEventsList
-            : sportKey == SportName.NCAAB.name
-                ? ncaabSportEventsList
-                : sportKey == SportName.NBA.name
-                    ? nbaSportEventsList
-                    : ncaaSportEventsList;
+        ? mlbSportEventsList
+        : sportKey == SportName.NCAAB.name
+        ? ncaabSportEventsList
+        : sportKey == SportName.NBA.name
+        ? nbaSportEventsList
+        : ncaaSportEventsList;
   }
 
   ///GET ALL EVENT BY HOME AWAY FILTER
@@ -786,8 +788,9 @@ class GameListingController extends GetxController {
     getSportEventList(sportKey).addAll(getTodayList(sportKey).toSet());
     getSportEventList(sportKey).addAll(getTomorrowList(sportKey).toSet());
     update();
-    getSportEventList(sportKey).sort((a, b) => DateTime.parse(a.scheduled ?? "")
-        .compareTo(DateTime.parse(b.scheduled ?? "")));
+    getSportEventList(sportKey).sort((a, b) =>
+        DateTime.parse(a.scheduled ?? "")
+            .compareTo(DateTime.parse(b.scheduled ?? "")));
     for (var event in getSportEventList(sportKey)) {
       if (event.competitors.isNotEmpty) {
         if (event.competitors[0].qualifier == 'home') {
@@ -897,16 +900,15 @@ class GameListingController extends GetxController {
   }
 
   ///BOX SCORE API
-  Future boxScoreResponse(
-      {String gameId = '',
-      String homeTeamId = '',
-      String awayTeamId = '',
-      bool isLoad = false,
-      String key = '',
-      required int index}) async {
+  Future boxScoreResponse({String gameId = '',
+    String homeTeamId = '',
+    String awayTeamId = '',
+    bool isLoad = false,
+    String key = '',
+    required int index}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().boxScoreRepo(gameId: gameId);
     try {
       if (result.status) {
@@ -919,7 +921,7 @@ class GameListingController extends GetxController {
             mlbSportEventsList[index].inningHalf =
                 game.outcome?.currentInningHalf.toString() ?? '';
             mlbSportEventsList[index].outs =
-                "${(game.outcome?.count?.outs ?? "0").toString()} Outs";
+            "${(game.outcome?.count?.outs ?? "0").toString()} Outs";
             if (game.home?.id == homeTeamId) {
               mlbSportEventsList[index].homeScore =
                   (game.home?.runs).toString();
@@ -928,13 +930,15 @@ class GameListingController extends GetxController {
               mlbSportEventsList[index].homePlayerId =
                   (game.home?.probablePitcher?.id ?? "").toString();
               mlbSportEventsList[index].wlHome =
-                  ('${game.home?.probablePitcher?.win ?? '0'}-${game.home?.probablePitcher?.loss ?? '0'}')
+                  ('${game.home?.probablePitcher?.win ?? '0'}-${game.home
+                      ?.probablePitcher?.loss ?? '0'}')
                       .toString();
               mlbSportEventsList[index].eraHome =
                   (game.home?.probablePitcher?.era ?? '0').toString();
               if (game.home?.probablePitcher != null) {
                 mlbSportEventsList[index].homePlayerName =
-                    ('${game.home?.probablePitcher?.preferredName?[0]}. ${game.home?.probablePitcher?.lastName}')
+                    ('${game.home?.probablePitcher?.preferredName?[0]}. ${game
+                        .home?.probablePitcher?.lastName}')
                         .toString();
               }
             }
@@ -946,13 +950,15 @@ class GameListingController extends GetxController {
               mlbSportEventsList[index].awayPlayerId =
                   (game.away?.probablePitcher?.id ?? "").toString();
               mlbSportEventsList[index].wlAway =
-                  ('${game.away?.probablePitcher?.win ?? '0'}-${game.away?.probablePitcher?.loss ?? "0"}')
+                  ('${game.away?.probablePitcher?.win ?? '0'}-${game.away
+                      ?.probablePitcher?.loss ?? "0"}')
                       .toString();
               mlbSportEventsList[index].eraAway =
                   (game.away?.probablePitcher?.era ?? '0').toString();
               if (game.away?.probablePitcher != null) {
                 mlbSportEventsList[index].awayPlayerName =
-                    ('${game.away?.probablePitcher?.preferredName?[0] ?? ""}. ${game.away?.probablePitcher?.lastName ?? ""}')
+                    ('${game.away?.probablePitcher?.preferredName?[0] ??
+                        ""}. ${game.away?.probablePitcher?.lastName ?? ""}')
                         .toString();
               }
             }
@@ -973,16 +979,15 @@ class GameListingController extends GetxController {
     update();
   }
 
-  Future boxScoreResponseNCAA(
-      {String gameId = '',
-      bool isLoad = false,
-      String key = '',
-      int index = 0}) async {
+  Future boxScoreResponseNCAA({String gameId = '',
+    bool isLoad = false,
+    String key = '',
+    int index = 0}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result =
-        await GameListingRepo().boxScoreRepoNCAA(gameId: gameId, sportKey: key);
+    await GameListingRepo().boxScoreRepoNCAA(gameId: gameId, sportKey: key);
     try {
       if (result.status) {
         NCAABoxScoreModel response = NCAABoxScoreModel.fromJson(result.data);
@@ -1009,7 +1014,8 @@ class GameListingController extends GetxController {
             nflSportEventsList[index].clock = (game.clock ?? "00:00");
             if (game.situation != null) {
               nflSportEventsList[index].currentTime =
-                  'Q${(game.quarter ?? "0")} ${game.situation?.clock ?? ""}, $down & ${game.situation?.yfd ?? ""}';
+              'Q${(game.quarter ?? "0")} ${game.situation?.clock ??
+                  ""}, $down & ${game.situation?.yfd ?? ""}';
             } else {
               nflSportEventsList[index].currentTime = '';
             }
@@ -1024,7 +1030,8 @@ class GameListingController extends GetxController {
             ncaaSportEventsList[index].clock = (game.clock ?? "00:00");
             if (game.situation != null) {
               ncaaSportEventsList[index].currentTime =
-                  'Q${(game.quarter ?? "0")} ${game.situation?.clock ?? ""}, $down & ${game.situation?.yfd ?? ""}';
+              'Q${(game.quarter ?? "0")} ${game.situation?.clock ??
+                  ""}, $down & ${game.situation?.yfd ?? ""}';
             } else {
               ncaaSportEventsList[index].currentTime = '';
             }
@@ -1051,17 +1058,16 @@ class GameListingController extends GetxController {
     update();
   }
 
-  Future boxScoreNBAResponse(
-      {String gameId = '',
-      String sportKey = '',
-      String homeTeamId = '',
-      String awayTeamId = '',
-      bool isLoad = false,
-      String key = '',
-      required int index}) async {
+  Future boxScoreNBAResponse({String gameId = '',
+    String sportKey = '',
+    String homeTeamId = '',
+    String awayTeamId = '',
+    bool isLoad = false,
+    String key = '',
+    required int index}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .boxScoreNBARepo(gameId: gameId, sportKey: sportKey);
     try {
@@ -1143,9 +1149,9 @@ class GameListingController extends GetxController {
     required String sportName,
     required List<SportEvents> sportList,
   }) async {
-    isLoading.value = isLoad;
+    // isLoading.value = isLoad;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().ncaaGameRanking(sportName);
     try {
       if (result.status) {
@@ -1158,13 +1164,13 @@ class GameListingController extends GetxController {
                     (replaceId(sportList[i].competitors[0].uuids ?? '') ??
                         "")) {
                   sportList[i].homeRank =
-                      team.prevRank != null ? team.prevRank.toString() : '0';
+                  team.prevRank != null ? team.prevRank.toString() : '0';
                 }
                 if (team.id.toString() ==
                     (replaceId(sportList[i].competitors[1].uuids ?? '') ??
                         "")) {
                   sportList[i].awayRank =
-                      team.prevRank != null ? team.prevRank.toString() : '0';
+                  team.prevRank != null ? team.prevRank.toString() : '0';
                 }
               });
             }
@@ -1190,25 +1196,25 @@ class GameListingController extends GetxController {
   Future getConferenceNCAAB(bool isLoad) async {
     isLoading.value = isLoad;
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().getConferenceNCAAB();
     try {
       if (result.status) {
         ConferencesModelNCAAB response =
-            ConferencesModelNCAAB.fromJson(result.data);
+        ConferencesModelNCAAB.fromJson(result.data);
         if (response.divisions != null) {
           for (int i = 0; i < ncaabSportEventsList.length; i++) {
             if (ncaabSportEventsList[i].uuids != null) {
               response.divisions?.forEach((division) {
                 division.conferences?.forEach(
-                  (conference) {
+                      (conference) {
                     conference.teams?.forEach(
-                      (team) {
+                          (team) {
                         if (team.id.toString() ==
                             (replaceId(ncaabSportEventsList[i]
-                                        .competitors[0]
-                                        .uuids ??
-                                    '') ??
+                                .competitors[0]
+                                .uuids ??
+                                '') ??
                                 "")) {
                           ncaabSportEventsList[i].homeConferenceName =
                               conference.name;
@@ -1217,9 +1223,9 @@ class GameListingController extends GetxController {
                         }
                         if (team.id.toString() ==
                             (replaceId(ncaabSportEventsList[i]
-                                        .competitors[1]
-                                        .uuids ??
-                                    '') ??
+                                .competitors[1]
+                                .uuids ??
+                                '') ??
                                 "")) {
                           ncaabSportEventsList[i].awayConferenceName =
                               conference.name;
@@ -1338,36 +1344,36 @@ class GameListingController extends GetxController {
 
   getGameListingForNCAAGame(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     ncaaTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         ncaaTomorrowEventsList.clear();
         for (int i = 2; i <= 12; i++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: i))),
+              sportId: sportId)
               .then((value) {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
@@ -1399,31 +1405,34 @@ class GameListingController extends GetxController {
           timerNCAA = Timer.periodic(const Duration(seconds: 45), (t) async {
             ncaaTodayEventsList.clear();
             await gameListingTodayApiRes(
-                    key: apiKey,
-                    isLoad: false,
-                    sportKey: sportKey,
-                    date: date,
-                    sportId: sportId)
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: date,
+                sportId: sportId)
                 .then((value) {
               gameListingTodayApiRes(
-                      key: apiKey,
-                      isLoad: false,
-                      sportKey: sportKey,
-                      date: DateFormat('yyyy-MM-dd').format(
-                          DateTime.parse(date).add(const Duration(days: 1))),
-                      sportId: sportId)
+                  key: apiKey,
+                  isLoad: false,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd').format(
+                      DateTime.parse(date).add(const Duration(days: 1))),
+                  sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < ncaaTodayEventsList.length; i++) {
                   int liveIndex = ncaaSportEventsList.indexWhere(
-                      (element) => element.id == ncaaTodayEventsList[i].id);
+                          (element) => element.id == ncaaTodayEventsList[i].id);
                   if (liveIndex >= 0) {
                     setOdds(ncaaSportEventsList[liveIndex]);
                   }
                   if (((DateTime.parse(ncaaTodayEventsList[i].scheduled ?? "")
-                                  .toLocal())
-                              .day ==
-                          DateTime.now().toLocal().day) &&
-                      ncaaTodayEventsList[i].status != "closed") {
+                      .toLocal())
+                      .day ==
+                      DateTime
+                          .now()
+                          .toLocal()
+                          .day) &&
+                      ncaaTodayEventsList[i].status != GameStatus.closed.name) {
                     if (ncaaTodayEventsList[i].uuids != null) {
                       boxScoreResponseNCAA(
                           key: sportKey,
@@ -1443,36 +1452,36 @@ class GameListingController extends GetxController {
 
   ncaaGameRefreshCall(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     ncaaTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         ncaaTomorrowEventsList.clear();
         for (int i = 2; i <= 12; i++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: i))),
+              sportId: sportId)
               .then((value) {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
@@ -1506,37 +1515,37 @@ class GameListingController extends GetxController {
 
   Future<void> getGameListingForNFLGame(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     nflTodayEventsList = [];
     update();
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         nflTomorrowEventsList = [];
         for (int i = 2; i <= 6; i++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: i))),
+              sportId: sportId)
               .then((value) async {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
@@ -1565,31 +1574,34 @@ class GameListingController extends GetxController {
           timerNFL = Timer.periodic(const Duration(seconds: 45), (t) {
             nflTodayEventsList.clear();
             gameListingTodayApiRes(
-                    key: apiKey,
-                    isLoad: false,
-                    sportKey: sportKey,
-                    date: date,
-                    sportId: sportId)
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: date,
+                sportId: sportId)
                 .then((value) {
               gameListingTodayApiRes(
-                      key: apiKey,
-                      isLoad: false,
-                      sportKey: sportKey,
-                      date: DateFormat('yyyy-MM-dd').format(
-                          DateTime.parse(date).add(const Duration(days: 1))),
-                      sportId: sportId)
+                  key: apiKey,
+                  isLoad: false,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd').format(
+                      DateTime.parse(date).add(const Duration(days: 1))),
+                  sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < nflTodayEventsList.length; i++) {
                   int liveIndex = nflSportEventsList.indexWhere(
-                      (element) => element.id == nflTodayEventsList[i].id);
+                          (element) => element.id == nflTodayEventsList[i].id);
                   if (liveIndex >= 0) {
                     setOdds(nflSportEventsList[liveIndex]);
                   }
                   if (((DateTime.parse(nflTodayEventsList[i].scheduled ?? "")
-                                  .toLocal())
-                              .day ==
-                          DateTime.now().toLocal().day) &&
-                      nflTodayEventsList[i].status != "closed") {
+                      .toLocal())
+                      .day ==
+                      DateTime
+                          .now()
+                          .toLocal()
+                          .day) &&
+                      nflTodayEventsList[i].status != GameStatus.closed.name) {
                     if (nflTodayEventsList[i].uuids != null) {
                       boxScoreResponseNCAA(
                           key: sportKey,
@@ -1610,36 +1622,36 @@ class GameListingController extends GetxController {
 
   Future<void> nflGameRefreshCall(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     nflTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         nflTomorrowEventsList = [];
         for (int i = 2; i <= 6; i++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: i))),
+              sportId: sportId)
               .then((value) async {
             getAllEventList(sportKey, isLoad);
             nflGameRankApi(isLoad: isLoad, sportKey: sportKey);
@@ -1670,7 +1682,7 @@ class GameListingController extends GetxController {
   ///NFL GAME RANK API
   Future nflGameRankApi({bool isLoad = false, String sportKey = ''}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nflGameRankApi(sportKey);
     try {
       if (result.status) {
@@ -1691,8 +1703,8 @@ class GameListingController extends GetxController {
             }
             response.data?.forEach((team) {
               if ((awayTeam?.abbreviation == 'LV'
-                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                      : replaceId(awayTeam?.uuids ?? '')) ==
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(awayTeam?.uuids ?? '')) ==
                   replaceId(team.teamId ?? "")) {
                 element.nflAwayOffensiveRank = [
                   (team.pointOffenceRank ?? 0).toString(),
@@ -1759,8 +1771,8 @@ class GameListingController extends GetxController {
                 ];
               }
               if ((homeTeam?.abbreviation == 'LV'
-                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                      : replaceId(homeTeam?.uuids ?? '')) ==
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(homeTeam?.uuids ?? '')) ==
                   replaceId(team.teamId ?? "")) {
                 element.nflHomeOffensiveRank = [
                   (team.pointOffenceRank ?? 0).toString(),
@@ -1841,7 +1853,7 @@ class GameListingController extends GetxController {
 
   Future getNFLQBSRank({bool isLoad = false, String sportKey = ''}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().getNFLQBSRank(sportKey);
     try {
       if (result.status) {
@@ -1862,8 +1874,8 @@ class GameListingController extends GetxController {
             }
             response.data?.forEach((element) {
               if ((homeTeam?.abbreviation == 'LV'
-                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                      : replaceId(homeTeam?.uuids ?? '')) ==
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(homeTeam?.uuids ?? '')) ==
                   element.teamId) {
                 sportData.homePlayerName = element.playerName ?? "";
                 sportData.homePlayerId = element.playerId ?? "";
@@ -1883,8 +1895,8 @@ class GameListingController extends GetxController {
                 ];
               }
               if ((awayTeam?.abbreviation == 'LV'
-                      ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
-                      : replaceId(awayTeam?.uuids ?? '')) ==
+                  ? '7d4fcc64-9cb5-4d1b-8e75-8a906d1e1576'
+                  : replaceId(awayTeam?.uuids ?? '')) ==
                   element.teamId) {
                 sportData.awayPlayerName = element.playerName ?? "";
                 sportData.awayPlayerId = element.playerId ?? "";
@@ -1919,7 +1931,7 @@ class GameListingController extends GetxController {
   ///NBA GAME RANK API
   Future nbaGameRankApi({bool isLoad = false, String sportKey = ''}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().nbaGameRankApi(sportKey);
     try {
       if (result.status) {
@@ -1951,9 +1963,12 @@ class GameListingController extends GetxController {
                   // team.blocksOffense.toString(),
                   // team.turnOverOffense.toString(),
                   // team.foulsOffense.toString(),
-                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
-                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
-                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team
+                      .fgOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team
+                      .threePOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team
+                      .ftOffense}%',
                   // '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
                   //     .toString(),
                   // team.teamPerOffense.toString(),
@@ -1983,9 +1998,12 @@ class GameListingController extends GetxController {
                   // team.blocksDefense.toString(),
                   // team.turnOverDefense.toString(),
                   // team.foulsDefense.toString(),
-                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
-                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
-                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team
+                      .fgDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team
+                      .threePDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team
+                      .ftDefense}%',
                   // '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
                   //     .toString(),
                   // team.teamPerDefense.toString(),
@@ -2017,9 +2035,12 @@ class GameListingController extends GetxController {
                   // team.blocksOffense.toString(),
                   // team.turnOverOffense.toString(),
                   // team.foulsOffense.toString(),
-                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team.fgOffense}%',
-                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team.threePOffense}%',
-                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team.ftOffense}%',
+                  '${team.fgMadeOffense} / ${team.fgAttOffense} / ${team
+                      .fgOffense}%',
+                  '${team.threePMadeOffense} / ${team.threePAttOffense} / ${team
+                      .threePOffense}%',
+                  '${team.ftMadeOffense} / ${team.ftAttOffense} / ${team
+                      .ftOffense}%',
                   // '${((team.trueShootingOffense ?? 0) * 100).toStringAsFixed(1)}%'
                   //     .toString(),
                   // team.teamPerOffense.toString(),
@@ -2048,9 +2069,12 @@ class GameListingController extends GetxController {
                   // team.blocksDefense.toString(),
                   // team.turnOverDefense.toString(),
                   // team.foulsDefense.toString(),
-                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team.fgDefense}%',
-                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team.threePDefense}%',
-                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team.ftDefense}%',
+                  '${team.fgMadeDefense} / ${team.fgAttDefense} / ${team
+                      .fgDefense}%',
+                  '${team.threePMadeDefense} / ${team.threePAttDefense} / ${team
+                      .threePDefense}%',
+                  '${team.ftMadeDefense} / ${team.ftAttDefense} / ${team
+                      .ftDefense}%',
                   // '${((team.trueShootingDefense ?? 0) * 100).toStringAsFixed(1)}%'
                   //     .toString(),
                   // team.teamPerDefense.toString(),
@@ -2086,35 +2110,35 @@ class GameListingController extends GetxController {
 
   Future<void> getGameListingForMLBRes(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         mlbTomorrowEventsList.clear();
         for (int j = 2; j <= 4; j++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: j))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: j))),
+              sportId: sportId)
               .then((value) {
             getAllEventList(sportKey, isLoad);
             gameListingsWithLogoResponse(currentYear, sportKey, isLoad: isLoad);
@@ -2126,18 +2150,21 @@ class GameListingController extends GetxController {
                 getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
                     index: i, sportKey: sportKey);
                 if (mlbSportEventsList[i].uuids != null) {
-                  if (DateTime.parse(mlbSportEventsList[i].scheduled ?? "")
-                          .toLocal()
-                          .day ==
-                      DateTime.now().day) {
+                  if (DateTime
+                      .parse(mlbSportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                      DateTime
+                          .now()
+                          .day) {
                     boxScoreResponse(
                         homeTeamId: replaceId(
-                                mlbSportEventsList[i].competitors[0].uuids ??
-                                    '') ??
+                            mlbSportEventsList[i].competitors[0].uuids ??
+                                '') ??
                             "",
                         awayTeamId: replaceId(
-                                mlbSportEventsList[i].competitors[1].uuids ??
-                                    '') ??
+                            mlbSportEventsList[i].competitors[1].uuids ??
+                                '') ??
                             "",
                         gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
                         index: i);
@@ -2151,40 +2178,43 @@ class GameListingController extends GetxController {
           timer = Timer.periodic(const Duration(seconds: 45), (t) {
             mlbTodayEventsList.clear();
             gameListingTodayApiRes(
-                    key: apiKey,
-                    isLoad: false,
-                    sportKey: sportKey,
-                    date: date,
-                    sportId: sportId)
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: date,
+                sportId: sportId)
                 .then((value) {
               gameListingTodayApiRes(
-                      key: apiKey,
-                      isLoad: false,
-                      sportKey: sportKey,
-                      date: DateFormat('yyyy-MM-dd').format(
-                          DateTime.parse(date).add(const Duration(days: 1))),
-                      sportId: sportId)
+                  key: apiKey,
+                  isLoad: false,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd').format(
+                      DateTime.parse(date).add(const Duration(days: 1))),
+                  sportId: sportId)
                   .then((value) {
                 for (int i = 0; i < mlbTodayEventsList.length; i++) {
                   int liveIndex = mlbSportEventsList.indexWhere(
-                      (element) => element.id == mlbTodayEventsList[i].id);
+                          (element) => element.id == mlbTodayEventsList[i].id);
                   if (liveIndex >= 0) {
                     setOdds(mlbSportEventsList[liveIndex]);
                   }
                   if (((DateTime.parse(mlbTodayEventsList[i].scheduled ?? "")
-                                  .toLocal())
-                              .day ==
-                          DateTime.now().toLocal().day) &&
-                      mlbTodayEventsList[i].status != "closed") {
+                      .toLocal())
+                      .day ==
+                      DateTime
+                          .now()
+                          .toLocal()
+                          .day) &&
+                      mlbTodayEventsList[i].status != GameStatus.closed.name) {
                     if (mlbTodayEventsList[i].uuids != null) {
                       boxScoreResponse(
                           homeTeamId: replaceId(
-                                  mlbTodayEventsList[i].competitors[0].uuids ??
-                                      '') ??
+                              mlbTodayEventsList[i].competitors[0].uuids ??
+                                  '') ??
                               "",
                           awayTeamId: replaceId(
-                                  mlbTodayEventsList[i].competitors[1].uuids ??
-                                      '') ??
+                              mlbTodayEventsList[i].competitors[1].uuids ??
+                                  '') ??
                               "",
                           gameId: replaceId(mlbTodayEventsList[i].uuids ?? ''),
                           index: i);
@@ -2202,36 +2232,36 @@ class GameListingController extends GetxController {
 
   Future<void> mlbGameRefreshCall(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     mlbTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         mlbTomorrowEventsList.clear();
         for (int i = 2; i <= 4; i++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: i))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: i))),
+              sportId: sportId)
               .then((value) {
             getAllEventList(sportKey, isLoad);
             if (mlbSportEventsList.isNotEmpty) {
@@ -2241,12 +2271,12 @@ class GameListingController extends GetxController {
                 if (mlbSportEventsList[i].uuids != null) {
                   boxScoreResponse(
                       homeTeamId: replaceId(
-                              mlbSportEventsList[i].competitors[0].uuids ??
-                                  '') ??
+                          mlbSportEventsList[i].competitors[0].uuids ??
+                              '') ??
                           "",
                       awayTeamId: replaceId(
-                              mlbSportEventsList[i].competitors[1].uuids ??
-                                  '') ??
+                          mlbSportEventsList[i].competitors[1].uuids ??
+                              '') ??
                           "",
                       gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
                       index: i);
@@ -2265,35 +2295,35 @@ class GameListingController extends GetxController {
 
   Future<void> getGameListingForNBARes(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     nbaTodayEventsList.clear();
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         nbaTomorrowEventsList.clear();
         gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(const Duration(days: 2))),
-                sportId: sportId)
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: DateFormat('yyyy-MM-dd')
+                .format(DateTime.parse(date).add(const Duration(days: 2))),
+            sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           isPagination = false;
@@ -2307,10 +2337,10 @@ class GameListingController extends GetxController {
                 boxScoreNBAResponse(
                     sportKey: sportKey,
                     homeTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
+                        nbaSportEventsList[i].competitors[0].uuids ?? '') ??
                         "",
                     awayTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
+                        nbaSportEventsList[i].competitors[1].uuids ?? '') ??
                         "",
                     gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
                     index: i);
@@ -2322,41 +2352,44 @@ class GameListingController extends GetxController {
           timer = Timer.periodic(const Duration(seconds: 45), (t) {
             nbaTodayEventsList.clear();
             gameListingTodayApiRes(
-                    key: apiKey,
-                    isLoad: false,
-                    sportKey: sportKey,
-                    date: date,
-                    sportId: sportId)
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: date,
+                sportId: sportId)
                 .then((value) async {
               gameListingTodayApiRes(
-                      key: apiKey,
-                      isLoad: false,
-                      sportKey: sportKey,
-                      date: DateFormat('yyyy-MM-dd').format(
-                          DateTime.parse(date).add(const Duration(days: 1))),
-                      sportId: sportId)
+                  key: apiKey,
+                  isLoad: false,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd').format(
+                      DateTime.parse(date).add(const Duration(days: 1))),
+                  sportId: sportId)
                   .then((value) async {
                 for (int i = 0; i < nbaTodayEventsList.length; i++) {
                   int liveIndex = nbaSportEventsList.indexWhere(
-                      (element) => element.id == nbaTodayEventsList[i].id);
+                          (element) => element.id == nbaTodayEventsList[i].id);
                   if (liveIndex >= 0) {
                     setOdds(nbaSportEventsList[liveIndex]);
                   }
                   if (((DateTime.parse(nbaTodayEventsList[i].scheduled ?? "")
-                                  .toLocal())
-                              .day ==
-                          DateTime.now().toLocal().day) &&
-                      nbaTodayEventsList[i].status != "closed") {
+                      .toLocal())
+                      .day ==
+                      DateTime
+                          .now()
+                          .toLocal()
+                          .day) &&
+                      nbaTodayEventsList[i].status != GameStatus.closed.name) {
                     if (nbaTodayEventsList[i].uuids != null) {
                       boxScoreNBAResponse(
                           sportKey: sportKey,
                           homeTeamId: replaceId(
-                                  nbaTodayEventsList[i].competitors[0].uuids ??
-                                      '') ??
+                              nbaTodayEventsList[i].competitors[0].uuids ??
+                                  '') ??
                               "",
                           awayTeamId: replaceId(
-                                  nbaTodayEventsList[i].competitors[1].uuids ??
-                                      '') ??
+                              nbaTodayEventsList[i].competitors[1].uuids ??
+                                  '') ??
                               "",
                           gameId: replaceId(nbaTodayEventsList[i].uuids ?? ''),
                           index: i);
@@ -2374,35 +2407,35 @@ class GameListingController extends GetxController {
 
   Future<void> nbaGameRefreshCall(bool isLoad,
       {String apiKey = '',
-      String sportKey = '',
-      String date = '',
-      String sportId = ''}) async {
+        String sportKey = '',
+        String date = '',
+        String sportId = ''}) async {
     nbaTodayEventsList.clear();
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         nbaTomorrowEventsList.clear();
         gameListingTomorrowApiRes(
-                key: apiKey,
-                isLoad: isLoad,
-                sportKey: sportKey,
-                date: DateFormat('yyyy-MM-dd')
-                    .format(DateTime.parse(date).add(const Duration(days: 2))),
-                sportId: sportId)
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: DateFormat('yyyy-MM-dd')
+                .format(DateTime.parse(date).add(const Duration(days: 2))),
+            sportId: sportId)
             .then((value) async {
           getAllEventList(sportKey, isLoad);
           isPagination = false;
@@ -2416,10 +2449,10 @@ class GameListingController extends GetxController {
                 boxScoreNBAResponse(
                     sportKey: sportKey,
                     homeTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[0].uuids ?? '') ??
+                        nbaSportEventsList[i].competitors[0].uuids ?? '') ??
                         "",
                     awayTeamId: replaceId(
-                            nbaSportEventsList[i].competitors[1].uuids ?? '') ??
+                        nbaSportEventsList[i].competitors[1].uuids ?? '') ??
                         "",
                     gameId: replaceId(nbaSportEventsList[i].uuids ?? ''),
                     index: i);
@@ -2431,8 +2464,7 @@ class GameListingController extends GetxController {
     });
   }
 
-  Future<void> getGameListingForNCAABRes(
-    bool isLoad, {
+  Future<void> getGameListingForNCAABRes(bool isLoad, {
     String apiKey = '',
     String sportKey = '',
     String date = '',
@@ -2440,31 +2472,31 @@ class GameListingController extends GetxController {
   }) async {
     ncaabTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         ncaabTomorrowEventsList.clear();
         for (int j = 2; j <= 6; j++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: j))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: j))),
+              sportId: sportId)
               .then((value) async {
             getAllEventList(sportKey, isLoad);
             nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
@@ -2472,29 +2504,32 @@ class GameListingController extends GetxController {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
-                isLoad: true);
+                isLoad: isLoad);
             if (ncaabSportEventsList.isNotEmpty) {
               getConferenceNCAAB(false);
               ncaaGameRanking(
                 sportName: sportKey,
-                isLoad: false,
+                isLoad: isLoad,
                 sportList: ncaabSportEventsList,
               );
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
-                          .toLocal()
-                          .day ==
-                      DateTime.now().day) {
+                  if (DateTime
+                      .parse(ncaabSportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                      DateTime
+                          .now()
+                          .day) {
                     boxScoreNBAResponse(
                         sportKey: sportKey,
                         homeTeamId: replaceId(
-                                ncaabSportEventsList[i].competitors[0].uuids ??
-                                    '') ??
+                            ncaabSportEventsList[i].competitors[0].uuids ??
+                                '') ??
                             "",
                         awayTeamId: replaceId(
-                                ncaabSportEventsList[i].competitors[1].uuids ??
-                                    '') ??
+                            ncaabSportEventsList[i].competitors[1].uuids ??
+                                '') ??
                             "",
                         gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
                         index: i);
@@ -2509,47 +2544,52 @@ class GameListingController extends GetxController {
           timer = Timer.periodic(const Duration(seconds: 45), (t) {
             ncaabTodayEventsList.clear();
             gameListingTodayApiRes(
-                    key: apiKey,
-                    isLoad: false,
-                    sportKey: sportKey,
-                    date: date,
-                    sportId: sportId)
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: date,
+                sportId: sportId)
                 .then((value) async {
               gameListingTodayApiRes(
-                      key: apiKey,
-                      isLoad: false,
-                      sportKey: sportKey,
-                      date: DateFormat('yyyy-MM-dd').format(
-                          DateTime.parse(date).add(const Duration(days: 1))),
-                      sportId: sportId)
+                  key: apiKey,
+                  isLoad: false,
+                  sportKey: sportKey,
+                  date: DateFormat('yyyy-MM-dd').format(
+                      DateTime.parse(date).add(const Duration(days: 1))),
+                  sportId: sportId)
                   .then((value) async {
                 for (int i = 0; i < ncaabTodayEventsList.length; i++) {
                   int liveIndex = ncaabSportEventsList.indexWhere(
-                      (element) => element.id == ncaabTodayEventsList[i].id);
+                          (element) =>
+                      element.id == ncaabTodayEventsList[i].id);
                   if (liveIndex >= 0) {
                     setOdds(ncaabSportEventsList[liveIndex]);
                   }
                   if (((DateTime.parse(ncaabTodayEventsList[i].scheduled ?? "")
-                                  .toLocal())
-                              .day ==
-                          DateTime.now().toLocal().day) &&
-                      (ncaabTodayEventsList[i].status != "closed" ||
+                      .toLocal())
+                      .day ==
+                      DateTime
+                          .now()
+                          .toLocal()
+                          .day) &&
+                      (ncaabTodayEventsList[i].status !=
+                          GameStatus.closed.name ||
                           ncaabTodayEventsList[i].status != "complete")) {
                     if (ncaabTodayEventsList[i].uuids != null) {
                       boxScoreNBAResponse(
                           sportKey: sportKey,
                           homeTeamId: replaceId(ncaabTodayEventsList[i]
-                                      .competitors[0]
-                                      .uuids ??
-                                  '') ??
+                              .competitors[0]
+                              .uuids ??
+                              '') ??
                               "",
                           awayTeamId: replaceId(ncaabTodayEventsList[i]
-                                      .competitors[1]
-                                      .uuids ??
-                                  '') ??
+                              .competitors[1]
+                              .uuids ??
+                              '') ??
                               "",
                           gameId:
-                              replaceId(ncaabTodayEventsList[i].uuids ?? ''),
+                          replaceId(ncaabTodayEventsList[i].uuids ?? ''),
                           index: i);
                     }
                   }
@@ -2563,8 +2603,7 @@ class GameListingController extends GetxController {
     });
   }
 
-  ncaabGameRefreshCall(
-    bool isLoad, {
+  ncaabGameRefreshCall(bool isLoad, {
     String apiKey = '',
     String sportKey = '',
     String date = '',
@@ -2572,32 +2611,32 @@ class GameListingController extends GetxController {
   }) {
     ncaabTodayEventsList = [];
     gameListingTodayApiRes(
-            key: apiKey,
-            start: 0,
-            isLoad: isLoad,
-            sportKey: sportKey,
-            date: date,
-            sportId: sportId)
+        key: apiKey,
+        start: 0,
+        isLoad: isLoad,
+        sportKey: sportKey,
+        date: date,
+        sportId: sportId)
         .then((value) {
       gameListingTodayApiRes(
-              key: apiKey,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              date: DateFormat('yyyy-MM-dd')
-                  .format(DateTime.parse(date).add(const Duration(days: 1))),
-              sportId: sportId)
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: sportId)
           .then((value) {
         isLoading.value = false;
         isPagination = isLoad;
         ncaabTomorrowEventsList = [];
         for (int j = 2; j <= 6; j++) {
           gameListingTomorrowApiRes(
-                  key: apiKey,
-                  isLoad: isLoad,
-                  sportKey: sportKey,
-                  date: DateFormat('yyyy-MM-dd')
-                      .format(DateTime.parse(date).add(Duration(days: j))),
-                  sportId: sportId)
+              key: apiKey,
+              isLoad: isLoad,
+              sportKey: sportKey,
+              date: DateFormat('yyyy-MM-dd')
+                  .format(DateTime.parse(date).add(Duration(days: j))),
+              sportId: sportId)
               .then((value) async {
             getAllEventList(sportKey, isLoad);
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
@@ -2611,19 +2650,22 @@ class GameListingController extends GetxController {
               getConferenceNCAAB(false);
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
-                          .toLocal()
-                          .day ==
-                      DateTime.now().day) {
+                  if (DateTime
+                      .parse(ncaabSportEventsList[i].scheduled ?? "")
+                      .toLocal()
+                      .day ==
+                      DateTime
+                          .now()
+                          .day) {
                     boxScoreNBAResponse(
                         sportKey: sportKey,
                         homeTeamId: replaceId(
-                                ncaabSportEventsList[i].competitors[0].uuids ??
-                                    '') ??
+                            ncaabSportEventsList[i].competitors[0].uuids ??
+                                '') ??
                             "",
                         awayTeamId: replaceId(
-                                ncaabSportEventsList[i].competitors[1].uuids ??
-                                    '') ??
+                            ncaabSportEventsList[i].competitors[1].uuids ??
+                                '') ??
                             "",
                         gameId: replaceId(ncaabSportEventsList[i].uuids ?? ''),
                         index: i);
@@ -2643,7 +2685,7 @@ class GameListingController extends GetxController {
     // isLoading.value = !isLoad ? false : true;
 
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().gameListingsWithLogo(year, sportKey);
     // result = await BaseApiHelper.jasonRequestNew(sportKey);
     try {
@@ -2670,13 +2712,13 @@ class GameListingController extends GetxController {
                           homeTeam = element.competitors[1];
                         }
                         if ((homeTeam?.abbreviation ?? '') ==
-                                details['team']['abbreviation'] ||
+                            details['team']['abbreviation'] ||
                             (homeTeam?.name ?? "") ==
                                 details['team']['displayName']) {
                           element.homeGameLogo = details['team']['logo'];
                         }
                         if ((awayTeam?.abbreviation ?? "") ==
-                                details['team']['abbreviation'] ||
+                            details['team']['abbreviation'] ||
                             (awayTeam?.name ?? "") ==
                                 details['team']['displayName']) {
                           element.awayGameLogo = details['team']['logo'];
@@ -2710,9 +2752,10 @@ class GameListingController extends GetxController {
   void gameListingsWithLogoResponseNCAAB(String year, String sportKey,
       {bool isLoad = false}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
+    ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().gameListingsWithLogoForNCAAB(sportKey);
     try {
+      isLoading.value=isLoad;
       if (result.status) {
         TeamLogoModel response = TeamLogoModel.fromJson(result.data);
         try {
@@ -2764,22 +2807,24 @@ class GameListingController extends GetxController {
   Future getWeather(String cityName,
       {bool isLoad = false, int index = 0, required String sportKey}) async {
     ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().getWeather(cityName.split(',').first);
+    ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getWeather(cityName
+        .split(',')
+        .first);
     try {
       if (result.status) {
         if (result.data != null) {
           (sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index]
+              ? mlbSportEventsList
+              : sportKey == SportName.NFL.name
+              ? nflSportEventsList
+              : ncaaSportEventsList)[index]
               .weather = result.data['weather'][0]['id'];
           (sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index]
+              ? mlbSportEventsList
+              : sportKey == SportName.NFL.name
+              ? nflSportEventsList
+              : ncaaSportEventsList)[index]
               .temp = result.data['main']['temp'] ?? 0;
         }
       } else {
