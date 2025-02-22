@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/model/user_model.dart';
 import 'package:hotlines/network/auth_repo.dart';
+import 'package:hotlines/utils/app_helper.dart';
 import 'package:hotlines/utils/extension.dart';
 
 import '../../../constant/app_strings.dart';
@@ -17,7 +18,13 @@ class RegisterCon extends GetxController {
   TextEditingController emailCon = TextEditingController();
   TextEditingController nameCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
-  List<String> spotsList = ['NFL', 'NBA','NCAAB','MLB','NCAAF'];
+  List<String> spotsList = [
+    SportName.NFL.name,
+    SportName.NBA.name,
+    SportName.NCAAB.name,
+    SportName.MLB.name,
+    SportName.NCAAF.name
+  ];
   String selectedSpot = '';
   File? imageFile;
 
@@ -51,9 +58,11 @@ class RegisterCon extends GetxController {
         showAppSnackBar('Please enter password');
       } else if (passCon.text.length < 6) {
         showAppSnackBar('Password must be at least six character');
-      } /*else if (selectedSpot.isEmpty) {
+      }
+      /*else if (selectedSpot.isEmpty) {
         showAppSnackBar('Please selecte your favorite spots');
-      } */else if (!isCheck) {
+      } */
+      else if (!isCheck) {
         showAppSnackBar('Please accept term and conditions.');
       } else {
         ResponseItem result =
@@ -63,7 +72,7 @@ class RegisterCon extends GetxController {
           log('imageFile null');
           result = await UserStartupRepo().registrationRepo(
               email: emailCon.text,
-              favouriteSport: 'NFL',
+              favouriteSport: SportName.NFL.name,
               // favouriteSport: selectedSpot,
               fullName: nameCon.text,
               password: passCon.text);
@@ -71,7 +80,7 @@ class RegisterCon extends GetxController {
           result = await UserStartupRepo().registrationRepo(
               email: emailCon.text,
               // favouriteSport: selectedSpot,
-              favouriteSport: 'NFL',
+              favouriteSport: SportName.NFL.name,
               fullName: nameCon.text,
               password: passCon.text,
               profileImage: imageFile);
@@ -86,7 +95,8 @@ class RegisterCon extends GetxController {
               PreferenceManager().saveSubscription(response.data!);
               /*PreferenceManager.getIsFirstLoaded() == null
                   ? Get.offAll(const AppStartScreen())
-                  : */Get.offAll(SelectGameScreen());
+                  : */
+              Get.offAll(SelectGameScreen());
               clearData();
             }
             isLoading.value = false;

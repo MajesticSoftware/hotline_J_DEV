@@ -18,7 +18,7 @@ import '../../widgets/game_widget.dart';
 import '../../widgets/sportsbooks_buttons.dart';
 import 'game_details_controller.dart';
 import 'game_details_widgets.dart';
-
+import 'package:hotlines/utils/app_helper.dart';
 // ignore: must_be_immutable
 class SportDetailsScreen extends StatefulWidget {
   const SportDetailsScreen({
@@ -202,7 +202,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                     MediaQuery.of(context).size.height * .02),
                             content: Column(
                               children: [
-                                widget.sportKey == 'MLB'
+                                widget.sportKey == SportName.MLB.name
                                     ? teamReportWidget(context, widget.sportKey,
                                         widget.gameDetails, awayTeam, homeTeam)
                                     : teamReportNFL(
@@ -212,7 +212,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         awayTeam,
                                         homeTeam,
                                         widget.sportKey),
-                                widget.sportKey == 'MLB'
+                                widget.sportKey == SportName.MLB.name
                                     ? playerStatWidget(
                                         context,
                                         con,
@@ -220,9 +220,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         widget.gameDetails,
                                         awayTeam,
                                         homeTeam)
-                                    : widget.sportKey == 'NBA'
+                                    : widget.sportKey == SportName.NBA.name
                                         ? const SizedBox()
-                                        : widget.sportKey == 'NCAAB'
+                                        : widget.sportKey == SportName.NCAAB.name
                                             ? FiveStatics(
                                                 con: con,
                                                 gameDetails: widget.gameDetails,
@@ -242,9 +242,9 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                     awayTeam,
                                     homeTeam,
                                     widget.sportKey),
-                                widget.sportKey == 'MLB' ||
-                                        widget.sportKey == 'NBA' ||
-                                        widget.sportKey == 'NCAAB'
+                                widget.sportKey == SportName.MLB.name ||
+                                        widget.sportKey == SportName.NBA.name ||
+                                        widget.sportKey == SportName.NCAAB.name
                                     ? const SizedBox()
                                     : wrPlayersWidget(
                                         context,
@@ -253,8 +253,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         awayTeam,
                                         homeTeam,
                                         widget.sportKey),
-                                widget.sportKey == 'NCAA' ||
-                                        widget.sportKey == 'NCAAB'
+                                widget.sportKey == SportName.NCAA.name ||
+                                        widget.sportKey == SportName.NCAAB.name
                                     ? const SizedBox()
                                     : injuryReportWidget(
                                         context,

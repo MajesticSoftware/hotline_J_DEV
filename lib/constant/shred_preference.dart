@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hotlines/utils/app_helper.dart';
 import 'package:package_info/package_info.dart';
 
 import '../model/user_model.dart';
@@ -176,7 +177,7 @@ class PreferenceManager {
     setAuthToken(response.authToken ?? "");
     setUserToken(response.userToken ?? "");
     setUserProfile(response.userProfilePic ?? "");
-    setFavoriteSport(/*response.favouriteSport ?? */ "NBA");
+    setFavoriteSport(/*response.favouriteSport ?? */ SportName.NCAAB.name);
     setLoginType(response.loginType ?? "");
     setDeviceType(Platform.isIOS ? "iOS" : "android");
     setUserId(response.userId ?? 0);

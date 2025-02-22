@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/app_strings.dart';
+import 'package:hotlines/utils/app_helper.dart';
 import 'package:hotlines/utils/deep_linking.dart';
 import 'package:hotlines/view/sports/gameDetails/game_details_controller.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
@@ -46,7 +47,9 @@ class SelectGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<GameListingController>(initState: (state) async {
       // await gameListingController.favoriteGameCall();
-      await gameListingController.getResponse(true, "NFL").then((value) {});
+      await gameListingController
+          .getResponse(true, SportName.NCAAB.name)
+          .then((value) {});
       if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
             .then((value) => gameListingController.getSubscriptionStatus());
@@ -59,8 +62,9 @@ class SelectGameScreen extends StatelessWidget {
               key: scaffoldKey,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: isTablet(context)
-                  ? commonTabletAppBarWidget(context, controller)
-                  : commonAppBar(context, controller),
+                  ? commonTabletAppBarWidget(
+                      context, controller, spotList(controller))
+                  : commonAppBar(context, controller, spotList(controller)),
               drawer: buildDrawer(context, controller),
               drawerEnableOpenDragGesture: false,
               body: Column(
@@ -180,7 +184,7 @@ class SelectGameScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
               ),
-              title: 'NBA',
+              title: SportName.NBA.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -190,7 +194,7 @@ class SelectGameScreen extends StatelessWidget {
             ),
             drawerCard(
               icon: Assets.imagesMlb,
-              title: 'MLB',
+              title: SportName.MLB.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -198,16 +202,16 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ),*/
-            drawerCard(
+            /*drawerCard(
               icon: Assets.imagesNfl,
-              title: 'NFL',
+              title: SportName.NFL.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
                 controller.tabClick(context, 0);
                 controller.update();
               },
-            ).paddingOnly(top: 30.h),
+            ).paddingOnly(top: 30.h),*/
             drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesNcaab,
@@ -216,17 +220,17 @@ class SelectGameScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
               ),
-              title: 'NCAAB',
+              title: SportName.NCAAB.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 1);
+                controller.tabClick(context, 0);
                 controller.update();
               },
-            ),
+            ).paddingOnly(top: 30.h),
             /*drawerCard(
               icon: Assets.imagesNcaa,
-              title: 'NCAAF',
+              title: SportName.NCAAF.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
@@ -525,9 +529,8 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  Widget tableDetailWidget(
-      BuildContext context, GameListingController controller) {
-    // log("spotList(controller)--${spotList(controller).length}");
+  /*Widget tableDetailWidget(BuildContext context,
+      GameListingController controller) {
     return Stack(
       children: [
         Column(
@@ -535,9 +538,12 @@ class SelectGameScreen extends StatelessWidget {
             HeaderCard(
               sportName: controller.sportKey,
             ),
-            (MediaQuery.of(context).size.height * .01).H(),
-            /*   Visibility(
-              visible: (controller.sportKey == 'MLB' &&
+            (MediaQuery
+                .of(context)
+                .size
+                .height * .01).H(),
+            */ /*   Visibility(
+              visible: (controller.sportKey == SportName.MLB.name &&
                   !(controller.mlbSportEventsList.indexWhere((element) =>
                           DateTime.parse(element.scheduled.toString())
                               toUtc()
@@ -555,366 +561,465 @@ class SelectGameScreen extends StatelessWidget {
                 textAlign: TextAlign.start,
                 maxLines: 2,
               ).paddingOnly(bottom: 15.w),
-            ),*/
+            ),*/ /*
             (!controller.isLoading.value && controller.isPagination)
                 ? const PaginationProgress()
                 : (spotList(controller).isEmpty &&
-                        !controller.isLoading.value &&
-                        !controller.isPagination)
-                    ? Expanded(
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              'No Games'.appCommonText(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  size: Get.height * .022,
-                                  weight: FontWeight.w800),
-                              (controller.sportKey == "NCAA"
-                                      ? "'2024 season starts August 24th.'"
-                                      : "")
-                                  .appCommonText(
-                                      color: Theme.of(context)
-                                          .secondaryHeaderColor,
-                                      size: Get.height * .02,
-                                      weight: FontWeight.w800)
-                            ],
-                          ),
-                        ),
-                      )
-                    : controller.searchCon.text.isEmpty
-                        ? Expanded(
-                            child: RefreshIndicator(
-                            onRefresh: () async {
-                              Future.delayed(const Duration(seconds: 0),
-                                  () async {
-                                if (!controller.isCallApi) {
-                                  controller.isCallApi = true;
-                                  await controller.getRefreshResponse(
-                                      false, controller.sportKey);
-                                }
-                                controller.update();
-                              });
-                            },
-                            color: Theme.of(context).primaryColor,
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: spotList(controller).length,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                try {
-                                  String date = DateFormat.MMMd().format(
-                                      DateTime.parse(spotList(controller)[index]
-                                                  .scheduled ??
-                                              '')
-                                          .toLocal());
-                                  String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(spotList(controller)[index]
-                                                  .scheduled ??
-                                              '')
-                                          .toLocal());
-                                  String time = DateFormat('hh:mm').format(
-                                      DateTime.parse(spotList(controller)[index]
-                                                  .scheduled ??
-                                              '')
-                                          .toLocal());
-                                  return (spotList(controller).length ==
-                                              index + 1 &&
-                                          controller.isPagination)
-                                      ? const PaginationProgress()
-                                      : (spotList(controller)[index].status ==
-                                              'postponed')
-                                          ? const SizedBox()
-                                          : Column(
-                                              children: [
-                                                GameWidget(
-                                                  status: spotList(
-                                                          controller)[index]
-                                                      .status
-                                                      .toString(),
-                                                  flameNumber: controller
-                                                              .sportKey !=
-                                                          "MLB"
-                                                      ? spotList(
-                                                              controller)[index]
-                                                          .getFlameValue
-                                                      : 0,
-                                                  isShowWeather:
-                                                      controller.sportKey !=
-                                                              "NCAAB" ||
-                                                          controller.sportKey !=
-                                                              "NBA",
-                                                  onTap: () {
-                                                    controller.gameOnClick(
-                                                        context, index);
-                                                  },
-                                                  isShowFlam:
-                                                      (controller.sportKey !=
-                                                          "MLB"),
-                                                  awayTeamMoneyLine: spotList(
-                                                          controller)[index]
-                                                      .awayMoneyLineValue,
-                                                  homeTeamMoneyLine: spotList(
-                                                          controller)[index]
-                                                      .homeMoneyLineValue,
-                                                  awayTeamOU: spotList(
-                                                          controller)[index]
-                                                      .awayOUValue,
-                                                  homeTeamOU: spotList(
-                                                          controller)[index]
-                                                      .homeOUValue,
-                                                  weather: spotList(
-                                                          controller)[index]
-                                                      .weather,
-                                                  homeTeamSpread: spotList(
-                                                              controller)[index]
-                                                          .homeSpreadValue
-                                                          .contains('-')
-                                                      ? spotList(
-                                                              controller)[index]
-                                                          .homeSpreadValue
-                                                      : '+${spotList(controller)[index].homeSpreadValue}',
-                                                  awayTeamSpread: spotList(
-                                                              controller)[index]
-                                                          .awaySpreadValue
-                                                          .contains('-')
-                                                      ? spotList(
-                                                              controller)[index]
-                                                          .awaySpreadValue
-                                                      : '+${spotList(controller)[index].awaySpreadValue}',
-                                                  temp: spotList(
-                                                          controller)[index]
-                                                      .tmpInFahrenheit,
-                                                  isLive: (spotList(controller)[
-                                                                  index]
-                                                              .status ==
-                                                          'live' ||
-                                                      spotList(controller)[
-                                                                  index]
-                                                              .status ==
-                                                          'inprogress' ||
-                                                      spotList(controller)[
-                                                                  index]
-                                                              .status ==
-                                                          'halftime'),
-                                                  dateTime: (spotList(controller)[
-                                                                      index]
-                                                                  .status ==
-                                                              'live' ||
-                                                          spotList(controller)[
-                                                                      index]
-                                                                  .status ==
-                                                              'inprogress' ||
-                                                          spotList(controller)[
-                                                                      index]
-                                                                  .status ==
-                                                              'halftime')
-                                                      ? (controller.sportKey ==
-                                                                  "NCAAB" ||
-                                                              controller
-                                                                      .sportKey ==
-                                                                  "NBA")
-                                                          ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                                                          : spotList(controller)[
-                                                                  index]
-                                                              .currentTime
-                                                              .split(',')
-                                                              .first
-                                                      : spotList(controller)[
-                                                                      index]
-                                                                  .status ==
-                                                              'closed'
-                                                          ? "Final"
-                                                          : '$date, $dateTime',
-                                                  awayTeamImageUrl: awayLogo(
-                                                      spotList(
-                                                          controller)[index]),
-                                                  awayTeamRank:
-                                                      (spotList(controller)[
-                                                                      index]
-                                                                  .awayRank ==
-                                                              '0'
-                                                          ? ''
-                                                          : spotList(controller)[
-                                                                  index]
-                                                              .awayRank),
-                                                  awayTeamAbb: (mobileView.size
-                                                              .shortestSide <
-                                                          600
-                                                      ? spotList(
-                                                              controller)[index]
-                                                          .awayTeamAbb
-                                                      : spotList(
-                                                              controller)[index]
-                                                          .awayTeam),
-                                                  awayTeamScore: (spotList(
-                                                          controller)[index]
-                                                      .awayScore),
-                                                  homeTeamImageUrl: homeLogo(
-                                                      spotList(
-                                                          controller)[index]),
-                                                  homeTeamRank:
-                                                      (spotList(controller)[
-                                                                      index]
-                                                                  .homeRank ==
-                                                              '0'
-                                                          ? ''
-                                                          : spotList(controller)[
-                                                                  index]
-                                                              .homeRank),
-                                                  homeTeamAbb: (mobileView.size
-                                                              .shortestSide <
-                                                          600
-                                                      ? spotList(
-                                                              controller)[index]
-                                                          .homeTeamAbb
-                                                      : spotList(
-                                                              controller)[index]
-                                                          .homeTeam),
-                                                  homeTeamScore: spotList(
-                                                          controller)[index]
-                                                      .homeScore,
-                                                ),
-                                                spotList(controller).length >= 2
-                                                    ? /*(controller.sportKey ==
-                                                                "NCAAB" ||
+                !controller.isLoading.value &&
+                !controller.isPagination)
+                ? Expanded(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    'No Games'.appCommonText(
+                        color: Theme
+                            .of(context)
+                            .secondaryHeaderColor,
+                        size: Get.height * .022,
+                        weight: FontWeight.w800),
+                    (controller.sportKey == SportName.NCAA.name
+                        ? "'2024 season starts August 24th.'"
+                        : "")
+                        .appCommonText(
+                        color: Theme
+                            .of(context)
+                            .secondaryHeaderColor,
+                        size: Get.height * .02,
+                        weight: FontWeight.w800)
+                  ],
+                ),
+              ),
+            )
+                : controller.searchCon.text.isEmpty
+                ? Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    Future.delayed(const Duration(seconds: 0),
+                            () async {
+                          if (!controller.isCallApi) {
+                            controller.isCallApi = true;
+                            await controller.getRefreshResponse(
+                                false, controller.sportKey);
+                          }
+                          controller.update();
+                        });
+                  },
+                  color: Theme
+                      .of(context)
+                      .primaryColor,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: spotList(controller).length,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      try {
+                        String date = DateFormat.MMMd().format(
+                            DateTime.parse(spotList(controller)[index]
+                                .scheduled ??
+                                '')
+                                .toLocal());
+                        String dateTime = DateFormat.jm().format(
+                            DateTime.parse(spotList(controller)[index]
+                                .scheduled ??
+                                '')
+                                .toLocal());
+                        String time = DateFormat('hh:mm').format(
+                            DateTime.parse(spotList(controller)[index]
+                                .scheduled ??
+                                '')
+                                .toLocal());
+
+                        return (spotList(controller).length ==
+                            index + 1 &&
+                            controller.isPagination)
+                            ? const PaginationProgress()
+                            : (spotList(controller)[index].status ==
+                            'postponed')
+                            ? const SizedBox()
+                            : Column(
+                          children: [
+                            GameWidget(
+                              status: spotList(
+                                  controller)[index]
+                                  .status
+                                  .toString(),
+                              flameNumber: controller
+                                  .sportKey !=
+                                  SportName.MLB.name
+                                  ? spotList(controller)[
+                              index]
+                                  .getFlameValue
+                                  : 0,
+                              isShowWeather: controller
+                                  .sportKey !=
+                                  SportName.NCAAB.name ||
+                                  controller.sportKey !=
+                                      SportName.NBA.name,
+                              onTap: () {
+                                controller.gameOnClick(
+                                    context, spotList(
+                                    controller)[index]);
+                              },
+                              isShowFlam:
+                              (controller.sportKey !=
+                                  SportName.MLB.name),
+                              awayTeamMoneyLine: spotList(
+                                  controller)[index]
+                                  .awayMoneyLineValue,
+                              homeTeamMoneyLine: spotList(
+                                  controller)[index]
+                                  .homeMoneyLineValue,
+                              awayTeamOU: spotList(
+                                  controller)[index]
+                                  .awayOUValue,
+                              homeTeamOU: spotList(
+                                  controller)[index]
+                                  .homeOUValue,
+                              weather: spotList(
+                                  controller)[index]
+                                  .weather,
+                              homeTeamSpread: spotList(
+                                  controller)[
+                              index]
+                                  .homeSpreadValue
+                                  .contains('-')
+                                  ? spotList(controller)[
+                              index]
+                                  .homeSpreadValue
+                                  : '+${spotList(controller)[index]
+                                  .homeSpreadValue}',
+                              awayTeamSpread: spotList(
+                                  controller)[
+                              index]
+                                  .awaySpreadValue
+                                  .contains('-')
+                                  ? spotList(controller)[
+                              index]
+                                  .awaySpreadValue
+                                  : '+${spotList(controller)[index]
+                                  .awaySpreadValue}',
+                              temp: spotList(
+                                  controller)[index]
+                                  .tmpInFahrenheit,
+                              isLive: (spotList(controller)[
+                              index]
+                                  .status ==
+                                  'live' ||
+                                  spotList(controller)[
+                                  index]
+                                      .status ==
+                                      'inprogress' ||
+                                  spotList(controller)[
+                                  index]
+                                      .status ==
+                                      'halftime'),
+                              dateTime: (spotList(controller)[
+                              index]
+                                  .status ==
+                                  'live' ||
+                                  spotList(controller)[
+                                  index]
+                                      .status ==
+                                      'inprogress' ||
+                                  spotList(controller)[
+                                  index]
+                                      .status ==
+                                      'halftime')
+                                  ? (controller.sportKey ==
+                                  SportName.NCAAB.name ||
+                                  controller
+                                      .sportKey ==
+                                      SportName.NBA.name)
+                                  ? '${spotList(controller)[index]
+                                  .inningHalf}${spotList(controller)[index]
+                                  .inning}, ${spotList(controller)[index]
+                                  .clock}'
+                                  : spotList(controller)[
+                              index]
+                                  .currentTime
+                                  .split(',')
+                                  .first
+                                  : spotList(controller)[
+                              index]
+                                  .status ==
+                                  'closed'
+                                  ? "Final"
+                                  : '$date, $dateTime',
+                              awayTeamImageUrl: awayLogo(
+                                  spotList(
+                                      controller)[index]),
+                              awayTeamRank:
+                              (spotList(controller)[
+                              index]
+                                  .awayRank ==
+                                  '0'
+                                  ? ''
+                                  : spotList(controller)[
+                              index]
+                                  .awayRank),
+                              awayTeamAbb: (mobileView
+                                  .size
+                                  .shortestSide <
+                                  600
+                                  ? spotList(controller)[
+                              index]
+                                  .awayTeamAbb
+                                  : spotList(controller)[
+                              index]
+                                  .awayTeam),
+                              awayTeamScore: (spotList(
+                                  controller)[index]
+                                  .awayScore),
+                              homeTeamImageUrl: homeLogo(
+                                  spotList(
+                                      controller)[index]),
+                              homeTeamRank:
+                              (spotList(controller)[
+                              index]
+                                  .homeRank ==
+                                  '0'
+                                  ? ''
+                                  : spotList(controller)[
+                              index]
+                                  .homeRank),
+                              homeTeamAbb: (mobileView
+                                  .size
+                                  .shortestSide <
+                                  600
+                                  ? spotList(controller)[
+                              index]
+                                  .homeTeamAbb
+                                  : spotList(controller)[
+                              index]
+                                  .homeTeam),
+                              homeTeamScore: spotList(
+                                  controller)[index]
+                                  .homeScore,
+                            ),
+                            spotList(controller).length >=
+                                2
+                                ? */ /*(controller.sportKey ==
+                                                                SportName.NCAAB.name ||
                                                             controller
                                                                     .sportKey ==
-                                                                "NBA")
+                                                                SportName.NBA.name)
                                                         ? const SizedBox()
-                                                        :*/
-                                                    index + 1 ==
-                                                            (spotList(
-                                                                    controller)
-                                                                .length)
-                                                        ? const SizedBox()
-                                                        : (DateTime.parse(spotList(controller)[index]
-                                                                            .scheduled ??
-                                                                        '')
-                                                                    .toLocal()
-                                                                    .day !=
-                                                                DateTime.parse(
-                                                                        spotList(controller)[index + 1].scheduled ??
-                                                                            '')
-                                                                    .toLocal()
-                                                                    .day)
-                                                            ? Divider(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .indicatorColor,
-                                                                thickness: 2,
-                                                              ).paddingOnly(
-                                                                top: 5.h)
-                                                            : const SizedBox()
-                                                    : const SizedBox(),
-                                              ],
-                                            );
-                                } catch (e) {
-                                  log(e.toString());
-                                  return const SizedBox();
-                                }
-                              },
-                            ),
-                          ))
-                        : Expanded(
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: controller.searchList.length,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                try {
-                                  SportEvents competitors =
-                                      controller.searchList[index];
-                                  String date = DateFormat.MMMd().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
-                                          .toLocal());
-                                  String dateTime = DateFormat.jm().format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
-                                          .toLocal());
-                                  String time = DateFormat('hh:mm').format(
-                                      DateTime.parse(
-                                              competitors.scheduled ?? '')
-                                          .toLocal());
-                                  return Visibility(
-                                    visible: (competitors.status != 'closed') ||
-                                        (competitors.status != 'postponed'),
-                                    child: GameWidget(
-                                      status: competitors.status.toString(),
-                                      isShowFlam:
-                                          (controller.sportKey != "MLB"),
-                                      flameNumber: controller.sportKey != "MLB"
-                                          ? competitors.getFlameValue
-                                          : 0,
-                                      onTap: () {
-                                        controller.searchGameOnClick(
-                                            context, index);
-                                      },
-                                      isShowWeather:
-                                          controller.sportKey != "NCAAB" ||
-                                              controller.sportKey != "NBA",
-                                      awayTeamMoneyLine:
-                                          competitors.awayMoneyLineValue,
-                                      homeTeamMoneyLine:
-                                          competitors.homeMoneyLineValue,
-                                      awayTeamOU: competitors.awayOUValue,
-                                      homeTeamOU: competitors.homeOUValue,
-                                      weather: competitors.weather,
-                                      homeTeamSpread: competitors
-                                              .homeSpreadValue
-                                              .contains('-')
-                                          ? competitors.homeSpreadValue
-                                          : '+${competitors.homeSpreadValue}',
-                                      awayTeamSpread: competitors
-                                              .awaySpreadValue
-                                              .contains('-')
-                                          ? competitors.awaySpreadValue
-                                          : '+${competitors.awaySpreadValue}',
-                                      temp: competitors.tmpInFahrenheit,
-                                      isLive: (competitors.status == 'live' ||
-                                          competitors.status == "inprogress" ||
-                                          competitors.status == "halftime"),
-                                      dateTime: (competitors.status == 'live' ||
-                                              competitors.status ==
-                                                  "inprogress" ||
-                                              competitors.status == "halftime")
-                                          ? (controller.sportKey == "NCAAB" ||
-                                                  controller.sportKey == "NBA")
-                                              ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
-                                              : '${competitors.inningHalf}${competitors.inning}, $time'
-                                          : competitors.status == 'closed'
-                                              ? "Final"
-                                              : '$date, $dateTime',
-                                      awayTeamImageUrl: awayLogo(
-                                          competitors),
-                                      awayTeamRank: (competitors.awayRank == '0'
-                                          ? ''
-                                          : competitors.awayRank),
-                                      awayTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.awayTeamAbb
-                                              : competitors.awayTeam),
-                                      awayTeamScore: (competitors.awayScore),
-                                      homeTeamImageUrl: homeLogo(
-                                          competitors),
-                                      homeTeamRank: (competitors.homeRank == '0'
-                                          ? ''
-                                          : competitors.homeRank),
-                                      homeTeamAbb:
-                                          (mobileView.size.shortestSide < 600
-                                              ? competitors.homeTeamAbb
-                                              : competitors.homeTeam),
-                                      homeTeamScore: competitors.homeScore,
-                                    ),
-                                  );
-                                } catch (e) {
-                                  return const SizedBox();
-                                }
-                              },
-                            ),
-                          ),
+                                                        :*/ /*
+                            index + 1 ==
+                                (spotList(
+                                    controller)
+                                    .length)
+                                ? const SizedBox()
+                                : (DateTime
+                                .parse(spotList(controller)[index]
+                                .scheduled ??
+                                '')
+                                .toLocal()
+                                .day !=
+                                DateTime
+                                    .parse(
+                                    spotList(controller)[index + 1].scheduled ??
+                                        '')
+                                    .toLocal()
+                                    .day)
+                                ? Divider(
+                              color: Theme
+                                  .of(
+                                  context)
+                                  .indicatorColor,
+                              thickness: 2,
+                            ).paddingOnly(
+                                top: 5.h)
+                                : const SizedBox()
+                                : const SizedBox(),
+                          ],
+                        );
+                      } catch (e) {
+                        log(e.toString());
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                ))
+                : Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: controller.searchList.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  try {
+                    SportEvents competitors =
+                    controller.searchList[index];
+                    String date = DateFormat.MMMd().format(
+                        DateTime.parse(
+                            competitors.scheduled ?? '')
+                            .toLocal());
+                    String dateTime = DateFormat.jm().format(
+                        DateTime.parse(
+                            competitors.scheduled ?? '')
+                            .toLocal());
+                    String time = DateFormat('hh:mm').format(
+                        DateTime.parse(
+                            competitors.scheduled ?? '')
+                            .toLocal());
+                    return Visibility(
+                      visible: (competitors.status !=
+                          'closed') ||
+                          (competitors.status !=
+                              'postponed'),
+                      child: GameWidget(
+                        status:
+                        competitors.status.toString(),
+                        isShowFlam:
+                        (controller.sportKey != SportName.MLB.name),
+                        flameNumber:
+                        controller.sportKey != SportName.MLB.name
+                            ? competitors.getFlameValue
+                            : 0,
+                        onTap: () {
+                          controller.searchGameOnClick(
+                              context, competitors);
+                        },
+                        isShowWeather: controller
+                            .sportKey !=
+                            SportName.NCAAB.name ||
+                            controller.sportKey != SportName.NBA.name,
+                        awayTeamMoneyLine:
+                        competitors.awayMoneyLineValue,
+                        homeTeamMoneyLine:
+                        competitors.homeMoneyLineValue,
+                        awayTeamOU: competitors.awayOUValue,
+                        homeTeamOU: competitors.homeOUValue,
+                        weather: competitors.weather,
+                        homeTeamSpread: competitors
+                            .homeSpreadValue
+                            .contains('-')
+                            ? competitors.homeSpreadValue
+                            : '+${competitors.homeSpreadValue}',
+                        awayTeamSpread: competitors
+                            .awaySpreadValue
+                            .contains('-')
+                            ? competitors.awaySpreadValue
+                            : '+${competitors.awaySpreadValue}',
+                        temp: competitors.tmpInFahrenheit,
+                        isLive:
+                        (competitors.status == 'live' ||
+                            competitors.status ==
+                                "inprogress" ||
+                            competitors.status ==
+                                "halftime"),
+                        dateTime: (competitors.status ==
+                            'live' ||
+                            competitors.status ==
+                                "inprogress" ||
+                            competitors.status ==
+                                "halftime")
+                            ? (controller.sportKey ==
+                            SportName.NCAAB.name ||
+                            controller.sportKey ==
+                                SportName.NBA.name)
+                            ? '${competitors.inningHalf}${competitors
+                            .inning}, ${competitors.clock}'
+                            : '${competitors.inningHalf}${competitors
+                            .inning}, $time'
+                            : competitors.status == 'closed'
+                            ? "Final"
+                            : '$date, $dateTime',
+                        awayTeamImageUrl:
+                        awayLogo(competitors),
+                        awayTeamRank:
+                        (competitors.awayRank == '0'
+                            ? ''
+                            : competitors.awayRank),
+                        awayTeamAbb:
+                        (mobileView.size.shortestSide <
+                            600
+                            ? competitors.awayTeamAbb
+                            : competitors.awayTeam),
+                        awayTeamScore:
+                        (competitors.awayScore),
+                        homeTeamImageUrl:
+                        homeLogo(competitors),
+                        homeTeamRank:
+                        (competitors.homeRank == '0'
+                            ? ''
+                            : competitors.homeRank),
+                        homeTeamAbb:
+                        (mobileView.size.shortestSide <
+                            600
+                            ? competitors.homeTeamAbb
+                            : competitors.homeTeam),
+                        homeTeamScore:
+                        competitors.homeScore,
+                      ),
+                    );
+                  } catch (e) {
+                    return const SizedBox();
+                  }
+                },
+              ),
+            ),
+            (MediaQuery
+                .of(context)
+                .size
+                .height * .01).H(),
+          ],
+        ),
+        Obx(() =>
+        controller.isLoading.value ? const AppProgress() : const SizedBox())
+      ],
+    );
+  }
+*/
+  Widget tableDetailWidget(
+      BuildContext context, GameListingController controller) {
+    return Stack(
+      children: [
+        Column(
+          children: [
+            HeaderCard(
+              sportName: controller.sportKey,
+            ),
+            (MediaQuery.of(context).size.height * .01).H(),
+            // Only show "No Games" when no games are available
+            controller.searchCon.text.isEmpty
+                ? Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        Future.delayed(const Duration(seconds: 0), () async {
+                          if (!controller.isCallApi) {
+                            controller.isCallApi = true;
+                            await controller.getRefreshResponse(
+                                false, controller.sportKey);
+                          }
+                          controller.update();
+                        });
+                      },
+                      color: Theme.of(context).primaryColor,
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: spotList(controller).length,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          // Your original game list builder logic
+                          return buildGameItem(context, controller, index);
+                        },
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: controller.searchList.length,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        // Your search list builder logic
+                        return buildSearchItem(context, controller, index);
+                      },
+                    ),
+                  ),
             (MediaQuery.of(context).size.height * .01).H(),
           ],
         ),
@@ -924,15 +1029,207 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
-  String getTeamLogo(String? teamName, String? teamAbbreviation, String? teamId, String defaultLogo) {
+  Widget buildGameItem(
+      BuildContext context, GameListingController controller, int index) {
+    try {
+      String date = DateFormat.MMMd().format(
+          DateTime.parse(spotList(controller)[index].scheduled ?? '')
+              .toLocal());
+      String dateTime = DateFormat.jm().format(
+          DateTime.parse(spotList(controller)[index].scheduled ?? '')
+              .toLocal());
+
+      return (spotList(controller).length == index + 1 &&
+              controller.isPagination)
+          ? const PaginationProgress()
+          : (!controller.isLoading.value && spotList(controller).isEmpty)
+              ? Expanded(
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        'No Games'.appCommonText(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          size: Get.height * .022,
+                          weight: FontWeight.w800,
+                        ),
+                        (controller.sportKey == SportName.NCAA.name
+                                ? "'2024 season starts August 24th.'"
+                                : "")
+                            .appCommonText(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          size: Get.height * .02,
+                          weight: FontWeight.w800,
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : (spotList(controller)[index].status == 'postponed')
+                  ? const SizedBox()
+                  : Column(
+                      children: [
+                        GameWidget(
+                          status: spotList(controller)[index].status.toString(),
+                          flameNumber: controller.sportKey != SportName.MLB.name
+                              ? spotList(controller)[index].getFlameValue
+                              : 0,
+                          isShowWeather:
+                              controller.sportKey != SportName.NCAAB.name ||
+                                  controller.sportKey != SportName.NBA.name,
+                          onTap: () {
+                            controller.gameOnClick(
+                                context, spotList(controller)[index]);
+                          },
+                          isShowFlam:
+                              (controller.sportKey != SportName.MLB.name),
+                          awayTeamMoneyLine:
+                              spotList(controller)[index].awayMoneyLineValue,
+                          homeTeamMoneyLine:
+                              spotList(controller)[index].homeMoneyLineValue,
+                          awayTeamOU: spotList(controller)[index].awayOUValue,
+                          homeTeamOU: spotList(controller)[index].homeOUValue,
+                          weather: spotList(controller)[index].weather,
+                          homeTeamSpread: spotList(controller)[index]
+                                  .homeSpreadValue
+                                  .contains('-')
+                              ? spotList(controller)[index].homeSpreadValue
+                              : '+${spotList(controller)[index].homeSpreadValue}',
+                          awayTeamSpread: spotList(controller)[index]
+                                  .awaySpreadValue
+                                  .contains('-')
+                              ? spotList(controller)[index].awaySpreadValue
+                              : '+${spotList(controller)[index].awaySpreadValue}',
+                          temp: spotList(controller)[index].tmpInFahrenheit,
+                          isLive: (spotList(controller)[index].status ==
+                                  'live' ||
+                              spotList(controller)[index].status ==
+                                  'inprogress' ||
+                              spotList(controller)[index].status == 'halftime'),
+                          dateTime: spotList(controller)[index].status ==
+                                      'live' ||
+                                  spotList(controller)[index].status ==
+                                      'inprogress' ||
+                                  spotList(controller)[index].status ==
+                                      'halftime'
+                              ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
+                              : spotList(controller)[index].status == 'closed'
+                                  ? "Final"
+                                  : '$date, $dateTime',
+                          awayTeamImageUrl:
+                              awayLogo(spotList(controller)[index]),
+                          awayTeamRank:
+                              (spotList(controller)[index].awayRank == '0'
+                                  ? ''
+                                  : spotList(controller)[index].awayRank),
+                          awayTeamAbb: (mobileView.size.shortestSide < 600
+                              ? spotList(controller)[index].awayTeamAbb
+                              : spotList(controller)[index].awayTeam),
+                          awayTeamScore:
+                              (spotList(controller)[index].awayScore),
+                          homeTeamImageUrl:
+                              homeLogo(spotList(controller)[index]),
+                          homeTeamRank:
+                              (spotList(controller)[index].homeRank == '0'
+                                  ? ''
+                                  : spotList(controller)[index].homeRank),
+                          homeTeamAbb: (mobileView.size.shortestSide < 600
+                              ? spotList(controller)[index].homeTeamAbb
+                              : spotList(controller)[index].homeTeam),
+                          homeTeamScore: spotList(controller)[index].homeScore,
+                        ),
+                      ],
+                    );
+    } catch (e) {
+      log(e.toString());
+      return const SizedBox();
+    }
+  }
+
+  Widget buildSearchItem(
+      BuildContext context, GameListingController controller, int index) {
+    try {
+      SportEvents competitors = controller.searchList[index];
+      String date = DateFormat.MMMd()
+          .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+      String dateTime = DateFormat.jm()
+          .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
+      return Visibility(
+        visible: (competitors.status != 'closed') ||
+            (competitors.status != 'postponed'),
+        child: GameWidget(
+          status: competitors.status.toString(),
+          isShowFlam: (controller.sportKey != SportName.MLB.name),
+          flameNumber: controller.sportKey != SportName.MLB.name
+              ? competitors.getFlameValue
+              : 0,
+          onTap: () {
+            controller.searchGameOnClick(context, competitors);
+          },
+          isShowWeather: controller.sportKey != SportName.NCAAB.name ||
+              controller.sportKey != SportName.NBA.name,
+          awayTeamMoneyLine: competitors.awayMoneyLineValue,
+          homeTeamMoneyLine: competitors.homeMoneyLineValue,
+          awayTeamOU: competitors.awayOUValue,
+          homeTeamOU: competitors.homeOUValue,
+          weather: competitors.weather,
+          homeTeamSpread: competitors.homeSpreadValue.contains('-')
+              ? competitors.homeSpreadValue
+              : '+${competitors.homeSpreadValue}',
+          awayTeamSpread: competitors.awaySpreadValue.contains('-')
+              ? competitors.awaySpreadValue
+              : '+${competitors.awaySpreadValue}',
+          temp: competitors.tmpInFahrenheit,
+          isLive: (competitors.status == 'live' ||
+              competitors.status == "inprogress" ||
+              competitors.status == "halftime"),
+          dateTime: competitors.status == 'live' ||
+                  competitors.status == "inprogress" ||
+                  competitors.status == "halftime"
+              ? '${competitors.inningHalf}${competitors.inning}, ${competitors.clock}'
+              : competitors.status == 'closed'
+                  ? "Final"
+                  : '$date, $dateTime',
+          awayTeamImageUrl: awayLogo(competitors),
+          awayTeamRank:
+              (competitors.awayRank == '0' ? '' : competitors.awayRank),
+          awayTeamAbb: (mobileView.size.shortestSide < 600
+              ? competitors.awayTeamAbb
+              : competitors.awayTeam),
+          awayTeamScore: (competitors.awayScore),
+          homeTeamImageUrl: homeLogo(competitors),
+          homeTeamRank:
+              (competitors.homeRank == '0' ? '' : competitors.homeRank),
+          homeTeamAbb: (mobileView.size.shortestSide < 600
+              ? competitors.homeTeamAbb
+              : competitors.homeTeam),
+          homeTeamScore: competitors.homeScore,
+        ),
+      );
+    } catch (e) {
+      return const SizedBox();
+    }
+  }
+
+  String getTeamLogo(String? teamName, String? teamAbbreviation, String? teamId,
+      String defaultLogo) {
     const logoMap = {
-      'North Carolina State Wolfpack': 'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
-      'MTU': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200',
-      'UAG': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/399.png&h=200&w=200',
+      "ETAL":
+          "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2837.png&h=200&w=200",
+      "UTRGV":
+          'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/292.png&h=200&w=200',
+      'North Carolina State Wolfpack':
+          'https://a.espncdn.com/i/teamlogos/ncaa/500/152.png',
+      'MTU':
+          'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200',
+      'UAG':
+          'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/399.png&h=200&w=200',
       'ALBY': 'https://a.espncdn.com/i/teamlogos/ncaa/500/399.png',
       'LINW': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2815.png',
       'IUN': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png',
-      'LMC': 'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png',
+      'LMC':
+          'https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png',
       'ARI': 'https://a.espncdn.com/i/teamlogos/nfl/500/scoreboard/ari.png',
       'SCUS': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png',
       'MCNS': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2377.png',
@@ -946,8 +1243,12 @@ class SelectGameScreen extends StatelessWidget {
       'GC': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2253.png',
       'CSN': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2463.png',
       'CSB': 'https://a.espncdn.com/i/teamlogos/ncaa/500-dark/2934.png',
-      'Louisiana-Lafayette Ragin Cajuns': 'https://a.espncdn.com/i/teamlogos/ncaa/500/309.png',
-      'Sam Houston State Bearkats': 'https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png',
+      'IUI':
+          "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/85.png&h=200&w=200",
+      'Louisiana-Lafayette Ragin Cajuns':
+          'https://a.espncdn.com/i/teamlogos/ncaa/500/309.png',
+      'Sam Houston State Bearkats':
+          'https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png',
     };
 
     if (teamAbbreviation == 'WAS' && teamId == 'sr:competitor:4432') {
@@ -974,16 +1275,46 @@ class SelectGameScreen extends StatelessWidget {
     );
   }
 
+  List<String> keywords = [
+    'SEC',
+    'Big 10',
+    'Big 12',
+    'ACC',
+    'Big East',
+    'American',
+    'Atlantic 10',
+    'Conference USA',
+    'Mountain West',
+    'West Coast'
+  ];
+
+  bool containsKeyword(String? uuids) {
+    if (uuids == null || uuids.isEmpty) {
+      return false;
+    }
+    for (String keyword in keywords) {
+      if (uuids.contains(keyword)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   List<SportEvents> spotList(GameListingController controller) {
-    return (controller.sportKey == 'MLB'
+    return (controller.sportKey == SportName.MLB.name
         ? controller.mlbSportEventsList
-        : controller.sportKey == 'NFL'
+        : controller.sportKey == SportName.NFL.name
             ? controller.nflSportEventsList.toSet().toList()
-            : controller.sportKey == 'NBA'
+            : controller.sportKey == SportName.NBA.name
                 ? controller.nbaSportEventsList
-                : controller.sportKey == 'NCAAB'
+                : controller.sportKey == SportName.NCAAB.name
                     ? controller.ncaabSportEventsList
+                        .where((element) =>
+                            controller.conferenceIdList
+                                .contains(element.awayConferenceId) ||
+                            controller.conferenceIdList
+                                .contains(element.awayConferenceId))
+                        .toList()
                     : controller.ncaaSportEventsList);
   }
 }

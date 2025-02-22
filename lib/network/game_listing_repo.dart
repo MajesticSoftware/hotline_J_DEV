@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hotlines/extras/extras.dart';
 
 import '../model/response_item.dart';
+import '../utils/app_helper.dart';
 
 class GameListingRepo {
   ///GAME LISTING
@@ -14,9 +15,9 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-
+    var LIMIT=100;
     Uri uri = Uri.parse(
-        '${AppUrls.BASE_URL}en/us/sports/$spotId/$date/schedule.json?api_key=$key&start=${start.toString()}');
+        '${AppUrls.BASE_URL}en/us/sports/$spotId/$date/schedule.json?&start=${start.toString()}&limit=$LIMIT&api_key=$key');
 
     result = await BaseApiHelper.getRequest(uri, {});
     status = result.status;
@@ -44,6 +45,23 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  Future<ResponseItem> getConferenceNCAAB() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        '${AppUrls.NCAAB_BASE_URL}league/hierarchy.json?api_key=${AppUrls.NCAAB_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
   ///NCAA RANKING
   Future<ResponseItem> ncaaGameRanking(String sportName) async {
     ResponseItem result;
@@ -51,8 +69,8 @@ class GameListingRepo {
     dynamic data;
     String message = "";
 
-    Uri uri = Uri.parse(sportName == "NCAAB"
-        ? "${AppUrls.NCAAB_BASE_URL}polls/us/$currentYear/rankings.json?api_key=${AppUrls.NCAAB_APIKEY}"
+    Uri uri = Uri.parse(sportName == SportName.NCAAB.name
+        ? "${AppUrls.NCAAB_BASE_URL}polls/AP/$currentYear/rankings.json?api_key=${AppUrls.NCAAB_APIKEY}"
         : '${AppUrls.NCAA_BASE_URL}polls/AP25/$currentYear/rankings.json?api_key=${AppUrls.NCAA_APIKEY}');
 
     result = await BaseApiHelper.getRequest(uri, {});
@@ -88,7 +106,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
 
-    Uri uri = Uri.parse(sportKey == "NBA"
+    Uri uri = Uri.parse(sportKey == SportName.NBA.name
         ? '${AppUrls.NBA_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NBA_APIKEY}'
         : '${AppUrls.NCAAB_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
@@ -107,7 +125,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
 
-    Uri uri = Uri.parse(sportKey == "NCAA"
+    Uri uri = Uri.parse(sportKey == SportName.NCAA.name
         ? '${AppUrls.NCAA_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NCAA_APIKEY}'
         : "${AppUrls.NFL_BASE_URL}games/$gameId/boxscore.json?api_key=${AppUrls.NFL_APIKEY}");
 
@@ -126,11 +144,11 @@ class GameListingRepo {
     dynamic data;
     String message = "";
 
-    Uri uri = Uri.parse(sportKey == "NCAA"
+    Uri uri = Uri.parse(sportKey == SportName.NCAA.name
         ? '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/$SEASONS/standings/season.json?api_key=${AppUrls.NCAA_APIKEY}'
-        : sportKey == "NBA"
+        : sportKey == SportName.NBA.name
             ? "${AppUrls.NBA_BASE_URL}seasons/$currentYear/$SEASONS/standings.json?api_key=${AppUrls.NBA_APIKEY}"
-            : sportKey == "NCAAB"
+            : sportKey == SportName.NCAAB.name
                 ? "${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/$SEASONS/standings.json?api_key=${AppUrls.NCAAB_APIKEY}"
                 : "${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/standings/season.json?api_key=${AppUrls.NFL_APIKEY}");
 
@@ -182,7 +200,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NFL"
+    Uri uri = Uri.parse(sportKey == SportName.NFL.name
         ? "${AppUrls.NFL_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NFL_APIKEY}"
         : '${AppUrls.NCAA_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NCAA_APIKEY}');
 
@@ -201,7 +219,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NFL"
+    Uri uri = Uri.parse(sportKey == SportName.NFL.name
         ? '${AppUrls.NFL_BASE_URL}seasons/$seasons/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NFL_APIKEY}'
         : '${AppUrls.NCAA_BASE_URL}seasons/$seasons/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NCAA_APIKEY}');
 
@@ -220,7 +238,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NBA"
+    Uri uri = Uri.parse(sportKey == SportName.NBA.name
         ? '${AppUrls.NBA_BASE_URL}seasons/$currentYear/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NBA_APIKEY}'
         : '${AppUrls.NCAAB_BASE_URL}seasons/$currentYear/$SEASONS/teams/$teamId/statistics.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
@@ -239,7 +257,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NBA"
+    Uri uri = Uri.parse(sportKey == SportName.NBA.name
         ? '${AppUrls.NBA_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NBA_APIKEY}'
         : '${AppUrls.NCAAB_BASE_URL}players/$playerId/profile.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
@@ -256,7 +274,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NFL"
+    Uri uri = Uri.parse(sportKey == SportName.NFL.name
         ? '${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NFL_APIKEY}'
         : '${AppUrls.NCAA_BASE_URL}seasons/$currentYear/$SEASONS/${DateTime.now().weekday}/depth_charts.json?api_key=${AppUrls.NCAA_APIKEY}');
 
@@ -275,7 +293,7 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "NBA"
+    Uri uri = Uri.parse(sportKey == SportName.NBA.name
         ? '${AppUrls.NBA_BASE_URL}teams/$teamId/profile.json?api_key=${AppUrls.NBA_APIKEY}'
         : '${AppUrls.NCAAB_BASE_URL}teams/$teamId/profile.json?api_key=${AppUrls.NCAAB_APIKEY}');
 
@@ -310,9 +328,9 @@ class GameListingRepo {
     bool status = true;
     dynamic data;
     String message = "";
-    Uri uri = Uri.parse(sportKey == "MLB"
+    Uri uri = Uri.parse(sportKey == SportName.MLB.name
         ? '${AppUrls.MLB_BASE_URL}league/injuries.json?api_key=${AppUrls.MLB_APIKEY}'
-        : sportKey == "NBA"
+        : sportKey == SportName.NBA.name
             ? '${AppUrls.NBA_BASE_URL}league/injuries.json?api_key=${AppUrls.NBA_APIKEY}'
             : '${AppUrls.NFL_BASE_URL}seasons/$currentYear/$SEASONS/01/injuries.json?api_key=${AppUrls.NFL_APIKEY}');
 
@@ -330,7 +348,7 @@ class GameListingRepo {
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters = sportKey == "NFL"
+    var queryParameters = sportKey == SportName.NFL.name
         ? {RequestParam.service: MethodNames.getNFLGameOffenseRank}
         : {RequestParam.service: MethodNames.getNCAAFGameOffenseRank};
     String queryString = Uri(queryParameters: queryParameters).query;
@@ -351,7 +369,7 @@ class GameListingRepo {
     ResponseItem result;
     dynamic data;
     String message = "";
-    var queryParameters = sportKey == "NFL"
+    var queryParameters = sportKey == SportName.NFL.name
         ? {RequestParam.service: MethodNames.getNFLQBSRank}
         : {RequestParam.service: MethodNames.getNCAAFQBSRank};
     String queryString = Uri(queryParameters: queryParameters).query;
@@ -373,7 +391,7 @@ class GameListingRepo {
     dynamic data;
     String message = "";
     var queryParameters = {
-      RequestParam.service: sportKey == "NBA"
+      RequestParam.service: sportKey == SportName.NBA.name
           ? MethodNames.getNBAGameOffenseRank
           : MethodNames.getNCAABGameOffenseRank
     };
@@ -413,7 +431,7 @@ class GameListingRepo {
 
     Uri parameter;
     Uri uri = Uri.parse(
-        'https://sports-information.p.rapidapi.com/${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : sportKey == 'NFL' ? 'nfl' : sportKey == 'NBA' ? "nba" : "mbb"}/schedule?year=$year');
+        'https://sports-information.p.rapidapi.com/${sportKey == SportName.MLB.name ? 'mlb' : sportKey == SportName.NCAA.name ? 'cfb' : sportKey == SportName.NFL.name ? 'nfl' : sportKey == SportName.NBA.name ? "nba" : "mbb"}/schedule?year=$year');
     parameter = uri.replace(queryParameters: params);
 
     result = await BaseApiHelper.getRequest(parameter, {
@@ -441,7 +459,7 @@ class GameListingRepo {
 
     Uri parameter;
     Uri uri = Uri.parse(
-        'https://sports-information.p.rapidapi.com/${sportKey == 'MLB' ? 'mlb' : sportKey == 'NCAA' ? 'cfb' : sportKey == 'NFL' ? 'nfl' : sportKey == 'NBA' ? "nba" : "mbb"}/team-list?group=2');
+        'https://sports-information.p.rapidapi.com/${sportKey == SportName.MLB.name ? 'mlb' : sportKey == SportName.NCAA.name ? 'cfb' : sportKey == SportName.NFL.name ? 'nfl' : sportKey == SportName.NBA.name ? "nba" : "mbb"}/team-list?group=2');
     parameter = uri.replace();
 
     result = await BaseApiHelper.getRequest(parameter, {

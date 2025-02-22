@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hotlines/constant/shred_preference.dart';
+import 'package:hotlines/utils/app_helper.dart';
 
 import '../../constant/app_strings.dart';
 import '../../model/response_item.dart';
@@ -25,8 +26,8 @@ class ProfileController extends GetxController {
     update();
   }
 
-  List<String> spotsList = [ /*'NBA','NCAAB', 'MLB','NCAAF',*/'NFL'];
-  String selectedSpot = /*PreferenceManager.getFavoriteSport() ?? "NBA"*/"NFL";
+  List<String> spotsList = [ /*SportName.NBA.name,SportName.NCAAB.name, SportName.MLB.name,SportName.NCAAF.name,*/SportName.NFL.name];
+  String selectedSpot = /*PreferenceManager.getFavoriteSport() ?? SportName.NBA.name*/SportName.NFL.name;
 
   RxBool isLoading = false.obs;
 
@@ -60,7 +61,7 @@ class ProfileController extends GetxController {
               PreferenceManager.setUserProfile(
                   response.data?.userProfilePic ?? "");
               PreferenceManager.setUserName(response.data?.userName ?? "");
-              PreferenceManager.setFavoriteSport(/*response.data?.favouriteSport ?? */"NBA");
+              PreferenceManager.setFavoriteSport(/*response.data?.favouriteSport ?? */SportName.NBA.name);
               Get.back();
               showAppSnackBar('${response.msg}', status: true);
             }

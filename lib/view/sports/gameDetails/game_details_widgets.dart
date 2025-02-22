@@ -30,7 +30,7 @@ import '../../auth/log_in_module/log_in_screen.dart';
 import '../../widgets/common_dialog.dart';
 import '../../widgets/game_widget.dart';
 import 'game_details_controller.dart';
-
+import 'package:hotlines/utils/app_helper.dart';
 PreferredSize commonTabletAppBar(BuildContext context, bool isDark,
     GameDetailsController con) {
   return PreferredSize(
@@ -274,7 +274,7 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                 homeTeam: homeTeam),
             content: Column(
               children: [
-                sportKey == 'MLB'
+                sportKey == SportName.MLB.name
                     ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,10 +544,10 @@ Padding hitterPlayerStatWidget(BuildContext context,
                 awayTeam,
                 homeTeam,
                 sportKey,
-                sportKey == 'NBA' || sportKey == 'NCAAB'
+                sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
                     ? "Players"
                     : 'Rushing'),
-            content: sportKey == 'NBA' || sportKey == 'NCAAB'
+            content: sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
                 ? Column(
               children: [
                 headerOfNBAPlayerStat(context),
@@ -555,7 +555,7 @@ Padding hitterPlayerStatWidget(BuildContext context,
                 nbaRushingCard(controller, gameDetails),
               ],
             )
-                : sportKey == 'MLB'
+                : sportKey == SportName.MLB.name
                 ? Column(
               children: [
                 headerOfHitterPlayerStat(context),
@@ -827,7 +827,7 @@ Widget teamReportNFL(BuildContext context,
           content: Column(
             children: [
               commonDivider(context),
-              sportKey == "NBA" || sportKey == "NCAAB"
+              sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
                   ? nbaOffenseDefenseData(
                   awayTeam, homeTeam, con, context, gameDetails, sportKey)
                   : nflOffenseDefenseData(
@@ -1482,8 +1482,8 @@ Widget nflOffenseDefenseData(GameDetailsController con, BuildContext context,
                     ],
                   ),
                   (sportKey ==
-                      "NFL" || sportKey ==
-                      "NCAA") &&
+                      SportName.NFL.name || sportKey ==
+                      SportName.NCAA.name) &&
                       ((PreferenceManager.getSubscriptionActive() ?? "0") ==
                           "1") &&
                       ((offensePointColor >= 15 || offensePointColor <= -15)) ?
@@ -1584,21 +1584,21 @@ Future<dynamic> showDialogForRank(BuildContext context,
                     )),
                     TextSpan(
                       text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
-                          (sportKey == "NCAAB" ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name ? 75 : 22)
                           ? "(poor)"
                           : num.parse(awayRank) >
-                          (sportKey == "NCAAB" ? 50 : 11) &&
-                          num.parse(awayRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                          num.parse(awayRank) <= (sportKey == SportName.NCAAB.name ? 75 : 22)
                           ? "(mid)"
                           : "(strong)"} ',
                       style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
                           color: num.parse(awayRank) >
-                              (sportKey == "NCAAB" ? 75 : 22)
+                              (sportKey == SportName.NCAAB.name ? 75 : 22)
                               ? redColor
                               : num.parse(
-                              awayRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                              awayRank) > (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                               num.parse(awayRank) <=
-                                  (sportKey == "NCAAB" ? 75 : 22)
+                                  (sportKey == SportName.NCAAB.name ? 75 : 22)
                               ? yellowColor
                               : Colors.green),
                     ),
@@ -1609,21 +1609,21 @@ Future<dynamic> showDialogForRank(BuildContext context,
                         )),
                     TextSpan(
                       text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
-                          (sportKey == "NCAAB" ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name ? 75 : 22)
                           ? "(poor)"
                           : num.parse(homeRank) >
-                          (sportKey == "NCAAB" ? 50 : 11) &&
-                          num.parse(homeRank) <= (sportKey == "NCAAB" ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                          num.parse(homeRank) <= (sportKey == SportName.NCAAB.name ? 75 : 22)
                           ? "(mid)"
                           : "(strong)"}. ',
                       style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
                           color: num.parse(homeRank) >
-                              (sportKey == "NCAAB" ? 75 : 22)
+                              (sportKey == SportName.NCAAB.name ? 75 : 22)
                               ? redColor
                               : num.parse(
-                              homeRank) > (sportKey == "NCAAB" ? 50 : 11) &&
+                              homeRank) > (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                               num.parse(homeRank) <=
-                                  (sportKey == "NCAAB" ? 75 : 22)
+                                  (sportKey == SportName.NCAAB.name ? 75 : 22)
                               ? yellowColor
                               : Colors.green),
                     ),
@@ -1722,29 +1722,29 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                   .nbaAwayOffensiveRank.isEmpty ? Colors
                                   .transparent : int.parse(
                                   gameDetails.nbaAwayOffensiveRank[index]) <=
-                                  (sportKey == "NCAAB" ? 50 : 11)
+                                  (sportKey == SportName.NCAAB.name ? 50 : 11)
                                   ? Colors.green
                                   : (int.parse(
                                   gameDetails.nbaAwayOffensiveRank[index]) >
-                                  (sportKey == "NCAAB" ? 50 : 11) &&
+                                  (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                                   int.parse(
                                       gameDetails
                                           .nbaAwayOffensiveRank[index]) <=
-                                      (sportKey == "NCAAB" ? 75 : 22))
+                                      (sportKey == SportName.NCAAB.name ? 75 : 22))
                                   ? yellowColor
                                   : redColor :
                               gameDetails.nbaAwayDefensiveRank.isEmpty ? Colors
                                   .transparent : int.parse(
                                   gameDetails.nbaAwayDefensiveRank[index]) <=
-                                  (sportKey == "NCAAB" ? 50 : 11)
+                                  (sportKey == SportName.NCAAB.name ? 50 : 11)
                                   ? Colors.green
                                   : (int.parse(
                                   gameDetails.nbaAwayDefensiveRank[index]) >
-                                  (sportKey == "NCAAB" ? 50 : 11) &&
+                                  (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                                   int.parse(
                                       gameDetails
                                           .nbaAwayDefensiveRank[index]) <=
-                                      (sportKey == "NCAAB" ? 75 : 22))
+                                      (sportKey == SportName.NCAAB.name ? 75 : 22))
                                   ? yellowColor
                                   : redColor,
                               weight: FontWeight.w700,
@@ -1837,15 +1837,15 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                     .nbaHomeOffensiveRank.isEmpty ? Colors
                                     .transparent : int.parse(
                                     gameDetails.nbaHomeOffensiveRank[index]) <=
-                                    (sportKey == "NCAAB" ? 50 : 11)
+                                    (sportKey == SportName.NCAAB.name ? 50 : 11)
                                     ? Colors.green
                                     : (int.parse(
                                     gameDetails.nbaHomeOffensiveRank[index]) >
-                                    (sportKey == "NCAAB" ? 50 : 11) &&
+                                    (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                                     int.parse(
                                         gameDetails
                                             .nbaHomeOffensiveRank[index]) <=
-                                        (sportKey == "NCAAB" ? 75 : 22))
+                                        (sportKey == SportName.NCAAB.name ? 75 : 22))
                                     ? yellowColor
                                     : redColor :
                                 gameDetails.nbaHomeDefensiveRank.isEmpty
@@ -1853,15 +1853,15 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                     .transparent
                                     : int.parse(
                                     gameDetails.nbaHomeDefensiveRank[index]) <=
-                                    (sportKey == "NCAAB" ? 50 : 11)
+                                    (sportKey == SportName.NCAAB.name ? 50 : 11)
                                     ? Colors.green
                                     : (int.parse(
                                     gameDetails.nbaHomeDefensiveRank[index]) >
-                                    (sportKey == "NCAAB" ? 50 : 11) &&
+                                    (sportKey == SportName.NCAAB.name ? 50 : 11) &&
                                     int.parse(
                                         gameDetails
                                             .nbaHomeDefensiveRank[index]) <=
-                                        (sportKey == "NCAAB" ? 75 : 22))
+                                        (sportKey == SportName.NCAAB.name ? 75 : 22))
                                     ? yellowColor
                                     : redColor,
 
@@ -1902,8 +1902,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
           /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
           Visibility(
             visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
-            child: ((offensePointColor >= (sportKey == "NCAAB" ? 50 : 15) ||
-                offensePointColor <= (sportKey == "NCAAB" ? -50 : -15))) ?
+            child: ((offensePointColor >= (sportKey == SportName.NCAAB.name ? 50 : 15) ||
+                offensePointColor <= (sportKey == SportName.NCAAB.name ? -50 : -15))) ?
 
             Positioned(
               child: InkWell(
@@ -1950,8 +1950,8 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: (offensePointColor >=
-                        (sportKey == "NCAAB" ? 75 : 25) ||
-                        offensePointColor <= (sportKey == "NCAAB" ? -75 : -25))
+                        (sportKey == SportName.NCAAB.name ? 75 : 25) ||
+                        offensePointColor <= (sportKey == SportName.NCAAB.name ? -75 : -25))
                         ? Colors.red
                         : Colors
                         .orange,
@@ -3062,10 +3062,10 @@ ListView nbaRushingCard(GameDetailsController con,
                             (average(gameDetails, i)
                                 ?.threePointsAtt ?? 0).round()) * 100)
                             .toStringAsFixed(0) : "0"}%)',
-                        title1: 'TP/Gm',
-                        title2: 'Player +/-',
+                        title1: '3Pt/Gm',
+                        title2: /*'Player +/-'*/"",
                         value2:
-                        (((gameDetails.awayRushingPlayer[i].total
+                        /*(((gameDetails.awayRushingPlayer[i].total
                             ?.plus ??
                             0) -
                             (gameDetails.awayRushingPlayer[i]
@@ -3074,7 +3074,7 @@ ListView nbaRushingCard(GameDetailsController con,
                             (gameDetails.awayRushingPlayer[i].total
                                 ?.gamesPlayed ??
                                 1))
-                            .toStringAsFixed(1)),
+                            .toStringAsFixed(1)*/""),
                     /*expandableTileCardRunning(context, con,
                         value1: ('${((gameDetails.awayRushingPlayer[i].total
                             ?.trueShootingPct ?? 0) * (100)).round()}%')
@@ -3173,10 +3173,10 @@ ListView nbaRushingCard(GameDetailsController con,
                           ((homeAverage(gameDetails, i)
                               ?.threePointsAtt ?? 0).round())) * 100)
                           .toStringAsFixed(0) : "0"}%)',
-                      title1: 'TP/Gm',
-                      title2: 'Player +/-',
+                      title1: '3Pt/Gm',
+                      title2: /*'Player +/-'*/"",
                       value2:
-                      (((gameDetails.homeRushingPlayer[i].total
+                     /* (((gameDetails.homeRushingPlayer[i].total
                           ?.plus ??
                           0) -
                           (gameDetails.homeRushingPlayer[i]
@@ -3185,7 +3185,7 @@ ListView nbaRushingCard(GameDetailsController con,
                           (gameDetails.homeRushingPlayer[i].total
                               ?.gamesPlayed ??
                               1))
-                          .toStringAsFixed(1),
+                          .toStringAsFixed(1)*/"",
                     ),
                     /*   expandableTileCardRunning(context, con,
                         value1: '${((gameDetails.homeRushingPlayer[i].total
@@ -3267,7 +3267,7 @@ Container expandableTileCardRunning(BuildContext context,
                   .height * .014),
         ),
         Expanded(
-            flex: 1,
+            flex: 2,
             child: value1.appCommonText(
                 color: Theme
                     .of(context)
@@ -3293,7 +3293,7 @@ Container expandableTileCardRunning(BuildContext context,
                   .height * .014),
         ),
         Expanded(
-            flex: 1,
+            flex: 2,
             child: value2.appCommonText(
                 color: Theme
                     .of(context)
@@ -6541,6 +6541,8 @@ String teamLogo(Competitors? team, String? defaultLogo) {
   if (team == null) return defaultLogo ?? '';
 
   final logoMap = {
+    "UTRGV":'https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/292.png&h=200&w=200',
+    "ETAL":"https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2837.png&h=200&w=200",
     'ALBY': "https://a.espncdn.com/i/teamlogos/ncaa/500/399.png",
     'MTU': "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/2393.png&h=200&w=200",
     'SCUS': "https://a.espncdn.com/i/teamlogos/ncaa/500/2541.png",
@@ -6565,6 +6567,7 @@ String teamLogo(Competitors? team, String? defaultLogo) {
     'IUN': "https://a.espncdn.com/i/teamlogos/ncaa/500/2546.png",
     'LMC': "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/lemoyne.sidearmsports.com/images/logos/site/site.png",
     'SHS': "https://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+    'IUI': "https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/85.png&h=200&w=200",
   };
 
   // Return the logo if the abbreviation exists in the map.
@@ -6778,7 +6781,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             weight: FontWeight.w700),
                         (gameDetails.status == "closed"
                             ? 'Final'
-                            : ((sportKey == 'NFL' || sportKey == 'NCAA') &&
+                            : ((sportKey == SportName.NFL.name || sportKey == SportName.NCAA.name) &&
                             gameDetails.currentTime.isNotEmpty)
                             ? gameDetails.currentTime
                             : '$day, $month $date , ${((gameDetails.status ==
@@ -6786,8 +6789,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                             'halftime' || gameDetails.status ==
                             'inprogress')
                             ? '${gameDetails.inningHalf}${gameDetails
-                            .inning} ${(sportKey == 'NBA' ||
-                            sportKey == 'NCAAB')
+                            .inning} ${(sportKey == SportName.NBA.name ||
+                            sportKey == SportName.NCAAB.name)
                             ? " - ${gameDetails.clock}"
                             : " - ${gameDetails.outs}"}'
                             : dateTime)} ')
@@ -6805,9 +6808,9 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                               .width * .003,
                         ),
                         Visibility(
-                          visible: sportKey == 'NFL' ||
-                              sportKey == 'NCAA' ||
-                              sportKey == 'MLB',
+                          visible: sportKey == SportName.NFL.name ||
+                              sportKey == SportName.NCAA.name || sportKey == SportName.NCAAB.name ||
+                              sportKey == SportName.MLB.name,
                           child: Row(
                             //  crossAxisAlignment: WrapCrossAlignment.center,
                             // alignment: WrapAlignment.center,
@@ -6820,7 +6823,7 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                       child: FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: (gameDetails.venue != null
-                                            ? '${gameDetails.venue?.name}, '
+                                            ? '${gameDetails.venue?.name} '
                                             : '')
                                             .toString()
                                             .appCommonText(
@@ -6833,38 +6836,47 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                             weight: FontWeight.w600),
                                       ),
                                     ),
-                                    (gameDetails.tmpInFahrenheit == 32
-                                        ? "TBD"
-                                        : gameDetails.tmpInFahrenheit
-                                        .toString()
-                                        .split('.')
-                                        .first)
-                                        .toString()
-                                        .appCommonText(
+                                    Visibility(
+                                      visible: sportKey != SportName.NCAAB.name ,
+                                      child: (gameDetails.tmpInFahrenheit == 32
+                                          ? ",TBD"
+                                          : gameDetails.tmpInFahrenheit
+                                          .toString()
+                                          .split('.')
+                                          .first)
+                                          .toString()
+                                          .appCommonText(
+                                          size: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height *
+                                              .014,
+                                          color: whiteColor,
+                                          weight: FontWeight.w400),
+                                    ),
+                                    Visibility(
+                                      visible: sportKey != SportName.NCAAB.name ,
+                                      child: ' °F '.appCommonText(
                                         size: MediaQuery
                                             .of(context)
                                             .size
                                             .height *
-                                            .014,
+                                            .01,
+                                        weight: FontWeight.w300,
                                         color: whiteColor,
-                                        weight: FontWeight.w400),
-                                    ' °F '.appCommonText(
-                                      size: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height *
-                                          .01,
-                                      weight: FontWeight.w300,
-                                      color: whiteColor,
+                                      ),
                                     ),
-                                    getWeatherIcon(
-                                        gameDetails.weather,
-                                        context,
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height *
-                                            .02)
+                                    Visibility(
+                                      visible: sportKey != SportName.NCAAB.name ,
+                                      child: getWeatherIcon(
+                                          gameDetails.weather,
+                                          context,
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height *
+                                              .02),
+                                    )
                                     /*   getWeatherIcon(
                                         (gameDetails.venue != null
                                             ? gameDetails.venue?.weather ??

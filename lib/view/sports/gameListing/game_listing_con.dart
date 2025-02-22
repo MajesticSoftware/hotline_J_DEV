@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/mlb_box_score_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
+import 'package:hotlines/utils/app_helper.dart';
 import 'package:intl/intl.dart';
 
 import '../../../constant/constant.dart';
@@ -20,8 +21,10 @@ import '../../../model/game_listing.dart';
 import '../../../model/nba_boxscore_model.dart';
 import '../../../model/nba_rank_model.dart';
 import '../../../model/ncaa_boxcore_model.dart';
+import '../../../model/ncaab_conference_model.dart';
 import '../../../model/nfl_qbs_rank_model.dart';
 import '../../../model/nfl_rank_model.dart';
+import '../../../model/ranking_model.dart';
 import '../../../model/response_item.dart';
 import '../../../model/team_logo_model.dart';
 import '../../../model/user_model.dart';
@@ -49,21 +52,9 @@ class GameListingController extends GetxController {
     log('I am closed');
   }
 
-  String sportId = 'sr:sport:16'
+  String sportId = ncaabSportId;
 
-      /*((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
-      ? 'sr:sport:3'
-      : ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NBA') ||
-              ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NCAAB')
-          ? 'sr:sport:2'
-          : 'sr:sport:16')*/
-      ;
-
-  String
-      _sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
-          ? "NCAA"
-          : PreferenceManager.getFavoriteSport()) ??*/
-      "NFL";
+  String _sportKey = SportName.NCAAB.name;
 
   String get sportKey => _sportKey;
 
@@ -72,130 +63,12 @@ class GameListingController extends GetxController {
     update();
   }
 
-  favoriteGameCall() {
-    sportId = /*((PreferenceManager.getFavoriteSport() ?? "NBA") == 'MLB'
-        ? 'sr:sport:3'
-        : ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NBA') ||
-                ((PreferenceManager.getFavoriteSport() ?? "NBA") == 'NCAAB')
-            ? 'sr:sport:2'
-            :*/
-        'sr:sport:16' /*)*/;
-    sportKey = /*(PreferenceManager.getFavoriteSport() == "NCAAF"
-            ? "NCAA"
-            : PreferenceManager.getFavoriteSport()) ??
-        "NBA"*/
-        "NFL";
-    isSelected.add(/*PreferenceManager.getFavoriteSport() ?? "NBA"*/ "NFL");
-    isSelectedGame = /* PreferenceManager.getFavoriteSport() ?? "NBA"*/ "NFL";
-    Future.delayed(
-      Duration.zero,
-      () async {
-        isPagination = true;
-        isLoading.value = true;
-        await getResponse(
-            true,
-            /* (PreferenceManager.getFavoriteSport() == "NCAAF"
-                    ? "NCAA"
-                    : PreferenceManager.getFavoriteSport()) ??
-                "NBA"*/
-            "NFL");
-      },
-    );
-  }
-
-  tabClick(BuildContext context, int index) {
-    searchCon.clear();
-    searchList.clear();
-    isSelectedGame = sportsLeagueList[index].gameName;
-    date = sportsLeagueList[index].date;
-    sportKey = sportsLeagueList[index].key;
-    apiKey = sportsLeagueList[index].apiKey;
-    sportId = sportsLeagueList[index].sportId;
-    if (isSelected.contains(sportsLeagueList[index].gameName)) {
-    } else {
-      isSelected.add(sportsLeagueList[index].gameName);
-      Future.delayed(const Duration(seconds: 0), () {
-        isLoading.value = true;
-        isPagination = true;
-        getResponse(true, sportsLeagueList[index].key);
-      });
-    }
-    update();
-  }
-
-  gameOnClick(BuildContext context, int index) {
-    toggle = 0;
-    FocusScope.of(context).unfocus();
-    searchCon.clear();
-    if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
-      PreferenceManager.setIsOpenDialog(true);
-    } else {
-      PreferenceManager.setIsOpenDialog(false);
-    }
-    Get.to(SportDetailsScreen(
-      gameDetails: (getSportEventList(sportKey))[index],
-      sportKey: sportKey,
-      sportId: sportId,
-      date: date,
-    ));
-    update();
-  }
-
-  Future<void> getSubscriptionStatus() async {
-    // isLoading.value = true;
-    ResponseItem result = Platform.isIOS
-        ? await SubscriptionRepo.getReceiptStatus()
-        : await SubscriptionRepo.getGoogleCloudStatus();
-    try {
-      if (result.status) {
-        if (result.data != null) {
-          UserData subscriptionModel = UserData.fromJson(result.data);
-          PreferenceManager().saveSubscription(subscriptionModel);
-          update();
-        }
-      } else {
-        // showAppSnackBar(result.message);
-      }
-    } catch (e) {
-      showAppSnackBar(e.toString());
-      debugPrint(e.toString());
-    }
-    // isLoading.value = false;
-    update();
-  }
-
-  searchGameOnClick(BuildContext context, int index) {
-    toggle = 0;
-    FocusScope.of(context).unfocus();
-    if ((PreferenceManager.getIsOpenDialog() == null) &&
-        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
-      PreferenceManager.setIsOpenDialog(true);
-    } else {
-      PreferenceManager.setIsOpenDialog(false);
-    }
-    searchCon.clear();
-    searchCon.text = '';
-    Get.to(SportDetailsScreen(
-      gameDetails: searchList[index],
-      sportKey: sportKey,
-      sportId: sportId,
-      date: date,
-    ));
-    update();
-  }
-
   String apiKey = dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "";
-  String
-      date = /*(PreferenceManager.getFavoriteSport() ?? "NCAAB") == "NFL"
-      ? "2024-09-06"
-      :*/
-      DateFormat('yyyy-MM-dd')
-          .format(DateTime.now() /*.subtract(const Duration(days: 1))*/);
+  String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
-    "NFL"
+    SportName.NCAAB.name
   ];
 
   List<String> get isSelected => _isSelected;
@@ -205,7 +78,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String _isSelectedGame = /*PreferenceManager.getFavoriteSport() ??*/ "NFL";
+  String _isSelectedGame = SportName.NCAAB.name;
 
   String get isSelectedGame => _isSelectedGame;
 
@@ -221,112 +94,6 @@ class GameListingController extends GetxController {
   set isSearch(bool value) {
     _isSearch = value;
     update();
-  }
-
-  accountLogOut() {
-    bool isDark = PreferenceManager.getIsDarkMode() ?? false;
-    Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
-        ? ThemeMode.dark
-        : ThemeMode.light);
-    if (PreferenceManager.getLoginType() == 'google') {
-      signOut();
-    }
-    Get.offAll(LogInScreen());
-    PreferenceManager.clearData();
-    PreferenceManager.setIsLogin(false);
-    PreferenceManager.setIsOpenDialog(false);
-    PreferenceManager.setIsDarkMod(isDark);
-    PreferenceManager.setIsFirstLoaded(true);
-    showAppSnackBar('Successfully logged out.', status: true);
-  }
-
-  static Future<bool> signOut() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    try {
-      await googleSignIn.signOut();
-      return true;
-    } catch (e) {
-      showAppSnackBar('logOutErrorMsg'.tr);
-    }
-    return false;
-  }
-
-  void logOut(BuildContext context) async {
-    isLoading.value = true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await UserStartupRepo().logOutApp();
-    try {
-      if (result.status) {
-        log('RESPONSE--${result.status}');
-        ForgotPasswordResModel response =
-            ForgotPasswordResModel.fromJson(result.toJson());
-        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
-        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
-            ? ThemeMode.dark
-            : ThemeMode.light);
-        if (PreferenceManager.getLoginType() == 'google') {
-          await signOut();
-        }
-        Get.offAll(LogInScreen());
-        PreferenceManager.clearData();
-        PreferenceManager.setIsLogin(false);
-        PreferenceManager.setIsDarkMod(isDark);
-        PreferenceManager.setIsFirstLoaded(true);
-        showAppSnackBar(response.msg, status: true);
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        showAppSnackBar(result.message);
-      }
-    } catch (e) {
-      isLoading.value = false;
-      showAppSnackBar(e.toString());
-    }
-    update();
-  }
-
-  void deleteAc(BuildContext context) async {
-    isLoading.value = true;
-    ResponseItem result =
-        ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await UserStartupRepo().deleteAc();
-    try {
-      if (result.status) {
-        log('RESPONSE--${result.status}');
-        ForgotPasswordResModel response =
-            ForgotPasswordResModel.fromJson(result.toJson());
-        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
-        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
-            ? ThemeMode.dark
-            : ThemeMode.light);
-        if (PreferenceManager.getLoginType() == 'google') {
-          signOut();
-        }
-        Get.offAll(LogInScreen());
-        PreferenceManager.clearData();
-        PreferenceManager.setIsLogin(false);
-        PreferenceManager.setIsDarkMod(isDark);
-        showAppSnackBar(response.msg, status: true);
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
-        showAppSnackBar(result.message);
-      }
-    } catch (e) {
-      isLoading.value = false;
-      showAppSnackBar(e.toString());
-    }
-    update();
-  }
-
-  void launchEmailSubmission() async {
-    final Uri params = Uri(
-        scheme: 'mailto',
-        path: 'casey@hotlinesmd.com',
-        queryParameters: {'subject': '', 'body': ''});
-    String url = params.toString();
-    launchInBrowser(Uri.parse(url));
   }
 
   RxBool isLoading = false.obs;
@@ -400,71 +167,6 @@ class GameListingController extends GetxController {
 
   set isCallApi(bool value) {
     _isCallApi = value;
-    update();
-  }
-
-  Future<void> getResponse(bool isLoad, String sportKey) async {
-    if (sportKey == 'MLB') {
-      return await getGameListingForMLBRes(isLoad,
-          apiKey: apiKey, sportKey: 'MLB', date: date, sportId: sportId);
-    } else if (sportKey == 'NFL') {
-      return await getGameListingForNFLGame(isLoad,
-          apiKey: apiKey, sportKey: "NFL", date: date, sportId: sportId);
-    } else if (sportKey == 'NCAA') {
-      return getGameListingForNCAAGame(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    } else if (sportKey == 'NBA') {
-      return getGameListingForNBARes(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    } else if (sportKey == 'NCAAB') {
-      return getGameListingForNCAABRes(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    }
-  }
-
-  Future<void> getRefreshResponse(bool isLoad, String sportKey) async {
-    if (sportKey == 'MLB') {
-      return await mlbGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: 'MLB', date: date, sportId: sportId);
-    } else if (sportKey == 'NFL') {
-      return await nflGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: "NFL", date: date, sportId: sportId);
-    } else if (sportKey == 'NCAA') {
-      return ncaaGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    } else if (sportKey == 'NBA') {
-      return nbaGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    } else if (sportKey == 'NCAAB') {
-      return ncaabGameRefreshCall(isLoad,
-          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
-    }
-  }
-
-  searchData(String text, String sportKey) {
-    searchList = [];
-    searchList.clear();
-    if (text.isNotEmpty) {
-      for (var element in (getSportEventList(sportKey))) {
-        if (((mobileView.size.shortestSide < 600
-                    ? element.homeTeamAbb
-                    : element.homeTeam)
-                .toString()
-                .toLowerCase()
-                .contains(text.trim().toString().toLowerCase())) ||
-            ((mobileView.size.shortestSide < 600
-                    ? element.awayTeamAbb
-                    : element.awayTeam)
-                .toString()
-                .toLowerCase()
-                .contains(text.trim().toString().toLowerCase()))) {
-          if (searchList.length > 3) {
-            searchList.clear();
-          }
-          searchList.add(element);
-        }
-      }
-    }
     update();
   }
 
@@ -590,6 +292,276 @@ class GameListingController extends GetxController {
     return [];
   }
 
+  Future<void> getResponse(bool isLoad, String sportKey) async {
+    date = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now() /*.subtract(const Duration(days: 2))*/);
+    if (sportKey == SportName.MLB.name) {
+      return await getGameListingForMLBRes(isLoad,
+          apiKey: apiKey, sportKey: SportName.MLB.name, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NFL.name) {
+      return await getGameListingForNFLGame(isLoad,
+          apiKey: apiKey, sportKey: SportName.NFL.name, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NCAA.name) {
+      return getGameListingForNCAAGame(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NBA.name) {
+      return getGameListingForNBARes(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NCAAB.name) {
+      return getGameListingForNCAABRes(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    }
+  }
+
+  Future<void> getRefreshResponse(bool isLoad, String sportKey) async {
+    if (sportKey == SportName.MLB.name) {
+      return await mlbGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: SportName.MLB.name, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NFL.name) {
+      return await nflGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: SportName.NFL.name, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NCAA.name) {
+      return ncaaGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NBA.name) {
+      return nbaGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    } else if (sportKey == SportName.NCAAB.name) {
+      return ncaabGameRefreshCall(isLoad,
+          apiKey: apiKey, sportKey: sportKey, date: date, sportId: sportId);
+    }
+  }
+
+  searchData(String text, String sportKey, List<SportEvents> gameList) {
+    searchList = [];
+    searchList.clear();
+    if (text.isNotEmpty) {
+      for (var element in gameList) {
+        if (((mobileView.size.shortestSide < 600
+                    ? element.homeTeamAbb
+                    : element.homeTeam)
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase())) ||
+            ((mobileView.size.shortestSide < 600
+                    ? element.awayTeamAbb
+                    : element.awayTeam)
+                .toString()
+                .toLowerCase()
+                .contains(text.trim().toString().toLowerCase()))) {
+          if (searchList.length > 3) {
+            searchList.clear();
+          }
+          searchList.add(element);
+        }
+      }
+    }
+    update();
+  }
+
+  accountLogOut() {
+    bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+    Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+        ? ThemeMode.dark
+        : ThemeMode.light);
+    if (PreferenceManager.getLoginType() == 'google') {
+      signOut();
+    }
+    Get.offAll(LogInScreen());
+    PreferenceManager.clearData();
+    PreferenceManager.setIsLogin(false);
+    PreferenceManager.setIsOpenDialog(false);
+    PreferenceManager.setIsDarkMod(isDark);
+    PreferenceManager.setIsFirstLoaded(true);
+    showAppSnackBar('Successfully logged out.', status: true);
+  }
+
+  favoriteGameCall() {
+    sportId = ncaabSportId;
+    sportKey = SportName.NCAAB.name;
+    isSelected.add(SportName.NCAAB.name);
+    isSelectedGame = SportName.NCAAB.name;
+    Future.delayed(
+      Duration.zero,
+      () async {
+        isPagination = true;
+        isLoading.value = true;
+        await getResponse(true, SportName.NCAAB.name);
+      },
+    );
+  }
+
+  tabClick(BuildContext context, int index) {
+    searchCon.clear();
+    searchList.clear();
+    isSelectedGame = sportsLeagueList[index].gameName;
+    date = sportsLeagueList[index].date;
+    sportKey = sportsLeagueList[index].key;
+    apiKey = sportsLeagueList[index].apiKey;
+    sportId = sportsLeagueList[index].sportId;
+    if (isSelected.contains(sportsLeagueList[index].gameName)) {
+    } else {
+      isSelected.add(sportsLeagueList[index].gameName);
+      Future.delayed(const Duration(seconds: 0), () {
+        isLoading.value = true;
+        isPagination = true;
+        getResponse(true, sportsLeagueList[index].key);
+      });
+    }
+    update();
+  }
+
+  gameOnClick(BuildContext context, SportEvents gameDetails) {
+    toggle = 0;
+    FocusScope.of(context).unfocus();
+    searchCon.clear();
+    if ((PreferenceManager.getIsOpenDialog() == null) &&
+        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
+      PreferenceManager.setIsOpenDialog(true);
+    } else {
+      PreferenceManager.setIsOpenDialog(false);
+    }
+    Get.to(SportDetailsScreen(
+      gameDetails: gameDetails,
+      sportKey: sportKey,
+      sportId: sportId,
+      date: date,
+    ));
+    update();
+  }
+
+  Future<void> getSubscriptionStatus() async {
+    // isLoading.value = true;
+    ResponseItem result = Platform.isIOS
+        ? await SubscriptionRepo.getReceiptStatus()
+        : await SubscriptionRepo.getGoogleCloudStatus();
+    try {
+      if (result.status) {
+        if (result.data != null) {
+          UserData subscriptionModel = UserData.fromJson(result.data);
+          PreferenceManager().saveSubscription(subscriptionModel);
+          update();
+        }
+      } else {
+        // showAppSnackBar(result.message);
+      }
+    } catch (e) {
+      showAppSnackBar(e.toString());
+      debugPrint(e.toString());
+    }
+    // isLoading.value = false;
+    update();
+  }
+
+  searchGameOnClick(BuildContext context, SportEvents gameDetails) {
+    toggle = 0;
+    FocusScope.of(context).unfocus();
+    if ((PreferenceManager.getIsOpenDialog() == null) &&
+        ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {
+      PreferenceManager.setIsOpenDialog(true);
+    } else {
+      PreferenceManager.setIsOpenDialog(false);
+    }
+    Get.to(SportDetailsScreen(
+      gameDetails: gameDetails,
+      sportKey: sportKey,
+      sportId: sportId,
+      date: date,
+    ));
+    searchCon.clear();
+    searchCon.text = '';
+    update();
+  }
+
+  static Future<bool> signOut() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    try {
+      await googleSignIn.signOut();
+      return true;
+    } catch (e) {
+      showAppSnackBar('logOutErrorMsg'.tr);
+    }
+    return false;
+  }
+
+  void logOut(BuildContext context) async {
+    isLoading.value = true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await UserStartupRepo().logOutApp();
+    try {
+      if (result.status) {
+        log('RESPONSE--${result.status}');
+        ForgotPasswordResModel response =
+            ForgotPasswordResModel.fromJson(result.toJson());
+        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+            ? ThemeMode.dark
+            : ThemeMode.light);
+        if (PreferenceManager.getLoginType() == 'google') {
+          await signOut();
+        }
+        Get.offAll(LogInScreen());
+        PreferenceManager.clearData();
+        PreferenceManager.setIsLogin(false);
+        PreferenceManager.setIsDarkMod(isDark);
+        PreferenceManager.setIsFirstLoaded(true);
+        showAppSnackBar(response.msg, status: true);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(result.message);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(e.toString());
+    }
+    update();
+  }
+
+  void deleteAc(BuildContext context) async {
+    isLoading.value = true;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await UserStartupRepo().deleteAc();
+    try {
+      if (result.status) {
+        log('RESPONSE--${result.status}');
+        ForgotPasswordResModel response =
+            ForgotPasswordResModel.fromJson(result.toJson());
+        bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+        Get.changeThemeMode((PreferenceManager.getIsDarkMode() ?? false)
+            ? ThemeMode.dark
+            : ThemeMode.light);
+        if (PreferenceManager.getLoginType() == 'google') {
+          signOut();
+        }
+        Get.offAll(LogInScreen());
+        PreferenceManager.clearData();
+        PreferenceManager.setIsLogin(false);
+        PreferenceManager.setIsDarkMod(isDark);
+        showAppSnackBar(response.msg, status: true);
+        isLoading.value = false;
+      } else {
+        isLoading.value = false;
+        showAppSnackBar(result.message);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      showAppSnackBar(e.toString());
+    }
+    update();
+  }
+
+  void launchEmailSubmission() async {
+    final Uri params = Uri(
+        scheme: 'mailto',
+        path: 'casey@hotlinesmd.com',
+        queryParameters: {'subject': '', 'body': ''});
+    String url = params.toString();
+    launchInBrowser(Uri.parse(url));
+  }
+
   gameListingTodayApiRes(
       {String sportId = '',
       String date = "",
@@ -609,7 +581,7 @@ class GameListingController extends GetxController {
               sportId: sportId)
           .then((value) {
         if (value.isNotEmpty) {
-          if (value.length >= 100) {
+          if (value.length >= 95) {
             pageIndex++;
           }
           final sportEvents = value;
@@ -619,7 +591,7 @@ class GameListingController extends GetxController {
                 (time.toUtc().difference((DateTime.now().toUtc())));
             if ((event.season?.id == 'sr:season:100127' ||
                     event.season?.id == 'sr:season:114297') &&
-                sportKey == 'MLB' &&
+                sportKey == SportName.MLB.name &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed")) {
               if (mlbTodayEventsList.contains(event)) {
@@ -628,7 +600,7 @@ class GameListingController extends GetxController {
               }
             } else if (event.season?.id == 'sr:season:115087' &&
                     sportKey ==
-                        'NFL' /*&&
+                        SportName.NFL.name /*&&
                 (difference.inHours >= (-6))*/
                 /*&&
                 (event.status != "closed")*/
@@ -641,7 +613,7 @@ class GameListingController extends GetxController {
               }
             } else if ((event.season?.id == 'sr:season:101983' ||
                     event.season?.id == "sr:season:101811") &&
-                sportKey == 'NCAA' &&
+                sportKey == SportName.NCAA.name &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed")) {
               if (ncaaTodayEventsList
@@ -651,7 +623,7 @@ class GameListingController extends GetxController {
                 ncaaTodayEventsList.add(event);
               }
             } else if (((event.season?.id == 'sr:season:117435') &&
-                sportKey == 'NCAAB' &&
+                sportKey == SportName.NCAAB.name &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed"))) {
               if (ncaabTodayEventsList
@@ -661,7 +633,7 @@ class GameListingController extends GetxController {
                 ncaabTodayEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == 'NBA' &&
+                sportKey == SportName.NBA.name &&
                 (difference.inHours >= (-6)) &&
                 (event.status != "closed")) {
               if (nbaTodayEventsList.contains(event)) {
@@ -700,7 +672,7 @@ class GameListingController extends GetxController {
               sportId: sportId)
           .then((List<SportEvents> value) {
         if (value.isNotEmpty) {
-          if (value.length >= 100) {
+          if (value.length >= 95) {
             pageIndex++;
           }
           List<SportEvents> sportEvents = value.toSet().toList();
@@ -710,7 +682,7 @@ class GameListingController extends GetxController {
                 (time.toUtc().difference((DateTime.now().toUtc())));
             if ((event.season?.id == 'sr:season:100127' ||
                     event.season?.id == 'sr:season:114297') &&
-                sportKey == 'MLB' &&
+                sportKey == SportName.MLB.name &&
                 DateTime.parse(event.scheduled ?? '').toLocal().day !=
                     DateTime.now().add(const Duration(days: 1)).toLocal().day) {
               if (mlbTomorrowEventsList.contains(event)) {
@@ -718,7 +690,7 @@ class GameListingController extends GetxController {
                 mlbTomorrowEventsList.add(event);
               }
             } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey == 'NFL') {
+                sportKey == SportName.NFL.name) {
               if (nflSportEventsList
                       .indexWhere((element) => element.id == event.id) !=
                   -1) {
@@ -730,13 +702,13 @@ class GameListingController extends GetxController {
               }
             } else if ((event.season?.id == 'sr:season:101983' ||
                     (event.season?.id == 'sr:season:101811')) &&
-                sportKey == 'NCAA') {
+                sportKey == SportName.NCAA.name) {
               if (ncaaTomorrowEventsList.contains(event)) {
               } else {
                 ncaaTomorrowEventsList.add(event);
               }
             } else if ((event.season?.id == 'sr:season:117435') &&
-                sportKey == 'NCAAB') {
+                sportKey == SportName.NCAAB.name) {
               if (ncaabSportEventsList
                       .indexWhere((element) => element.id == event.id) !=
                   -1) {
@@ -747,7 +719,7 @@ class GameListingController extends GetxController {
                 }
               }
             } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == 'NBA' &&
+                sportKey == SportName.NBA.name &&
                 (difference.inHours <= (16))) {
               if (nbaTomorrowEventsList.contains(event)) {
               } else {
@@ -765,13 +737,13 @@ class GameListingController extends GetxController {
   }
 
   List<SportEvents> getTodayList(sportKey) {
-    return (sportKey == 'NFL'
+    return (sportKey == SportName.NFL.name
             ? nflTodayEventsList.toSet()
-            : sportKey == 'MLB'
+            : sportKey == SportName.MLB.name
                 ? mlbTodayEventsList.toSet()
-                : sportKey == 'NBA'
+                : sportKey == SportName.NBA.name
                     ? nbaTodayEventsList.toSet()
-                    : sportKey == 'NCAAB'
+                    : sportKey == SportName.NCAAB.name
                         ? ncaabTodayEventsList.toSet()
                         : ncaaTodayEventsList.toSet())
         .toSet()
@@ -779,13 +751,13 @@ class GameListingController extends GetxController {
   }
 
   List<SportEvents> getTomorrowList(sportKey) {
-    return (sportKey == 'NFL'
+    return (sportKey == SportName.NFL.name
             ? nflTomorrowEventsList.toSet()
-            : sportKey == 'MLB'
+            : sportKey == SportName.MLB.name
                 ? mlbTomorrowEventsList.toSet()
-                : sportKey == 'NBA'
+                : sportKey == SportName.NBA.name
                     ? nbaTomorrowEventsList.toSet()
-                    : sportKey == 'NCAAB'
+                    : sportKey == SportName.NCAAB.name
                         ? ncaabTomorrowEventsList.toSet()
                         : ncaaTomorrowEventsList.toSet())
         .toSet()
@@ -793,13 +765,17 @@ class GameListingController extends GetxController {
   }
 
   List<SportEvents> getSportEventList(sportKey) {
-    return sportKey == 'NFL'
+    // List<SportEvents> newNcaabSportEventsList = ncaabSportEventsList
+    //     .where((element) => conferenceIdList.contains(element.awayConferenceId)||conferenceIdList.contains(element.awayConferenceId))
+    //     .toList();
+
+    return sportKey == SportName.NFL.name
         ? nflSportEventsList
-        : sportKey == 'MLB'
+        : sportKey == SportName.MLB.name
             ? mlbSportEventsList
-            : sportKey == 'NCAAB'
+            : sportKey == SportName.NCAAB.name
                 ? ncaabSportEventsList
-                : sportKey == 'NBA'
+                : sportKey == SportName.NBA.name
                     ? nbaSportEventsList
                     : ncaaSportEventsList;
   }
@@ -1027,7 +1003,7 @@ class GameListingController extends GetxController {
           } else {
             down = down;
           }
-          if (key == 'NFL') {
+          if (key == SportName.NFL.name) {
             nflSportEventsList[index].inning = (game.quarter ?? "0").toString();
             nflSportEventsList[index].inningHalf = "Q";
             nflSportEventsList[index].clock = (game.clock ?? "00:00");
@@ -1095,7 +1071,7 @@ class GameListingController extends GetxController {
 
         if (game.id == gameId) {
           if (homeTeamId == game.home?.id) {
-            if (sportKey == "NBA") {
+            if (sportKey == SportName.NBA.name) {
               nbaSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
               nbaSportEventsList[index].homeRank =
@@ -1103,12 +1079,12 @@ class GameListingController extends GetxController {
             } else {
               ncaabSportEventsList[index].homeScore =
                   (game.home?.points ?? "0").toString();
-              ncaabSportEventsList[index].homeRank =
-                  (game.home?.rank ?? 0).toString();
+              // ncaabSportEventsList[index].homeRank =
+              //     (game.home?.rank ?? 0).toString();
             }
           }
           if (awayTeamId == game.away?.id) {
-            if (sportKey == "NBA") {
+            if (sportKey == SportName.NBA.name) {
               nbaSportEventsList[index].awayScore =
                   (game.away?.points ?? "0").toString();
               nbaSportEventsList[index].awayRank =
@@ -1116,11 +1092,11 @@ class GameListingController extends GetxController {
             } else {
               ncaabSportEventsList[index].awayScore =
                   (game.away?.points ?? "0").toString();
-              ncaabSportEventsList[index].awayRank =
-                  (game.away?.rank ?? 0).toString();
+              // ncaabSportEventsList[index].awayRank =
+              //     (game.away?.rank ?? 0).toString();
             }
           }
-          if (sportKey == "NBA") {
+          if (sportKey == SportName.NBA.name) {
             nbaSportEventsList[index].inning = (game.quarter ?? "0").toString();
             nbaSportEventsList[index].inningHalf = 'Q';
             nbaSportEventsList[index].status = game.status.toString();
@@ -1148,14 +1124,26 @@ class GameListingController extends GetxController {
     update();
   }
 
-  /*///NCAA RANKING
-  Future ncaaGameRanking(
-      {String awayTeamId = '',
-      String homeTeamId = '',
-      bool isLoad = false,
-      required String sportName,
-      required SportEvents gameDetails}) async {
-    // isLoading.value = !isLoad ? false : true;
+  List<String> conferenceIdList = [
+    "9ed9d01e-977c-4ba7-ac7d-64035039461c",
+    "a30fe8ff-82d2-4521-bc8d-e08e6a9dbb52",
+    "2853cf4d-6d62-4ec6-8e2c-d69f7a01a557",
+    "88368ebb-01fb-44d5-a6c6-3e7d46bb3ab7",
+    "d07bc93e-c84c-44a9-a99d-c213bd0014d6",
+    "3b6a48d8-1f9c-484f-8ed0-ef0a540a0efe",
+    "db136c00-f45b-4af6-bc7d-ffff216f2e5d",
+    "6902bb03-02f7-4da4-8261-de5fd2cbd011",
+    "93a776e4-d390-48e1-95bb-74945457366a",
+    "c664ceee-1dc0-4743-a6d8-11fbdfb87f61",
+  ];
+
+  ///NCAA RANKING
+  Future ncaaGameRanking({
+    bool isLoad = false,
+    required String sportName,
+    required List<SportEvents> sportList,
+  }) async {
+    isLoading.value = isLoad;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().ncaaGameRanking(sportName);
@@ -1163,14 +1151,24 @@ class GameListingController extends GetxController {
       if (result.status) {
         RankingModel response = RankingModel.fromJson(result.data);
         if (response.rankings != null) {
-          response.rankings?.forEach((player) {
-            if (player.id.toString() == homeTeamId) {
-              gameDetails.homeRank = player.rank.toString();
+          for (int i = 0; i < sportList.length; i++) {
+            if (sportList[i].uuids != null) {
+              response.rankings?.forEach((team) {
+                if (team.id.toString() ==
+                    (replaceId(sportList[i].competitors[0].uuids ?? '') ??
+                        "")) {
+                  sportList[i].homeRank =
+                      team.prevRank != null ? team.prevRank.toString() : '0';
+                }
+                if (team.id.toString() ==
+                    (replaceId(sportList[i].competitors[1].uuids ?? '') ??
+                        "")) {
+                  sportList[i].awayRank =
+                      team.prevRank != null ? team.prevRank.toString() : '0';
+                }
+              });
             }
-            if (player.id.toString() == awayTeamId) {
-              gameDetails.awayRank = player.rank.toString();
-            }
-          });
+          }
         }
       } else {
         isLoading.value = false;
@@ -1186,7 +1184,64 @@ class GameListingController extends GetxController {
       // );
     }
     update();
-  }*/
+  }
+
+  ///getConferenceNCAAB
+  Future getConferenceNCAAB(bool isLoad) async {
+    isLoading.value = isLoad;
+    ResponseItem result =
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result = await GameListingRepo().getConferenceNCAAB();
+    try {
+      if (result.status) {
+        ConferencesModelNCAAB response =
+            ConferencesModelNCAAB.fromJson(result.data);
+        if (response.divisions != null) {
+          for (int i = 0; i < ncaabSportEventsList.length; i++) {
+            if (ncaabSportEventsList[i].uuids != null) {
+              response.divisions?.forEach((division) {
+                division.conferences?.forEach(
+                  (conference) {
+                    conference.teams?.forEach(
+                      (team) {
+                        if (team.id.toString() ==
+                            (replaceId(ncaabSportEventsList[i]
+                                        .competitors[0]
+                                        .uuids ??
+                                    '') ??
+                                "")) {
+                          ncaabSportEventsList[i].homeConferenceName =
+                              conference.name;
+                          ncaabSportEventsList[i].homeConferenceId =
+                              conference.id;
+                        }
+                        if (team.id.toString() ==
+                            (replaceId(ncaabSportEventsList[i]
+                                        .competitors[1]
+                                        .uuids ??
+                                    '') ??
+                                "")) {
+                          ncaabSportEventsList[i].awayConferenceName =
+                              conference.name;
+                          ncaabSportEventsList[i].awayConferenceId =
+                              conference.id;
+                        }
+                      },
+                    );
+                  },
+                );
+              });
+            }
+          }
+        }
+      } else {
+        isLoading.value = false;
+      }
+    } catch (e) {
+      log('ERROR NCAA CONFERENCE-------$e');
+    }
+    update();
+  }
 
   setOdds(SportEvents event) {
     if (event.consensus != null) {
@@ -1323,6 +1378,10 @@ class GameListingController extends GetxController {
             }
           }).then((value) {
             if (ncaaSportEventsList.isNotEmpty) {
+              ncaaGameRanking(
+                  sportName: sportKey,
+                  isLoad: false,
+                  sportList: ncaaSportEventsList);
               for (int i = 0; i < ncaaSportEventsList.length; i++) {
                 if (ncaaSportEventsList[i].uuids != null) {
                   getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
@@ -1331,19 +1390,6 @@ class GameListingController extends GetxController {
                       key: sportKey,
                       gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
                       index: i);
-                  /* ncaaGameRanking(
-                    sportName: sportKey,
-                    isLoad: false,
-                    gameDetails: ncaaSportEventsList[i],
-                    homeTeamId: replaceId(
-                            ncaaSportEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaaSportEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                  );*/
                 }
               }
             }
@@ -1437,6 +1483,10 @@ class GameListingController extends GetxController {
             }
           }).then((value) {
             if (ncaaSportEventsList.isNotEmpty) {
+              ncaaGameRanking(
+                  sportName: sportKey,
+                  isLoad: false,
+                  sportList: ncaaSportEventsList);
               for (int i = 0; i < ncaaSportEventsList.length; i++) {
                 if (ncaaSportEventsList[i].uuids != null) {
                   getWeather(ncaaSportEventsList[i].venue?.cityName ?? "",
@@ -1445,19 +1495,6 @@ class GameListingController extends GetxController {
                       key: sportKey,
                       gameId: replaceId(ncaaSportEventsList[i].uuids ?? ''),
                       index: i);
-                  /* ncaaGameRanking(
-                    sportName: sportKey,
-                    isLoad: false,
-                    gameDetails: ncaaSportEventsList[i],
-                    homeTeamId: replaceId(
-                            ncaaSportEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaaSportEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                  );*/
                 }
               }
             }
@@ -2435,23 +2472,16 @@ class GameListingController extends GetxController {
               isPagination = false;
             }
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
-                isLoad: isLoad);
+                isLoad: true);
             if (ncaabSportEventsList.isNotEmpty) {
+              getConferenceNCAAB(false);
+              ncaaGameRanking(
+                sportName: sportKey,
+                isLoad: false,
+                sportList: ncaabSportEventsList,
+              );
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  /*  ncaaGameRanking(
-                    sportName: sportKey,
-                    isLoad: false,
-                    gameDetails: ncaabSportEventsList[i],
-                    homeTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                  );*/
                   if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
                           .toLocal()
                           .day ==
@@ -2543,6 +2573,7 @@ class GameListingController extends GetxController {
     ncaabTodayEventsList = [];
     gameListingTodayApiRes(
             key: apiKey,
+            start: 0,
             isLoad: isLoad,
             sportKey: sportKey,
             date: date,
@@ -2569,26 +2600,17 @@ class GameListingController extends GetxController {
                   sportId: sportId)
               .then((value) async {
             getAllEventList(sportKey, isLoad);
-
             gameListingsWithLogoResponseNCAAB(currentYear, sportKey,
                 isLoad: isLoad);
             nbaGameRankApi(isLoad: isLoad, sportKey: sportKey);
             if (ncaabSportEventsList.isNotEmpty) {
+              ncaaGameRanking(
+                  sportName: sportKey,
+                  isLoad: false,
+                  sportList: ncaabSportEventsList);
+              getConferenceNCAAB(false);
               for (int i = 0; i < ncaabSportEventsList.length; i++) {
                 if (ncaabSportEventsList[i].uuids != null) {
-                  /*ncaaGameRanking(
-                    sportName: sportKey,
-                    isLoad: false,
-                    gameDetails: ncaabSportEventsList[i],
-                    homeTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[0].uuids ??
-                                '') ??
-                        "",
-                    awayTeamId: replaceId(
-                            ncaabSportEventsList[i].competitors[1].uuids ??
-                                '') ??
-                        "",
-                  );*/
                   if (DateTime.parse(ncaabSportEventsList[i].scheduled ?? "")
                           .toLocal()
                           .day ==
@@ -2747,15 +2769,15 @@ class GameListingController extends GetxController {
     try {
       if (result.status) {
         if (result.data != null) {
-          (sportKey == 'MLB'
+          (sportKey == SportName.MLB.name
                   ? mlbSportEventsList
-                  : sportKey == 'NFL'
+                  : sportKey == SportName.NFL.name
                       ? nflSportEventsList
                       : ncaaSportEventsList)[index]
               .weather = result.data['weather'][0]['id'];
-          (sportKey == 'MLB'
+          (sportKey == SportName.MLB.name
                   ? mlbSportEventsList
-                  : sportKey == 'NFL'
+                  : sportKey == SportName.NFL.name
                       ? nflSportEventsList
                       : ncaaSportEventsList)[index]
               .temp = result.data['main']['temp'] ?? 0;

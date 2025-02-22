@@ -13,12 +13,14 @@ import 'package:hotlines/model/game_model.dart';
 import 'package:hotlines/theme/app_color.dart';
 import 'package:hotlines/theme/helper.dart';
 import 'package:hotlines/utils/animated_search.dart';
+import 'package:hotlines/utils/app_helper.dart';
 import 'package:hotlines/utils/utils.dart';
 import 'package:hotlines/view/sports/gameListing/game_listing_con.dart';
 import 'package:hotlines/view/subscription/subscription_controller.dart';
 
 import '../../constant/app_strings.dart';
 import '../../generated/assets.dart';
+import '../../model/game_listing.dart';
 import '../../model/leauge_model.dart';
 import 'common_widget.dart';
 
@@ -605,14 +607,14 @@ class GameTabCard extends StatelessWidget {
   final GameListingController controller;
   final List<Color> sportSelectedColor = [
     const Color(0xff0C4981),
-    const Color(0xff1A8B47),
+    // const Color(0xff1A8B47),
     // const Color(0xffEABB42),
     // Colors.orange,
     // Colors.deepPurpleAccent
   ];
   final List<Color> sportColor = [
     const Color(0xff0C4981).withOpacity(.3),
-    const Color(0xff1A8B47).withOpacity(.3),
+    // const Color(0xff1A8B47).withOpacity(.3),
     // const Color(0xffEABB42).withOpacity(.4),
     // Colors.orange.withOpacity(.4),
     // Colors.deepPurpleAccent.withOpacity(.4),
@@ -702,15 +704,15 @@ class GameTabCard extends StatelessWidget {
                             sportsLeagueList[index].gameImage,
                             height: MediaQuery.of(context).size.height * .04,
                             width: MediaQuery.of(context).size.width * .01,
-                            fit: index == 1 /*|| index == 0*/
-                                ? BoxFit.cover
-                                : BoxFit.contain,
+                            fit: /*|| index == 0*/
+                                 BoxFit.cover
+                               ,
                             color: whiteColor,
                           ).paddingSymmetric(
                               vertical:
                                   MediaQuery.of(context).size.height * .010,
                               horizontal:
-                                  MediaQuery.of(context).size.height * .010),
+                                  MediaQuery.of(context).size.height * .008),
                           sportsLeagueList[index]
                               .gameName
                               .appCommonText(
@@ -732,7 +734,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 2 /*: 5*/))
+                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
@@ -959,13 +961,13 @@ class HeaderCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
-                      sportName == 'NFL'
+                      sportName == SportName.NFL.name
                           ? Assets.imagesNfl
                           : Assets.imagesNcaab,
-                      height: sportName == 'NFL'
+                      height: sportName == SportName.NFL.name
                           ? MediaQuery.of(context).size.height * .017
                           : MediaQuery.of(context).size.height * .02,
-                      width: sportName == 'NFL'
+                      width: sportName == SportName.NFL.name
                           ? MediaQuery.of(context).size.width * .01
                           : MediaQuery.of(context).size.width * .01,
                       fit: BoxFit.cover,
@@ -1374,12 +1376,12 @@ class TransperCard extends StatelessWidget {
 var scaffoldKey = GlobalKey<ScaffoldState>();
 
 AppBar commonAppBar(
-    BuildContext context, GameListingController controller) {
+    BuildContext context, GameListingController controller,List<SportEvents> gameList) {
 
   return AppBar(
     backgroundColor: Theme.of(context).secondaryHeaderColor,
     actions: [
-      buildAnimSearchBar(controller, context),
+      buildAnimSearchBar(controller, context,gameList),
       SizedBox(width: 24.w), // Using SizedBox for consistent spacing
     ],
     centerTitle: true,
@@ -1413,7 +1415,7 @@ bool isTablet(BuildContext context) {
 }
 
 PreferredSize commonTabletAppBarWidget(
-    BuildContext context, GameListingController controller) {
+    BuildContext context, GameListingController controller,List<SportEvents> gameList) {
   return PreferredSize(
       preferredSize: Size.fromHeight(110.w),
       child: Container(
@@ -1452,7 +1454,7 @@ PreferredSize commonTabletAppBarWidget(
                   : Positioned(
                   right: 0,
                   left: -9.h,
-                  child: buildAnimSearchBar(controller, context)),
+                  child: buildAnimSearchBar(controller, context,gameList)),
             ],
           ),
         ),
@@ -1460,7 +1462,7 @@ PreferredSize commonTabletAppBarWidget(
 }
 
 AnimSearchBar buildAnimSearchBar(
-    GameListingController controller, BuildContext context) {
+    GameListingController controller, BuildContext context,List<SportEvents> gameList) {
   return AnimSearchBar(
     rtl: true,
     autoFocus: true,
@@ -1486,7 +1488,7 @@ AnimSearchBar buildAnimSearchBar(
       controller.update();
     },
     onSubmitted: (String text) {
-      controller.searchData(text, controller.sportKey);
+      controller.searchData(text, controller.sportKey,gameList);
       controller.update();
     },
   );

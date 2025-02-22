@@ -59,6 +59,10 @@ class Sport {
 
 class SportEvents {
   String? id;
+  String? awayConferenceName;
+  String? awayConferenceId;
+  String? homeConferenceName;
+  String? homeConferenceId;
   num? gamesPlayed;
   String currentTime = "";
   String? scheduled;
@@ -175,6 +179,10 @@ class SportEvents {
 
   SportEvents({
     this.id,
+    this.awayConferenceName,
+    this.awayConferenceId,
+    this.homeConferenceName,
+    this.homeConferenceId,
     this.gamesPlayed,
     this.scheduled,
     this.outs = "0",

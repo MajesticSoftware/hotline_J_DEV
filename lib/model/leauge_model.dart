@@ -2,9 +2,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 
 import '../generated/assets.dart';
+import '../utils/app_helper.dart';
 
 class LeagueModel {
-  // String image;
   String gameImage;
   String gameName;
   String key;
@@ -15,7 +15,6 @@ class LeagueModel {
 
   LeagueModel(
       {
-      // required this.image,
       required this.gameImage,
       required this.gameName,
       required this.key,
@@ -30,45 +29,44 @@ final DateFormat formatter = DateFormat('yyyy-MM-dd');
 final String formatted = formatter.format(now);
 
 List<LeagueModel> sportsLeagueList = [
-  LeagueModel(
+  /*LeagueModel(
       gameImage: Assets.imagesNfl,
-      gameName: 'NFL',
-      date: formatted,
-      key: 'NFL',
+      gameName: SportName.NFL.name,
+      date: staticDateNFL,
+      key: SportName.NFL.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
-      sportId: 'sr:sport:16',
-      isAvailable: true),
+      sportId: nflSportId,
+      isAvailable: true),*/
   LeagueModel(
-      sportId: 'sr:sport:2',
-      gameName: 'NCAAB',
+        sportId: ncaabSportId,
+      gameName: SportName.NCAAB.name,
       date: formatted,
-      key: 'NCAAB',
+      key: 'SportName.NCAAB.name',
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   /* LeagueModel(
-      sportId: 'sr:sport:2',
-      gameName: 'NBA',
+      sportId: nbaSportId,
+      gameName: SportName.NBA.name,
       date: formatted,
-      key: 'NBA',
+      key: SportName.NBA.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
   LeagueModel(
       gameImage: Assets.imagesMlb,
-      gameName: 'MLB',
+      gameName: SportName.MLB.name,
       date: formatted,
-      key: 'MLB',
-      sportId: 'sr:sport:3',
+      key: SportName.MLB.name,
+      sportId: mlbSportId,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true),*/
-
   /*LeagueModel(
       gameImage: Assets.imagesNcaa,
       date: formatted,
-      key: 'NCAA',
-      gameName: 'NCAAF',
-      sportId: 'sr:sport:16',
+      key: SportName.NCAA.name,
+      gameName: SportName.NCAAF.name,
+      sportId: ncaafSportId,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true),*/
 ];
