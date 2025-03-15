@@ -114,7 +114,7 @@ class GameWidget extends StatelessWidget {
                                 imageUrl: awayTeamImageUrl,
                               ),
                               Positioned(
-                                right: -4,
+                                right: -3,
                                 top: -6,
                                 child: awayTeamRank.toString().appCommonText(
                                     color: Theme.of(context).highlightColor,
@@ -193,7 +193,7 @@ class GameWidget extends StatelessWidget {
                                 imageUrl: homeTeamImageUrl,
                               ),
                               Positioned(
-                                right: -4,
+                                right: -3,
                                 top: -6,
                                 child: homeTeamRank.toString().appCommonText(
                                     color: Theme.of(context).highlightColor,

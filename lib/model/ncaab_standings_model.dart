@@ -119,7 +119,7 @@ class Teams {
   num? pointDiff;
   num? confPointsFor;
   num? confPointsAgainst;
-  num? clinched;
+  // num? clinched;
   bool? postSeasonIneligible;
   num? strengthOfScheduleRank;
   num? conferenceRank;
@@ -141,7 +141,7 @@ class Teams {
       this.pointDiff,
       this.confPointsFor,
       this.confPointsAgainst,
-      this.clinched,
+      // this.clinched,
       this.postSeasonIneligible,
       this.strengthOfScheduleRank,
       this.conferenceRank,
@@ -163,7 +163,7 @@ class Teams {
     pointDiff = json['point_diff'];
     confPointsFor = json['conf_points_for'];
     confPointsAgainst = json['conf_points_against'];
-    clinched = json['clinched'];
+    // clinched = json['clinched'];
     postSeasonIneligible = json['post_season_ineligible'];
     strengthOfScheduleRank = json['strength_of_schedule_rank'];
     conferenceRank = json['conference_rank'];
@@ -194,7 +194,7 @@ class Teams {
     data['point_diff'] = pointDiff;
     data['conf_points_for'] = confPointsFor;
     data['conf_points_against'] = confPointsAgainst;
-    data['clinched'] = clinched;
+    // data['clinched'] = clinched;
     data['post_season_ineligible'] = postSeasonIneligible;
     data['strength_of_schedule_rank'] = strengthOfScheduleRank;
     data['conference_rank'] = conferenceRank;

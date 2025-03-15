@@ -162,8 +162,7 @@ class SelectGameScreen extends StatelessWidget {
                   })
                 : const SizedBox(),
             Visibility(
-              visible: (PreferenceManager.getIsLogin() ?? false) == false ||
-                  PreferenceManager.getIsLogin() == null,
+              visible: !(PreferenceManager.getIsLogin() ?? false),
               child: SvgPicture.asset(
                 Assets.imagesLogo,
                 fit: BoxFit.contain,
@@ -173,7 +172,7 @@ class SelectGameScreen extends StatelessWidget {
                   top: 50.h),
             ),
             Visibility(
-                visible: (PreferenceManager.getIsLogin() ?? false) == true,
+                visible: (PreferenceManager.getIsLogin() ?? false),
                 child: commonDivider(context)),
 
             /* drawerCard(
@@ -253,7 +252,7 @@ class SelectGameScreen extends StatelessWidget {
               },
             ),
             Visibility(
-              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              visible: (PreferenceManager.getIsLogin() ?? false),
               child: drawerCard(
                 widget: Icon(
                   Icons.person_outline_rounded,
@@ -268,62 +267,65 @@ class SelectGameScreen extends StatelessWidget {
                 },
               ),
             ),
-            drawerCard(
-              widget: Image.asset(
-                Assets.imagesSub,
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height * .06,
-                width: MediaQuery.of(context).size.width * .06,
-                fit: BoxFit.scaleDown,
-              ),
-              title: 'Subscription',
-              context: context,
-              onTap: () {
-                subscriptionDialog(
-                  context,
-                  showButton:
-                      (PreferenceManager.getSubscriptionActive() ?? "0") == "1"
-                          ? false
-                          : true,
-                  price: subscriptionController.price,
-                  restoreOnTap: () async {
-                    await subscriptionController.restorePurchase(context);
-                  },
-                  onTap: () async {
-                    Get.back();
-
-                    if (PreferenceManager.getIsLogin() ?? false) {
-                      if (subscriptionController.products.isEmpty) {
-                        null;
+      Visibility(
+        visible: (PreferenceManager.getIsLogin() ?? false),
+              child: drawerCard(
+                widget: Image.asset(
+                  Assets.imagesSub,
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height * .06,
+                  width: MediaQuery.of(context).size.width * .06,
+                  fit: BoxFit.scaleDown,
+                ),
+                title: 'Subscription',
+                context: context,
+                onTap: () {
+                  subscriptionDialog(
+                    context,
+                    showButton:
+                        (PreferenceManager.getSubscriptionActive() ?? "0") == "1"
+                            ? false
+                            : true,
+                    price: subscriptionController.price,
+                    restoreOnTap: () async {
+                      await subscriptionController.restorePurchase(context);
+                    },
+                    onTap: () async {
+                      Get.back();
+              
+                      if (PreferenceManager.getIsLogin() ?? false) {
+                        if (subscriptionController.products.isEmpty) {
+                          null;
+                        } else {
+                          log('ON TAP');
+                          await subscriptionController
+                              .buyProduct(subscriptionController.products[0]);
+                          subscriptionController.update();
+                        }
                       } else {
-                        log('ON TAP');
-                        await subscriptionController
-                            .buyProduct(subscriptionController.products[0]);
-                        subscriptionController.update();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return exitApp(
+                              context,
+                              buttonText: 'Login',
+                              cancelText: 'Cancel',
+                              title: 'Error',
+                              subtitle: 'You have to login for Subscription!',
+                              onTap: () {
+                                Get.offAll(LogInScreen());
+                              },
+                            );
+                          },
+                        );
                       }
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return exitApp(
-                            context,
-                            buttonText: 'Login',
-                            cancelText: 'Cancel',
-                            title: 'Error',
-                            subtitle: 'You have to login for Subscription!',
-                            onTap: () {
-                              Get.offAll(LogInScreen());
-                            },
-                          );
-                        },
-                      );
-                    }
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
             Visibility(
-              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              visible: (PreferenceManager.getIsLogin() ?? false) ,
               child: drawerCard(
                 widget: Icon(
                   Icons.lock_reset_rounded,
@@ -339,7 +341,7 @@ class SelectGameScreen extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: (PreferenceManager.getIsLogin() ?? false) == true,
+              visible: (PreferenceManager.getIsLogin() ?? false) ,
               child: drawerCard(
                 widget: Icon(
                   Icons.delete_outline,
@@ -541,30 +543,60 @@ class SelectGameScreen extends StatelessWidget {
             (MediaQuery.of(context).size.height * .01).H(),
             // Only show "No Games" when no games are available
             controller.searchCon.text.isEmpty
-                ? Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        Future.delayed(const Duration(seconds: 0), () async {
-                          if (!controller.isCallApi) {
-                            controller.isCallApi = true;
-                            await controller.getRefreshResponse(
-                                false, controller.sportKey);
-                          }
-                          controller.update();
-                        });
-                      },
-                      color: Theme.of(context).primaryColor,
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: spotList(controller).length,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          // Your original game list builder logic
-                          return buildGameItem(context, controller, index);
-                        },
+                ? (!controller.isLoading.value &&
+                        !controller.isPagination &&
+                        spotList(controller).isEmpty)
+                    ? Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          'No Games'.appCommonText(
+                            color: Theme.of(context).secondaryHeaderColor,
+                            size: Get.height * .022,
+                            weight: FontWeight.w800,
+                          ),
+                          (controller.sportKey == SportName.NCAA.name
+                                  ? "'2024 season starts August 24th.'"
+                                  : "")
+                              .appCommonText(
+                            color: Theme.of(context).secondaryHeaderColor,
+                            size: Get.height * .02,
+                            weight: FontWeight.w800,
+                          )
+                        ],
                       ),
-                    ),
-                  )
+                    )
+                    : Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            Future.delayed(const Duration(seconds: 0),
+                                () async {
+                              if (!controller.isCallApi) {
+                                controller.isCallApi = true;
+                                await controller.getRefreshResponse(
+                                    false, controller.sportKey);
+                              }
+                              controller.update();
+                            });
+                          },
+                          color: Theme.of(context).primaryColor,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: spotList(controller).length + 1,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              // Your original game list builder logic
+                              if (spotList(controller).length == index) {
+                                return controller.isPagination
+                                    ? const PaginationProgress()
+                                    : const SizedBox(); // No loader if not loading
+                              }
+                              return buildGameItem(context, controller, index);
+                            },
+                          ),
+                        ),
+                      )
                 : Expanded(
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
@@ -595,131 +627,92 @@ class SelectGameScreen extends StatelessWidget {
           DateTime.parse(spotList(controller)[index].scheduled ?? '')
               .toLocal());
 
-      return (spotList(controller).length == index + 1 &&
-              controller.isPagination)
-          ? const PaginationProgress()
-          : (!controller.isLoading.value && spotList(controller).isEmpty)
-              ? Expanded(
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        'No Games'.appCommonText(
-                          color: Theme.of(context).secondaryHeaderColor,
-                          size: Get.height * .022,
-                          weight: FontWeight.w800,
-                        ),
-                        (controller.sportKey == SportName.NCAA.name
-                                ? "'2024 season starts August 24th.'"
-                                : "")
-                            .appCommonText(
-                          color: Theme.of(context).secondaryHeaderColor,
-                          size: Get.height * .02,
-                          weight: FontWeight.w800,
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              : (spotList(controller)[index].status ==
-                      GameStatus.postponed.name)
-                  ? const SizedBox()
-                  : Column(
-                      children: [
-                        GameWidget(
-                          status: spotList(controller)[index].status.toString(),
-                          flameNumber: controller.sportKey != SportName.MLB.name
-                              ? spotList(controller)[index].getFlameValue
-                              : 0,
-                          isShowWeather:
-                              controller.sportKey != SportName.NCAAB.name ||
-                                  controller.sportKey != SportName.NBA.name,
-                          onTap: () {
-                            controller.gameOnClick(
-                                context, spotList(controller)[index]);
-                          },
-                          isShowFlam:
-                              (controller.sportKey != SportName.MLB.name),
-                          awayTeamMoneyLine:
-                              spotList(controller)[index].awayMoneyLineValue,
-                          homeTeamMoneyLine:
-                              spotList(controller)[index].homeMoneyLineValue,
-                          awayTeamOU: spotList(controller)[index].awayOUValue,
-                          homeTeamOU: spotList(controller)[index].homeOUValue,
-                          weather: spotList(controller)[index].weather,
-                          homeTeamSpread: spotList(controller)[index]
-                                  .homeSpreadValue
-                                  .contains('-')
-                              ? spotList(controller)[index].homeSpreadValue
-                              : '+${spotList(controller)[index].homeSpreadValue}',
-                          awayTeamSpread: spotList(controller)[index]
-                                  .awaySpreadValue
-                                  .contains('-')
-                              ? spotList(controller)[index].awaySpreadValue
-                              : '+${spotList(controller)[index].awaySpreadValue}',
-                          temp: spotList(controller)[index].tmpInFahrenheit,
-                          isLive: (spotList(controller)[index].status ==
-                                  GameStatus.live.name ||
-                              spotList(controller)[index].status ==
-                                  GameStatus.inprogress.name ||
-                              spotList(controller)[index].status ==
-                                  GameStatus.halftime.name),
-                          dateTime: spotList(controller)[index].status ==
-                                      GameStatus.live.name ||
-                                  spotList(controller)[index].status ==
-                                      GameStatus.inprogress.name ||
-                                  spotList(controller)[index].status ==
-                                      GameStatus.halftime.name
-                              ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
-                              : spotList(controller)[index].status ==
-                                      GameStatus.closed.name
-                                  ? GameStatus.Final.name
-                                  : '$date, $dateTime',
-                          awayTeamImageUrl:
-                              awayLogo(spotList(controller)[index]),
-                          awayTeamRank:
-                              (spotList(controller)[index].awayRank == '0'
-                                  ? ''
-                                  : spotList(controller)[index].awayRank),
-                          awayTeamAbb: (mobileView.size.shortestSide < 600
-                              ? spotList(controller)[index].awayTeamAbb
-                              : spotList(controller)[index].awayTeam),
-                          awayTeamScore:
-                              (spotList(controller)[index].awayScore),
-                          homeTeamImageUrl:
-                              homeLogo(spotList(controller)[index]),
-                          homeTeamRank:
-                              (spotList(controller)[index].homeRank == '0'
-                                  ? ''
-                                  : spotList(controller)[index].homeRank),
-                          homeTeamAbb: (mobileView.size.shortestSide < 600
-                              ? spotList(controller)[index].homeTeamAbb
-                              : spotList(controller)[index].homeTeam),
-                          homeTeamScore: spotList(controller)[index].homeScore,
-                        ),
-                        index + 1 == (spotList(controller).length)
-                            ? const SizedBox()
-                            : (DateTime.parse(spotList(controller)[index]
-                                                .scheduled ??
-                                            '')
-                                        .toLocal()
-                                        .day !=
-                                    DateTime.parse(
-                                            spotList(controller)[index + 1]
-                                                    .scheduled ??
-                                                '')
-                                        .toLocal()
-                                        .day)
-                                ? Divider(
-                                    color: Theme.of(context).indicatorColor,
-                                    thickness: 2,
-                                  ).paddingOnly(top: 5.h)
-                                : const SizedBox(),
-                      ],
-                    );
+      return (spotList(controller)[index].status == GameStatus.postponed.name)
+          ? const SizedBox()
+          : Column(
+              children: [
+                GameWidget(
+                  status: spotList(controller)[index].status.toString(),
+                  flameNumber: controller.sportKey != SportName.MLB.name
+                      ? spotList(controller)[index].getFlameValue
+                      : 0,
+                  isShowWeather: controller.sportKey != SportName.NCAAB.name ||
+                      controller.sportKey != SportName.NBA.name,
+                  onTap: () {
+                    controller.gameOnClick(
+                        context, spotList(controller)[index]);
+                  },
+                  isShowFlam: (controller.sportKey != SportName.MLB.name),
+                  awayTeamMoneyLine:
+                      spotList(controller)[index].awayMoneyLineValue,
+                  homeTeamMoneyLine:
+                      spotList(controller)[index].homeMoneyLineValue,
+                  awayTeamOU: spotList(controller)[index].awayOUValue,
+                  homeTeamOU: spotList(controller)[index].homeOUValue,
+                  weather: spotList(controller)[index].weather,
+                  homeTeamSpread:
+                      spotList(controller)[index].homeSpreadValue.contains('-')
+                          ? spotList(controller)[index].homeSpreadValue
+                          : '+${spotList(controller)[index].homeSpreadValue}',
+                  awayTeamSpread:
+                      spotList(controller)[index].awaySpreadValue.contains('-')
+                          ? spotList(controller)[index].awaySpreadValue
+                          : '+${spotList(controller)[index].awaySpreadValue}',
+                  temp: spotList(controller)[index].tmpInFahrenheit,
+                  isLive: (spotList(controller)[index].status ==
+                          GameStatus.live.name ||
+                      spotList(controller)[index].status ==
+                          GameStatus.inprogress.name ||
+                      spotList(controller)[index].status ==
+                          GameStatus.halftime.name),
+                  dateTime: spotList(controller)[index].status ==
+                              GameStatus.live.name ||
+                          spotList(controller)[index].status ==
+                              GameStatus.inprogress.name ||
+                          spotList(controller)[index].status ==
+                              GameStatus.halftime.name
+                      ? '${spotList(controller)[index].inningHalf}${spotList(controller)[index].inning}, ${spotList(controller)[index].clock}'
+                      : spotList(controller)[index].status ==
+                              GameStatus.closed.name
+                          ? GameStatus.Final.name
+                          : '$date, $dateTime',
+                  awayTeamImageUrl: awayLogo(spotList(controller)[index]),
+                  awayTeamRank: (spotList(controller)[index].awayRank == '0'
+                      ? ''
+                      : spotList(controller)[index].awayRank),
+                  awayTeamAbb: (mobileView.size.shortestSide < 600
+                      ? spotList(controller)[index].awayTeamAbb
+                      : spotList(controller)[index].awayTeam),
+                  awayTeamScore: (spotList(controller)[index].awayScore),
+                  homeTeamImageUrl: homeLogo(spotList(controller)[index]),
+                  homeTeamRank: (spotList(controller)[index].homeRank == '0'
+                      ? ''
+                      : spotList(controller)[index].homeRank),
+                  homeTeamAbb: (mobileView.size.shortestSide < 600
+                      ? spotList(controller)[index].homeTeamAbb
+                      : spotList(controller)[index].homeTeam),
+                  homeTeamScore: spotList(controller)[index].homeScore,
+                ),
+                index + 1 == (spotList(controller).length)
+                    ? const SizedBox()
+                    : (DateTime.parse(
+                                    spotList(controller)[index].scheduled ?? '')
+                                .toLocal()
+                                .day !=
+                            DateTime.parse(
+                                    spotList(controller)[index + 1].scheduled ??
+                                        '')
+                                .toLocal()
+                                .day)
+                        ? Divider(
+                            color: Theme.of(context).indicatorColor,
+                            thickness: 2,
+                          ).paddingOnly(top: 5.h)
+                        : const SizedBox(),
+              ],
+            );
     } catch (e) {
-      log(e.toString());
+      log('Error -- ${e.toString()}');
       return const SizedBox();
     }
   }
@@ -886,12 +879,12 @@ class SelectGameScreen extends StatelessWidget {
                 ? controller.nbaSportEventsList
                 : controller.sportKey == SportName.NCAAB.name
                     ? controller.ncaabSportEventsList
-                        .where((element) =>
+                        /*.where((element) =>
                             controller.conferenceIdList
                                 .contains(element.awayConferenceId) ||
                             controller.conferenceIdList
-                                .contains(element.awayConferenceId))
-                        .toList()
+                                .contains(element.homeConferenceId))
+                        .toList()*/
                     : controller.ncaaSportEventsList);
   }
 }

@@ -14,8 +14,7 @@ class LeagueModel {
   bool isAvailable;
 
   LeagueModel(
-      {
-      required this.gameImage,
+      {required this.gameImage,
       required this.gameName,
       required this.key,
       required this.date,
@@ -41,7 +40,7 @@ List<LeagueModel> sportsLeagueList = [
         sportId: ncaabSportId,
       gameName: SportName.NCAAB.name,
       date: formatted,
-      key: 'SportName.NCAAB.name',
+      key: SportName.NCAAB.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),

@@ -20,8 +20,10 @@ enum GameStatus{
 }
 
 
-List<String> ncaabGameSeasonId=['sr:season:117435'];
-List<String> nflGameSeasonId=['sr:season:117435'];
-List<String> nbaGameSeasonId=['sr:season:117435'];
+List<String> ncaabGameSeasonId=['sr:season:117465'];
+List<String> ncaabGameSeasonUid=['b2e4c0e0-5571-47c3-ab8b-1db65d74234e'];
+List<String> ncaabGameTournamentId=['sr:tournament:28370'];
+// List<String> nflGameSeasonId=['sr:season:117435'];
+// List<String> nbaGameSeasonId=['sr:season:117435'];
 List<String> mlbGameSeasonId=['sr:season:100127','sr:season:114297'];
-List<String> ncaafGameSeasonId=['sr:season:117435'];
+// List<String> ncaafGameSeasonId=['sr:season:117435'];

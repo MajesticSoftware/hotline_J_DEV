@@ -1,8 +1,11 @@
+import 'package:hotlines/utils/app_helper.dart';
+
+import '../utils/extension.dart';
 import 'game_model.dart';
 import 'nba_statics_model.dart' as pro;
 import 'nfl_roster_player_model.dart' as rost;
 import 'nfl_statics_model.dart';
-import 'package:hotlines/utils/app_helper.dart';
+
 class GameListingDataModel {
   String? generatedAt;
   String? schema;
@@ -211,12 +214,12 @@ class SportEvents {
     this.sgDataAway,
     this.sfDataAway,
     this.pfDataAway,
-    this.cDataAway ,
+    this.cDataAway,
     this.pgDataHome,
     this.sgDataHome,
     this.sfDataHome,
     this.pfDataHome,
-    this.cDataHome ,
+    this.cDataHome,
     this.homeDefense = const [],
     this.awayDefense = const [],
     this.awayQb = const [],
@@ -358,21 +361,45 @@ class SportEvents {
                   : nbaAwayDefensiveRank[index]) ??
               0);
       if (condition3 >=
-              ((ncaabGameSeasonId.contains(season?.id.toString()) )
+              (((ncaabGameSeasonUid.contains(
+                              replaceId((season?.uuids).toString())) ||
+                          ncaabGameSeasonId.contains(season?.id)) &&
+                      ((ncaabGameTournamentId.contains(
+                              replaceId((tournament?.id).toString()))) ||
+                          (ncaabGameTournamentId.contains(
+                              replaceId((season?.tournamentId).toString())))))
                   ? 50
                   : 15) ||
           condition3 <=
-              ((ncaabGameSeasonId.contains(season?.id.toString()))
+              (((ncaabGameSeasonUid.contains(
+                              replaceId((season?.uuids).toString())) ||
+                          ncaabGameSeasonId.contains(season?.id)) &&
+                      ((ncaabGameTournamentId.contains(
+                              replaceId((tournament?.id).toString()))) ||
+                          (ncaabGameTournamentId.contains(
+                              replaceId((season?.tournamentId).toString())))))
                   ? -50
                   : -15)) {
         flamValue += 1;
       }
       if (condition4 >=
-              ((ncaabGameSeasonId.contains(season?.id.toString()))
+              (((ncaabGameSeasonUid.contains(
+                              replaceId((season?.uuids).toString())) ||
+                          ncaabGameSeasonId.contains(season?.id)) &&
+                      ((ncaabGameTournamentId.contains(
+                              replaceId((tournament?.id).toString()))) ||
+                          (ncaabGameTournamentId.contains(
+                              replaceId((season?.tournamentId).toString())))))
                   ? 50
                   : 15) ||
           condition4 <=
-              ((ncaabGameSeasonId.contains(season?.id.toString()))
+              (((ncaabGameSeasonUid.contains(
+                              replaceId((season?.uuids).toString())) ||
+                          ncaabGameSeasonId.contains(season?.id)) &&
+                      ((ncaabGameTournamentId.contains(
+                              replaceId((tournament?.id).toString()))) ||
+                          (ncaabGameTournamentId.contains(
+                              replaceId((season?.tournamentId).toString())))))
                   ? -50
                   : -15)) {
         flamValue += 1;
