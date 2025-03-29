@@ -294,7 +294,7 @@ class GameWidget extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                    visible: isShowWeather && !isShowFlam,
+                    visible: true, // Always show weather/inning info
                     child: SizedBox(
                       width: 100,
                       child: Column(

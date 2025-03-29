@@ -18,6 +18,7 @@ import '../../widgets/game_widget.dart';
 import '../../widgets/sportsbooks_buttons.dart';
 import 'game_details_controller.dart';
 import 'game_details_widgets.dart';
+import 'mlb_detailed_stats.dart';
 import 'package:hotlines/utils/app_helper.dart';
 // ignore: must_be_immutable
 class SportDetailsScreen extends StatefulWidget {
@@ -203,8 +204,11 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                             content: Column(
                               children: [
                                 widget.sportKey == SportName.MLB.name
-                                    ? teamReportWidget(context, widget.sportKey,
-                                        widget.gameDetails, awayTeam, homeTeam)
+                                    ? MLBDetailedStatsView(
+                                        gameDetails: widget.gameDetails,
+                                        awayTeam: awayTeam,
+                                        homeTeam: homeTeam,
+                                      )
                                     : teamReportNFL(
                                         context,
                                         con,
@@ -213,13 +217,7 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         homeTeam,
                                         widget.sportKey),
                                 widget.sportKey == SportName.MLB.name
-                                    ? playerStatWidget(
-                                        context,
-                                        con,
-                                        widget.sportKey,
-                                        widget.gameDetails,
-                                        awayTeam,
-                                        homeTeam)
+                                    ? const SizedBox() // MLB covered by MLBDetailedStatsView above
                                     : widget.sportKey == SportName.NBA.name
                                         ? const SizedBox()
                                         : widget.sportKey == SportName.NCAAB.name
@@ -236,12 +234,14 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                                 awayTeam,
                                                 homeTeam,
                                                 widget.sportKey),
-                                hitterPlayerStatWidget(
-                                    context,
-                                    widget.gameDetails,
-                                    awayTeam,
-                                    homeTeam,
-                                    widget.sportKey),
+                                widget.sportKey == SportName.MLB.name
+                                    ? const SizedBox() // MLB covered by MLBDetailedStatsView above
+                                    : hitterPlayerStatWidget(
+                                        context,
+                                        widget.gameDetails,
+                                        awayTeam,
+                                        homeTeam,
+                                        widget.sportKey),
                                 widget.sportKey == SportName.MLB.name ||
                                         widget.sportKey == SportName.NBA.name ||
                                         widget.sportKey == SportName.NCAAB.name

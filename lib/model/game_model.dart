@@ -87,6 +87,17 @@ class HitterPlayerStatMainModel {
   });
 }
 
+/// Model for tracking the current pitcher and batter being compared in MLB view
+class PitcherBatterCompare {
+  int _currentBatterIndex = 0;
+
+  int get currentBatterIndex => _currentBatterIndex;
+
+  set currentBatterIndex(int value) {
+    _currentBatterIndex = value;
+  }
+}
+
 class RunningBacks {
   String carries;
   String yard;

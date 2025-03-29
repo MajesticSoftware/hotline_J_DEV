@@ -41,7 +41,7 @@ List<LeagueModel> sportsLeagueList = [
         sportId: ncaabSportId,
       gameName: SportName.NCAAB.name,
       date: formatted,
-      key: 'SportName.NCAAB.name',
+      key: SportName.NCAAB.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
@@ -52,7 +52,7 @@ List<LeagueModel> sportsLeagueList = [
       key: SportName.NBA.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true,
-      gameImage: Assets.imagesNcaab),
+      gameImage: Assets.imagesNcaab), */
   LeagueModel(
       gameImage: Assets.imagesMlb,
       gameName: SportName.MLB.name,
@@ -60,7 +60,7 @@ List<LeagueModel> sportsLeagueList = [
       key: SportName.MLB.name,
       sportId: mlbSportId,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
-      isAvailable: true),*/
+      isAvailable: true), // Force MLB to be always available
   /*LeagueModel(
       gameImage: Assets.imagesNcaa,
       date: formatted,

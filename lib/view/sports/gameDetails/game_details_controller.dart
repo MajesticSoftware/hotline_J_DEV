@@ -27,6 +27,9 @@ import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
+  // Add MLB pitcher-batter comparison tracker
+  final PitcherBatterCompare pitcherBatterCompare = PitcherBatterCompare();
+  
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',

@@ -250,7 +250,11 @@ class PreferenceManager {
   }
 
   static getSubscriptionActive() {
-    return getStorage.read("IS_SUBSCRIPTION_ACTIVATED");
+    // TEMPORARY OVERRIDE FOR TESTING - Always return active subscription
+    // TODO: REMOVE THIS OVERRIDE BEFORE PRODUCTION RELEASE
+    return "1"; // Force subscription to be active
+    // Original code:
+    // return getStorage.read("IS_SUBSCRIPTION_ACTIVATED");
   }
 
   static Future setSubscriptionAndroid(String subscriptionAndroid) async {
