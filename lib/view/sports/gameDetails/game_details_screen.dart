@@ -1,5 +1,7 @@
 // ignore_for_file: unused_field
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -52,6 +54,25 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
     if (PreferenceManager.getIsLogin() ?? false) {
       Future.delayed(Duration.zero)
           .then((value) => subscriptionController.getSubscriptionStatus());
+    }
+    
+    // Initialize enhanced data for the title bar from Sportradar API
+    if (widget.sportKey == SportName.MLB.name) {
+      log('Loading Sportradar data for MLB game');
+      
+      // Pre-process the game before showing UI
+      Future.delayed(Duration.zero).then((_) async {
+        try {
+          await gameDetailsController.updateGameWithSportRadarData(
+            gameDetails: widget.gameDetails,
+            sportKey: widget.sportKey,
+          );
+          log('Sportradar data loaded successfully');
+          if (mounted) setState(() {}); // Force UI refresh after data is loaded
+        } catch (e) {
+          log('Error loading Sportradar data: $e');
+        }
+      });
     }
     if ((PreferenceManager.getIsOpenDialog() ?? false) &&
         ((PreferenceManager.getSubscriptionActive() ?? "1") == "0")) {

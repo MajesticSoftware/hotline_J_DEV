@@ -26,6 +26,57 @@ class GameListingRepo {
 
     return ResponseItem(data: data, message: message, status: status);
   }
+  
+  /// MLB Teams API - Fetches list of MLB teams
+  Future<ResponseItem> fetchMLBTeams() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    
+    Uri uri = Uri.parse('${AppUrls.MLB_BASE_URL}league/teams.json?api_key=${AppUrls.MLB_APIKEY}');
+    
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+    
+    return ResponseItem(data: data, message: message, status: status);
+  }
+  
+  /// MLB Venues API - Fetches list of MLB venues with details
+  Future<ResponseItem> fetchMLBVenues() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    
+    Uri uri = Uri.parse('${AppUrls.MLB_BASE_URL}league/venues.json?api_key=${AppUrls.MLB_APIKEY}');
+    
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+    
+    return ResponseItem(data: data, message: message, status: status);
+  }
+  
+  /// MLB Game Summary API - Fetches detailed game information
+  Future<ResponseItem> fetchMLBGameSummary(String gameId) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+    
+    Uri uri = Uri.parse('${AppUrls.MLB_BASE_URL}games/$gameId/summary.json?api_key=${AppUrls.MLB_APIKEY}');
+    
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+    
+    return ResponseItem(data: data, message: message, status: status);
+  }
 
   Future<ResponseItem> gameListingRepoNCAAB(
       {String date = '', String spotId = '', String key = ''}) async {

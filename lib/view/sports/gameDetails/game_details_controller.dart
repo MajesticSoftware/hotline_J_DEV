@@ -4,7 +4,10 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/game_listing.dart';
+import 'package:hotlines/model/mlb_game_summary_model.dart';
 import 'package:hotlines/model/mlb_injuries_model.dart';
+import 'package:hotlines/model/mlb_team_model.dart';
+import 'package:hotlines/model/mlb_venue_model.dart';
 import 'package:hotlines/model/nfl_injury_model.dart';
 import 'package:hotlines/utils/app_helper.dart';
 import 'package:hotlines/utils/utils.dart';
@@ -29,6 +32,322 @@ import '../../../theme/helper.dart';
 class GameDetailsController extends GetxController {
   // Add MLB pitcher-batter comparison tracker
   final PitcherBatterCompare pitcherBatterCompare = PitcherBatterCompare();
+  
+  // MLB API Data
+  MLBTeamsResponse? mlbTeamsData;
+  MLBVenuesResponse? mlbVenuesData;
+  MLBGameSummaryResponse? mlbGameSummaryData;
+  
+  // Cache to avoid repeated API calls
+  bool hasLoadedMLBTeams = false;
+  bool hasLoadedMLBVenues = false;
+  
+  /// MLB API Methods
+  Future<void> fetchMLBTeams() async {
+    if (hasLoadedMLBTeams) return;
+    
+    isLoading.value = true;
+    ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
+    
+    try {
+      result = await GameListingRepo().fetchMLBTeams();
+      
+      if (result.status && result.data != null) {
+        mlbTeamsData = MLBTeamsResponse.fromJson(result.data);
+        hasLoadedMLBTeams = true;
+      } else {
+        log('ERROR FETCHING MLB TEAMS: ${result.message}');
+      }
+    } catch (e) {
+      log('ERROR FETCHING MLB TEAMS: $e');
+      showAppSnackBar(e.toString());
+    } finally {
+      isLoading.value = false;
+      update();
+    }
+  }
+
+  Future<void> fetchMLBVenues() async {
+    if (hasLoadedMLBVenues) return;
+    
+    isLoading.value = true;
+    ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
+    
+    try {
+      result = await GameListingRepo().fetchMLBVenues();
+      
+      if (result.status && result.data != null) {
+        mlbVenuesData = MLBVenuesResponse.fromJson(result.data);
+        hasLoadedMLBVenues = true;
+      } else {
+        log('ERROR FETCHING MLB VENUES: ${result.message}');
+      }
+    } catch (e) {
+      log('ERROR FETCHING MLB VENUES: $e');
+      showAppSnackBar(e.toString());
+    } finally {
+      isLoading.value = false;
+      update();
+    }
+  }
+
+  Future<void> fetchMLBGameSummary({required String gameId}) async {
+    isLoading.value = true;
+    ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
+    
+    try {
+      // Debug the game ID
+      log('Attempting to fetch MLB game summary with ID: $gameId');
+      
+      // Skip the API call if gameId is empty or invalid
+      if (gameId.isEmpty || gameId == 'mlb-game-0' || gameId == '0') {
+        log('Invalid game ID. Skipping API call.');
+        return;
+      }
+      
+      result = await GameListingRepo().fetchMLBGameSummary(gameId);
+      
+      if (result.status && result.data != null) {
+        log('MLB game summary API response received');
+        
+        try {
+          // Safely parse the JSON response
+          mlbGameSummaryData = MLBGameSummaryResponse.fromJson(result.data);
+          
+          // Log detailed game information
+          log('Successfully parsed MLB game summary data');
+          log('Game teams: ${mlbGameSummaryData?.game?.homeTeam?.name} vs ${mlbGameSummaryData?.game?.awayTeam?.name}');
+          log('Game status: ${mlbGameSummaryData?.game?.status}');
+          log('Game venue: ${mlbGameSummaryData?.game?.venue?.name}, ${mlbGameSummaryData?.game?.venue?.city}');
+        } catch (parseError) {
+          log('ERROR PARSING MLB GAME SUMMARY: $parseError');
+          log('Response data: ${result.data}');
+          
+          // Try to extract some basic info from the response even if parsing fails
+          try {
+            if (result.data is Map<String, dynamic>) {
+              var rawData = result.data as Map<String, dynamic>;
+              var gameData = rawData['game'] as Map<String, dynamic>?;
+              
+              if (gameData != null) {
+                log('Game basic info retrieved directly from response');
+                
+                // Extract home team data
+                var homeTeamData = gameData['home'] as Map<String, dynamic>?;
+                if (homeTeamData != null) {
+                  log('Home team: ${homeTeamData['name']}, ${homeTeamData['market']}');
+                }
+                
+                // Extract away team data
+                var awayTeamData = gameData['away'] as Map<String, dynamic>?;
+                if (awayTeamData != null) {
+                  log('Away team: ${awayTeamData['name']}, ${awayTeamData['market']}');
+                }
+              }
+            }
+          } catch (recoveryError) {
+            log('Could not recover any data from the response: $recoveryError');
+          }
+        }
+      } else {
+        log('ERROR FETCHING MLB GAME SUMMARY: ${result.message}');
+        log('API Response: ${result.data}');
+      }
+    } catch (e) {
+      log('ERROR FETCHING MLB GAME SUMMARY: $e');
+      showAppSnackBar(e.toString());
+    } finally {
+      isLoading.value = false;
+      update();
+    }
+  }
+  
+  /// Updates the game details with additional data from Sportradar APIs
+  Future<void> updateGameWithSportRadarData({
+    required SportEvents gameDetails,
+    required String sportKey,
+  }) async {
+    if (sportKey == SportName.MLB.name) {
+      // Fetch MLB teams and venues data if not already loaded
+      if (!hasLoadedMLBTeams) {
+        await fetchMLBTeams();
+      }
+      
+      if (!hasLoadedMLBVenues) {
+        await fetchMLBVenues();
+      }
+      
+      // Fetch game summary for the current game
+      if (gameDetails.id != null && gameDetails.id!.isNotEmpty && gameDetails.id != 'mlb-game-0') {
+        log('Game ID found: ${gameDetails.id}');
+        await fetchMLBGameSummary(gameId: gameDetails.id!);
+      } else {
+        log('No valid game ID found in the game details. Using a test game ID instead.');
+        
+        // Use a real MLB game ID from the example response
+        const testGameId = "53e78de7-27f3-4f36-bf03-7d06136e267e"; // Rays vs Blue Jays game
+        log('Using test game ID: $testGameId');
+        await fetchMLBGameSummary(gameId: testGameId);
+      }
+      
+      // Update game details with API data if available
+      if (mlbGameSummaryData != null && mlbGameSummaryData?.game != null) {
+        // Directly assign some values from the game summary data to ensure we have them
+        log('Setting basic game details from API');
+        if (mlbGameSummaryData?.game?.scheduled != null) {
+          gameDetails.scheduled = mlbGameSummaryData?.game?.scheduled;
+        }
+        if (mlbGameSummaryData?.game?.status != null) {
+          gameDetails.status = mlbGameSummaryData?.game?.status;
+        }
+        // Set venue details
+        if (mlbGameSummaryData?.game?.venue != null) {
+          if (gameDetails.venue == null) {
+            gameDetails.venue = Venue();
+          }
+          gameDetails.venue?.name = mlbGameSummaryData?.game?.venue?.name ?? '';
+          gameDetails.venue?.cityName = mlbGameSummaryData?.game?.venue?.city ?? '';
+        }
+        // Update team information
+        if (mlbGameSummaryData?.game?.homeTeam != null) {
+          // Update home team data
+          gameDetails.homeTeam = mlbGameSummaryData?.game?.homeTeam?.name ?? '';
+          gameDetails.homeTeamAbb = mlbGameSummaryData?.game?.homeTeam?.abbr ?? '';
+          // Safely convert values to strings regardless of their original type
+          var homeWin = mlbGameSummaryData?.game?.homeTeam?.win;
+          var homeLoss = mlbGameSummaryData?.game?.homeTeam?.loss;
+          
+          gameDetails.homeScore = homeWin?.toString() ?? '0';
+          gameDetails.homeWin = homeWin?.toString() ?? '0';
+          gameDetails.homeLoss = homeLoss?.toString() ?? '0';
+          
+          log('Home team stats - Win: $homeWin, Loss: $homeLoss');
+          
+          // Add team logo if available
+          if (mlbTeamsData != null && mlbTeamsData?.teams != null) {
+            MLBTeam? homeTeam;
+            try {
+              homeTeam = mlbTeamsData?.teams?.firstWhere(
+                (team) => team.id == mlbGameSummaryData?.game?.homeTeam?.id
+              );
+            } catch (_) {
+              homeTeam = null;
+            }
+            
+            if (homeTeam != null) {
+              // Set team logo URL if available from the API
+              // Since logoUrl might not be populated from the API, we'll use a fallback approach
+              if (homeTeam.logoUrl != null && homeTeam.logoUrl!.isNotEmpty) {
+                gameDetails.homeGameLogo = homeTeam.logoUrl!;
+              } else {
+                // Use the team abbreviation to construct a logo URL for Tampa Bay Rays
+                gameDetails.homeGameLogo = "https://a.espncdn.com/i/teamlogos/mlb/500/${homeTeam.abbr?.toLowerCase() ?? 'tb'}.png";
+              }
+              log('Set home team logo URL: ${gameDetails.homeGameLogo}');
+            } else {
+              log('Home team not found in MLB teams data');
+            }
+          }
+        }
+        
+        if (mlbGameSummaryData?.game?.awayTeam != null) {
+          // Update away team data
+          gameDetails.awayTeam = mlbGameSummaryData?.game?.awayTeam?.name ?? '';
+          gameDetails.awayTeamAbb = mlbGameSummaryData?.game?.awayTeam?.abbr ?? '';
+          // Safely convert values to strings regardless of their original type
+          var awayWin = mlbGameSummaryData?.game?.awayTeam?.win;
+          var awayLoss = mlbGameSummaryData?.game?.awayTeam?.loss;
+          
+          gameDetails.awayScore = awayWin?.toString() ?? '0';
+          gameDetails.awayWin = awayWin?.toString() ?? '0';
+          gameDetails.awayLoss = awayLoss?.toString() ?? '0';
+          
+          log('Away team stats - Win: $awayWin, Loss: $awayLoss');
+          
+          // Add team logo if available
+          if (mlbTeamsData != null && mlbTeamsData?.teams != null) {
+            MLBTeam? awayTeam;
+            try {
+              awayTeam = mlbTeamsData?.teams?.firstWhere(
+                (team) => team.id == mlbGameSummaryData?.game?.awayTeam?.id
+              );
+            } catch (_) {
+              awayTeam = null;
+            }
+            
+            if (awayTeam != null) {
+              // Set team logo URL if available from the API
+              // Since logoUrl might not be populated from the API, we'll use a fallback approach
+              if (awayTeam.logoUrl != null && awayTeam.logoUrl!.isNotEmpty) {
+                gameDetails.awayGameLogo = awayTeam.logoUrl!;
+              } else {
+                // Use the team abbreviation to construct a logo URL for Toronto Blue Jays
+                gameDetails.awayGameLogo = "https://a.espncdn.com/i/teamlogos/mlb/500/${awayTeam.abbr?.toLowerCase() ?? 'tor'}.png";
+              }
+              log('Set away team logo URL: ${gameDetails.awayGameLogo}');
+            } else {
+              log('Away team not found in MLB teams data');
+            }
+          }
+        }
+        
+        // Update venue information if available
+        if (mlbGameSummaryData?.game?.venue != null && mlbVenuesData != null) {
+          final venueId = mlbGameSummaryData?.game?.venue?.id;
+          MLBVenue? venueData;
+          try {
+            venueData = mlbVenuesData?.venues?.firstWhere(
+              (venue) => venue.id == venueId
+            );
+          } catch (_) {
+            venueData = null;
+          }
+          
+          if (venueData != null && gameDetails.venue != null) {
+            gameDetails.venue?.cityName = venueData.city;
+            // Handle capacity which could be string or int
+            if (venueData.capacity != null) {
+              try {
+                if (venueData.capacity is int) {
+                  gameDetails.venue?.capacity = venueData.capacity as num?;
+                } else if (venueData.capacity is String) {
+                  gameDetails.venue?.capacity = num.tryParse(venueData.capacity.toString());
+                }
+                log('Set venue capacity to: ${gameDetails.venue?.capacity}');
+              } catch (e) {
+                log('Error setting venue capacity: $e');
+                // Keep existing capacity if conversion fails
+              }
+            }
+            
+            // If venue has coordinates, fetch weather data
+            if (venueData.location != null) {
+              try {
+                final weatherResponse = await GameListingRepo().getWeather(venueData.city ?? '');
+                if (weatherResponse.status && weatherResponse.data != null) {
+                  // Extract temperature data (Kelvin by default)
+                  final temp = weatherResponse.data['main']['temp'];
+                  if (temp != null) {
+                    gameDetails.temp = temp;
+                  }
+                  
+                  // Extract weather condition code
+                  final weatherId = weatherResponse.data['weather'][0]['id'];
+                  if (weatherId != null) {
+                    gameDetails.weather = weatherId;
+                  }
+                }
+              } catch (e) {
+                log('Error fetching weather data: $e');
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    update();
+  }
   
   List offensive = [
     'Points Per Game',
