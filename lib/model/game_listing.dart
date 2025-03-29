@@ -120,6 +120,15 @@ class SportEvents {
   String? uuids;
   String? homeGameLogo;
   String? awayGameLogo;
+  
+  // Setters to align property names
+  set homeTeamLogo(String? value) {
+    homeGameLogo = value;
+  }
+  
+  set awayTeamLogo(String? value) {
+    awayGameLogo = value;
+  }
   String awayTeam = '';
   String awayTeamAbb = '';
   String homeTeam = '';
@@ -136,6 +145,8 @@ class SportEvents {
   String homeWin = '0';
   String awayLoss = '0';
   String homeLoss = '0';
+  String homeTeamRecord = '';
+  String awayTeamRecord = '';
   String inning = '0';
   String clock = '0';
   String inningHalf = '';
@@ -253,6 +264,8 @@ class SportEvents {
     this.homeWin = '0',
     this.awayLoss = '0',
     this.homeLoss = '0',
+    this.homeTeamRecord = '',
+    this.awayTeamRecord = '',
     this.eraHome = "0",
     this.eraAway = "0",
     this.inning = '0',

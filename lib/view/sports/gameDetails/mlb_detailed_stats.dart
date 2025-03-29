@@ -51,6 +51,11 @@ class MLBDetailedStatsView extends StatelessWidget {
               // Team Stats Comparison
               _buildTeamStats(context, controller),
               
+              // Seasonal Stats (for any team)
+              GetBuilder<GameDetailsController>(
+                builder: (_) => _buildSeasonalStats(context, controller),
+              ),
+              
               // Pitcher vs Batter Matchup
               _buildPitcherBatterMatchup(context, controller),
             ],
@@ -385,6 +390,25 @@ class MLBDetailedStatsView extends StatelessWidget {
         padding: EdgeInsets.all(16.r),
         child: Column(
           children: [
+            // Offensive section header
+            Container(
+              margin: EdgeInsets.only(bottom: 16.r),
+              padding: EdgeInsets.symmetric(vertical: 8.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Center(
+                child: Text(
+                  "OFFENSE (HITTING)",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          
             _teamStatsRow(context, "Hits / Game", controller.mlbAwayHittingList.isNotEmpty ? controller.mlbAwayHittingList[1] : "0", controller.mlbHomeHittingList.isNotEmpty ? controller.mlbHomeHittingList[1] : "0"),
             Divider(),
             _teamStatsRow(context, "Walks / Game", controller.mlbAwayHittingList.isNotEmpty ? controller.mlbAwayHittingList[4] : "0", controller.mlbHomeHittingList.isNotEmpty ? controller.mlbHomeHittingList[4] : "0"),
@@ -405,6 +429,35 @@ class MLBDetailedStatsView extends StatelessWidget {
                                             controller.mlbHomeHittingList.isNotEmpty ? (controller.mlbStaticsHomeList?.hitting?.overall?.obp?.toString() ?? "0") : "0"),
             Divider(),
             _teamStatsRow(context, "Slugging %", controller.mlbAwayHittingList.isNotEmpty ? controller.mlbAwayHittingList[8] : "0", controller.mlbHomeHittingList.isNotEmpty ? controller.mlbHomeHittingList[8] : "0"),
+            
+            // Defensive section header
+            Container(
+              margin: EdgeInsets.only(top: 24.r, bottom: 16.r),
+              padding: EdgeInsets.symmetric(vertical: 8.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Center(
+                child: Text(
+                  "DEFENSE (PITCHING)",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            
+            _teamStatsRow(context, "ERA", controller.mlbAwayPitchingList.isNotEmpty ? controller.mlbAwayPitchingList[0] : "0", controller.mlbHomePitchingList.isNotEmpty ? controller.mlbHomePitchingList[0] : "0"),
+            Divider(),
+            _teamStatsRow(context, "WHIP", controller.mlbAwayPitchingList.isNotEmpty ? controller.mlbAwayPitchingList[9] : "0", controller.mlbHomePitchingList.isNotEmpty ? controller.mlbHomePitchingList[9] : "0"),
+            Divider(),
+            _teamStatsRow(context, "Strikeouts / Game", controller.mlbAwayPitchingList.isNotEmpty ? controller.mlbAwayPitchingList[8] : "0", controller.mlbHomePitchingList.isNotEmpty ? controller.mlbHomePitchingList[8] : "0"),
+            Divider(),
+            _teamStatsRow(context, "Walks / Game", controller.mlbAwayPitchingList.isNotEmpty ? controller.mlbAwayPitchingList[7] : "0", controller.mlbHomePitchingList.isNotEmpty ? controller.mlbHomePitchingList[7] : "0"),
+            Divider(),
+            _teamStatsRow(context, "Quality Starts", controller.mlbAwayPitchingList.isNotEmpty ? controller.mlbAwayPitchingList[4] : "0", controller.mlbHomePitchingList.isNotEmpty ? controller.mlbHomePitchingList[4] : "0"),
           ],
         ),
       ),
@@ -724,6 +777,210 @@ class MLBDetailedStatsView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildSeasonalStats(BuildContext context, GameDetailsController controller) {
+    print("Building seasonal stats section...");
+    // Check if we have any team's seasonal data
+    bool hasHomeSeasonalStats = controller.mlbHomeSeasonalHittingList.isNotEmpty;
+    bool hasAwaySeasonalStats = controller.mlbAwaySeasonalHittingList.isNotEmpty;
+    
+    // Print debugging information to see if data is available
+    print("Has home seasonal stats: $hasHomeSeasonalStats (${controller.mlbHomeSeasonalHittingList})");
+    print("Has away seasonal stats: $hasAwaySeasonalStats (${controller.mlbAwaySeasonalHittingList})");
+    
+    if (!hasHomeSeasonalStats && !hasAwaySeasonalStats) {
+      print("NO SEASONAL STATS AVAILABLE - returning empty widget");
+      return Container(
+        padding: EdgeInsets.all(16.r),
+        child: Text(
+          "No seasonal team stats available for this game.",
+          style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    
+    // Determine which team's data we're showing
+    String teamName = hasHomeSeasonalStats 
+        ? "${controller.homeTeamMarket ?? ''} ${controller.homeTeamName ?? ''}"
+        : "${controller.awayTeamMarket ?? ''} ${controller.awayTeamName ?? ''}";
+    List<String>? seasonalHittingList = hasHomeSeasonalStats 
+        ? controller.mlbHomeSeasonalHittingList 
+        : hasAwaySeasonalStats ? controller.mlbAwaySeasonalHittingList : null;
+    
+    List<String>? seasonalPitchingList = hasHomeSeasonalStats 
+        ? controller.mlbHomeSeasonalPitchingList 
+        : hasAwaySeasonalStats ? controller.mlbAwaySeasonalPitchingList : null;
+    
+    if (seasonalHittingList == null || seasonalPitchingList == null) {
+      return SizedBox.shrink();
+    }
+    
+    // Column titles for the stats
+    List<String> hittingTitles = [
+      'Runs/Game',
+      'Hits/Game',
+      'HR/Game',
+      'RBI/Game',
+      'Walks/Game',
+      'SO/Game',
+      'SB/Game',
+      'Batting Average',
+      'Slugging %',
+      'OPS',
+      'GDP/Game',
+      'AB/HR',
+    ];
+    
+    List<String> pitchingTitles = [
+      'ERA',
+      'WHIP',
+      'K/9',
+      'K/BB',
+      'Opp. Batting Avg',
+      'HR/9',
+      'Quality Start %',
+    ];
+    
+    return StickyHeader(
+      header: Container(
+        padding: EdgeInsets.all(12.r),
+        color: Theme.of(context).primaryColorLight,
+        child: Center(
+          child: "$teamName SEASON STATS".appCommonText(
+            color: Colors.white,
+            size: 14.sp,
+            weight: FontWeight.bold,
+          ),
+        ),
+      ),
+      content: Padding(
+        padding: EdgeInsets.all(16.r),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header for the season record
+            Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                "Season Record: ${hasHomeSeasonalStats 
+                    ? (controller.mlbSeasonalStatsHome?.statistics?.pitching?.overall?.games?.win ?? 0).toString() 
+                    : (controller.mlbSeasonalStatsAway?.statistics?.pitching?.overall?.games?.win ?? 0).toString()}-${hasHomeSeasonalStats 
+                    ? (controller.mlbSeasonalStatsHome?.statistics?.pitching?.overall?.games?.loss ?? 0).toString() 
+                    : (controller.mlbSeasonalStatsAway?.statistics?.pitching?.overall?.games?.loss ?? 0).toString()} (${DateTime.now().year})",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            
+            // Header for hitting stats
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                "Team Hitting (Offense)",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            
+            // Hitting stats
+            Column(
+              children: [
+                for (int i = 0; i < hittingTitles.length && i < seasonalHittingList!.length; i++)
+                  Column(
+                    children: [
+                      _seasonalStatsRow(
+                        context, 
+                        hittingTitles[i], 
+                        seasonalHittingList[i],
+                      ),
+                      if (i < hittingTitles.length - 1) Divider(),
+                    ],
+                  ),
+              ],
+            ),
+            
+            SizedBox(height: 16.h),
+            
+            // Header for pitching stats
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                "Team Pitching (Defense)",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            
+            // Pitching stats
+            Column(
+              children: [
+                for (int i = 0; i < pitchingTitles.length && i < seasonalPitchingList!.length; i++)
+                  Column(
+                    children: [
+                      _seasonalStatsRow(
+                        context, 
+                        pitchingTitles[i], 
+                        seasonalPitchingList[i],
+                      ),
+                      if (i < pitchingTitles.length - 1) Divider(),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _seasonalStatsRow(BuildContext context, String title, String value) {
+    return Row(
+      children: [
+        // Stat title
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 14.sp),
+          ),
+        ),
+        
+        // Stat value
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],

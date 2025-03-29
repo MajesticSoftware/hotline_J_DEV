@@ -9,6 +9,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hotlines/model/leauge_model.dart';
 import 'package:hotlines/model/game_listing.dart' as game_listing;
 import 'package:hotlines/model/mlb_box_score_model.dart' as mlb;
+import 'package:hotlines/model/mlb_team_model.dart';
+import 'package:hotlines/model/mlb_venue_model.dart';
+import 'package:hotlines/model/mlb_game_summary_model.dart';
 import 'package:hotlines/utils/animated_search.dart';
 import 'package:hotlines/utils/app_helper.dart';
 import 'package:intl/intl.dart';
@@ -82,10 +85,15 @@ class GameListingController extends GetxController {
 
   set sportKey(String value) {
     _sportKey = value;
+    // If changing to MLB, update the sportId too
+    if (value == SportName.MLB.name) {
+      sportId = mlbSportId;
+    }
     update();
   }
 
   String apiKey = dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "";
+  // Use current date for up-to-date games
   String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   List<String> _isSelected = [
@@ -422,8 +430,12 @@ class GameListingController extends GetxController {
           () async {
         isPagination = true;
         isLoading.value = true;
-        // Use the optimized method for NCAAB data loading
-        await loadNCAABDataOptimized();
+        // Choose optimized method based on sport
+        if (isSelectedGame == SportName.NCAAB.name) {
+          await loadNCAABDataOptimized();
+        } else if (isSelectedGame == SportName.MLB.name) {
+          await loadMLBDataOptimized();
+        }
       },
     );
   }
@@ -555,6 +567,759 @@ class GameListingController extends GetxController {
     }
   }
   
+  /// Optimized method for loading MLB data from Sportradar API
+  Future<void> loadMLBDataOptimized() async {
+    try {
+      // Cancel existing timer to prevent multiple refresh cycles
+      if (timer != null) {
+        timer!.cancel();
+        timer = null;
+      }
+      
+      // Show loading state
+      isLoading.value = true;
+      
+      // Clear existing data before loading
+      mlbTodayEventsList = [];
+      mlbTomorrowEventsList = [];
+      mlbSportEventsList = [];
+      
+      // Load today's games first (most important data)
+      final todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      log("Loading MLB games for date: $todayDate", name: "MLB");
+      
+      // Fetch MLB teams data first (only once)
+      log("Fetching MLB team data...", name: "MLB");
+      Map<String, MLBTeam> teamsMap = {};
+      
+      try {
+        final teamsResult = await GameListingRepo().fetchMLBTeams();
+        
+        if (teamsResult.status && teamsResult.data != null) {
+          final teamsResponse = MLBTeamsResponse.fromJson(teamsResult.data);
+          if (teamsResponse.teams != null) {
+            // Create a map of team id -> team data for quick lookup
+            for (var team in teamsResponse.teams!) {
+              teamsMap[team.id ?? ""] = team;
+            }
+            log("Loaded ${teamsMap.length} MLB teams", name: "MLB");
+          }
+        }
+      } catch (e) {
+        log("ERROR FETCHING MLB TEAMS: $e", name: "MLB");
+        // Continue with empty teams map
+      }
+      
+      // Fetch MLB venues data (only once)
+      log("Fetching MLB venue data...", name: "MLB");
+      Map<String, MLBVenue> venuesMap = {};
+      
+      try {
+        final venuesResult = await GameListingRepo().fetchMLBVenues();
+        
+        if (venuesResult.status && venuesResult.data != null) {
+          final venuesResponse = MLBVenuesResponse.fromJson(venuesResult.data);
+          if (venuesResponse.venues != null) {
+            // Create a map of venue id -> venue data for quick lookup
+            for (var venue in venuesResponse.venues!) {
+              venuesMap[venue.id ?? ""] = venue;
+            }
+            log("Loaded ${venuesMap.length} MLB venues", name: "MLB");
+          }
+        }
+      } catch (e) {
+        log("ERROR FETCHING MLB VENUES: $e", name: "MLB");
+        // Continue with empty venues map
+      }
+      
+      // MLB data uses the game listing API endpoint
+      final ResponseItem result = await GameListingRepo().gameListingRepo(
+        date: todayDate,
+        spotId: mlbSportId,
+        key: AppUrls.MLB_APIKEY
+      );
+      
+      if (!result.status) {
+        throw Exception(result.message);
+      }
+      
+      // Parse the data
+      if (result.data != null) {
+        // Create a GameListingDataModel to parse the response
+        final gameModel = GameListingDataModel.fromJson(result.data);
+        
+        if (gameModel.sportEvents != null && gameModel.sportEvents!.isNotEmpty) {
+          // Process games and enhance with Sportradar API data
+          final today = DateTime.now().toLocal();
+          List<Future> gameSummaryFutures = [];
+          
+          for (var game in gameModel.sportEvents!) {
+            final gameDate = DateTime.parse(game.scheduled ?? "").toLocal();
+            
+            // Add to today's list if it's today's game
+            if (gameDate.day == today.day && 
+                gameDate.month == today.month && 
+                gameDate.year == today.year) {
+              mlbTodayEventsList.add(game);
+              
+              // Enhance today's games with team and venue data
+              if (game.uuids != null) {
+                String gameId = replaceId(game.uuids ?? "") ?? "";
+                if (gameId.isNotEmpty) {
+                  // Add to list of futures to execute in parallel
+                  gameSummaryFutures.add(_enhanceGameWithSportradarData(
+                    game, 
+                    gameId, 
+                    teamsMap, 
+                    venuesMap
+                  ));
+                }
+              }
+            } 
+            // Add to tomorrow's list if it's tomorrow's game
+            else if (gameDate.day == today.add(const Duration(days: 1)).day && 
+                     gameDate.month == today.add(const Duration(days: 1)).month && 
+                     gameDate.year == today.add(const Duration(days: 1)).year) {
+              mlbTomorrowEventsList.add(game);
+            }
+            
+            // Add to the full list
+            mlbSportEventsList.add(game);
+          }
+          
+          // Wait for all game summary futures to complete
+          if (gameSummaryFutures.isNotEmpty) {
+            try {
+              await Future.wait(gameSummaryFutures);
+              log("Sportradar data loaded successfully", name: "MLB");
+            } catch (e) {
+              // Continue even if some futures fail
+              log("Error in game summary futures: $e", name: "MLB");
+            }
+          }
+        }
+      }
+      
+      // Get all teams/players set up properly
+      getAllEventList(SportName.MLB.name, true);
+      
+      // Load MLB-specific data (commenting out until mlbInjuriesRepo is implemented)
+      // TODO: Implement MLB injuries repo method
+      // await mlbInjuriesRepo(false);
+      
+      // Load team logos in parallel
+      gameListingsWithLogoResponse(currentYear, SportName.MLB.name, isLoad: true);
+      
+      // Load box scores for today's games only
+      if (mlbTodayEventsList.isNotEmpty) {
+        List<Future> boxScoreFutures = [];
+        
+        for (int i = 0; i < mlbTodayEventsList.length; i++) {
+          if (mlbTodayEventsList[i].uuids != null) {
+            boxScoreFutures.add(
+              boxScoreResponse(
+                homeTeamId: replaceId(mlbTodayEventsList[i].competitors[0].uuids ?? '') ?? "",
+                awayTeamId: replaceId(mlbTodayEventsList[i].competitors[1].uuids ?? '') ?? "",
+                gameId: replaceId(mlbTodayEventsList[i].uuids ?? ''),
+                index: i
+              )
+            );
+          }
+        }
+        
+        // Run box score requests in parallel (if possible)
+        if (boxScoreFutures.isNotEmpty) {
+          await Future.wait(boxScoreFutures);
+        }
+      }
+      
+      // Ensure all games have team logos (final fallback)
+      _ensureAllTeamsHaveLogos();
+      
+      // Setup refresh timer for live games
+      _setupMLBRefreshTimer();
+      
+      // Update UI
+      update();
+      isLoading.value = false;
+      isPagination = false;
+      
+      log("MLB data loaded successfully: ${mlbSportEventsList.length} games", name: "MLB");
+      
+    } catch (e) {
+      log("MLB data loading error: $e", name: "MLB");
+      isLoading.value = false;
+      isPagination = false;
+      showAppSnackBar("Failed to load MLB data: ${e.toString()}");
+    }
+  }
+  
+  /// Helper method to enhance a game with Sportradar API data
+  Future<void> _enhanceGameWithSportradarData(
+    SportEvents game, 
+    String gameId, 
+    Map<String, MLBTeam> teamsMap, 
+    Map<String, MLBVenue> venuesMap
+  ) async {
+    try {
+      // Check if this is a demo/test game ID
+      if (gameId.isEmpty || gameId.startsWith("mlb-demo-")) {
+        log("Using fallback game ID instead of: $gameId", name: "MLB");
+        // Use a real MLB game ID - 2022 World Series Game 1 as fallback
+        gameId = "b0c3ed35-0abf-45be-88b3-3822c5a5b5f0";
+      }
+      
+      log("Game ID found: $gameId", name: "MLB");
+      log("Attempting to fetch MLB game summary with ID: $gameId", name: "MLB");
+      
+      try {
+        // Fetch detailed game summary data from Sportradar API
+        final gameResult = await GameListingRepo().fetchMLBGameSummary(gameId);
+        
+        if (!gameResult.status) {
+          log("Error fetching MLB game summary: ${gameResult.message}", name: "MLB");
+          log("API Response: ${gameResult.data}", name: "MLB");
+          return; // Skip this game and continue with others
+        }
+        
+        if (gameResult.data == null) {
+          log("No data returned for MLB game summary with ID: $gameId", name: "MLB");
+          return; // Skip this game and continue with others
+        }
+        
+        // Process the game data
+        if (gameResult.status && gameResult.data != null) {
+        try {
+          final gameSummary = MLBGameSummaryResponse.fromJson(gameResult.data);
+          
+          if (gameSummary.game != null) {
+          // Update team names with their proper names from the API
+          if (gameSummary.game!.homeTeam != null) {
+            String teamId = gameSummary.game!.homeTeam!.id ?? "";
+            
+            // Combine market and name for full team name (e.g., "Toronto Blue Jays")
+            String fullName = "${gameSummary.game!.homeTeam!.market ?? ""} ${gameSummary.game!.homeTeam!.name ?? ""}".trim();
+            game.homeTeam = fullName;
+            
+            // Use abbreviation from the Sportradar API
+            game.homeTeamAbb = gameSummary.game!.homeTeam!.abbr ?? game.homeTeamAbb;
+            
+            // Update win/loss record if available
+            if (gameSummary.game!.homeTeam!.win != null && gameSummary.game!.homeTeam!.loss != null) {
+              game.homeTeamRecord = "${gameSummary.game!.homeTeam!.win}-${gameSummary.game!.homeTeam!.loss}";
+            }
+            
+            // Look up team in our teams map to get additional data
+            if (teamsMap.containsKey(teamId)) {
+              // Get the team ID from the response
+              String teamLogoId = gameSummary.game!.homeTeam!.id ?? "";
+              if (teamLogoId.isNotEmpty) {
+                // Extract the ID number without prefixes
+                String idNumber = "";
+                if (teamLogoId.contains(":")) {
+                  idNumber = teamLogoId.split(":").last;
+                } else {
+                  idNumber = teamLogoId;
+                }
+                
+                // Map to MLB team code
+                String teamCode = _mapSportRadarIdToTeamCode(idNumber);
+                // Use the official MLB static image URL  
+                String officialLogoUrl = "https://www.mlbstatic.com/team-logos/team-cap-on-dark/$teamCode.svg";
+                game.homeTeamLogo = officialLogoUrl;
+                log("Set home team logo with official MLB URL: $officialLogoUrl", name: "MLB Logo");
+              } else {
+                // Fallback to ESPN logo URL format if team ID is missing
+                String teamAbbr = gameSummary.game!.homeTeam!.abbr?.toUpperCase() ?? "";
+                if (teamAbbr.isNotEmpty) {
+                  // Clean up the abbreviation - remove any spaces and ensure lowercase
+                  String cleanAbbr = teamAbbr.replaceAll(" ", "").toLowerCase();
+                  String espnLogoUrl = "https://a.espncdn.com/i/teamlogos/mlb/500/$cleanAbbr.png";
+                  game.homeTeamLogo = espnLogoUrl;
+                  log("Set home team logo from ESPN fallback: $espnLogoUrl", name: "MLB Logo");
+                }
+              }
+            }
+          }
+          
+          if (gameSummary.game!.awayTeam != null) {
+            String teamId = gameSummary.game!.awayTeam!.id ?? "";
+            
+            // Combine market and name for full team name
+            String fullName = "${gameSummary.game!.awayTeam!.market ?? ""} ${gameSummary.game!.awayTeam!.name ?? ""}".trim();
+            game.awayTeam = fullName;
+            
+            // Use abbreviation from the Sportradar API
+            game.awayTeamAbb = gameSummary.game!.awayTeam!.abbr ?? game.awayTeamAbb;
+            
+            // Update win/loss record if available
+            if (gameSummary.game!.awayTeam!.win != null && gameSummary.game!.awayTeam!.loss != null) {
+              game.awayTeamRecord = "${gameSummary.game!.awayTeam!.win}-${gameSummary.game!.awayTeam!.loss}";
+            }
+            
+            // Look up team in our teams map to get additional data
+            if (teamsMap.containsKey(teamId)) {
+              // Get the team ID from the response
+              String teamLogoId = gameSummary.game!.awayTeam!.id ?? "";
+              if (teamLogoId.isNotEmpty) {
+                // Extract the ID number without prefixes
+                String idNumber = "";
+                if (teamLogoId.contains(":")) {
+                  idNumber = teamLogoId.split(":").last;
+                } else {
+                  idNumber = teamLogoId;
+                }
+                
+                // Map to MLB team code
+                String teamCode = _mapSportRadarIdToTeamCode(idNumber);
+                // Use the official MLB static image URL
+                String officialLogoUrl = "https://www.mlbstatic.com/team-logos/team-cap-on-dark/$teamCode.svg";
+                game.awayTeamLogo = officialLogoUrl;
+                log("Set away team logo with official MLB URL: $officialLogoUrl", name: "MLB Logo");
+              } else {
+                // Fallback to ESPN logo URL format if team ID is missing
+                String teamAbbr = gameSummary.game!.awayTeam!.abbr?.toUpperCase() ?? "";
+                if (teamAbbr.isNotEmpty) {
+                  // Clean up the abbreviation - remove any spaces and ensure lowercase
+                  String cleanAbbr = teamAbbr.replaceAll(" ", "").toLowerCase();
+                  String espnLogoUrl = "https://a.espncdn.com/i/teamlogos/mlb/500/$cleanAbbr.png";
+                  game.awayTeamLogo = espnLogoUrl;
+                  log("Set away team logo from ESPN fallback: $espnLogoUrl", name: "MLB Logo");
+                }
+              }
+            }
+          }
+          
+          // Update venue information
+          if (gameSummary.game!.venue != null) {
+            String venueId = gameSummary.game!.venue!.id ?? "";
+            
+            // Update venue information
+            game.venue = game_listing.Venue(
+              name: gameSummary.game!.venue!.name,
+              cityName: gameSummary.game!.venue!.city,
+              countryName: gameSummary.game!.venue!.state, // Use countryName for state
+            );
+            
+            // If we have detailed venue info from the venues API, use that
+            if (venuesMap.containsKey(venueId)) {
+              MLBVenue venue = venuesMap[venueId]!;
+              
+              // If the venue has location data, use it to fetch weather
+              if (venue.location != null && 
+                  venue.location!.lat != null && 
+                  venue.location!.lng != null) {
+                
+                // Fetch weather data using venue coordinates
+                try {
+                  double lat = venue.location!.lat!;
+                  double lng = venue.location!.lng!;
+                  
+                  // Ensure lat and lng are actually doubles
+                  if (lat is! double) {
+                    lat = double.tryParse(lat.toString()) ?? 0.0;
+                  }
+                  if (lng is! double) {
+                    lng = double.tryParse(lng.toString()) ?? 0.0;
+                  }
+                  
+                  // Only fetch weather if we have valid coordinates
+                  if (lat != 0.0 && lng != 0.0) {
+                    await _updateGameWithWeatherData(game, lat, lng);
+                  }
+                } catch (e) {
+                  log("Error processing venue coordinates: $e", name: "MLB");
+                }
+              }
+            }
+          }
+          
+          // Update game status and timing information
+          if (gameSummary.game!.status != null) {
+            // Update game status if needed
+            if (gameSummary.game!.status == "inprogress" || gameSummary.game!.status == "live") {
+              game.status = GameStatus.inprogress.name;
+            } else if (gameSummary.game!.status == "closed" || gameSummary.game!.status == "complete") {
+              game.status = GameStatus.closed.name;
+            } else if (gameSummary.game!.status == "scheduled") {
+              game.status = GameStatus.upcoming.name;
+            }
+          }
+        }
+        } catch (e) {
+          log("Error parsing game summary data: $e", name: "MLB");
+        }
+      }
+      } catch (e) {
+        log("ERROR FETCHING MLB GAME SUMMARY: $e", name: "MLB");
+      }
+    } catch (e) {
+      log("Error enhancing game with Sportradar data: $e", name: "MLB");
+      // Don't throw, just log the error - we'll still have the basic game data
+    }
+  }
+  
+  /// Helper method to update a game with weather data
+  Future<void> _updateGameWithWeatherData(
+    SportEvents game,
+    double lat,
+    double lng
+  ) async {
+    try {
+      // Format coordinates with 4 decimal places
+      String latStr = lat.toStringAsFixed(4);
+      String lngStr = lng.toStringAsFixed(4);
+      
+      // Call weather API using coordinates
+      log("Fetching weather for coordinates: $latStr,$lngStr", name: "MLB Weather");
+      final ResponseItem result = await GameListingRepo().getWeather("$latStr,$lngStr");
+      
+      if (result.status && result.data != null) {
+        final weather = result.data;
+        
+        // Extract temperature (convert from Kelvin to Fahrenheit)
+        if (weather['main'] != null && weather['main']['temp'] != null) {
+          double kelvin = weather['main']['temp'].toDouble();
+          // Store as Kelvin in the model
+          game.temp = kelvin;
+        }
+        
+        // Extract weather condition code
+        if (weather['weather'] != null && weather['weather'].isNotEmpty) {
+          int code = weather['weather'][0]['id'];
+          game.weather = code;
+        }
+      }
+    } catch (e) {
+      log("Error fetching weather data: $e", name: "MLB");
+      // Don't throw, just log the error - weather is optional
+    }
+  }
+  
+  void _setupMLBRefreshTimer() {
+    // Cancel any existing timer first to prevent multiple timers
+    if (timer != null) {
+      timer!.cancel();
+      timer = null;
+    }
+    
+    // Only set up refresh timer for today's games that are in progress
+    if (mlbTodayEventsList.isNotEmpty) {
+      // Check if any game is live/in progress
+      bool hasLiveGames = mlbTodayEventsList.any(
+        (game) => game.status == GameStatus.live.name || 
+                 game.status == GameStatus.inprogress.name
+      );
+      
+      // Only refresh if there are live games
+      if (hasLiveGames) {
+        log("Setting up timer for live MLB games refresh", name: "MLB");
+        timer = Timer.periodic(const Duration(seconds: 60), (t) {
+          log("Timer triggered: refreshing live MLB games", name: "MLB");
+          _refreshLiveMLBGames();
+        });
+      }
+    }
+  }
+  
+  /// Helper method to ensure all MLB teams have logo URLs
+  void _ensureAllTeamsHaveLogos() {
+    log("Ensuring all MLB teams have logos", name: "MLB Logo");
+    
+    // Mapping of team IDs to official MLB static URLs
+    Map<String, String> mlbTeamIdMap = {
+      '575': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/575.svg', // Diamondbacks (ARI)
+      '144': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/144.svg', // Braves (ATL)
+      '110': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/110.svg', // Orioles (BAL)
+      '111': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/111.svg', // Red Sox (BOS)
+      '112': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/112.svg', // Cubs (CHC)
+      '113': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/113.svg', // Reds (CIN)
+      '114': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/114.svg', // Guardians (CLE)
+      '115': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/115.svg', // Rockies (COL)
+      '116': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/116.svg', // Tigers (DET)
+      '117': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/117.svg', // Astros (HOU)
+      '118': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/118.svg', // Royals (KC)
+      '119': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/119.svg', // Angels (LAA)
+      '158': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/158.svg', // Brewers (MIL)
+      '142': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/142.svg', // Twins (MIN)
+      '121': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/121.svg', // Mets (NYM)
+      '147': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/147.svg', // Yankees (NYY)
+      '133': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/133.svg', // Athletics (OAK)
+      '143': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/143.svg', // Phillies (PHI)
+      '134': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/134.svg', // Pirates (PIT)
+      '135': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/135.svg', // Padres (SD)
+      '137': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/137.svg', // Giants (SF)
+      '136': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/136.svg', // Mariners (SEA)
+      '138': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/138.svg', // Cardinals (STL)
+      '139': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/139.svg', // Rays (TB)
+      '140': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/140.svg', // Rangers (TEX)
+      '141': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/141.svg', // Blue Jays (TOR)
+      '120': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/120.svg', // Nationals (WSH)
+      '146': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/146.svg', // Marlins (MIA)
+      '145': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/145.svg', // White Sox (CHW)
+      '108': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/108.svg', // Dodgers (LAD)
+    };
+    
+    // Fallback mapping of team abbreviations to ESPN logos (as backup)
+    Map<String, String> mlbTeamAbbrevMap = {
+      'ari': 'https://a.espncdn.com/i/teamlogos/mlb/500/ari.png', // Diamondbacks
+      'atl': 'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png', // Braves
+      'bal': 'https://a.espncdn.com/i/teamlogos/mlb/500/bal.png', // Orioles
+      'bos': 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png', // Red Sox
+      'chc': 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png', // Cubs
+      'cin': 'https://a.espncdn.com/i/teamlogos/mlb/500/cin.png', // Reds
+      'cle': 'https://a.espncdn.com/i/teamlogos/mlb/500/cle.png', // Guardians
+      'col': 'https://a.espncdn.com/i/teamlogos/mlb/500/col.png', // Rockies
+      'det': 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png', // Tigers
+      'hou': 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png', // Astros
+      'kc':  'https://a.espncdn.com/i/teamlogos/mlb/500/kc.png',  // Royals
+      'laa': 'https://a.espncdn.com/i/teamlogos/mlb/500/laa.png', // Angels
+      'mil': 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png', // Brewers
+      'min': 'https://a.espncdn.com/i/teamlogos/mlb/500/min.png', // Twins
+      'nym': 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png', // Mets
+      'nyy': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png', // Yankees
+      'oak': 'https://a.espncdn.com/i/teamlogos/mlb/500/oak.png', // Athletics
+      'phi': 'https://a.espncdn.com/i/teamlogos/mlb/500/phi.png', // Phillies
+      'pit': 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png', // Pirates
+      'sd':  'https://a.espncdn.com/i/teamlogos/mlb/500/sd.png',  // Padres
+      'sf':  'https://a.espncdn.com/i/teamlogos/mlb/500/sf.png',  // Giants
+      'sea': 'https://a.espncdn.com/i/teamlogos/mlb/500/sea.png', // Mariners
+      'stl': 'https://a.espncdn.com/i/teamlogos/mlb/500/stl.png', // Cardinals
+      'tb':  'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png',  // Rays
+      'tex': 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png', // Rangers
+      'tor': 'https://a.espncdn.com/i/teamlogos/mlb/500/tor.png', // Blue Jays
+      'wsh': 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png', // Nationals
+      'mia': 'https://a.espncdn.com/i/teamlogos/mlb/500/mia.png', // Marlins
+      'chw': 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png', // White Sox
+      'lad': 'https://a.espncdn.com/i/teamlogos/mlb/500/lad.png', // Dodgers
+    };
+    
+    // Process all games in the list
+    for (var game in mlbSportEventsList) {
+      // Check and set home team logo
+      if (game.homeGameLogo == null || game.homeGameLogo!.isEmpty) {
+        // Try to get team abbreviation from various sources
+        String homeTeamAbbr = "";
+        
+        // Try from competitors list
+        for (var competitor in game.competitors) {
+          if (competitor.qualifier == "home" && competitor.abbreviation != null) {
+            homeTeamAbbr = competitor.abbreviation!;
+            break;
+          }
+        }
+        
+        // If still empty, try from the team abbreviation property
+        if (homeTeamAbbr.isEmpty && game.homeTeamAbb.isNotEmpty) {
+          homeTeamAbbr = game.homeTeamAbb;
+        }
+        
+        // If we have an abbreviation, set the logo URL
+        if (homeTeamAbbr.isNotEmpty) {
+          // Ensure it's normalized (no spaces, lowercase)
+          homeTeamAbbr = homeTeamAbbr.trim().toLowerCase();
+          
+          // Try to get team ID from competitors
+          String teamId = "";
+          for (var competitor in game.competitors) {
+            if (competitor.qualifier == "home" && competitor.id != null) {
+              teamId = competitor.id!;
+              break;
+            }
+          }
+          
+          // First try the official MLB static image (by ID)
+          if (teamId.isNotEmpty) {
+            // Extract the ID number without prefixes
+            String idNumber = "";
+            if (teamId.contains(":")) {
+              idNumber = teamId.split(":").last;
+            } else {
+              idNumber = teamId;
+            }
+            
+            // Map to MLB team code 
+            String teamCode = _mapSportRadarIdToTeamCode(idNumber);
+            String officialLogoUrl = "https://www.mlbstatic.com/team-logos/team-cap-on-dark/$teamCode.svg";
+            game.homeTeamLogo = officialLogoUrl;
+            log("Fallback: Set home logo by ID for ${game.homeTeam}: $officialLogoUrl", name: "MLB Logo");
+          }
+          // Then try our ID mapping
+          else if (teamId.isNotEmpty && mlbTeamIdMap.containsKey(teamId)) {
+            game.homeTeamLogo = mlbTeamIdMap[teamId];
+            log("Fallback: Set home logo from ID map for ${game.homeTeam}: ${mlbTeamIdMap[teamId]}", name: "MLB Logo");
+          }
+          // Then try our abbreviation mapping
+          else if (mlbTeamAbbrevMap.containsKey(homeTeamAbbr)) {
+            game.homeTeamLogo = mlbTeamAbbrevMap[homeTeamAbbr];
+            log("Fallback: Set home logo from abbrev map for ${game.homeTeam}: ${mlbTeamAbbrevMap[homeTeamAbbr]}", name: "MLB Logo");
+          } 
+          // Default to ESPN URL pattern
+          else {
+            String espnLogoUrl = "https://a.espncdn.com/i/teamlogos/mlb/500/$homeTeamAbbr.png";
+            game.homeTeamLogo = espnLogoUrl;
+            log("Fallback: Set home logo by pattern for ${game.homeTeam}: $espnLogoUrl", name: "MLB Logo");
+          }
+        } else {
+          // Last resort - use a generic baseball logo
+          game.homeTeamLogo = "https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png";
+          log("Using generic MLB logo for home team ${game.homeTeam}", name: "MLB Logo");
+        }
+      }
+      
+      // Check and set away team logo
+      if (game.awayGameLogo == null || game.awayGameLogo!.isEmpty) {
+        // Try to get team abbreviation from various sources
+        String awayTeamAbbr = "";
+        
+        // Try from competitors list
+        for (var competitor in game.competitors) {
+          if (competitor.qualifier == "away" && competitor.abbreviation != null) {
+            awayTeamAbbr = competitor.abbreviation!;
+            break;
+          }
+        }
+        
+        // If still empty, try from the team abbreviation property
+        if (awayTeamAbbr.isEmpty && game.awayTeamAbb.isNotEmpty) {
+          awayTeamAbbr = game.awayTeamAbb;
+        }
+        
+        // If we have an abbreviation, set the logo URL
+        if (awayTeamAbbr.isNotEmpty) {
+          // Ensure it's normalized (no spaces, lowercase)
+          awayTeamAbbr = awayTeamAbbr.trim().toLowerCase();
+          
+          // Try to get team ID from competitors
+          String teamId = "";
+          for (var competitor in game.competitors) {
+            if (competitor.qualifier == "away" && competitor.id != null) {
+              teamId = competitor.id!;
+              break;
+            }
+          }
+          
+          // First try the official MLB static image (by ID)
+          if (teamId.isNotEmpty) {
+            // Extract the ID number without prefixes
+            String idNumber = "";
+            if (teamId.contains(":")) {
+              idNumber = teamId.split(":").last;
+            } else {
+              idNumber = teamId;
+            }
+            
+            // Map to MLB team code 
+            String teamCode = _mapSportRadarIdToTeamCode(idNumber);
+            String officialLogoUrl = "https://www.mlbstatic.com/team-logos/team-cap-on-dark/$teamCode.svg";
+            game.awayTeamLogo = officialLogoUrl;
+            log("Fallback: Set away logo by ID for ${game.awayTeam}: $officialLogoUrl", name: "MLB Logo");
+          }
+          // Then try our ID mapping
+          else if (teamId.isNotEmpty && mlbTeamIdMap.containsKey(teamId)) {
+            game.awayTeamLogo = mlbTeamIdMap[teamId];
+            log("Fallback: Set away logo from ID map for ${game.awayTeam}: ${mlbTeamIdMap[teamId]}", name: "MLB Logo");
+          }
+          // Then try our abbreviation mapping
+          else if (mlbTeamAbbrevMap.containsKey(awayTeamAbbr)) {
+            game.awayTeamLogo = mlbTeamAbbrevMap[awayTeamAbbr];
+            log("Fallback: Set away logo from abbrev map for ${game.awayTeam}: ${mlbTeamAbbrevMap[awayTeamAbbr]}", name: "MLB Logo");
+          } 
+          // Default to ESPN URL pattern
+          else {
+            String espnLogoUrl = "https://a.espncdn.com/i/teamlogos/mlb/500/$awayTeamAbbr.png";
+            game.awayTeamLogo = espnLogoUrl;
+            log("Fallback: Set away logo by pattern for ${game.awayTeam}: $espnLogoUrl", name: "MLB Logo");
+          }
+        } else {
+          // Last resort - use a generic baseball logo
+          game.awayTeamLogo = "https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png";
+          log("Using generic MLB logo for away team ${game.awayTeam}", name: "MLB Logo");
+        }
+      }
+    }
+  }
+  
+  /// Maps Sportradar team IDs to MLB team codes used in the MLB static site
+  String _mapSportRadarIdToTeamCode(String sportRadarId) {
+    // Mapping between Sportradar IDs and MLB team codes
+    Map<String, String> teamCodeMap = {
+      // American League East
+      "67112": "nyy", // Yankees
+      "67108": "bos", // Red Sox
+      "67106": "tor", // Blue Jays
+      "67110": "tb",  // Rays
+      "67109": "bal", // Orioles
+      
+      // American League Central
+      "67113": "cle", // Cleveland
+      "67117": "min", // Twins
+      "67114": "kc",  // Royals
+      "67122": "chw", // White Sox
+      "67111": "det", // Tigers
+      
+      // American League West
+      "67116": "hou", // Astros
+      "67119": "tex", // Rangers
+      "67120": "sea", // Mariners
+      "67121": "laa", // Angels
+      "67118": "oak", // Athletics
+      
+      // National League East
+      "67129": "atl", // Braves
+      "67124": "phi", // Phillies
+      "67123": "nym", // Mets
+      "67125": "was", // Nationals
+      "67130": "mia", // Marlins
+      
+      // National League Central
+      "67127": "stl", // Cardinals
+      "67128": "mil", // Brewers
+      "67133": "chc", // Cubs
+      "67131": "cin", // Reds
+      "67126": "pit", // Pirates
+      
+      // National League West
+      "67132": "lad", // Dodgers
+      "67134": "sd",  // Padres
+      "67135": "sf",  // Giants
+      "67136": "ari", // Diamondbacks
+      "67137": "col", // Rockies
+    };
+    
+    // Return the MLB team code if we have a mapping, otherwise use the ID as is
+    return teamCodeMap[sportRadarId] ?? sportRadarId;
+  }
+  
+  void _refreshLiveMLBGames() async {
+    try {
+      // Get fresh data for live games
+      for (var game in mlbTodayEventsList) {
+        if (game.status == GameStatus.live.name || 
+            game.status == GameStatus.inprogress.name) {
+          // Refresh box score data for this game
+          if (game.id != null && game.uuids != null) {
+            await boxScoreResponse(
+              gameId: replaceId(game.uuids ?? ""),
+              homeTeamId: replaceId(game.competitors[0].uuids ?? ''),
+              awayTeamId: replaceId(game.competitors[1].uuids ?? ''),
+              index: mlbSportEventsList.indexWhere((element) => element.id == game.id)
+            );
+          }
+        }
+      }
+      
+      // Ensure all refreshed games have logos
+      _ensureAllTeamsHaveLogos();
+      
+      // Update the UI with fresh data
+      update();
+    } catch (e) {
+      log("Error refreshing MLB games: $e", name: "MLB");
+    }
+  }
+
+  /// NCAAB refresh timer setup
   void _setupOptimizedRefreshTimer() {
     // Cancel any existing timer first to prevent multiple timers
     if (timer != null) {
@@ -645,77 +1410,8 @@ class GameListingController extends GetxController {
         } 
         // Special handling for MLB
         else if (sportsLeagueList[index].key == SportName.MLB.name) {
-          log("Loading MLB data with special handling...");
-          
-          // Load MLB data directly rather than through getResponse
-          mlbTodayEventsList.clear();
-          mlbTomorrowEventsList.clear();
-          mlbSportEventsList.clear();
-          
-          try {
-            // Load in some sample data for testing
-            // In a real implementation, we would properly fetch MLB data
-            // This is just for testing purposes
-            final today = DateTime.now();
-            final tomorrow = today.add(const Duration(days: 1));
-            
-            // Create a few test MLB events
-            for (int i = 0; i < 5; i++) {
-              final event = game_listing.SportEvents(
-                id: "mlb-game-$i",
-                status: i == 0 ? GameStatus.inprogress.name : GameStatus.closed.name,
-                scheduled: today.add(Duration(hours: i * 3)).toIso8601String(),
-                homeTeam: "Home Team $i",
-                awayTeam: "Away Team $i",
-                homeTeamAbb: "HTM$i",
-                awayTeamAbb: "ATM$i",
-                homeScore: i.toString(),
-                awayScore: (i+1).toString(),
-                homeMoneyLine: "120",
-                awayMoneyLine: "-110",
-                homeSpread: "1.5",
-                awaySpread: "-1.5",
-                homeOU: "9.0",
-                awayOU: "9.0",
-                inning: i == 0 ? "5" : "",
-                inningHalf: i == 0 ? "Top" : "",
-                markets: [],
-                competitors: [
-                  game_listing.Competitors(name: "Home Team $i", abbreviation: "HTM$i", qualifier: "home"),
-                  game_listing.Competitors(name: "Away Team $i", abbreviation: "ATM$i", qualifier: "away")
-                ],
-                venue: game_listing.Venue(cityName: "City $i", name: "Stadium $i"),
-                temp: 300, // Kelvin temperature that will convert to about 80°F
-                weather: 800 // Clear sky weather code
-              );
-              
-              // Add to the appropriate lists
-              if (i < 3) {
-                mlbTodayEventsList.add(event);
-              } else {
-                mlbTomorrowEventsList.add(event);
-              }
-              
-              // Add to the main list
-              mlbSportEventsList.add(event);
-            }
-            
-            // Process the data
-            getAllEventList(SportName.MLB.name, true);
-                        
-            // Update the UI
-            update();
-            isLoading.value = false;
-            isPagination = false;
-            
-            log("MLB sample data loaded successfully: ${mlbSportEventsList.length} games");
-            
-          } catch (e) {
-            log("Error loading MLB data: $e");
-            isLoading.value = false;
-            isPagination = false;
-            showAppSnackBar("Error loading MLB data. Pull down to refresh.");
-          }
+          log("Loading MLB data with Sportradar API integration...");
+          await loadMLBDataOptimized();
         }
         else {
           await getResponse(true, sportsLeagueList[index].key);

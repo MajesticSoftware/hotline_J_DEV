@@ -16,7 +16,7 @@ String ncaafSportId="sr:sport:16";
 
 
 enum GameStatus{
-  live,inprogress,halftime,closed,Final,postponed
+  live,inprogress,halftime,closed,Final,postponed,upcoming,scheduled
 }
 
 

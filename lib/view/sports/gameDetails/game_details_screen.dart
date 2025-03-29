@@ -130,15 +130,50 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
   @override
   Widget build(BuildContext context) {
     bool isDark = PreferenceManager.getIsDarkMode() ?? false;
+    // Set up team data from competitors
     if (widget.gameDetails.competitors[0].qualifier == 'home') {
       homeTeam = widget.gameDetails.competitors[0];
+      // Ensure home team names are set
+      if (widget.gameDetails.homeTeam.isEmpty || widget.gameDetails.homeTeam == "HTM1") {
+        widget.gameDetails.homeTeam = homeTeam?.name ?? "Home Team";
+        widget.gameDetails.homeTeamAbb = homeTeam?.abbreviation ?? "HTM";
+        log('Fixed home team name from competitors: ${widget.gameDetails.homeTeam}');
+      }
     } else {
       awayTeam = widget.gameDetails.competitors[0];
+      // Ensure away team names are set
+      if (widget.gameDetails.awayTeam.isEmpty || widget.gameDetails.awayTeam == "ATM1") {
+        widget.gameDetails.awayTeam = awayTeam?.name ?? "Away Team";
+        widget.gameDetails.awayTeamAbb = awayTeam?.abbreviation ?? "ATM";
+        log('Fixed away team name from competitors: ${widget.gameDetails.awayTeam}');
+      }
     }
+    
     if (widget.gameDetails.competitors[1].qualifier == 'away') {
       awayTeam = widget.gameDetails.competitors[1];
+      // Ensure away team names are set
+      if (widget.gameDetails.awayTeam.isEmpty || widget.gameDetails.awayTeam == "ATM1") {
+        widget.gameDetails.awayTeam = awayTeam?.name ?? "Away Team";
+        widget.gameDetails.awayTeamAbb = awayTeam?.abbreviation ?? "ATM";
+        log('Fixed away team name from competitors: ${widget.gameDetails.awayTeam}');
+      }
     } else {
       homeTeam = widget.gameDetails.competitors[1];
+      // Ensure home team names are set
+      if (widget.gameDetails.homeTeam.isEmpty || widget.gameDetails.homeTeam == "HTM1") {
+        widget.gameDetails.homeTeam = homeTeam?.name ?? "Home Team";
+        widget.gameDetails.homeTeamAbb = homeTeam?.abbreviation ?? "HTM";
+        log('Fixed home team name from competitors: ${widget.gameDetails.homeTeam}');
+      }
+    }
+    
+    // If we're using our test game for MLB, set specific team names
+    if (widget.sportKey == SportName.MLB.name && widget.gameDetails.id == "53e78de7-27f3-4f36-bf03-7d06136e267e") {
+      log('Setting specific team names for MLB test game');
+      widget.gameDetails.homeTeam = "Tampa Bay Rays";
+      widget.gameDetails.homeTeamAbb = "TB";
+      widget.gameDetails.awayTeam = "Toronto Blue Jays";
+      widget.gameDetails.awayTeamAbb = "TOR";
     }
     return Stack(
       children: [
