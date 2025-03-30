@@ -691,12 +691,10 @@ class SelectGameScreen extends StatelessWidget {
                       children: [
                         GameWidget(
                           status: spotList(controller)[index].status.toString(),
-                          flameNumber: controller.sportKey != SportName.MLB.name
-                              ? spotList(controller)[index].getFlameValue
-                              : 0,
-                          isShowWeather:
-                              controller.sportKey != SportName.NCAAB.name ||
-                                  controller.sportKey != SportName.NBA.name,
+                          flameNumber: spotList(controller)[index].getFlameValue, // Always show flame value
+                          isShowWeather: !(controller.sportKey == SportName.NCAAB.name || // Hide weather for NCAAB, NBA, MLB
+                                  controller.sportKey == SportName.NBA.name ||
+                                  controller.sportKey == SportName.MLB.name),
                           onTap: () {
                             controller.gameOnClick(
                                 context, spotList(controller)[index]);
@@ -798,15 +796,14 @@ class SelectGameScreen extends StatelessWidget {
             (competitors.status != GameStatus.postponed.name),
         child: GameWidget(
           status: competitors.status.toString(),
-          isShowFlam: (controller.sportKey != SportName.MLB.name),
-          flameNumber: controller.sportKey != SportName.MLB.name
-              ? competitors.getFlameValue
-              : 0,
+          isShowFlam: (controller.sportKey != SportName.MLB.name), // Keep original isShowFlam logic for search results if needed, or adjust as per overall theme
+          flameNumber: competitors.getFlameValue, // Always show flame value
           onTap: () {
             controller.searchGameOnClick(context, competitors);
           },
-          isShowWeather: controller.sportKey != SportName.NCAAB.name ||
-              controller.sportKey != SportName.NBA.name,
+          isShowWeather: !(controller.sportKey == SportName.NCAAB.name || // Hide weather for NCAAB, NBA, MLB
+              controller.sportKey == SportName.NBA.name ||
+              controller.sportKey == SportName.MLB.name),
           awayTeamMoneyLine: competitors.awayMoneyLineValue,
           homeTeamMoneyLine: competitors.homeMoneyLineValue,
           awayTeamOU: competitors.awayOUValue,

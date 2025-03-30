@@ -827,7 +827,8 @@ Widget teamReportNFL(BuildContext context,
           content: Column(
             children: [
               commonDivider(context),
-              sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
+              // Use nbaOffenseDefenseData for NBA, NCAAB, and MLB
+              sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name
                   ? nbaOffenseDefenseData(
                   awayTeam, homeTeam, con, context, gameDetails, sportKey)
                   : nflOffenseDefenseData(
@@ -1583,22 +1584,24 @@ Future<dynamic> showDialogForRank(BuildContext context,
                       color: Colors.black, fontWeight: FontWeight.w700,
                     )),
                     TextSpan(
+                      // Apply NCAAB thresholds to MLB as well
                       text: '${dateWidget(awayRank)} ${num.parse(awayRank) >
-                          (sportKey == SportName.NCAAB.name ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                           ? "(poor)"
                           : num.parse(awayRank) >
-                          (sportKey == SportName.NCAAB.name ? 50 : 11) &&
-                          num.parse(awayRank) <= (sportKey == SportName.NCAAB.name ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
+                          num.parse(awayRank) <= (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                           ? "(mid)"
                           : "(strong)"} ',
                       style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                          // Apply NCAAB thresholds to MLB as well
                           color: num.parse(awayRank) >
-                              (sportKey == SportName.NCAAB.name ? 75 : 22)
+                              (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                               ? redColor
                               : num.parse(
-                              awayRank) > (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                              awayRank) > (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                               num.parse(awayRank) <=
-                                  (sportKey == SportName.NCAAB.name ? 75 : 22)
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                               ? yellowColor
                               : Colors.green),
                     ),
@@ -1608,22 +1611,24 @@ Future<dynamic> showDialogForRank(BuildContext context,
                           color: Colors.black, fontWeight: FontWeight.w700,
                         )),
                     TextSpan(
+                      // Apply NCAAB thresholds to MLB as well
                       text: '${dateWidget(homeRank)} ${num.parse(homeRank) >
-                          (sportKey == SportName.NCAAB.name ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                           ? "(poor)"
                           : num.parse(homeRank) >
-                          (sportKey == SportName.NCAAB.name ? 50 : 11) &&
-                          num.parse(homeRank) <= (sportKey == SportName.NCAAB.name ? 75 : 22)
+                          (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
+                          num.parse(homeRank) <= (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                           ? "(mid)"
                           : "(strong)"}. ',
                       style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold,
+                          // Apply NCAAB thresholds to MLB as well
                           color: num.parse(homeRank) >
-                              (sportKey == SportName.NCAAB.name ? 75 : 22)
+                              (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                               ? redColor
                               : num.parse(
-                              homeRank) > (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                              homeRank) > (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                               num.parse(homeRank) <=
-                                  (sportKey == SportName.NCAAB.name ? 75 : 22)
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22)
                               ? yellowColor
                               : Colors.green),
                     ),
@@ -1718,33 +1723,34 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                               gameDetails.nbaAwayDefensiveRank[index])})'
                               .toString())
                               .appCommonText(
+                              // Apply NCAAB thresholds to MLB as well
                               color: con.isTeamReportTab ? gameDetails
                                   .nbaAwayOffensiveRank.isEmpty ? Colors
                                   .transparent : int.parse(
                                   gameDetails.nbaAwayOffensiveRank[index]) <=
-                                  (sportKey == SportName.NCAAB.name ? 50 : 11)
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11)
                                   ? Colors.green
                                   : (int.parse(
                                   gameDetails.nbaAwayOffensiveRank[index]) >
-                                  (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                                   int.parse(
                                       gameDetails
                                           .nbaAwayOffensiveRank[index]) <=
-                                      (sportKey == SportName.NCAAB.name ? 75 : 22))
+                                      (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22))
                                   ? yellowColor
                                   : redColor :
                               gameDetails.nbaAwayDefensiveRank.isEmpty ? Colors
                                   .transparent : int.parse(
                                   gameDetails.nbaAwayDefensiveRank[index]) <=
-                                  (sportKey == SportName.NCAAB.name ? 50 : 11)
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11)
                                   ? Colors.green
                                   : (int.parse(
                                   gameDetails.nbaAwayDefensiveRank[index]) >
-                                  (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                                  (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                                   int.parse(
                                       gameDetails
                                           .nbaAwayDefensiveRank[index]) <=
-                                      (sportKey == SportName.NCAAB.name ? 75 : 22))
+                                      (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22))
                                   ? yellowColor
                                   : redColor,
                               weight: FontWeight.w700,
@@ -1833,19 +1839,20 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                 gameDetails.nbaHomeDefensiveRank[index])})'
                                 .toString())
                                 .appCommonText(
+                                // Apply NCAAB thresholds to MLB as well
                                 color: !con.isTeamReportTab ? gameDetails
                                     .nbaHomeOffensiveRank.isEmpty ? Colors
                                     .transparent : int.parse(
                                     gameDetails.nbaHomeOffensiveRank[index]) <=
-                                    (sportKey == SportName.NCAAB.name ? 50 : 11)
+                                    (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11)
                                     ? Colors.green
                                     : (int.parse(
                                     gameDetails.nbaHomeOffensiveRank[index]) >
-                                    (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                                    (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                                     int.parse(
                                         gameDetails
                                             .nbaHomeOffensiveRank[index]) <=
-                                        (sportKey == SportName.NCAAB.name ? 75 : 22))
+                                        (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22))
                                     ? yellowColor
                                     : redColor :
                                 gameDetails.nbaHomeDefensiveRank.isEmpty
@@ -1853,15 +1860,15 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                                     .transparent
                                     : int.parse(
                                     gameDetails.nbaHomeDefensiveRank[index]) <=
-                                    (sportKey == SportName.NCAAB.name ? 50 : 11)
+                                    (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11)
                                     ? Colors.green
                                     : (int.parse(
                                     gameDetails.nbaHomeDefensiveRank[index]) >
-                                    (sportKey == SportName.NCAAB.name ? 50 : 11) &&
+                                    (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 11) &&
                                     int.parse(
                                         gameDetails
                                             .nbaHomeDefensiveRank[index]) <=
-                                        (sportKey == SportName.NCAAB.name ? 75 : 22))
+                                        (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 22))
                                     ? yellowColor
                                     : redColor,
 
@@ -1902,8 +1909,9 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
           /*&&PreferenceManager.getSubscriptionRecUrl()!=null*/
           Visibility(
             visible: (PreferenceManager.getSubscriptionActive() ?? "0") == "1",
-            child: ((offensePointColor >= (sportKey == SportName.NCAAB.name ? 50 : 15) ||
-                offensePointColor <= (sportKey == SportName.NCAAB.name ? -50 : -15))) ?
+            // Apply NCAAB thresholds to MLB as well
+            child: ((offensePointColor >= (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 50 : 15) ||
+                offensePointColor <= (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? -50 : -15))) ?
 
             Positioned(
               child: InkWell(
@@ -1949,9 +1957,10 @@ Widget nbaOffenseDefenseData(Competitors? awayTeam, Competitors? homeTeam,
                     .height * .038,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
+                    // Apply NCAAB thresholds to MLB as well
                     color: (offensePointColor >=
-                        (sportKey == SportName.NCAAB.name ? 75 : 25) ||
-                        offensePointColor <= (sportKey == SportName.NCAAB.name ? -75 : -25))
+                        (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? 75 : 25) ||
+                        offensePointColor <= (sportKey == SportName.NCAAB.name || sportKey == SportName.MLB.name ? -75 : -25))
                         ? Colors.red
                         : Colors
                         .orange,
@@ -6837,7 +6846,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                       ),
                                     ),
                                     Visibility(
-                                      visible: sportKey != SportName.NCAAB.name ,
+                                      // Hide weather for NCAAB, NBA, and MLB
+                                      visible: !(sportKey == SportName.NCAAB.name || sportKey == SportName.NBA.name || sportKey == SportName.MLB.name),
                                       child: (gameDetails.tmpInFahrenheit == 32
                                           ? ",TBD"
                                           : gameDetails.tmpInFahrenheit
@@ -6855,7 +6865,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                           weight: FontWeight.w400),
                                     ),
                                     Visibility(
-                                      visible: sportKey != SportName.NCAAB.name ,
+                                      // Hide weather for NCAAB, NBA, and MLB
+                                      visible: !(sportKey == SportName.NCAAB.name || sportKey == SportName.NBA.name || sportKey == SportName.MLB.name),
                                       child: ' °F '.appCommonText(
                                         size: MediaQuery
                                             .of(context)
@@ -6867,7 +6878,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                       ),
                                     ),
                                     Visibility(
-                                      visible: sportKey != SportName.NCAAB.name ,
+                                      // Hide weather for NCAAB, NBA, and MLB
+                                      visible: !(sportKey == SportName.NCAAB.name || sportKey == SportName.NBA.name || sportKey == SportName.MLB.name),
                                       child: getWeatherIcon(
                                           gameDetails.weather,
                                           context,

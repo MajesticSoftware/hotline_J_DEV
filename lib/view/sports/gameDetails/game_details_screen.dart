@@ -259,39 +259,36 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                     MediaQuery.of(context).size.height * .02),
                             content: Column(
                               children: [
-                                widget.sportKey == SportName.MLB.name
-                                    ? MLBDetailedStatsView(
-                                        gameDetails: widget.gameDetails,
-                                        awayTeam: awayTeam,
-                                        homeTeam: homeTeam,
-                                      )
-                                    : teamReportNFL(
+                                // Use teamReportNFL for MLB, NBA, NCAAB, NFL, NCAAF
+                                teamReportNFL(
                                         context,
                                         con,
                                         widget.gameDetails,
                                         awayTeam,
                                         homeTeam,
                                         widget.sportKey),
-                                widget.sportKey == SportName.MLB.name
-                                    ? const SizedBox() // MLB covered by MLBDetailedStatsView above
+                                // Show FiveStatics for NCAAB and MLB
+                                (widget.sportKey == SportName.NCAAB.name || widget.sportKey == SportName.MLB.name)
+                                    ? FiveStatics(
+                                        con: con,
+                                        gameDetails: widget.gameDetails,
+                                        awayTeam: awayTeam,
+                                        homeTeam: homeTeam,
+                                        sportKey: widget.sportKey)
+                                    // Show SizedBox for NBA (as it was before)
                                     : widget.sportKey == SportName.NBA.name
                                         ? const SizedBox()
-                                        : widget.sportKey == SportName.NCAAB.name
-                                            ? FiveStatics(
-                                                con: con,
-                                                gameDetails: widget.gameDetails,
-                                                awayTeam: awayTeam,
-                                                homeTeam: homeTeam,
-                                                sportKey: widget.sportKey)
-                                            : quarterBacks(
+                                        // Show quarterBacks for NFL/NCAAF (as it was before)
+                                        : quarterBacks(
                                                 context,
                                                 con,
                                                 widget.gameDetails,
                                                 awayTeam,
                                                 homeTeam,
                                                 widget.sportKey),
-                                widget.sportKey == SportName.MLB.name
-                                    ? const SizedBox() // MLB covered by MLBDetailedStatsView above
+                                // Hide hitterPlayerStatWidget for MLB and NCAAB
+                                (widget.sportKey == SportName.MLB.name || widget.sportKey == SportName.NCAAB.name)
+                                    ? const SizedBox()
                                     : hitterPlayerStatWidget(
                                         context,
                                         widget.gameDetails,
@@ -309,8 +306,10 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         awayTeam,
                                         homeTeam,
                                         widget.sportKey),
-                                widget.sportKey == SportName.NCAA.name ||
-                                        widget.sportKey == SportName.NCAAB.name
+                                // Hide injuryReportWidget for NCAAF, NCAAB, and MLB
+                                (widget.sportKey == SportName.NCAA.name ||
+                                        widget.sportKey == SportName.NCAAB.name ||
+                                        widget.sportKey == SportName.MLB.name)
                                     ? const SizedBox()
                                     : injuryReportWidget(
                                         context,

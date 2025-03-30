@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/game_listing.dart';
-import 'package:hotlines/model/mlb_game_summary_model.dart';
+import 'package:hotlines/model/mlb_game_summary_model.dart'; // Keep for other parts if needed
 import 'package:hotlines/model/mlb_injuries_model.dart';
 import 'package:hotlines/model/mlb_team_model.dart';
 import 'package:hotlines/model/mlb_venue_model.dart';
@@ -17,7 +17,7 @@ import '../../../extras/request_constants.dart';
 import '../../../model/game_model.dart';
 import '../../../model/hotlines_data_model.dart' as hotlines;
 import '../../../model/mlb_statics_model.dart' as stat;
-import '../../../model/nba_statics_model.dart';
+import '../../../model/nba_statics_model.dart' as pro; // Correct alias
 import '../../../model/ncaab_standings_model.dart';
 import '../../../model/nfl_profile_model.dart';
 import '../../../model/nfl_roster_player_model.dart' as roster;
@@ -26,18 +26,19 @@ import '../../../model/nfl_team_record_model.dart';
 import '../../../model/player_profile_model.dart';
 import '../../../model/response_item.dart';
 import '../../../model/team_record_model.dart';
+import '../../../model/mlb_box_score_model.dart' as mlb_box; // Import MLB Box Score Model
 import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
   // Add MLB pitcher-batter comparison tracker
   final PitcherBatterCompare pitcherBatterCompare = PitcherBatterCompare();
-  
+
   // MLB API Data
   MLBTeamsResponse? mlbTeamsData;
   MLBVenuesResponse? mlbVenuesData;
-  MLBGameSummaryResponse? mlbGameSummaryData;
-  
+  MLBGameSummaryResponse? mlbGameSummaryData; // Keep for summary info if used elsewhere
+
   // MLB Seasonal Stats
   // Seasonal stats
   stat.MLBStaticsModel? mlbSeasonalStatsHome;
@@ -50,21 +51,21 @@ class GameDetailsController extends GetxController {
   List<String> mlbAwaySeasonalHittingList = ["5.5", "9.0", "1.3", "5.2", "3.4", "7.8", "0.7", ".263", ".440", "0.777", "0.7", "26.2"];
   List<String> mlbHomeSeasonalPitchingList = ["4.62", "1.350", "8.2", "2.73", "0.262", "1.13", "62.5%"];
   List<String> mlbAwaySeasonalPitchingList = ["4.62", "1.350", "8.2", "2.73", "0.262", "1.13", "62.5%"];
-  
+
   // Cache to avoid repeated API calls
   bool hasLoadedMLBTeams = false;
   bool hasLoadedMLBVenues = false;
-  
+
   /// MLB API Methods
   Future<void> fetchMLBTeams() async {
     if (hasLoadedMLBTeams) return;
-    
+
     isLoading.value = true;
     ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
-    
+
     try {
       result = await GameListingRepo().fetchMLBTeams();
-      
+
       if (result.status && result.data != null) {
         mlbTeamsData = MLBTeamsResponse.fromJson(result.data);
         hasLoadedMLBTeams = true;
@@ -82,13 +83,13 @@ class GameDetailsController extends GetxController {
 
   Future<void> fetchMLBVenues() async {
     if (hasLoadedMLBVenues) return;
-    
+
     isLoading.value = true;
     ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
-    
+
     try {
       result = await GameListingRepo().fetchMLBVenues();
-      
+
       if (result.status && result.data != null) {
         mlbVenuesData = MLBVenuesResponse.fromJson(result.data);
         hasLoadedMLBVenues = true;
@@ -107,26 +108,26 @@ class GameDetailsController extends GetxController {
   Future<void> fetchMLBGameSummary({required String gameId}) async {
     isLoading.value = true;
     ResponseItem result = ResponseItem(data: null, message: errorText.tr, status: false);
-    
+
     try {
       // Debug the game ID
       log('Attempting to fetch MLB game summary with ID: $gameId');
-      
+
       // Skip the API call if gameId is empty or invalid
       if (gameId.isEmpty || gameId == 'mlb-game-0' || gameId == '0') {
         log('Invalid game ID. Skipping API call.');
         return;
       }
-      
+
       result = await GameListingRepo().fetchMLBGameSummary(gameId);
-      
+
       if (result.status && result.data != null) {
         log('MLB game summary API response received');
-        
+
         try {
           // Safely parse the JSON response
           mlbGameSummaryData = MLBGameSummaryResponse.fromJson(result.data);
-          
+
           // Log detailed game information
           log('Successfully parsed MLB game summary data');
           log('Game teams: ${mlbGameSummaryData?.game?.homeTeam?.name} vs ${mlbGameSummaryData?.game?.awayTeam?.name}');
@@ -135,22 +136,22 @@ class GameDetailsController extends GetxController {
         } catch (parseError) {
           log('ERROR PARSING MLB GAME SUMMARY: $parseError');
           log('Response data: ${result.data}');
-          
+
           // Try to extract some basic info from the response even if parsing fails
           try {
             if (result.data is Map<String, dynamic>) {
               var rawData = result.data as Map<String, dynamic>;
               var gameData = rawData['game'] as Map<String, dynamic>?;
-              
+
               if (gameData != null) {
                 log('Game basic info retrieved directly from response');
-                
+
                 // Extract home team data
                 var homeTeamData = gameData['home'] as Map<String, dynamic>?;
                 if (homeTeamData != null) {
                   log('Home team: ${homeTeamData['name']}, ${homeTeamData['market']}');
                 }
-                
+
                 // Extract away team data
                 var awayTeamData = gameData['away'] as Map<String, dynamic>?;
                 if (awayTeamData != null) {
@@ -174,7 +175,7 @@ class GameDetailsController extends GetxController {
       update();
     }
   }
-  
+
   /// Updates the game details with additional data from Sportradar APIs
   Future<void> updateGameWithSportRadarData({
     required SportEvents gameDetails,
@@ -185,23 +186,23 @@ class GameDetailsController extends GetxController {
       if (!hasLoadedMLBTeams) {
         await fetchMLBTeams();
       }
-      
+
       if (!hasLoadedMLBVenues) {
         await fetchMLBVenues();
       }
-      
+
       // Fetch game summary for the current game
       if (gameDetails.id != null && gameDetails.id!.isNotEmpty && gameDetails.id != 'mlb-game-0') {
         log('Game ID found: ${gameDetails.id}');
         await fetchMLBGameSummary(gameId: gameDetails.id!);
       } else {
         log('No valid game ID found in the game details. Using a test game ID instead.');
-        
+
         // Use a real MLB game ID from the example response
         const testGameId = "53e78de7-27f3-4f36-bf03-7d06136e267e"; // Rays vs Blue Jays game
         log('Using test game ID: $testGameId');
         await fetchMLBGameSummary(gameId: testGameId);
-        
+
         // Backup: In case API data doesn't come through correctly, set the names directly
         // This is for the specific test game - Tampa Bay Rays vs Toronto Blue Jays
         if (gameDetails.homeTeam.isEmpty || gameDetails.awayTeam.isEmpty) {
@@ -212,7 +213,7 @@ class GameDetailsController extends GetxController {
           gameDetails.awayTeamAbb = "TOR";
         }
       }
-      
+
       // Update game details with API data if available
       if (mlbGameSummaryData != null && mlbGameSummaryData?.game != null) {
         // Directly assign some values from the game summary data to ensure we have them
@@ -237,21 +238,21 @@ class GameDetailsController extends GetxController {
           String market = mlbGameSummaryData?.game?.homeTeam?.market ?? '';
           String name = mlbGameSummaryData?.game?.homeTeam?.name ?? '';
           String abbr = mlbGameSummaryData?.game?.homeTeam?.abbr ?? '';
-          
+
           gameDetails.homeTeam = (market.isNotEmpty && name.isNotEmpty) ? '$market $name' : 'Home Team';
           gameDetails.homeTeamAbb = abbr.isNotEmpty ? abbr : 'HTM';
-          
+
           log('Set home team: ${gameDetails.homeTeam} (${gameDetails.homeTeamAbb})');
           // Safely convert values to strings regardless of their original type
           var homeWin = mlbGameSummaryData?.game?.homeTeam?.win;
           var homeLoss = mlbGameSummaryData?.game?.homeTeam?.loss;
-          
+
           gameDetails.homeScore = homeWin?.toString() ?? '0';
           gameDetails.homeWin = homeWin?.toString() ?? '0';
           gameDetails.homeLoss = homeLoss?.toString() ?? '0';
-          
+
           log('Home team stats - Win: $homeWin, Loss: $homeLoss');
-          
+
           // Add team logo if available
           if (mlbTeamsData != null && mlbTeamsData?.teams != null) {
             MLBTeam? homeTeam;
@@ -262,7 +263,7 @@ class GameDetailsController extends GetxController {
             } catch (_) {
               homeTeam = null;
             }
-            
+
             if (homeTeam != null) {
               // Set team logo URL if available from the API
               // Since logoUrl might not be populated from the API, we'll use a fallback approach
@@ -278,27 +279,27 @@ class GameDetailsController extends GetxController {
             }
           }
         }
-        
+
         if (mlbGameSummaryData?.game?.awayTeam != null) {
           // Update away team data with proper names (combine market + name for full team name)
           String market = mlbGameSummaryData?.game?.awayTeam?.market ?? '';
           String name = mlbGameSummaryData?.game?.awayTeam?.name ?? '';
           String abbr = mlbGameSummaryData?.game?.awayTeam?.abbr ?? '';
-          
+
           gameDetails.awayTeam = (market.isNotEmpty && name.isNotEmpty) ? '$market $name' : 'Away Team';
           gameDetails.awayTeamAbb = abbr.isNotEmpty ? abbr : 'ATM';
-          
+
           log('Set away team: ${gameDetails.awayTeam} (${gameDetails.awayTeamAbb})');
           // Safely convert values to strings regardless of their original type
           var awayWin = mlbGameSummaryData?.game?.awayTeam?.win;
           var awayLoss = mlbGameSummaryData?.game?.awayTeam?.loss;
-          
+
           gameDetails.awayScore = awayWin?.toString() ?? '0';
           gameDetails.awayWin = awayWin?.toString() ?? '0';
           gameDetails.awayLoss = awayLoss?.toString() ?? '0';
-          
+
           log('Away team stats - Win: $awayWin, Loss: $awayLoss');
-          
+
           // Add team logo if available
           if (mlbTeamsData != null && mlbTeamsData?.teams != null) {
             MLBTeam? awayTeam;
@@ -309,7 +310,7 @@ class GameDetailsController extends GetxController {
             } catch (_) {
               awayTeam = null;
             }
-            
+
             if (awayTeam != null) {
               // Set team logo URL if available from the API
               // Since logoUrl might not be populated from the API, we'll use a fallback approach
@@ -325,7 +326,7 @@ class GameDetailsController extends GetxController {
             }
           }
         }
-        
+
         // Update venue information if available
         if (mlbGameSummaryData?.game?.venue != null && mlbVenuesData != null) {
           final venueId = mlbGameSummaryData?.game?.venue?.id;
@@ -337,7 +338,7 @@ class GameDetailsController extends GetxController {
           } catch (_) {
             venueData = null;
           }
-          
+
           if (venueData != null && gameDetails.venue != null) {
             gameDetails.venue?.cityName = venueData.city;
             // Handle capacity which could be string or int
@@ -354,7 +355,7 @@ class GameDetailsController extends GetxController {
                 // Keep existing capacity if conversion fails
               }
             }
-            
+
             // If venue has coordinates, fetch weather data
             if (venueData.location != null) {
               try {
@@ -365,7 +366,7 @@ class GameDetailsController extends GetxController {
                   if (temp != null) {
                     gameDetails.temp = temp;
                   }
-                  
+
                   // Extract weather condition code
                   final weatherId = weatherResponse.data['weather'][0]['id'];
                   if (weatherId != null) {
@@ -380,23 +381,23 @@ class GameDetailsController extends GetxController {
         }
       }
     }
-    
+
     // Final check to ensure we don't have placeholder team names
     if (gameDetails.homeTeam == "HTM1" || gameDetails.homeTeam.isEmpty) {
       log('Fixing placeholder home team name');
       gameDetails.homeTeam = "Tampa Bay Rays";
       gameDetails.homeTeamAbb = "TB";
     }
-    
+
     if (gameDetails.awayTeam == "ATM1" || gameDetails.awayTeam.isEmpty) {
       log('Fixing placeholder away team name');
       gameDetails.awayTeam = "Toronto Blue Jays";
       gameDetails.awayTeamAbb = "TOR";
     }
-    
+
     update();
   }
-  
+
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',
@@ -482,7 +483,7 @@ class GameDetailsController extends GetxController {
     'Ground Into Double Play/Game',
     'At Bats per home run',
   ];
-  
+
   List pitchingMLB_detailed = [
     'ERA (Earned Run Average)',
     'Shutouts',
@@ -497,7 +498,7 @@ class GameDetailsController extends GetxController {
     'Opponent Batting Avg',
     'Ground into DP/Game',
   ];
-  
+
   List defensive = [
     'Points Allowed/Game',
     'Rushing Yards Allowed/Game',
@@ -2238,7 +2239,7 @@ class GameDetailsController extends GetxController {
 
     try {
       if (result.status) {
-        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+        pro.NBAStaticsModel response = pro.NBAStaticsModel.fromJson(result.data); // Use alias 'pro'
         if (response.players != null) {
           // Assign a mutable list to awayRushingPlayer
           gameDetails.awayRushingPlayer = List.from(response.players!);
@@ -2333,7 +2334,7 @@ class GameDetailsController extends GetxController {
 
     try {
       if (result.status) {
-        NBAStaticsModel response = NBAStaticsModel.fromJson(result.data);
+        pro.NBAStaticsModel response = pro.NBAStaticsModel.fromJson(result.data); // Use alias 'pro'
         if (response.players != null) {
           // Assign a mutable list to homeRushingPlayer
           gameDetails.homeRushingPlayer = List.from(response.players!);
@@ -2550,6 +2551,13 @@ class GameDetailsController extends GetxController {
           homeTeamId: gameDetails.homePlayerId,
         );
       }
+
+      // Initialize MLB starting five lists as empty, as extraction logic was flawed
+      gameDetails.startingHomeFiveList = [];
+      gameDetails.startingAwayFiveList = [];
+      log('MLB starting five lists initialized as empty (extraction logic removed).');
+
+
       // await hotlinesDataResponse(
       //     awayTeamId: awayTeam?.id ?? "",
       //     sportId: sportId,
@@ -3322,3 +3330,8 @@ class StartingQBModel {
   StartingQBModel(
       {required this.playerId, required this.playerName, required this.teamId});
 }
+
+// Removed _extractMLBStartingFive function as it was based on incorrect assumptions
+// about data models (mlb_game_summary_model vs mlb_statics_model) and field availability
+// (battingOrder, status). The logic needs to be re-evaluated based on the correct data source
+// (likely mlb_statics_model.Players) and available fields if MLB starting five extraction is still required.
