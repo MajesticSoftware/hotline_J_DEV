@@ -190,15 +190,18 @@ class PreferenceManager {
     var deviceInfo = await appDeviceInfo();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
+    // Store device model separately
     if (isiOS) {
       IosDeviceInfo iosDeviceInfo = (deviceInfo as IosDeviceInfo);
       setDeviceModel(iosDeviceInfo.model);
-      setDeviceVersion("iOS ${iosDeviceInfo.systemVersion}");
+      // Removed incorrect setDeviceVersion call here
     } else {
       AndroidDeviceInfo androidDeviceInfo = (deviceInfo as AndroidDeviceInfo);
-      setDeviceVersion(androidDeviceInfo.model);
-      setDeviceVersion(androidDeviceInfo.version.release);
+      setDeviceModel(androidDeviceInfo.model); // Store device model
+      // Removed incorrect setDeviceVersion calls here
     }
+
+    // Correctly store app version and build number
     setDeviceVersion(packageInfo.version);
     setDeviceVersionNumber(packageInfo.buildNumber);
   }
