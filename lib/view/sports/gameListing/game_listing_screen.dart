@@ -190,17 +190,23 @@ class SelectGameScreen extends StatelessWidget {
                 controller.tabClick(context, 1);
                 controller.update();
               },
-            ),
+            ),*/
             drawerCard(
-              icon: Assets.imagesMlb,
+              widget: SvgPicture.asset(
+                Assets.imagesMlb,
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * .035,
+                width: MediaQuery.of(context).size.width * .035,
+                fit: BoxFit.cover,
+              ),
               title: SportName.MLB.name,
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 2);
+                controller.tabClick(context, 1);
                 controller.update();
               },
-            ),*/
+            ).paddingOnly(top: 10.h),
             /*drawerCard(
               icon: Assets.imagesNfl,
               title: SportName.NFL.name,
@@ -226,7 +232,7 @@ class SelectGameScreen extends StatelessWidget {
                 controller.tabClick(context, 0);
                 controller.update();
               },
-            ).paddingOnly(top: 30.h),
+            ),
             /*drawerCard(
               icon: Assets.imagesNcaa,
               title: SportName.NCAAF.name,

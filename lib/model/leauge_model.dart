@@ -44,6 +44,14 @@ List<LeagueModel> sportsLeagueList = [
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
       isAvailable: true,
       gameImage: Assets.imagesNcaab),
+  LeagueModel(
+      gameImage: Assets.imagesMlb,
+      gameName: SportName.MLB.name,
+      date: formatted,
+      key: SportName.MLB.name,
+      sportId: mlbSportId,
+      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API'] ?? "",
+      isAvailable: true),
   /* LeagueModel(
       sportId: nbaSportId,
       gameName: SportName.NBA.name,
@@ -51,15 +59,7 @@ List<LeagueModel> sportsLeagueList = [
       key: SportName.NBA.name,
       apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
       isAvailable: true,
-      gameImage: Assets.imagesNcaab),
-  LeagueModel(
-      gameImage: Assets.imagesMlb,
-      gameName: SportName.MLB.name,
-      date: formatted,
-      key: SportName.MLB.name,
-      sportId: mlbSportId,
-      apiKey: dotenv.env['ODDS_COMPARISON_REGULAR_API']??"",
-      isAvailable: true),*/
+      gameImage: Assets.imagesNcaab),*/
   /*LeagueModel(
       gameImage: Assets.imagesNcaa,
       date: formatted,
