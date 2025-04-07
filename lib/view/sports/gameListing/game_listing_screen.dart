@@ -642,7 +642,7 @@ class SelectGameScreen extends StatelessWidget {
                   flameNumber: controller.sportKey != SportName.MLB.name
                       ? spotList(controller)[index].getFlameValue
                       : 0,
-                  isShowWeather: controller.sportKey != SportName.NCAAB.name ||
+                  isShowWeather: controller.sportKey != SportName.NCAAB.name &&
                       controller.sportKey != SportName.NBA.name,
                   onTap: () {
                     controller.gameOnClick(
@@ -743,7 +743,7 @@ class SelectGameScreen extends StatelessWidget {
           onTap: () {
             controller.searchGameOnClick(context, competitors);
           },
-          isShowWeather: controller.sportKey != SportName.NCAAB.name ||
+          isShowWeather: controller.sportKey != SportName.NCAAB.name &&
               controller.sportKey != SportName.NBA.name,
           awayTeamMoneyLine: competitors.awayMoneyLineValue,
           homeTeamMoneyLine: competitors.homeMoneyLineValue,

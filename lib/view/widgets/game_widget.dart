@@ -963,13 +963,11 @@ class HeaderCard extends StatelessWidget {
                     SvgPicture.asset(
                       sportName == SportName.NFL.name
                           ? Assets.imagesNfl
-                          : Assets.imagesNcaab,
-                      height: sportName == SportName.NFL.name
-                          ? MediaQuery.of(context).size.height * .017
-                          : MediaQuery.of(context).size.height * .02,
-                      width: sportName == SportName.NFL.name
-                          ? MediaQuery.of(context).size.width * .01
-                          : MediaQuery.of(context).size.width * .01,
+                          : sportName == SportName.MLB.name
+                              ? Assets.imagesMlb
+                              : Assets.imagesNcaab,
+                      height: MediaQuery.of(context).size.height * .02,
+                      width: MediaQuery.of(context).size.width * .01,
                       fit: BoxFit.cover,
                       color: whiteColor,
                     ),

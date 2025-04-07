@@ -296,11 +296,11 @@ class GameListingController extends GetxController {
     date = DateFormat('yyyy-MM-dd')
         .format(DateTime.now() /*.subtract(const Duration(days: 2))*/);
     if (sportKey == SportName.MLB.name) {
-      return await getGameListingForMLBRes(isLoad,
+      return await getGameListingForMLB(isLoad,
           apiKey: apiKey,
           sportKey: SportName.MLB.name,
           date: date,
-          sportId: sportId);
+          sportId: mlbSportId);
     } else if (sportKey == SportName.NFL.name) {
       return await getGameListingForNFLGame(isLoad,
           apiKey: apiKey,
@@ -325,7 +325,7 @@ class GameListingController extends GetxController {
           apiKey: apiKey,
           sportKey: SportName.MLB.name,
           date: date,
-          sportId: sportId);
+          sportId: "sr:sport:3");
     } else if (sportKey == SportName.NFL.name) {
       return await nflGameRefreshCall(isLoad,
           apiKey: apiKey,
@@ -583,85 +583,96 @@ class GameListingController extends GetxController {
       String key = ''}) async {
     isLoading.value = isLoad;
     int pageIndex = 0;
-    for (int i = 0; i <= pageIndex; i++) {
-      await fetchListingData(
-              start: i * 100,
-              key: key,
-              date: date,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              sportId: sportId)
-          .then((value) {
+    List<SportEvents> resultEvents = [];
+    
+    try {
+      for (int i = 0; i <= pageIndex; i++) {
+        List<SportEvents> value = await fetchListingData(
+          start: i * 100,
+          key: key,
+          date: date,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          sportId: sportId
+        );
+        
         if (value.isNotEmpty) {
           if (value.length >= 85) {
             pageIndex++;
           }
-          final sportEvents = value;
-          for (var event in sportEvents) {
-            DateTime time = (DateTime.parse(event.scheduled ?? ''));
-            var difference =
-                (time.toUtc().difference((DateTime.now().toUtc())));
-            if ((mlbGameSeasonId.contains(event.season?.id.toString())) &&
-                sportKey == SportName.MLB.name &&
-                (difference.inHours >= (-6)) &&
-                (event.status != GameStatus.closed.name)) {
-              if (mlbTodayEventsList.contains(event)) {
-              } else {
-                mlbTodayEventsList.add(event);
+          
+          if (sportKey == SportName.MLB.name) {
+            log("MLB API CALL - Processing ${value.length} events from sportId: $sportId");
+          }
+          
+          for (var event in value) {
+            try {
+              DateTime time = (DateTime.parse(event.scheduled ?? ''));
+              var difference = (time.toUtc().difference((DateTime.now().toUtc())));
+              
+              // Special handling for MLB to ensure we get all games
+              if (sportKey == SportName.MLB.name) {
+                if (!mlbTodayEventsList.contains(event) && 
+                    (difference.inHours >= (-6)) &&
+                    (event.status != GameStatus.closed.name)) {
+                  log("MLB API CALL - Adding today event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
+                  mlbTodayEventsList.add(event);
+                }
+              } 
+              // NFL events
+              else if (sportKey == SportName.NFL.name && 
+                      event.season?.id == 'sr:season:115087' &&
+                      (difference.inHours >= (-6)) &&
+                      (event.status != GameStatus.closed.name)) {
+                if (!nflTodayEventsList.contains(event)) {
+                  nflTodayEventsList.add(event);
+                }
+              } 
+              // NCAA events
+              else if (sportKey == SportName.NCAA.name && 
+                      (event.season?.id == 'sr:season:101983' || event.season?.id == "sr:season:101811") &&
+                      (difference.inHours >= (-6)) &&
+                      (event.status != GameStatus.closed.name)) {
+                if (!ncaaTodayEventsList.contains(event)) {
+                  ncaaTodayEventsList.add(event);
+                }
+              } 
+              // NCAAB events
+              else if (sportKey == SportName.NCAAB.name && 
+                      ((ncaabGameSeasonUid.contains(replaceId((event.season?.uuids).toString()))) ||
+                      ncaabGameSeasonId.contains(event.season?.id)) &&
+                      ((ncaabGameTournamentId.contains(replaceId((event.tournament?.id).toString()))) ||
+                      (ncaabGameTournamentId.contains(replaceId((event.season?.tournamentId).toString())))) &&
+                      (difference.inHours >= (-6)) &&
+                      (event.status != GameStatus.closed.name)) {
+                if (!ncaabTodayEventsList.contains(event)) {
+                  ncaabTodayEventsList.add(event);
+                }
+              } 
+              // NBA events
+              else if (sportKey == SportName.NBA.name && 
+                      event.season?.id == 'sr:season:106289' &&
+                      (difference.inHours >= (-6)) &&
+                      (event.status != GameStatus.closed.name)) {
+                if (!nbaTodayEventsList.contains(event)) {
+                  nbaTodayEventsList.add(event);
+                }
               }
-            } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey == SportName.NFL.name &&
-                (difference.inHours >= (-6)) &&
-                (event.status != GameStatus.closed.name)) {
-              if (nflTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                nflTodayEventsList.add(event);
-              }
-            } else if ((event.season?.id == 'sr:season:101983' ||
-                    event.season?.id == "sr:season:101811") &&
-                sportKey == SportName.NCAA.name &&
-                (difference.inHours >= (-6)) &&
-                (event.status != GameStatus.closed.name)) {
-              if (ncaaTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                ncaaTodayEventsList.add(event);
-              }
-            } else if ((((ncaabGameSeasonUid.contains(
-                        replaceId((event.season?.uuids).toString()))) ||
-                    ncaabGameSeasonId.contains(event.season?.id)) &&
-                ((ncaabGameTournamentId.contains(
-                        replaceId((event.tournament?.id).toString()))) ||
-                    (ncaabGameTournamentId.contains(
-                        replaceId((event.season?.tournamentId).toString())))) &&
-                sportKey == SportName.NCAAB.name &&
-                (difference.inHours >= (-6)) &&
-                (event.status != GameStatus.closed.name))) {
-              if (ncaabTodayEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                ncaabTodayEventsList.add(event);
-              }
-            } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == SportName.NBA.name &&
-                (difference.inHours >= (-6)) &&
-                (event.status != GameStatus.closed.name)) {
-              if (nbaTodayEventsList.contains(event)) {
-              } else {
-                nbaTodayEventsList.add(event);
-              }
+            } catch (e) {
+              log("Error processing event in gameListingTodayApiRes: $e");
             }
           }
+          
+          // Sort the list by scheduled time
           (getTodayList(sportKey)).sort((a, b) =>
               DateTime.parse(a.scheduled ?? "")
                   .compareTo(DateTime.parse(b.scheduled ?? "")));
         }
-      });
+      }
+    } catch (e) {
+      log("Error in gameListingTodayApiRes: $e");
     }
+    
     update();
     return getTodayList(sportKey);
   }
@@ -676,111 +687,135 @@ class GameListingController extends GetxController {
     isPagination = isLoad;
     isLoading.value = false;
     int pageIndex = 0;
-    for (int i = 0; i <= pageIndex; i++) {
-      await fetchListingData(
-              start: i * 100,
-              key: key,
-              date: date,
-              isLoad: isLoad,
-              sportKey: sportKey,
-              sportId: sportId)
-          .then((List<SportEvents> value) {
+    
+    try {
+      for (int i = 0; i <= pageIndex; i++) {
+        List<SportEvents> value = await fetchListingData(
+          start: i * 100,
+          key: key,
+          date: date,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          sportId: sportId
+        );
+        
         if (value.isNotEmpty) {
           if (value.length >= 85) {
             pageIndex++;
           }
+          
+          if (sportKey == SportName.MLB.name) {
+            log("MLB API CALL - Tomorrow - Processing ${value.length} events from sportId: $sportId");
+          }
+          
           List<SportEvents> sportEvents = value.toSet().toList();
           for (var event in sportEvents.toSet()) {
-            DateTime time = (DateTime.parse(event.scheduled ?? ''));
-            var difference =
-                (time.toUtc().difference((DateTime.now().toUtc())));
-            if ((mlbGameSeasonId.contains(event.season?.id.toString())) &&
-                sportKey == SportName.MLB.name &&
-                DateTime.parse(event.scheduled ?? '').toLocal().day !=
-                    DateTime.now().add(const Duration(days: 1)).toLocal().day) {
-              if (mlbTomorrowEventsList.contains(event)) {
-              } else {
-                mlbTomorrowEventsList.add(event);
-              }
-            } else if (event.season?.id == 'sr:season:115087' &&
-                sportKey == SportName.NFL.name) {
-              if (nflSportEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                if (nflTomorrowEventsList.contains(event)) {
-                } else {
+            try {
+              DateTime time = DateTime.parse(event.scheduled ?? '');
+              var difference = time.toUtc().difference(DateTime.now().toUtc());
+              
+              // Special handling for MLB games
+              if (sportKey == SportName.MLB.name) {
+                if (!mlbTomorrowEventsList.contains(event)) {
+                  log("MLB API CALL - Adding future event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
+                  mlbTomorrowEventsList.add(event);
+                }
+              } 
+              // NFL events
+              else if (sportKey == SportName.NFL.name && 
+                       event.season?.id == 'sr:season:115087') {
+                if (!nflTomorrowEventsList.contains(event) &&
+                    nflSportEventsList.indexWhere((element) => element.id == event.id) == -1) {
                   nflTomorrowEventsList.add(event);
                 }
-              }
-            } else if ((event.season?.id == 'sr:season:101983' ||
-                    (event.season?.id == 'sr:season:101811')) &&
-                sportKey == SportName.NCAA.name) {
-              if (ncaaTomorrowEventsList.contains(event)) {
-              } else {
-                ncaaTomorrowEventsList.add(event);
-              }
-            } else if ((ncaabGameSeasonUid.contains(
-                        replaceId((event.season?.uuids).toString())) ||
-                    ncaabGameSeasonId.contains(event.season?.id)) &&
-                ((ncaabGameTournamentId.contains(
-                        replaceId((event.tournament?.id).toString()))) ||
-                    (ncaabGameTournamentId.contains(
-                        replaceId((event.season?.tournamentId).toString())))) &&
-                sportKey == SportName.NCAAB.name) {
-              if (ncaabSportEventsList
-                      .indexWhere((element) => element.id == event.id) !=
-                  -1) {
-              } else {
-                if (ncaabTomorrowEventsList.contains(event)) {
-                } else {
+              } 
+              // NCAA events
+              else if (sportKey == SportName.NCAA.name && 
+                      (event.season?.id == 'sr:season:101983' || event.season?.id == 'sr:season:101811')) {
+                if (!ncaaTomorrowEventsList.contains(event)) {
+                  ncaaTomorrowEventsList.add(event);
+                }
+              } 
+              // NCAAB events
+              else if (sportKey == SportName.NCAAB.name && 
+                      ((ncaabGameSeasonUid.contains(replaceId((event.season?.uuids).toString()))) ||
+                       ncaabGameSeasonId.contains(event.season?.id)) &&
+                      ((ncaabGameTournamentId.contains(replaceId((event.tournament?.id).toString()))) ||
+                       (ncaabGameTournamentId.contains(replaceId((event.season?.tournamentId).toString()))))) {
+                if (!ncaabTomorrowEventsList.contains(event) &&
+                    ncaabSportEventsList.indexWhere((element) => element.id == event.id) == -1) {
                   ncaabTomorrowEventsList.add(event);
                 }
+              } 
+              // NBA events
+              else if (sportKey == SportName.NBA.name && 
+                       event.season?.id == 'sr:season:106289' &&
+                       (difference.inHours <= (16))) {
+                if (!nbaTomorrowEventsList.contains(event)) {
+                  nbaTomorrowEventsList.add(event);
+                }
               }
-            } else if (event.season?.id == 'sr:season:106289' &&
-                sportKey == SportName.NBA.name &&
-                (difference.inHours <= (16))) {
-              if (nbaTomorrowEventsList.contains(event)) {
-              } else {
-                nbaTomorrowEventsList.add(event);
-              }
+            } catch (e) {
+              log("Error processing event in gameListingTomorrowApiRes: $e for event ID: ${event.id}");
             }
           }
+          
+          // Sort the list by scheduled time
           getTomorrowList(sportKey).sort((a, b) =>
-              DateTime.parse(a.scheduled ?? "")
-                  .compareTo(DateTime.parse(b.scheduled ?? "")));
+              DateTime.parse(a.scheduled ?? "").compareTo(DateTime.parse(b.scheduled ?? "")));
         }
-      });
-      update();
+      }
+    } catch (e) {
+      log("Error in gameListingTomorrowApiRes: $e");
     }
+    
+    update();
   }
 
   List<SportEvents> getTodayList(sportKey) {
-    return (sportKey == SportName.NFL.name
-            ? nflTodayEventsList.toSet()
-            : sportKey == SportName.MLB.name
-                ? mlbTodayEventsList.toSet()
-                : sportKey == SportName.NBA.name
-                    ? nbaTodayEventsList.toSet()
-                    : sportKey == SportName.NCAAB.name
-                        ? ncaabTodayEventsList.toSet()
-                        : ncaaTodayEventsList.toSet())
-        .toSet()
-        .toList();
+    // Get the appropriate list based on sport key
+    List<SportEvents> eventsList = sportKey == SportName.NFL.name
+        ? nflTodayEventsList
+        : sportKey == SportName.MLB.name
+            ? mlbTodayEventsList
+            : sportKey == SportName.NBA.name
+                ? nbaTodayEventsList
+                : sportKey == SportName.NCAAB.name
+                    ? ncaabTodayEventsList
+                    : ncaaTodayEventsList;
+    
+    // Deduplicate based on event ID
+    Map<String, SportEvents> uniqueEvents = {};
+    for (var event in eventsList) {
+      if (event.id != null && event.id!.isNotEmpty) {
+        uniqueEvents[event.id!] = event;
+      }
+    }
+    
+    return uniqueEvents.values.toList();
   }
 
   List<SportEvents> getTomorrowList(sportKey) {
-    return (sportKey == SportName.NFL.name
-            ? nflTomorrowEventsList.toSet()
-            : sportKey == SportName.MLB.name
-                ? mlbTomorrowEventsList.toSet()
-                : sportKey == SportName.NBA.name
-                    ? nbaTomorrowEventsList.toSet()
-                    : sportKey == SportName.NCAAB.name
-                        ? ncaabTomorrowEventsList.toSet()
-                        : ncaaTomorrowEventsList.toSet())
-        .toSet()
-        .toList();
+    // Get the appropriate list based on sport key
+    List<SportEvents> eventsList = sportKey == SportName.NFL.name
+        ? nflTomorrowEventsList
+        : sportKey == SportName.MLB.name
+            ? mlbTomorrowEventsList
+            : sportKey == SportName.NBA.name
+                ? nbaTomorrowEventsList
+                : sportKey == SportName.NCAAB.name
+                    ? ncaabTomorrowEventsList
+                    : ncaaTomorrowEventsList;
+    
+    // Deduplicate based on event ID
+    Map<String, SportEvents> uniqueEvents = {};
+    for (var event in eventsList) {
+      if (event.id != null && event.id!.isNotEmpty) {
+        uniqueEvents[event.id!] = event;
+      }
+    }
+    
+    return uniqueEvents.values.toList();
   }
 
   List<SportEvents> getSportEventList(sportKey) {
@@ -801,12 +836,51 @@ class GameListingController extends GetxController {
 
   ///GET ALL EVENT BY HOME AWAY FILTER
   getAllEventList(String sportKey, bool isLoad) {
+    // Debug log for duplicate checking
+    if (sportKey == SportName.MLB.name) {
+      log("MLB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
+    } else if (sportKey == SportName.NCAAB.name) {
+      log("NCAAB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
+    }
+    
+    // Clear current list
     getSportEventList(sportKey).clear();
-    getSportEventList(sportKey).addAll(getTodayList(sportKey).toSet());
-    getSportEventList(sportKey).addAll(getTomorrowList(sportKey).toSet());
-    update();
-    getSportEventList(sportKey).sort((a, b) => DateTime.parse(a.scheduled ?? "")
-        .compareTo(DateTime.parse(b.scheduled ?? "")));
+    
+    // Create sets to deduplicate events by ID
+    Set<String> addedEventIds = {};
+    List<SportEvents> dedupedEvents = [];
+    
+    // Process today events
+    for (var event in getTodayList(sportKey)) {
+      if (!addedEventIds.contains(event.id)) {
+        addedEventIds.add(event.id ?? "");
+        dedupedEvents.add(event);
+      }
+    }
+    
+    // Process tomorrow events
+    for (var event in getTomorrowList(sportKey)) {
+      if (!addedEventIds.contains(event.id)) {
+        addedEventIds.add(event.id ?? "");
+        dedupedEvents.add(event);
+      }
+    }
+    
+    // Add the deduplicated list
+    getSportEventList(sportKey).addAll(dedupedEvents);
+    
+    // Debug log after deduplication
+    if (sportKey == SportName.MLB.name) {
+      log("MLB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
+    } else if (sportKey == SportName.NCAAB.name) {
+      log("NCAAB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
+    }
+    
+    // Sort by scheduled time
+    getSportEventList(sportKey).sort((a, b) => 
+        DateTime.parse(a.scheduled ?? "").compareTo(DateTime.parse(b.scheduled ?? "")));
+    
+    // Process each event to set home/away teams
     for (var event in getSportEventList(sportKey)) {
       if (event.competitors.isNotEmpty) {
         if (event.competitors[0].qualifier == 'home') {
@@ -2219,6 +2293,133 @@ class GameListingController extends GetxController {
     });
   }
 
+  Future<void> getGameListingForMLB(bool isLoad,
+      {String apiKey = '',
+      String sportKey = '',
+      String date = '',
+      String sportId = ''}) async {
+    log("MLB API Call - Starting with sportId: $mlbSportId and date: $date");
+    mlbTodayEventsList = [];
+    mlbSportEventsList = [];
+    
+    try {
+      List<SportEvents> todayEvents = await gameListingTodayApiRes(
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: date,
+          sportId: mlbSportId);
+          
+      log("MLB API Call - Today events count: ${todayEvents.length}");
+      
+      List<SportEvents> tomorrowEvents = await gameListingTodayApiRes(
+          key: apiKey,
+          isLoad: isLoad,
+          sportKey: sportKey,
+          date: DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(date).add(const Duration(days: 1))),
+          sportId: mlbSportId);
+          
+      log("MLB API Call - Tomorrow events count: ${tomorrowEvents.length}");
+      
+      isLoading.value = false;
+      isPagination = isLoad;
+      mlbTomorrowEventsList.clear();
+      
+      // Load future games
+      for (int i = 2; i <= 6; i++) {
+        gameListingTomorrowApiRes(
+            key: apiKey,
+            isLoad: isLoad,
+            sportKey: sportKey,
+            date: DateFormat('yyyy-MM-dd')
+                .format(DateTime.parse(date).add(Duration(days: i))),
+            sportId: mlbSportId)
+            .then((value) {
+          getAllEventList(sportKey, isLoad);
+          gameListingsWithLogoResponse(currentYear, sportKey, isLoad: isLoad);
+          
+          log("MLB API Call - After getAllEventList: ${mlbSportEventsList.length} events");
+          
+          if (i == 6) {
+            isPagination = false;
+          }
+        }).then((value) {
+          if (mlbSportEventsList.isNotEmpty) {
+            for (int i = 0; i < mlbSportEventsList.length; i++) {
+              if (mlbSportEventsList[i].uuids != null) {
+                getWeather(mlbSportEventsList[i].venue?.cityName ?? "",
+                    index: i, sportKey: sportKey);
+                if (mlbSportEventsList[i].competitors.isNotEmpty) {
+                  boxScoreResponse(
+                      gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
+                      index: i,
+                      homeTeamId: mlbSportEventsList[i].competitors[0].id ?? "",
+                      awayTeamId: mlbSportEventsList[i].competitors[1].id ?? "");
+                }
+              }
+            }
+          } else {
+            log("MLB API Call - No MLB events found");
+          }
+        });
+      }
+      
+      // Handle live updates
+      if (mlbTodayEventsList.isNotEmpty) {
+        log("MLB API Call - Setting up timer for ${mlbTodayEventsList.length} events");
+        timer = Timer.periodic(const Duration(seconds: 45), (t) async {
+          mlbTodayEventsList.clear();
+          await gameListingTodayApiRes(
+              key: apiKey,
+              isLoad: false,
+              sportKey: sportKey,
+              date: date,
+              sportId: mlbSportId)
+              .then((value) {
+            gameListingTodayApiRes(
+                key: apiKey,
+                isLoad: false,
+                sportKey: sportKey,
+                date: DateFormat('yyyy-MM-dd').format(
+                    DateTime.parse(date).add(const Duration(days: 1))),
+                sportId: mlbSportId)
+                .then((value) {
+              for (int i = 0; i < mlbTodayEventsList.length; i++) {
+                int liveIndex = mlbSportEventsList.indexWhere(
+                    (element) => element.id == mlbTodayEventsList[i].id);
+                if (liveIndex >= 0) {
+                  setOdds(mlbSportEventsList[liveIndex]);
+                }
+                if (((DateTime.parse(mlbTodayEventsList[i].scheduled ?? "")
+                            .toLocal())
+                        .day ==
+                    DateTime.now().toLocal().day) &&
+                    mlbTodayEventsList[i].status != GameStatus.closed.name) {
+                  if (mlbTodayEventsList[i].competitors.isNotEmpty) {
+                    boxScoreResponse(
+                        gameId: replaceId(mlbTodayEventsList[i].uuids ?? ''),
+                        index: i,
+                        homeTeamId: mlbTodayEventsList[i].competitors[0].id ?? "",
+                        awayTeamId: mlbTodayEventsList[i].competitors[1].id ?? "");
+                  }
+                }
+              }
+            });
+          });
+          update();
+        });
+      } else {
+        log("MLB API Call - No today events for timer");
+      }
+    } catch (e) {
+      log("MLB API Call - Error: $e");
+      isLoading.value = false;
+    }
+    
+    update();
+  }
+
   Future<void> mlbGameRefreshCall(bool isLoad,
       {String apiKey = '',
       String sportKey = '',
@@ -2243,7 +2444,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
         isPagination = isLoad;
         mlbTomorrowEventsList.clear();
-        for (int i = 2; i <= 4; i++) {
+        for (int i = 2; i <= 6; i++) {
           gameListingTomorrowApiRes(
                   key: apiKey,
                   isLoad: isLoad,
@@ -2259,24 +2460,18 @@ class GameListingController extends GetxController {
                     index: i, sportKey: sportKey);
                 if (mlbSportEventsList[i].uuids != null) {
                   boxScoreResponse(
-                      homeTeamId: replaceId(
-                              mlbSportEventsList[i].competitors[0].uuids ??
-                                  '') ??
-                          "",
-                      awayTeamId: replaceId(
-                              mlbSportEventsList[i].competitors[1].uuids ??
-                                  '') ??
-                          "",
                       gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
-                      index: i);
+                      index: i,
+                      homeTeamId: mlbSportEventsList[i].competitors[0].id ?? "",
+                      awayTeamId: mlbSportEventsList[i].competitors[1].id ?? "");
                 }
               }
             }
             gameListingsWithLogoResponse(currentYear, sportKey, isLoad: isLoad);
+            if (i == 6) {
+              isPagination = false;
+            }
           });
-          if (i == 4) {
-            isPagination = false;
-          }
         }
       });
     });
