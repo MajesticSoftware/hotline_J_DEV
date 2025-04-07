@@ -2,7 +2,11 @@
 
 # This script removes bitcode from Facebook SDK frameworks
 
-FRAMEWORKS_DIR="./build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Frameworks"
+# Find the latest archive
+LATEST_ARCHIVE=$(find ~/Library/Developer/Xcode/Archives -name "*.xcarchive" | sort -r | head -1)
+FRAMEWORKS_DIR="$LATEST_ARCHIVE/Products/Applications/Runner.app/Frameworks"
+
+echo "Using archive: $LATEST_ARCHIVE"
 
 # Check if directory exists
 if [ ! -d "$FRAMEWORKS_DIR" ]; then
