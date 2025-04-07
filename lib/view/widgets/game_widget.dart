@@ -606,18 +606,12 @@ class GameTabCard extends StatelessWidget {
   final void Function()? onTapContact;
   final GameListingController controller;
   final List<Color> sportSelectedColor = [
-    const Color(0xff0C4981),
-    // const Color(0xff1A8B47),
-    // const Color(0xffEABB42),
-    // Colors.orange,
-    // Colors.deepPurpleAccent
+    const Color(0xff0C4981),  // NCAAB blue
+    const Color(0xff1A8B47),  // MLB green
   ];
   final List<Color> sportColor = [
-    const Color(0xff0C4981).withOpacity(.3),
-    // const Color(0xff1A8B47).withOpacity(.3),
-    // const Color(0xffEABB42).withOpacity(.4),
-    // Colors.orange.withOpacity(.4),
-    // Colors.deepPurpleAccent.withOpacity(.4),
+    const Color(0xff0C4981).withOpacity(.3),  // NCAAB blue (muted)
+    const Color(0xff1A8B47).withOpacity(.3),  // MLB green (muted)
   ];
 
   @override
@@ -734,7 +728,7 @@ class GameTabCard extends StatelessWidget {
                 separatorBuilder: (context, index) {
                   return 20.w.W();
                 },
-                itemCount: /* Platform.isIOS ? */ 1 /*: 5*/))
+                itemCount: sportsLeagueList.length))
         .paddingSymmetric(
             vertical: 15.h,
             horizontal: MediaQuery.of(context).size.width * .03);
