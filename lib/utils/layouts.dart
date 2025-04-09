@@ -28,7 +28,30 @@ getWeatherIconOld(String condition, BuildContext context, double height) {
   }
 }
 
-Widget getWeatherIcon(int condition, BuildContext context, double height) {
+Widget getWeatherIcon(int condition, BuildContext context, double height, {String? iconUrl}) {
+  // If we have a direct icon URL from WeatherAPI, use it
+  if (iconUrl != null && iconUrl.isNotEmpty) {
+    return Container(
+      width: height,
+      height: height,
+      constraints: BoxConstraints(maxWidth: height, maxHeight: height),
+      child: Image.network(
+        iconUrl,
+        width: height,
+        height: height,
+        fit: BoxFit.contain,
+        // Add a fallback to the traditional method if network image fails
+        errorBuilder: (context, error, stackTrace) => _getWeatherIconByCondition(condition, context, height),
+      ),
+    );
+  } 
+  
+  // Otherwise fall back to the traditional condition-based method
+  return _getWeatherIconByCondition(condition, context, height);
+}
+
+// Original weather icon logic as a private helper function
+Widget _getWeatherIconByCondition(int condition, BuildContext context, double height) {
   if (condition < 300) {
     return svgPicture(context, Assets.imagesSun3, height);
   } else if (condition < 400) {

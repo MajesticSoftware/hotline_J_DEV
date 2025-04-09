@@ -656,6 +656,7 @@ class SelectGameScreen extends StatelessWidget {
                   awayTeamOU: spotList(controller)[index].awayOUValue,
                   homeTeamOU: spotList(controller)[index].homeOUValue,
                   weather: spotList(controller)[index].weather,
+                  weatherIconUrl: spotList(controller)[index].weatherIconUrl,
                   homeTeamSpread:
                       spotList(controller)[index].homeSpreadValue.contains('-')
                           ? spotList(controller)[index].homeSpreadValue
@@ -750,6 +751,7 @@ class SelectGameScreen extends StatelessWidget {
           awayTeamOU: competitors.awayOUValue,
           homeTeamOU: competitors.homeOUValue,
           weather: competitors.weather,
+          weatherIconUrl: competitors.weatherIconUrl,
           homeTeamSpread: competitors.homeSpreadValue.contains('-')
               ? competitors.homeSpreadValue
               : '+${competitors.homeSpreadValue}',

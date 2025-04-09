@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -49,7 +50,7 @@ class GameListingController extends GetxController {
     timer = null;
     timerNCAA = null;
     super.onClose();
-    log('I am closed');
+    dev.log('I am closed');
   }
 
   String sportId = ncaabSportId;
@@ -286,7 +287,7 @@ class GameListingController extends GetxController {
         );
       }
     } catch (e) {
-      log('ERROR__------$e');
+      dev.log('ERROR__------$e');
       showAppSnackBar(e.toString());
     }
     return [];
@@ -503,7 +504,7 @@ class GameListingController extends GetxController {
     result = await UserStartupRepo().logOutApp();
     try {
       if (result.status) {
-        log('RESPONSE--${result.status}');
+        dev.log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
             ForgotPasswordResModel.fromJson(result.toJson());
         bool isDark = PreferenceManager.getIsDarkMode() ?? false;
@@ -538,7 +539,7 @@ class GameListingController extends GetxController {
     result = await UserStartupRepo().deleteAc();
     try {
       if (result.status) {
-        log('RESPONSE--${result.status}');
+        dev.log('RESPONSE--${result.status}');
         ForgotPasswordResModel response =
             ForgotPasswordResModel.fromJson(result.toJson());
         bool isDark = PreferenceManager.getIsDarkMode() ?? false;
@@ -602,7 +603,7 @@ class GameListingController extends GetxController {
           }
           
           if (sportKey == SportName.MLB.name) {
-            log("MLB API CALL - Processing ${value.length} events from sportId: $sportId");
+            dev.log("MLB API CALL - Processing ${value.length} events from sportId: $sportId");
           }
           
           for (var event in value) {
@@ -615,7 +616,7 @@ class GameListingController extends GetxController {
                 if (!mlbTodayEventsList.contains(event) && 
                     (difference.inHours >= (-6)) &&
                     (event.status != GameStatus.closed.name)) {
-                  log("MLB API CALL - Adding today event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
+                  dev.log("MLB API CALL - Adding today event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
                   mlbTodayEventsList.add(event);
                 }
               } 
@@ -659,7 +660,7 @@ class GameListingController extends GetxController {
                 }
               }
             } catch (e) {
-              log("Error processing event in gameListingTodayApiRes: $e");
+              dev.log("Error processing event in gameListingTodayApiRes: $e");
             }
           }
           
@@ -670,7 +671,7 @@ class GameListingController extends GetxController {
         }
       }
     } catch (e) {
-      log("Error in gameListingTodayApiRes: $e");
+      dev.log("Error in gameListingTodayApiRes: $e");
     }
     
     update();
@@ -705,7 +706,7 @@ class GameListingController extends GetxController {
           }
           
           if (sportKey == SportName.MLB.name) {
-            log("MLB API CALL - Tomorrow - Processing ${value.length} events from sportId: $sportId");
+            dev.log("MLB API CALL - Tomorrow - Processing ${value.length} events from sportId: $sportId}");
           }
           
           List<SportEvents> sportEvents = value.toSet().toList();
@@ -717,7 +718,7 @@ class GameListingController extends GetxController {
               // Special handling for MLB games
               if (sportKey == SportName.MLB.name) {
                 if (!mlbTomorrowEventsList.contains(event)) {
-                  log("MLB API CALL - Adding future event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
+                  dev.log("MLB API CALL - Adding future event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
                   mlbTomorrowEventsList.add(event);
                 }
               } 
@@ -756,7 +757,7 @@ class GameListingController extends GetxController {
                 }
               }
             } catch (e) {
-              log("Error processing event in gameListingTomorrowApiRes: $e for event ID: ${event.id}");
+              dev.log("Error processing event in gameListingTomorrowApiRes: $e for event ID: ${event.id}");
             }
           }
           
@@ -766,7 +767,7 @@ class GameListingController extends GetxController {
         }
       }
     } catch (e) {
-      log("Error in gameListingTomorrowApiRes: $e");
+      dev.log("Error in gameListingTomorrowApiRes: $e");
     }
     
     update();
@@ -838,9 +839,9 @@ class GameListingController extends GetxController {
   getAllEventList(String sportKey, bool isLoad) {
     // Debug log for duplicate checking
     if (sportKey == SportName.MLB.name) {
-      log("MLB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
+      dev.log("MLB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
     } else if (sportKey == SportName.NCAAB.name) {
-      log("NCAAB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
+      dev.log("NCAAB API CALL - Before deduplication: Today list: ${getTodayList(sportKey).length}, Tomorrow list: ${getTomorrowList(sportKey).length}");
     }
     
     // Clear current list
@@ -871,9 +872,9 @@ class GameListingController extends GetxController {
     
     // Debug log after deduplication
     if (sportKey == SportName.MLB.name) {
-      log("MLB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
+      dev.log("MLB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
     } else if (sportKey == SportName.NCAAB.name) {
-      log("NCAAB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
+      dev.log("NCAAB API CALL - After deduplication: ${getSportEventList(sportKey).length} events");
     }
     
     // Sort by scheduled time
@@ -908,11 +909,11 @@ class GameListingController extends GetxController {
               consensus.outcomes?.forEach((lines) {
                 if (lines.type == 'home') {
                   event.homeMoneyLine = lines.odds.toString();
-                  log('HOME MONEY ---${event.homeMoneyLine}');
+                  dev.log('HOME MONEY ---${event.homeMoneyLine}');
                 }
                 if (lines.type == 'away') {
                   event.awayMoneyLine = lines.odds.toString();
-                  log('AWAY MONEY ---${event.awayMoneyLine}');
+                  dev.log('AWAY MONEY ---${event.awayMoneyLine}');
                 }
               });
             } else {
@@ -1057,7 +1058,7 @@ class GameListingController extends GetxController {
         // );
       }
     } catch (e) {
-      log('ERROR BOX SCORE MLB----$e');
+      dev.log('ERROR BOX SCORE MLB----$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1135,7 +1136,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       // isLoading.value = false;
-      log('ERROR BOX SCORE NFL && NCAA--------$e');
+      dev.log('ERROR BOX SCORE NFL && NCAA--------$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1209,7 +1210,7 @@ class GameListingController extends GetxController {
         // );
       }
     } catch (e) {
-      log('ERROR BOX SCORE NBA----$e');
+      dev.log('ERROR BOX SCORE NBA----$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1271,7 +1272,7 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       // isLoading.value = false;
-      log('ERROR NCAA RANKING-------$e');
+      dev.log('ERROR NCAA RANKING-------$e');
       // showAppSnackBar(
       //   errorText,
       // );
@@ -1331,7 +1332,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
       }
     } catch (e) {
-      log('ERROR NCAA CONFERENCE-------$e');
+      dev.log('ERROR NCAA CONFERENCE-------$e');
     }
     update();
   }
@@ -1344,11 +1345,11 @@ class GameListingController extends GetxController {
             consensus.outcomes?.forEach((lines) {
               if (lines.type == 'home') {
                 event.homeMoneyLine = lines.odds.toString();
-                log('HOME MONEY ---${event.homeMoneyLine}');
+                dev.log('HOME MONEY ---${event.homeMoneyLine}');
               }
               if (lines.type == 'away') {
                 event.awayMoneyLine = lines.odds.toString();
-                log('AWAY MONEY ---${event.awayMoneyLine}');
+                dev.log('AWAY MONEY ---${event.awayMoneyLine}');
               }
             });
           } else {
@@ -1926,7 +1927,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
       }
     } catch (e) {
-      log('ERROR NFL GAME RANK-----$e');
+      dev.log('ERROR NFL GAME RANK-----$e');
       showAppSnackBar(e.toString());
     }
     update();
@@ -2003,7 +2004,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
       }
     } catch (e) {
-      log('ERROR NFL GAME RANK-----$e');
+      dev.log('ERROR NFL GAME RANK-----$e');
       showAppSnackBar(e.toString());
     }
     update();
@@ -2171,7 +2172,7 @@ class GameListingController extends GetxController {
         isLoading.value = false;
       }
     } catch (e) {
-      log('ERROR NFL GAME RANK-----$e');
+      dev.log('ERROR NFL GAME RANK-----$e');
       showAppSnackBar(e.toString());
     }
     update();
@@ -2298,7 +2299,7 @@ class GameListingController extends GetxController {
       String sportKey = '',
       String date = '',
       String sportId = ''}) async {
-    log("MLB API Call - Starting with sportId: $mlbSportId and date: $date");
+    dev.log("MLB API Call - Starting with sportId: $mlbSportId and date: $date");
     mlbTodayEventsList = [];
     mlbSportEventsList = [];
     
@@ -2310,7 +2311,7 @@ class GameListingController extends GetxController {
           date: date,
           sportId: mlbSportId);
           
-      log("MLB API Call - Today events count: ${todayEvents.length}");
+      dev.log("MLB API Call - Today events count: ${todayEvents.length}");
       
       List<SportEvents> tomorrowEvents = await gameListingTodayApiRes(
           key: apiKey,
@@ -2320,7 +2321,7 @@ class GameListingController extends GetxController {
               .format(DateTime.parse(date).add(const Duration(days: 1))),
           sportId: mlbSportId);
           
-      log("MLB API Call - Tomorrow events count: ${tomorrowEvents.length}");
+      dev.log("MLB API Call - Tomorrow events count: ${tomorrowEvents.length}");
       
       isLoading.value = false;
       isPagination = isLoad;
@@ -2339,7 +2340,7 @@ class GameListingController extends GetxController {
           getAllEventList(sportKey, isLoad);
           gameListingsWithLogoResponse(currentYear, sportKey, isLoad: isLoad);
           
-          log("MLB API Call - After getAllEventList: ${mlbSportEventsList.length} events");
+          dev.log("MLB API Call - After getAllEventList: ${mlbSportEventsList.length} events");
           
           if (i == 6) {
             isPagination = false;
@@ -2360,14 +2361,14 @@ class GameListingController extends GetxController {
               }
             }
           } else {
-            log("MLB API Call - No MLB events found");
+            dev.log("MLB API Call - No MLB events found");
           }
         });
       }
       
       // Handle live updates
       if (mlbTodayEventsList.isNotEmpty) {
-        log("MLB API Call - Setting up timer for ${mlbTodayEventsList.length} events");
+        dev.log("MLB API Call - Setting up timer for ${mlbTodayEventsList.length} events");
         timer = Timer.periodic(const Duration(seconds: 45), (t) async {
           mlbTodayEventsList.clear();
           await gameListingTodayApiRes(
@@ -2410,10 +2411,10 @@ class GameListingController extends GetxController {
           update();
         });
       } else {
-        log("MLB API Call - No today events for timer");
+        dev.log("MLB API Call - No today events for timer");
       }
     } catch (e) {
-      log("MLB API Call - Error: $e");
+      dev.log("MLB API Call - Error: $e");
       isLoading.value = false;
     }
     
@@ -2904,7 +2905,7 @@ class GameListingController extends GetxController {
             }
           });
         } catch (e) {
-          log('error--$e');
+          dev.log('error--$e');
         }
         isLoading.value = false;
       } else {
@@ -2967,7 +2968,7 @@ class GameListingController extends GetxController {
             }
           }
         } catch (e) {
-          log('error--$e');
+          dev.log('error--$e');
         }
         isLoading.value = false;
       } else {}
@@ -2979,35 +2980,135 @@ class GameListingController extends GetxController {
 
   Future getWeather(String cityName,
       {bool isLoad = false, int index = 0, required String sportKey}) async {
+    // Log start of weather fetch with detailed parameters
+    print('🌡️ WEATHER API CALL START: city=${cityName.split(',').first}, sportKey=$sportKey, index=$index');
+    
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().getWeather(cityName.split(',').first);
+    
+    // Log raw API response
+    print('🌡️ WEATHER API RESPONSE: status=${result.status}, message=${result.message}');
+    if (result.data != null) {
+      print('🌡️ WEATHER API RESPONSE DATA: ${result.data.toString().substring(0, min(500, result.data.toString().length))}...');
+    } else {
+      print('🌡️ WEATHER API RESPONSE DATA: null');
+    }
+    
     try {
       if (result.status) {
         if (result.data != null) {
+          // Check if 'current' exists in response
+          if (result.data['current'] == null) {
+            print('⚠️ WEATHER API ERROR: Missing "current" key in response data');
+            return;
+          }
+          
+          var currentData = result.data['current'];
+          print('🌡️ WEATHER API CURRENT DATA: ${currentData.toString().substring(0, min(300, currentData.toString().length))}...');
+          
+          // Check if 'condition' exists in 'current'
+          if (currentData['condition'] == null) {
+            print('⚠️ WEATHER API ERROR: Missing "condition" key in current data');
+            return;
+          }
+          
+          var conditionData = currentData['condition'];
+          print('🌡️ WEATHER API CONDITION DATA: $conditionData');
+          
+          // Logging temperature values
+          if (currentData.containsKey('temp_f')) {
+            print('🌡️ WEATHER API TEMP_F: ${currentData['temp_f']}');
+          } else {
+            print('⚠️ WEATHER API ERROR: Missing "temp_f" key in current data');
+          }
+          
+          // Map the WeatherAPI condition code to our internal weather condition code
+          int weatherCode = conditionData['code'] ?? 805;
+          print('🌡️ WEATHER API CODE: $weatherCode');
+          
+          // Convert the API condition code to match our internal weather display system
+          // WeatherAPI uses different codes, so we need to map them to our app's weather code system
+          int mappedCode = 805; // Default value
+          if (weatherCode == 1000) {
+            // Sunny/Clear
+            mappedCode = 800;
+          } else if (weatherCode >= 1001 && weatherCode <= 1003) {
+            // Partly cloudy
+            mappedCode = 801;
+          } else if (weatherCode >= 1004 && weatherCode <= 1009) {
+            // Cloudy/Overcast
+            mappedCode = 804;
+          } else if (weatherCode >= 1030 && weatherCode <= 1149) {
+            // Mist/Fog/Drizzle
+            mappedCode = 310;
+          } else if (weatherCode >= 1150 && weatherCode <= 1201) {
+            // Rain
+            mappedCode = 500;
+          } else if (weatherCode >= 1202 && weatherCode <= 1237) {
+            // Snow/Sleet
+            mappedCode = 600;
+          } else if (weatherCode >= 1238 && weatherCode <= 1282) {
+            // Thunder
+            mappedCode = 200;
+          }
+          
+          print('🌡️ WEATHER API MAPPED CODE: $mappedCode');
+          
+          // Store the mapped weather code
           (sportKey == SportName.MLB.name
                   ? mlbSportEventsList
                   : sportKey == SportName.NFL.name
                       ? nflSportEventsList
                       : ncaaSportEventsList)[index]
-              .weather = result.data['weather'][0]['id'];
+              .weather = mappedCode;
+              
+          // Store the temperature (already in F - no conversion needed)
+          num tempF = currentData['temp_f'] ?? 0;
+          print('🌡️ WEATHER API SETTING TEMP: $tempF');
+          
           (sportKey == SportName.MLB.name
                   ? mlbSportEventsList
                   : sportKey == SportName.NFL.name
                       ? nflSportEventsList
                       : ncaaSportEventsList)[index]
-              .temp = result.data['main']['temp'] ?? 0;
+              .temp = tempF;
+              
+          // Store the weather icon URL directly from the API
+          String iconUrl = "https:${conditionData['icon'] ?? ''}";
+          print('🌡️ WEATHER API ICON URL: $iconUrl');
+          
+          (sportKey == SportName.MLB.name
+                  ? mlbSportEventsList
+                  : sportKey == SportName.NFL.name
+                      ? nflSportEventsList
+                      : ncaaSportEventsList)[index]
+              .weatherIconUrl = iconUrl;
+          
+          // Check what we actually saved
+          print('✅ WEATHER API SAVED VALUES: temp=${(sportKey == SportName.MLB.name
+                  ? mlbSportEventsList
+                  : sportKey == SportName.NFL.name
+                      ? nflSportEventsList
+                      : ncaaSportEventsList)[index].temp}, ' +
+              'weather=${(sportKey == SportName.MLB.name
+                  ? mlbSportEventsList
+                  : sportKey == SportName.NFL.name
+                      ? nflSportEventsList
+                      : ncaaSportEventsList)[index].weather}, ' +
+              'weatherIconUrl=${(sportKey == SportName.MLB.name
+                  ? mlbSportEventsList
+                  : sportKey == SportName.NFL.name
+                      ? nflSportEventsList
+                      : ncaaSportEventsList)[index].weatherIconUrl}');
         }
       } else {
         isLoading.value = false;
-        // showAppSnackBar(
-        //   result.message,
-        // );
+        print('❌ WEATHER API ERROR: Request failed with message: ${result.message}');
       }
     } catch (e) {
-      // isLoading.value = false;
-      log('ERROR WEATHER----$e');
-      // showAppSnackBar(e.toString());
+      print('❌ WEATHER API ERROR EXCEPTION: $e');
+      print('❌ WEATHER API ERROR STACK: ${StackTrace.current}');
     }
     update();
   }

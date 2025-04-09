@@ -40,6 +40,7 @@ class GameWidget extends StatelessWidget {
       required this.status,
       required this.weather,
       required this.temp,
+      this.weatherIconUrl = "",
       required this.flameNumber,
       required this.awayTeamSpread,
       required this.awayTeamMoneyLine,
@@ -73,6 +74,7 @@ class GameWidget extends StatelessWidget {
   final bool isShowFlam;
   final num temp;
   final num flameNumber;
+  final String weatherIconUrl;
   final void Function()? onTap;
 
   @override
@@ -329,25 +331,29 @@ class GameWidget extends StatelessWidget {
                         Column(
                           children: [
                             getWeatherIcon(weather, context,
-                                MediaQuery.of(context).size.height * .035),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              textBaseline: TextBaseline.alphabetic,
-                              verticalDirection: VerticalDirection.up,
-                              children: [
+                                MediaQuery.of(context).size.height * .035,
+                                iconUrl: weatherIconUrl),
+                            Container(
+                              width: MediaQuery.of(context).size.width * .13,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                textBaseline: TextBaseline.alphabetic,
+                                verticalDirection: VerticalDirection.up,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
                                 Text(
-                                  temp == 32
+                                  temp == 273.15 || temp == 0 || temp == 32
                                       ? "TBD"
-                                      : '  ${temp.toString().split('.').first}',
+                                      : '${temp.toString().split('.').first}',
                                   style: GoogleFonts.nunitoSans(
                                       color: Theme.of(context).highlightColor,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: temp == 32
+                                      fontSize: temp == 273.15 || temp == 0 || temp == 32
                                           ? MediaQuery.of(context).size.height *
                                               .014
                                           : MediaQuery.of(context).size.height *
-                                              .024),
+                                              .018),
                                 ),
                                 Text(
                                   '°F',
@@ -358,6 +364,7 @@ class GameWidget extends StatelessWidget {
                                   ),
                                 ),
                               ],
+                            ),
                             )
                           ],
                         )

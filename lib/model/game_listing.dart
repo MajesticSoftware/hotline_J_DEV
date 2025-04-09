@@ -179,6 +179,7 @@ class SportEvents {
   List homeTeamInjuredPlayer = [];
   num temp = 273.15;
   int weather = 805;
+  String weatherIconUrl = "";
 
   SportEvents({
     this.id,
@@ -281,6 +282,7 @@ class SportEvents {
     this.homeRank = '',
     this.temp = 273.15,
     this.weather = 805,
+    this.weatherIconUrl = '',
     this.homeTeamInjuredPlayer = const [],
     this.awayTeamInjuredPlayer = const [],
     this.awayReceiversPlayer = const [],
@@ -290,7 +292,8 @@ class SportEvents {
   });
 
   num get tmpInFahrenheit {
-    return ((((temp) - 273.15) * (9 / 5))) + 32;
+    // Temperature is already in Fahrenheit from WeatherAPI
+    return temp;
   }
 
   List<int> flameValues = [];

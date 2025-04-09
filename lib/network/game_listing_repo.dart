@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hotlines/extras/extras.dart';
 
@@ -445,13 +446,79 @@ class GameListingRepo {
   Future<ResponseItem> getWeather(String city) async {
     ResponseItem result;
 
-    Uri parameter;
-    Uri uri = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=${dotenv.env['WEATHER_APIKEY']??""}');
-    parameter = uri.replace();
+    // Validate API key exists and isn't empty
+    // Try both possible key names from .env file
+    String apiKey = dotenv.env['WEATHER_API'] ?? dotenv.env['WEATHER_APIKEY'] ?? "";
+    if (apiKey.isEmpty || apiKey == "YOUR_WEATHER_API_KEY") {
+      print('❌ WEATHER API ERROR: Valid API key is missing in .env file');
+      return ResponseItem(
+        status: false, 
+        message: "API key is missing or invalid", 
+        data: {"error": {"code": -1, "message": "API key not configured properly"}}
+      );
+    }
 
-    result = await BaseApiHelper.getRequest(parameter, {});
-    return result;
+    // Log the API key (partially masked for security)
+    String maskedKey = apiKey.length > 8 
+        ? "${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}" 
+        : "key_too_short";
+    
+    print('🌦️ WEATHER API REQUEST: city=$city, key=$maskedKey');
+    
+    // Validate city parameter
+    if (city.isEmpty) {
+      print('❌ WEATHER API ERROR: City name is empty');
+      return ResponseItem(
+        status: false, 
+        message: "Invalid city name", 
+        data: {"error": {"code": -2, "message": "City name cannot be empty"}}
+      );
+    }
+    
+    try {
+      // Encode city name properly for URL
+      String encodedCity = Uri.encodeComponent(city);
+      
+      Uri parameter;
+      Uri uri = Uri.parse(
+          'https://api.weatherapi.com/v1/forecast.json?q=$encodedCity&days=1&key=$apiKey');
+      parameter = uri.replace();
+      
+      print('🌦️ WEATHER API URL: ${parameter.toString()}');
+      
+      result = await BaseApiHelper.getRequest(parameter, {});
+      
+      print('🌦️ WEATHER API RESPONSE STATUS: ${result.status}, message: ${result.message}');
+      
+      // Check for API error codes specifically
+      if (!result.status && result.data is Map) {
+        var data = result.data as Map;
+        if (data.containsKey('error')) {
+          var error = data['error'];
+          if (error is Map && error.containsKey('code')) {
+            int errorCode = error['code'];
+            String errorMsg = error['message'] ?? 'Unknown error';
+            
+            if (errorCode == 2008) {
+              print('❌ WEATHER API ERROR: The API key has been disabled (code 2008)');
+              print('⚠️ Please visit your WeatherAPI.com account to check the status of your API key');
+              print('⚠️ You may need to verify your email, update billing information, or create a new key');
+            } else {
+              print('❌ WEATHER API ERROR: Code $errorCode - $errorMsg');
+            }
+          }
+        }
+      }
+      
+      return result;
+    } catch (e) {
+      print('❌ WEATHER API EXCEPTION: $e');
+      return ResponseItem(
+        status: false, 
+        message: "Exception occurred: $e", 
+        data: {"error": {"code": -3, "message": "Exception: $e"}}
+      );
+    }
   }
 
   Future<ResponseItem> gameListingsWithLogoForNCAAB(String sportKey) async {
