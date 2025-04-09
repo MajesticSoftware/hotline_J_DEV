@@ -6875,7 +6875,8 @@ headerWidget(BuildContext context, SportEvents gameDetails,
                                               .of(context)
                                               .size
                                               .height *
-                                              .02),
+                                              .02,
+                                          iconUrl: gameDetails.weatherIconUrl),
                                     )
                                     /*   getWeatherIcon(
                                         (gameDetails.venue != null

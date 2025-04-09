@@ -611,12 +611,33 @@ class GameListingController extends GetxController {
               DateTime time = (DateTime.parse(event.scheduled ?? ''));
               var difference = (time.toUtc().difference((DateTime.now().toUtc())));
               
-              // Special handling for MLB to ensure we get all games
+              // Special handling for MLB - only get official MLB games (not minor leagues or international)
               if (sportKey == SportName.MLB.name) {
+                // Debug info about each MLB game with eye-catching emoji
+                print("🔍🔍🔍 MLB GAME DEBUG INFO 🔍🔍🔍");
+                print("🆔 ID: ${event.id}");
+                print("📊 Status: ${event.status}");
+                print("🏆 Season ID: ${event.season?.id}");
+                print("🏆 Season Name: ${event.season?.name}");
+                print("🏟️ Tournament ID: ${event.tournament?.id}");
+                print("🏟️ Tournament Name: ${event.tournament?.name}");
+                print("🌍 Category Name: ${event.tournament?.category?.name}");
+                print("🌍 Category Country: ${event.tournament?.category?.countryCode}");
+                print("⚾ Teams: ${event.awayTeam} vs ${event.homeTeam}");
+                print("🌡️ Weather: ${event.weather}, IconURL: ${event.weatherIconUrl?.isNotEmpty}");
+                
+                // Only add official MLB games (filter out minor leagues and international games)
+                bool isOfficialMLB = 
+                    event.tournament?.id == "sr:tournament:109" && 
+                    event.season?.name?.contains("MLB 2025") == true;
+                
+                print("✅ Is Official MLB: $isOfficialMLB");
+                print("📍📍📍 END MLB GAME INFO 📍📍📍");
+                
                 if (!mlbTodayEventsList.contains(event) && 
                     (difference.inHours >= (-6)) &&
-                    (event.status != GameStatus.closed.name)) {
-                  dev.log("MLB API CALL - Adding today event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
+                    (event.status != GameStatus.closed.name) &&
+                    isOfficialMLB) {
                   mlbTodayEventsList.add(event);
                 }
               } 
@@ -715,9 +736,14 @@ class GameListingController extends GetxController {
               DateTime time = DateTime.parse(event.scheduled ?? '');
               var difference = time.toUtc().difference(DateTime.now().toUtc());
               
-              // Special handling for MLB games
+              // Special handling for MLB games - only include official MLB games
               if (sportKey == SportName.MLB.name) {
-                if (!mlbTomorrowEventsList.contains(event)) {
+                // Only add official MLB games
+                bool isOfficialMLB = 
+                    event.tournament?.id == "sr:tournament:109" && 
+                    event.season?.name?.contains("MLB 2025") == true;
+                
+                if (!mlbTomorrowEventsList.contains(event) && isOfficialMLB) {
                   dev.log("MLB API CALL - Adding future event: ${event.id} - ${event.status} - Season: ${event.season?.id}");
                   mlbTomorrowEventsList.add(event);
                 }
@@ -2980,127 +3006,150 @@ class GameListingController extends GetxController {
 
   Future getWeather(String cityName,
       {bool isLoad = false, int index = 0, required String sportKey}) async {
+    // Get the current game's scheduled time
+    SportEvents gameEvent = (sportKey == SportName.MLB.name
+        ? mlbSportEventsList
+        : sportKey == SportName.NFL.name
+            ? nflSportEventsList
+            : ncaaSportEventsList)[index];
+    
+    String gameScheduledTime = gameEvent.scheduled ?? "";
+    
     // Log start of weather fetch with detailed parameters
-    print('🌡️ WEATHER API CALL START: city=${cityName.split(',').first}, sportKey=$sportKey, index=$index');
+    print('🌡️ WEATHER API CALL START: city=${cityName.split(',').first}, sportKey=$sportKey, index=$index, gameTime=$gameScheduledTime');
+    
+    // Skip if city name is empty
+    if (cityName.isEmpty) {
+      print('⚠️ WEATHER API ERROR: Empty city name for game');
+      return;
+    }
     
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().getWeather(cityName.split(',').first);
     
-    // Log raw API response
-    print('🌡️ WEATHER API RESPONSE: status=${result.status}, message=${result.message}');
-    if (result.data != null) {
-      print('🌡️ WEATHER API RESPONSE DATA: ${result.data.toString().substring(0, min(500, result.data.toString().length))}...');
-    } else {
-      print('🌡️ WEATHER API RESPONSE DATA: null');
-    }
-    
     try {
       if (result.status) {
         if (result.data != null) {
-          // Check if 'current' exists in response
-          if (result.data['current'] == null) {
-            print('⚠️ WEATHER API ERROR: Missing "current" key in response data');
+          // Check if 'forecast' exists in response
+          if (result.data['forecast'] == null || result.data['forecast']['forecastday'] == null) {
+            print('⚠️ WEATHER API ERROR: Missing forecast data in response');
+            
+            // Fall back to current weather if no forecast
+            if (result.data['current'] != null) {
+              print('🌡️ WEATHER API: Falling back to current weather data');
+              processCurrentWeather(result.data['current'], sportKey, index);
+            }
             return;
           }
           
-          var currentData = result.data['current'];
-          print('🌡️ WEATHER API CURRENT DATA: ${currentData.toString().substring(0, min(300, currentData.toString().length))}...');
-          
-          // Check if 'condition' exists in 'current'
-          if (currentData['condition'] == null) {
-            print('⚠️ WEATHER API ERROR: Missing "condition" key in current data');
+          // Process the game's scheduled time to determine which forecast hour to use
+          DateTime gameDateTime;
+          try {
+            gameDateTime = DateTime.parse(gameScheduledTime).toLocal();
+            print('🕒 Game time (local): ${gameDateTime.toString()}');
+          } catch (e) {
+            print('⚠️ Failed to parse game time: $e');
+            // Fall back to current weather if we can't parse game time
+            if (result.data['current'] != null) {
+              processCurrentWeather(result.data['current'], sportKey, index);
+            }
             return;
           }
           
-          var conditionData = currentData['condition'];
-          print('🌡️ WEATHER API CONDITION DATA: $conditionData');
+          // Get the forecast day for the game date
+          var forecastDay = result.data['forecast']['forecastday'][0];
+          if (forecastDay == null || forecastDay['hour'] == null) {
+            print('⚠️ Missing hourly forecast data');
+            // Fall back to current weather
+            if (result.data['current'] != null) {
+              processCurrentWeather(result.data['current'], sportKey, index);
+            }
+            return;
+          }
           
-          // Logging temperature values
-          if (currentData.containsKey('temp_f')) {
-            print('🌡️ WEATHER API TEMP_F: ${currentData['temp_f']}');
+          // Find the forecast hour closest to the game time
+          var hourlyForecasts = forecastDay['hour'];
+          var gameHour = gameDateTime.hour;
+          
+          // Default to noon if we can't find a good match
+          var closestHourForecast = hourlyForecasts[12]; 
+          var smallestDiff = 24;
+          
+          for (var hourForecast in hourlyForecasts) {
+            try {
+              // Parse the time from the forecast
+              var forecastTime = DateTime.parse(hourForecast['time']).hour;
+              var diff = (forecastTime - gameHour).abs();
+              
+              // Find closest hour to game time
+              if (diff < smallestDiff) {
+                smallestDiff = diff;
+                closestHourForecast = hourForecast;
+              }
+            } catch (e) {
+              print('⚠️ Error parsing hour forecast: $e');
+              continue;
+            }
+          }
+          
+          print('🌡️ Using forecast for hour closest to game time (${gameHour}:00)');
+          
+          // Process the forecast for the specific game hour
+          if (closestHourForecast != null && closestHourForecast['condition'] != null) {
+            var conditionData = closestHourForecast['condition'];
+            
+            // Check if it's day or night for the selected hour
+            bool isDay = closestHourForecast['is_day'] == 1;
+            print('🌞🌙 Is daytime at game hour: $isDay');
+            
+            // Map the WeatherAPI condition code to our internal weather condition code
+            int weatherCode = conditionData['code'] ?? 805;
+            
+            // Convert the API condition code to match our internal weather display system
+            int mappedCode = 805; // Default value
+            if (weatherCode == 1000) {
+              // Sunny/Clear
+              mappedCode = 800;
+            } else if (weatherCode >= 1001 && weatherCode <= 1003) {
+              // Partly cloudy
+              mappedCode = 801;
+            } else if (weatherCode >= 1004 && weatherCode <= 1009) {
+              // Cloudy/Overcast
+              mappedCode = 804;
+            } else if (weatherCode >= 1030 && weatherCode <= 1149) {
+              // Mist/Fog/Drizzle
+              mappedCode = 310;
+            } else if (weatherCode >= 1150 && weatherCode <= 1201) {
+              // Rain
+              mappedCode = 500;
+            } else if (weatherCode >= 1202 && weatherCode <= 1237) {
+              // Snow/Sleet
+              mappedCode = 600;
+            } else if (weatherCode >= 1238 && weatherCode <= 1282) {
+              // Thunder
+              mappedCode = 200;
+            }
+            
+            // Store the mapped weather code
+            gameEvent.weather = mappedCode;
+              
+            // Store the temperature (already in F)
+            num tempF = closestHourForecast['temp_f'] ?? 0;
+            gameEvent.temp = tempF;
+              
+            // Store the weather icon URL directly from the API - this will now correctly show day/night
+            String iconUrl = "https:${conditionData['icon'] ?? ''}";
+            print('🌡️ WEATHER ICON URL (game time specific): $iconUrl');
+            
+            gameEvent.weatherIconUrl = iconUrl;
           } else {
-            print('⚠️ WEATHER API ERROR: Missing "temp_f" key in current data');
+            // Fall back to current weather if hour forecast is missing
+            print('⚠️ Missing condition data in hour forecast, falling back to current');
+            if (result.data['current'] != null) {
+              processCurrentWeather(result.data['current'], sportKey, index);
+            }
           }
-          
-          // Map the WeatherAPI condition code to our internal weather condition code
-          int weatherCode = conditionData['code'] ?? 805;
-          print('🌡️ WEATHER API CODE: $weatherCode');
-          
-          // Convert the API condition code to match our internal weather display system
-          // WeatherAPI uses different codes, so we need to map them to our app's weather code system
-          int mappedCode = 805; // Default value
-          if (weatherCode == 1000) {
-            // Sunny/Clear
-            mappedCode = 800;
-          } else if (weatherCode >= 1001 && weatherCode <= 1003) {
-            // Partly cloudy
-            mappedCode = 801;
-          } else if (weatherCode >= 1004 && weatherCode <= 1009) {
-            // Cloudy/Overcast
-            mappedCode = 804;
-          } else if (weatherCode >= 1030 && weatherCode <= 1149) {
-            // Mist/Fog/Drizzle
-            mappedCode = 310;
-          } else if (weatherCode >= 1150 && weatherCode <= 1201) {
-            // Rain
-            mappedCode = 500;
-          } else if (weatherCode >= 1202 && weatherCode <= 1237) {
-            // Snow/Sleet
-            mappedCode = 600;
-          } else if (weatherCode >= 1238 && weatherCode <= 1282) {
-            // Thunder
-            mappedCode = 200;
-          }
-          
-          print('🌡️ WEATHER API MAPPED CODE: $mappedCode');
-          
-          // Store the mapped weather code
-          (sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index]
-              .weather = mappedCode;
-              
-          // Store the temperature (already in F - no conversion needed)
-          num tempF = currentData['temp_f'] ?? 0;
-          print('🌡️ WEATHER API SETTING TEMP: $tempF');
-          
-          (sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index]
-              .temp = tempF;
-              
-          // Store the weather icon URL directly from the API
-          String iconUrl = "https:${conditionData['icon'] ?? ''}";
-          print('🌡️ WEATHER API ICON URL: $iconUrl');
-          
-          (sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index]
-              .weatherIconUrl = iconUrl;
-          
-          // Check what we actually saved
-          print('✅ WEATHER API SAVED VALUES: temp=${(sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index].temp}, ' +
-              'weather=${(sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index].weather}, ' +
-              'weatherIconUrl=${(sportKey == SportName.MLB.name
-                  ? mlbSportEventsList
-                  : sportKey == SportName.NFL.name
-                      ? nflSportEventsList
-                      : ncaaSportEventsList)[index].weatherIconUrl}');
         }
       } else {
         isLoading.value = false;
@@ -3108,8 +3157,74 @@ class GameListingController extends GetxController {
       }
     } catch (e) {
       print('❌ WEATHER API ERROR EXCEPTION: $e');
-      print('❌ WEATHER API ERROR STACK: ${StackTrace.current}');
     }
     update();
+  }
+  
+  // Helper method to process current weather data (for fallback)
+  void processCurrentWeather(Map<String, dynamic> currentData, String sportKey, int index) {
+    if (currentData == null || currentData['condition'] == null) {
+      print('⚠️ Invalid current weather data');
+      return;
+    }
+    
+    var conditionData = currentData['condition'];
+    
+    // Map the WeatherAPI condition code to our internal weather condition code
+    int weatherCode = conditionData['code'] ?? 805;
+    
+    // Convert the API condition code to match our internal weather display system
+    int mappedCode = 805; // Default value
+    if (weatherCode == 1000) {
+      // Sunny/Clear
+      mappedCode = 800;
+    } else if (weatherCode >= 1001 && weatherCode <= 1003) {
+      // Partly cloudy
+      mappedCode = 801;
+    } else if (weatherCode >= 1004 && weatherCode <= 1009) {
+      // Cloudy/Overcast
+      mappedCode = 804;
+    } else if (weatherCode >= 1030 && weatherCode <= 1149) {
+      // Mist/Fog/Drizzle
+      mappedCode = 310;
+    } else if (weatherCode >= 1150 && weatherCode <= 1201) {
+      // Rain
+      mappedCode = 500;
+    } else if (weatherCode >= 1202 && weatherCode <= 1237) {
+      // Snow/Sleet
+      mappedCode = 600;
+    } else if (weatherCode >= 1238 && weatherCode <= 1282) {
+      // Thunder
+      mappedCode = 200;
+    }
+    
+    // Store the mapped weather code
+    (sportKey == SportName.MLB.name
+            ? mlbSportEventsList
+            : sportKey == SportName.NFL.name
+                ? nflSportEventsList
+                : ncaaSportEventsList)[index]
+        .weather = mappedCode;
+        
+    // Store the temperature (already in F - no conversion needed)
+    num tempF = currentData['temp_f'] ?? 0;
+    
+    (sportKey == SportName.MLB.name
+            ? mlbSportEventsList
+            : sportKey == SportName.NFL.name
+                ? nflSportEventsList
+                : ncaaSportEventsList)[index]
+        .temp = tempF;
+        
+    // Store the weather icon URL directly from the API
+    String iconUrl = "https:${conditionData['icon'] ?? ''}";
+    print('🌡️ WEATHER ICON URL (current fallback): $iconUrl');
+    
+    (sportKey == SportName.MLB.name
+            ? mlbSportEventsList
+            : sportKey == SportName.NFL.name
+                ? nflSportEventsList
+                : ncaaSportEventsList)[index]
+        .weatherIconUrl = iconUrl;
   }
 }

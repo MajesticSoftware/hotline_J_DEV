@@ -626,6 +626,13 @@ class SelectGameScreen extends StatelessWidget {
   Widget buildGameItem(
       BuildContext context, GameListingController controller, int index) {
     try {
+      // Skip MLB games without weather data
+      if (controller.sportKey == SportName.MLB.name && 
+          (spotList(controller)[index].weather == 0 || 
+           spotList(controller)[index].weatherIconUrl.isEmpty)) {
+        return const SizedBox(); // Hide this game
+      }
+      
       String date = DateFormat.MMMd().format(
           DateTime.parse(spotList(controller)[index].scheduled ?? '')
               .toLocal());
@@ -642,8 +649,10 @@ class SelectGameScreen extends StatelessWidget {
                   flameNumber: controller.sportKey != SportName.MLB.name
                       ? spotList(controller)[index].getFlameValue
                       : 0,
-                  isShowWeather: controller.sportKey != SportName.NCAAB.name &&
-                      controller.sportKey != SportName.NBA.name,
+                  isShowWeather: (controller.sportKey != SportName.NCAAB.name &&
+                      controller.sportKey != SportName.NBA.name) &&
+                      spotList(controller)[index].weather != 0 &&
+                      spotList(controller)[index].weatherIconUrl.isNotEmpty,
                   onTap: () {
                     controller.gameOnClick(
                         context, spotList(controller)[index]);
@@ -728,6 +737,14 @@ class SelectGameScreen extends StatelessWidget {
       BuildContext context, GameListingController controller, int index) {
     try {
       SportEvents competitors = controller.searchList[index];
+      
+      // Skip MLB games without weather data
+      if (controller.sportKey == SportName.MLB.name && 
+          (competitors.weather == 0 || 
+           competitors.weatherIconUrl.isEmpty)) {
+        return const SizedBox(); // Hide this game
+      }
+      
       String date = DateFormat.MMMd()
           .format(DateTime.parse(competitors.scheduled ?? '').toLocal());
       String dateTime = DateFormat.jm()
@@ -744,8 +761,10 @@ class SelectGameScreen extends StatelessWidget {
           onTap: () {
             controller.searchGameOnClick(context, competitors);
           },
-          isShowWeather: controller.sportKey != SportName.NCAAB.name &&
-              controller.sportKey != SportName.NBA.name,
+          isShowWeather: (controller.sportKey != SportName.NCAAB.name &&
+              controller.sportKey != SportName.NBA.name) &&
+              competitors.weather != 0 &&
+              competitors.weatherIconUrl.isNotEmpty,
           awayTeamMoneyLine: competitors.awayMoneyLineValue,
           homeTeamMoneyLine: competitors.homeMoneyLineValue,
           awayTeamOU: competitors.awayOUValue,
