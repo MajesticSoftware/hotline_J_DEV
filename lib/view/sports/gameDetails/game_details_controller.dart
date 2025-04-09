@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_string_interpolations, unused_local_variable
 
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:get/get.dart';
 import 'package:hotlines/model/game_listing.dart';
@@ -257,12 +258,27 @@ class GameDetailsController extends GetxController {
   List<MLBPitchingStaticsModel> mlbAwayPlayerPitchingList = [];
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
   List<HitterPlayerStatMainModel> _hitterHomePlayerMainList = [];
+  List<HitterPlayerStatMainModel> _hitterAwayPlayerMainList = [];
+  
+  // Class variables for MLB statistics to fix scope issues
+  stat.OverallHitting? homeHitting;
+  stat.Overall? homePitching;
+  stat.OverallHitting? awayHitting;
+  stat.Overall? awayPitching;
 
   List<HitterPlayerStatMainModel> get hitterHomePlayerMainList =>
       _hitterHomePlayerMainList;
 
   set hitterHomePlayerMainList(List<HitterPlayerStatMainModel> value) {
     _hitterHomePlayerMainList = value;
+    update();
+  }
+  
+  List<HitterPlayerStatMainModel> get hitterAwayPlayerMainList =>
+      _hitterAwayPlayerMainList;
+
+  set hitterAwayPlayerMainList(List<HitterPlayerStatMainModel> value) {
+    _hitterAwayPlayerMainList = value;
     update();
   }
 
@@ -588,14 +604,52 @@ class GameDetailsController extends GetxController {
         if (response.statistics != null) {
           mlbStaticsHomeList = response.statistics;
           mlbPlayerPitchingData = response.players ?? [];
-          var homeHitting = mlbStaticsHomeList?.hitting?.overall;
-          var homePitching = mlbStaticsHomeList?.pitching?.overall;
-          int totalGame = int.parse(gameDetails.homeLoss) +
-                      int.parse(gameDetails.homeWin) ==
-                  0
-              ? 1
-              : int.parse(gameDetails.homeLoss) +
-                  int.parse(gameDetails.homeWin);
+          homeHitting = mlbStaticsHomeList?.hitting?.overall;
+          homePitching = mlbStaticsHomeList?.pitching?.overall;
+          // Calculate total games played for the home team
+          int totalHomeWins = int.tryParse(gameDetails.homeWin) ?? 0;
+          int totalHomeLosses = int.tryParse(gameDetails.homeLoss) ?? 0;
+          int totalGame = totalHomeWins + totalHomeLosses;
+          
+          // Add debug print to check the values
+          print('🏠 HOME TEAM STATS: Wins=${gameDetails.homeWin}, Losses=${gameDetails.homeLoss}, Total Games=$totalGame');
+          
+          // Ensure we never divide by zero and use a realistic game count
+          if (totalGame <= 0) {
+            // If we get season totals but no game count, estimate based on team's runs
+            int runsTotal = 0;
+            try {
+              runsTotal = int.parse(homeHitting?.runs?.total.toString() ?? "0");
+              print('📊 HOME TEAM: Parsed runs total: $runsTotal');
+            } catch (e) {
+              print('❌ ERROR parsing home team runs total: $e');
+            }
+            
+            if (runsTotal > 500) {
+              // Full season's worth of data (or close to it)
+              totalGame = 162;
+              print('⚠️ Season stats detected for home team, using full season (162 games)');
+            } else if (runsTotal > 300) {
+              // Roughly mid-season
+              totalGame = 81;
+              print('⚠️ Mid-season stats detected for home team, using half season (81 games)');
+            } else if (runsTotal > 0) {
+              // Early season or partial data
+              totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
+              print('⚠️ Partial season stats detected for home team, estimating ${totalGame} games');
+            } else {
+              // No meaningful data, use safe default
+              totalGame = 40;
+              print('⚠️ No meaningful stats for home team, using default (40 games)');
+            }
+          }
+          
+          // Force a reasonable game count based on typical season length
+          // This is to prevent massively inflated per-game stats
+          if (totalGame > 162) { // MLB teams play 162 games in a season
+            print('⚠️ WARNING: Unrealistic game count $totalGame for home team, using 162 instead');
+            totalGame = 162;
+          }
           for (var player in mlbPlayerPitchingData) {
             if (player.statistics?.hitting != null) {
               if (player.position != "P") {
@@ -645,50 +699,55 @@ class GameDetailsController extends GetxController {
             }
           }
 
+          // Log raw values being used for calculations
+          int runsTotal = 0;
+          try {
+            runsTotal = int.parse(homeHitting?.runs?.total.toString() ?? "0");
+          } catch (e) {
+            print('❌ ERROR parsing home team runs total for logging: $e');
+          }
+          print('📊 HOME TEAM RAW STATS: Runs Total=$runsTotal, Games=$totalGame');
+          
           mlbHomeHittingList = [
-            ((int.parse(homeHitting?.runs?.total.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.onbase?.h.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.onbase?.hr.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.rbi.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.onbase?.bb.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.outs?.ktotal.toString() ?? "0") /
-                    totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homeHitting?.steal?.stolen.toString() ?? "0") /
-                    totalGame)
-                .toStringAsFixed(1)),
+            (totalGame > 0 ? (runsTotal / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.onbase?.h.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.onbase?.hr.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.rbi.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.onbase?.bb.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.outs?.ktotal.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homeHitting?.steal?.stolen.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
             homeHitting?.avg ?? "0",
             '.${(homeHitting?.slg ?? 0).toString().split('.').last}',
             '${homeHitting?.ops ?? '0'}',
-            ((int.parse(homeHitting?.outs?.gidp.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
+            (totalGame > 0 ? (int.parse(homeHitting?.outs?.gidp.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
             homeHitting?.abhr?.toStringAsFixed(1) ?? "0",
           ];
           mlbHomePitchingList = [
             '${homePitching?.era ?? '0'}',
             '${homePitching?.games?.shutout ?? '0'}',
-            '.${(((homePitching?.games?.save ?? 0) / (homePitching?.games?.svo ?? 0)).toStringAsFixed(3).split('.').last)}',
+            '.${(((homePitching?.games?.save ?? 0) / (homePitching?.games?.svo ?? 1)).toStringAsFixed(3).split('.').last)}',
             '${homePitching?.games?.blownSave ?? '0'}',
             '${homePitching?.games?.qstart ?? '0'}',
-            ((int.parse(homePitching?.runs?.total.toString() ?? "0") /
-                    totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homePitching?.onbase?.hr.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homePitching?.onbase?.bb.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
-            ((int.parse(homePitching?.outs?.ktotal.toString() ?? "0") /
-                    totalGame)
-                .toStringAsFixed(1)),
+            (totalGame > 0 ? (int.parse(homePitching?.runs?.total.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homePitching?.onbase?.hr.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homePitching?.onbase?.bb.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
+            (totalGame > 0 ? (int.parse(homePitching?.outs?.ktotal.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
             '${homePitching?.whip ?? "0"}',
             '.${(homePitching?.oba ?? 0).toString().split('.').last}',
-            ((int.parse(homePitching?.outs?.gidp.toString() ?? "0") / totalGame)
-                .toStringAsFixed(1)),
+            (totalGame > 0 ? (int.parse(homePitching?.outs?.gidp.toString() ?? "0") / totalGame) : 0)
+                .toStringAsFixed(1),
           ];
         }
       } else {
@@ -709,15 +768,7 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-  List<HitterPlayerStatMainModel> _hitterAwayPlayerMainList = [];
-
-  List<HitterPlayerStatMainModel> get hitterAwayPlayerMainList =>
-      _hitterAwayPlayerMainList;
-
-  set hitterAwayPlayerMainList(List<HitterPlayerStatMainModel> value) {
-    _hitterAwayPlayerMainList = value;
-    update();
-  }
+  // Getter and setter already defined at the class level
 
   Future mlbStaticsAwayTeamResponse(
       {String awayTeamId = '',
@@ -739,13 +790,53 @@ class GameDetailsController extends GetxController {
           mlbStaticsAwayList = response.statistics;
           mlbPlayerPitchingData = response.players ?? [];
         }
-        int totalGame = int.parse(gameDetails.awayLoss) +
-                    int.parse(gameDetails.awayWin) ==
-                0
-            ? 1
-            : int.parse(gameDetails.awayLoss) + int.parse(gameDetails.awayWin);
-        var awayHitting = mlbStaticsAwayList?.hitting?.overall;
-        var awayPitching = mlbStaticsAwayList?.pitching?.overall;
+        // Calculate total games played for the away team
+        int totalAwayWins = int.tryParse(gameDetails.awayWin) ?? 0;
+        int totalAwayLosses = int.tryParse(gameDetails.awayLoss) ?? 0;
+        int totalGame = totalAwayWins + totalAwayLosses;
+        
+        // Add debug print to check the values
+        print('🏃 AWAY TEAM STATS: Wins=${gameDetails.awayWin}, Losses=${gameDetails.awayLoss}, Total Games=$totalGame');
+        
+        // Ensure we never divide by zero and use a realistic game count
+        if (totalGame <= 0) {
+          // If we get season totals but no game count, estimate based on team's runs
+          int runsTotal = 0;
+          try {
+            runsTotal = int.parse(awayHitting?.runs?.total.toString() ?? "0");
+            print('📊 AWAY TEAM: Parsed runs total: $runsTotal');
+          } catch (e) {
+            print('❌ ERROR parsing away team runs total: $e');
+          }
+          
+          if (runsTotal > 500) {
+            // Full season's worth of data (or close to it)
+            totalGame = 162;
+            print('⚠️ Season stats detected for away team, using full season (162 games)');
+          } else if (runsTotal > 300) {
+            // Roughly mid-season
+            totalGame = 81;
+            print('⚠️ Mid-season stats detected for away team, using half season (81 games)');
+          } else if (runsTotal > 0) {
+            // Early season or partial data
+            totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
+            print('⚠️ Partial season stats detected for away team, estimating ${totalGame} games');
+          } else {
+            // No meaningful data, use safe default
+            totalGame = 40;
+            print('⚠️ No meaningful stats for away team, using default (40 games)');
+          }
+        }
+        
+        awayHitting = mlbStaticsAwayList?.hitting?.overall;
+        awayPitching = mlbStaticsAwayList?.pitching?.overall;
+        
+        // Force a reasonable game count based on typical season length
+        // This is to prevent massively inflated per-game stats
+        if (totalGame > 162) { // MLB teams play 162 games in a season
+          print('⚠️ WARNING: Unrealistic game count $totalGame for away team, using 162 instead');
+          totalGame = 162;
+        }
         for (var player in mlbPlayerPitchingData) {
           if (player.statistics?.hitting != null) {
             if (player.position != 'P') {
@@ -795,26 +886,35 @@ class GameDetailsController extends GetxController {
           }
         }
 
+        // Log raw values being used for calculations
+        int runsTotal = 0;
+        try {
+          runsTotal = int.parse(awayHitting?.runs?.total.toString() ?? "0");
+        } catch (e) {
+          print('❌ ERROR parsing away team runs total for logging: $e');
+        }
+        print('📊 AWAY TEAM RAW STATS: Runs Total=$runsTotal, Games=$totalGame');
+          
         mlbAwayHittingList = [
-          ((int.parse(awayHitting?.runs?.total.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.onbase?.h.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.onbase?.hr.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.rbi.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.onbase?.bb.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.outs?.ktotal.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
+          (totalGame > 0 ? (runsTotal / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.onbase?.h.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.onbase?.hr.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.rbi.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.onbase?.bb.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.outs?.ktotal.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayHitting?.steal?.stolen.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
           awayHitting?.avg ?? "0",
           '.${((awayHitting?.slg ?? "0").toString().split('.').last)}',
           '${awayHitting?.ops ?? '0'}',
-          ((int.parse(awayHitting?.outs?.gidp.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
+          (totalGame > 0 ? (int.parse(awayHitting?.outs?.gidp.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
           awayHitting?.abhr?.toStringAsFixed(1) ?? "0",
         ];
         mlbAwayPitchingList = [
@@ -823,18 +923,18 @@ class GameDetailsController extends GetxController {
           '.${(((awayPitching?.games?.save ?? 0) / (awayPitching?.games?.svo ?? 1)).toStringAsFixed(3).split('.').last)}',
           '${awayPitching?.games?.blownSave ?? '0'}',
           '${awayPitching?.games?.qstart ?? '0'}',
-          ((int.parse(awayPitching?.runs?.total.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayPitching?.onbase?.hr.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayPitching?.onbase?.bb.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
-          ((int.parse(awayPitching?.outs?.ktotal.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
+          (totalGame > 0 ? (int.parse(awayPitching?.runs?.total.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayPitching?.onbase?.hr.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayPitching?.onbase?.bb.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
+          (totalGame > 0 ? (int.parse(awayPitching?.outs?.ktotal.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
           '${awayPitching?.whip ?? "0"}',
           '.${(awayPitching?.oba ?? 0).toString().split('.').last}',
-          ((int.parse(awayPitching?.outs?.gidp.toString() ?? "0") / totalGame)
-              .toStringAsFixed(1)),
+          (totalGame > 0 ? (int.parse(awayPitching?.outs?.gidp.toString() ?? "0") / totalGame) : 0)
+              .toStringAsFixed(1),
         ];
 
         // isLoading.value = false;
