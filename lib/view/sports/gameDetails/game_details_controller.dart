@@ -700,6 +700,25 @@ class GameDetailsController extends GetxController {
   }
 
   ///MLB STATICS
+  // Helper function to format decimal values (remove leading zero)
+  String formatDecimal(dynamic value) {
+    if (value == null) return "0";
+    try {
+      // Handle both numeric and string inputs
+      String strValue = value is String ? value : value.toString();
+      
+      // If it's a decimal number starting with "0."
+      if (strValue.startsWith('0.')) {
+        return strValue.substring(1); // Remove the leading zero
+      }
+      
+      return strValue;
+    } catch (e) {
+      print('Error formatting decimal: $e');
+      return "0";
+    }
+  }
+
   Future mlbStaticsHomeTeamResponse(
       {String homeTeamId = '',
       bool isLoad = false,
@@ -803,7 +822,7 @@ class GameDetailsController extends GetxController {
                 hitterHomePlayerMainList.add(
                   HitterPlayerStatMainModel(
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
-                      avg: player.statistics?.hitting?.overall?.avg ?? "0",
+                      avg: formatDecimal(player.statistics?.hitting?.overall?.avg ?? "0"),
                       bb:
                           '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                       hAbValue:
@@ -816,11 +835,11 @@ class GameDetailsController extends GetxController {
                           '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
                       obp: 'OBP',
                       obpValue:
-                          '${player.statistics?.hitting?.overall?.obp ?? "0"}',
+                          formatDecimal(player.statistics?.hitting?.overall?.obp ?? "0"),
                       hAb: 'H-AB',
                       slg: 'SLG',
                       slgValue:
-                          '${player.statistics?.hitting?.overall?.slg ?? "0"}',
+                          formatDecimal(player.statistics?.hitting?.overall?.slg ?? "0"),
                       run: 'Runs/Game',
                       runValue: safeParseAndDivide(
                           player.statistics?.hitting?.overall?.runs?.total,
@@ -849,15 +868,15 @@ class GameDetailsController extends GetxController {
             safeParseAndDivide(homeHitting?.onbase?.bb, totalGame).toStringAsFixed(1),
             safeParseAndDivide(homeHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),
             safeParseAndDivide(homeHitting?.steal?.stolen, totalGame).toStringAsFixed(1),
-            homeHitting?.avg ?? "0",
+            formatDecimal(homeHitting?.avg ?? "0"),
             homeHitting?.slg != null ? '.${(homeHitting!.slg!).toString().split('.').last}' : "0",
-            '${homeHitting?.ops ?? '0'}',
+            formatDecimal(homeHitting?.ops ?? '0'),
             safeParseAndDivide(homeHitting?.outs?.gidp, totalGame).toStringAsFixed(1),
             homeHitting?.abhr != null ? homeHitting!.abhr!.toStringAsFixed(1) : "0",
           ];
           // Safe pitching stats calculations 
           mlbHomePitchingList = [
-            '${homePitching?.era ?? '0'}',
+            formatDecimal(homePitching?.era ?? '0'),
             '${homePitching?.games?.shutout ?? '0'}',
             homePitching?.games?.save != null && homePitching?.games?.svo != null && (homePitching?.games?.svo ?? 0) > 0 
                 ? '.${((homePitching!.games!.save! / homePitching!.games!.svo!).toStringAsFixed(3).split('.').last)}'
@@ -868,7 +887,7 @@ class GameDetailsController extends GetxController {
             safeParseAndDivide(homePitching?.onbase?.hr, totalGame).toStringAsFixed(1),
             safeParseAndDivide(homePitching?.onbase?.bb, totalGame).toStringAsFixed(1),
             safeParseAndDivide(homePitching?.outs?.ktotal, totalGame).toStringAsFixed(1),
-            '${homePitching?.whip ?? "0"}',
+            formatDecimal(homePitching?.whip ?? "0"),
             homePitching?.oba != null ? '.${(homePitching!.oba!).toString().split('.').last}' : '0',
             safeParseAndDivide(homePitching?.outs?.gidp, totalGame).toStringAsFixed(1),
           ];
@@ -931,9 +950,9 @@ class GameDetailsController extends GetxController {
       (homeHitting?.runs?.total != null ? (homeHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
       (homeHitting?.outs?.ktotal != null ? (homeHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
       (homeHitting?.steal?.stolen != null ? (homeHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
-      homeHitting?.avg ?? "0",                                                                                       // Team Batting Average
-      homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0",                                                 // On Base Percentage
-      homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0"                                                  // Slugging Percentage
+      formatDecimal(homeHitting?.avg ?? "0"),                                                                        // Team Batting Average
+      formatDecimal(homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0"),                                  // On Base Percentage
+      formatDecimal(homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0")                                   // Slugging Percentage
     ];
     
     mlbHomeDefensiveList = [
@@ -944,9 +963,9 @@ class GameDetailsController extends GetxController {
       (homePitching?.runs?.earned != null ? (homePitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
       (homePitching?.outs?.ktotal != null ? (homePitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
       (homePitching?.steal?.stolen != null ? (homePitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      homePitching?.era != null ? homePitching!.era!.toString() : "0",                                                // Team Earned Run Average
-      homePitching?.obp != null ? homePitching!.obp!.toString() : "0",                                                // Opponent OBP 
-      homePitching?.slg != null ? homePitching!.slg!.toString() : "0"                                                 // Opponent SLG
+      formatDecimal(homePitching?.era != null ? homePitching!.era!.toString() : "0"),                                 // Team Earned Run Average
+      formatDecimal(homePitching?.obp != null ? homePitching!.obp!.toString() : "0"),                                 // Opponent OBP 
+      formatDecimal(homePitching?.slg != null ? homePitching!.slg!.toString() : "0")                                  // Opponent SLG
     ];
     
     update();
@@ -1063,7 +1082,7 @@ class GameDetailsController extends GetxController {
                     bb:
                         '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                     playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: player.statistics?.hitting?.overall?.avg ?? "0",
+                    avg: formatDecimal(player.statistics?.hitting?.overall?.avg ?? "0"),
                     hAbValue:
                         '${player.statistics?.hitting?.overall?.onbase?.h ?? "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     hr:
@@ -1074,11 +1093,11 @@ class GameDetailsController extends GetxController {
                         '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
                     obp: 'OBP',
                     obpValue:
-                        '${player.statistics?.hitting?.overall?.obp ?? "0"}',
+                        formatDecimal(player.statistics?.hitting?.overall?.obp ?? "0"),
                     hAb: 'H-AB',
                     slg: 'SLG',
                     slgValue:
-                        '${player.statistics?.hitting?.overall?.slg ?? "0"}',
+                        formatDecimal(player.statistics?.hitting?.overall?.slg ?? "0"),
                     run: 'Runs/Game',
                     runValue: safeParseAndDivide(
                         player.statistics?.hitting?.overall?.runs?.total,
@@ -1188,9 +1207,9 @@ class GameDetailsController extends GetxController {
       (awayHitting?.runs?.total != null ? (awayHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
       (awayHitting?.outs?.ktotal != null ? (awayHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
       (awayHitting?.steal?.stolen != null ? (awayHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
-      awayHitting?.avg ?? "0",                                                                                       // Team Batting Average
-      awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0",                                                 // On Base Percentage
-      awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0"                                                  // Slugging Percentage
+      formatDecimal(awayHitting?.avg ?? "0"),                                                                        // Team Batting Average
+      formatDecimal(awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0"),                                  // On Base Percentage
+      formatDecimal(awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0")                                   // Slugging Percentage
     ];
     
     mlbAwayDefensiveList = [
@@ -1201,9 +1220,9 @@ class GameDetailsController extends GetxController {
       (awayPitching?.runs?.earned != null ? (awayPitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
       (awayPitching?.outs?.ktotal != null ? (awayPitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
       (awayPitching?.steal?.stolen != null ? (awayPitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      awayPitching?.era != null ? awayPitching!.era!.toString() : "0",                                                // Team Earned Run Average
-      awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0",                                                // Opponent OBP 
-      awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0"                                                 // Opponent SLG
+      formatDecimal(awayPitching?.era != null ? awayPitching!.era!.toString() : "0"),                                 // Team Earned Run Average
+      formatDecimal(awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0"),                                 // Opponent OBP 
+      formatDecimal(awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0")                                  // Opponent SLG
     ];
     
     update();
