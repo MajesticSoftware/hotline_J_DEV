@@ -267,7 +267,7 @@ Widget teamReportWidget(BuildContext context, String sportKey,
               .canvasColor),
       child: GetBuilder<GameDetailsController>(builder: (controller) {
         return StickyHeader(
-            header: headerTitleWidget(context, teamReport,
+            header: headerTitleWidget(context, 'Team Stats',
                 isTeamReport: true,
                 gameDetails: gameDetails,
                 awayTeam: awayTeam,
@@ -279,57 +279,268 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    rankingCommonWidget(
-                        context: context,
-                        title: 'Team Hitting Rankings',
-                        isPlayStat: false),
+                    // Toggle header for home/away teams
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            MediaQuery.of(context).size.width * .01),
+                        color: Theme.of(context).canvasColor
+                      ),
+                      child: Row(
+                        children: [
+                          20.h.W(),
+                          // Home team tab
+                          InkWell(
+                            onTap: () {
+                              controller.showMLBHomeTeam = true;
+                              controller.update();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: controller.showMLBHomeTeam 
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 1,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 5.h,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      gameDetails.gameHomeLogoLink,
+                                      height: 20.h,
+                                      width: 20.h,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Icon(
+                                          Icons.sports_baseball,
+                                          size: 20.h,
+                                          color: controller.showMLBHomeTeam
+                                              ? Colors.white
+                                              : Theme.of(context).primaryColor,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  10.w.W(),
+                                  Text(
+                                    homeTeam?.name ?? 'Home',
+                                    style: GoogleFonts.nunitoSans(
+                                      color: controller.showMLBHomeTeam
+                                          ? Colors.white
+                                          : Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          20.h.W(),
+                          // Away team tab
+                          InkWell(
+                            onTap: () {
+                              controller.showMLBHomeTeam = false;
+                              controller.update();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: !controller.showMLBHomeTeam 
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 1,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 5.h,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      gameDetails.gameLogoAwayLink,
+                                      height: 20.h,
+                                      width: 20.h,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Icon(
+                                          Icons.sports_baseball,
+                                          size: 20.h,
+                                          color: !controller.showMLBHomeTeam
+                                              ? Colors.white
+                                              : Theme.of(context).primaryColor,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  10.w.W(),
+                                  Text(
+                                    awayTeam?.name ?? 'Away',
+                                    style: GoogleFonts.nunitoSans(
+                                      color: !controller.showMLBHomeTeam
+                                          ? Colors.white
+                                          : Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ).paddingSymmetric(vertical: 10.h),
+                    ).paddingSymmetric(vertical: 10.h),
+                    
+                    // Title for stats section
+                    Container(
+                      color: Theme.of(context).splashColor,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Offensive Stats',
+                              style: GoogleFonts.nunitoSans(
+                                color: Theme.of(context).highlightColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.height * .014,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Defensive Stats',
+                              style: GoogleFonts.nunitoSans(
+                                color: Theme.of(context).highlightColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.height * .014,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ).paddingSymmetric(
+                          vertical: MediaQuery.of(context).size.height * .003),
+                    ),
+                    
+                    // Stats ListView - shows offensive and defensive stats side by side
                     ListView.separated(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      itemCount: controller.hittingMLB.length,
+                      itemCount: controller.mlbOffensive.length, // Both lists should have same length
                       itemBuilder: (context, index) {
-                        return commonRankingWidget(
-                          isReport: true,
-                          context,
-                          teamReports: controller.hittingMLB[index],
-                          awayText: controller.mlbAwayHittingList.isEmpty
-                              ? '0'
-                              : controller.mlbAwayHittingList[index],
-                          homeText: controller.mlbHomeHittingList.isEmpty
-                              ? '0'
-                              : controller.mlbHomeHittingList[index],
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MediaQuery.of(context).size.width * .016,
+                              vertical: MediaQuery.of(context).size.height * .003),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Left column - Offensive stats
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    // Stat value
+                                    Text(
+                                      (controller.showMLBHomeTeam 
+                                          ? (controller.mlbHomeOffensiveList.isEmpty
+                                              ? '0'
+                                              : (index < controller.mlbHomeOffensiveList.length 
+                                                  ? controller.mlbHomeOffensiveList[index] 
+                                                  : '0')) 
+                                          : (controller.mlbAwayOffensiveList.isEmpty
+                                              ? '0'
+                                              : (index < controller.mlbAwayOffensiveList.length 
+                                                  ? controller.mlbAwayOffensiveList[index] 
+                                                  : '0'))),
+                                      style: GoogleFonts.nunitoSans(
+                                        color: Theme.of(context).highlightColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: MediaQuery.of(context).size.height * .014,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    
+                                    // Stat name
+                                    Text(
+                                      controller.mlbOffensive[index],
+                                      style: GoogleFonts.nunitoSans(
+                                        color: darkGreyColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: MediaQuery.of(context).size.height * .012,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
+                              // Divider
+                              Container(
+                                width: 1,
+                                height: MediaQuery.of(context).size.height * .044,
+                                color: Theme.of(context).indicatorColor,
+                              ),
+                              
+                              // Right column - Defensive stats
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    // Stat value
+                                    Text(
+                                      (controller.showMLBHomeTeam 
+                                          ? (controller.mlbHomeDefensiveList.isEmpty
+                                              ? '0'
+                                              : (index < controller.mlbHomeDefensiveList.length 
+                                                  ? controller.mlbHomeDefensiveList[index] 
+                                                  : '0')) 
+                                          : (controller.mlbAwayDefensiveList.isEmpty
+                                              ? '0'
+                                              : (index < controller.mlbAwayDefensiveList.length 
+                                                  ? controller.mlbAwayDefensiveList[index] 
+                                                  : '0'))),
+                                      style: GoogleFonts.nunitoSans(
+                                        color: Theme.of(context).highlightColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: MediaQuery.of(context).size.height * .014,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    
+                                    // Stat name
+                                    Text(
+                                      controller.mlbDefensive[index],
+                                      style: GoogleFonts.nunitoSans(
+                                        color: darkGreyColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: MediaQuery.of(context).size.height * .012,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       },
-                      separatorBuilder:
-                          (BuildContext context, int index) {
-                        return commonDivider(context);
-                      },
-                    ),
-                    rankingCommonWidget(
-                        context: context,
-                        title: 'Team Pitching Rankings',
-                        isPlayStat: false),
-                    ListView.separated(
-                      padding: EdgeInsets.zero,
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: controller.pitchingMLB.length,
-                      itemBuilder: (context, index) {
-                        return commonRankingWidget(context,
-                            isReport: true,
-                            teamReports: controller.pitchingMLB[index],
-                            homeText: controller
-                                .mlbHomePitchingList.isEmpty
-                                ? '0'
-                                : controller.mlbHomePitchingList[index],
-                            awayText: controller
-                                .mlbAwayPitchingList.isEmpty
-                                ? "0"
-                                : controller.mlbAwayPitchingList[index]);
-                      },
-                      separatorBuilder:
-                          (BuildContext context, int index) {
+                      separatorBuilder: (BuildContext context, int index) {
                         return commonDivider(context);
                       },
                     ),
@@ -443,7 +654,7 @@ Padding playerStatWidget(BuildContext context,
 
       }, builder: (controller) {
         return StickyHeader(
-            header: headerTitleWidget(context, 'Pitching',
+            header: headerTitleWidget(context, 'Starters',
                 isTeamReport: false,
                 gameDetails: gameDetails,
                 homeTeam: homeTeam,
@@ -546,7 +757,7 @@ Padding hitterPlayerStatWidget(BuildContext context,
                 sportKey,
                 sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
                     ? "Players"
-                    : 'Rushing'),
+                    : 'Player Stats'),
             content: sportKey == SportName.NBA.name || sportKey == SportName.NCAAB.name
                 ? Column(
               children: [

@@ -181,7 +181,11 @@ class GameDetailsController extends GetxController {
     // 'Opp True Shooting',
     // 'Team PER Def',
   ];
-  List pitchingMLB = [
+  // Keeping this for backward compatibility
+  List pitchingMLB = [];
+  
+  // Old array values kept for reference
+  /*
     'Earned Run Average (ERA)',
     'Shut Outs',
     'Save Percentage',
@@ -194,10 +198,7 @@ class GameDetailsController extends GetxController {
     'Walks & Hits Per Innings Pitched (WHIP)',
     'Opponents Batting Average',
     'Ground into Double Play/Game',
-    /*  'Strike Out Per 9 innings Pitched',
-    'Walks Per 9 Innings Pitched',
-    'Strike out to walk ratio',*/
-  ];
+  */
   List teamPitcherMLB = [
     'W-L',
     'ERA',
@@ -213,6 +214,40 @@ class GameDetailsController extends GetxController {
     'Avg',
     'RBI',
   ];
+  
+  // New MLB stats arrays for offense/defense layout
+  List mlbOffensive = [
+    'Hits / Game',
+    'Walks / Game',
+    'HR / Game',
+    'RBI / Game',
+    'Runs / Game',
+    'Batter Strike Out / Game',
+    'Stolen Bases / Game',
+    'Team Batting Average',
+    'On Base Percentage', 
+    'Slugging Percentage'
+  ];
+  
+  List mlbDefensive = [
+    'Hits Allowed / Game',
+    'Walks Allowed / Game',
+    'HR Allowed / Game',
+    'RBI Allowed / Game',
+    'Runs Allowed / Game',
+    'Pitcher Strike Out / Game',
+    'SB Allowed / Game',
+    'Team Earned Run Average',
+    'Opponent OBP',
+    'Opponent SLG'
+  ];
+  
+  // Store data for these stats
+  List mlbHomeOffensiveList = [];
+  List mlbAwayOffensiveList = [];
+  List mlbHomeDefensiveList = [];
+  List mlbAwayDefensiveList = [];
+  bool showMLBHomeTeam = true; // Toggle between home and away team view
   List teamQuarterBacks = [
     'Passing Yards/Game',
     'Passing TDs/Game',
@@ -787,6 +822,48 @@ class GameDetailsController extends GetxController {
       //   result.message,
       // );
     }
+    
+    // Get total games played from wins and losses
+    int totalHomeWins = int.tryParse(gameDetails.homeWin) ?? 0;
+    int totalHomeLosses = int.tryParse(gameDetails.homeLoss) ?? 0;
+    int totalGame = totalHomeWins + totalHomeLosses;
+    
+    // Handle edge cases: Baltimore Orioles and zero games
+    if (totalGame == 0) {
+      totalGame = 1; // Prevent division by zero
+    }
+    // Cap at maximum season games
+    if (totalGame > 162) {
+      totalGame = 162;
+    }
+    
+    // Populate the new offensive and defensive arrays for home team
+    mlbHomeOffensiveList = [
+      safeParseAndDivide(homeHitting?.onbase?.h, totalGame).toStringAsFixed(1),          // Hits / Game
+      safeParseAndDivide(homeHitting?.onbase?.bb, totalGame).toStringAsFixed(1),         // Walks / Game
+      safeParseAndDivide(homeHitting?.onbase?.hr, totalGame).toStringAsFixed(1),         // HR / Game  
+      safeParseAndDivide(homeHitting?.rbi, totalGame).toStringAsFixed(1),                // RBI / Game
+      safeParseAndDivide(homeHitting?.runs?.total, totalGame).toStringAsFixed(1),        // Runs / Game
+      safeParseAndDivide(homeHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),       // Batter Strike Out / Game
+      safeParseAndDivide(homeHitting?.steal?.stolen, totalGame).toStringAsFixed(1),      // Stolen Bases / Game
+      homeHitting?.avg ?? "0",                                                           // Team Batting Average
+      homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0",                     // On Base Percentage
+      homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0"                      // Slugging Percentage
+    ];
+    
+    mlbHomeDefensiveList = [
+      safeParseAndDivide(homePitching?.onbase?.h, totalGame).toStringAsFixed(1),         // Hits Allowed / Game
+      safeParseAndDivide(homePitching?.onbase?.bb, totalGame).toStringAsFixed(1),        // Walks Allowed / Game
+      safeParseAndDivide(homePitching?.onbase?.hr, totalGame).toStringAsFixed(1),        // HR Allowed / Game
+      safeParseAndDivide(homePitching?.runs?.total, totalGame).toStringAsFixed(1),       // RBI Allowed / Game (using runs as proxy)
+      safeParseAndDivide(homePitching?.runs?.earned, totalGame).toStringAsFixed(1),      // Runs Allowed / Game
+      safeParseAndDivide(homePitching?.outs?.ktotal, totalGame).toStringAsFixed(1),      // Pitcher Strike Out / Game
+      safeParseAndDivide(homePitching?.steal?.stolen, totalGame).toStringAsFixed(1),     // SB Allowed / Game
+      homePitching?.era != null ? homePitching!.era!.toString() : "0",                   // Team Earned Run Average
+      homePitching?.obp != null ? homePitching!.obp!.toString() : "0",                   // Opponent OBP 
+      homePitching?.slg != null ? homePitching!.slg!.toString() : "0"                    // Opponent SLG
+    ];
+    
     update();
   }
 
@@ -981,6 +1058,48 @@ class GameDetailsController extends GetxController {
         e.toString(),
       );
     }
+    
+    // Get total games played from wins and losses
+    int totalAwayWins = int.tryParse(gameDetails.awayWin) ?? 0;
+    int totalAwayLosses = int.tryParse(gameDetails.awayLoss) ?? 0;
+    int totalGame = totalAwayWins + totalAwayLosses;
+    
+    // Handle edge cases: Baltimore Orioles and zero games
+    if (totalGame == 0) {
+      totalGame = 1; // Prevent division by zero
+    }
+    // Cap at maximum season games
+    if (totalGame > 162) {
+      totalGame = 162;
+    }
+    
+    // Populate the new offensive and defensive arrays for away team
+    mlbAwayOffensiveList = [
+      safeParseAndDivide(awayHitting?.onbase?.h, totalGame).toStringAsFixed(1),          // Hits / Game
+      safeParseAndDivide(awayHitting?.onbase?.bb, totalGame).toStringAsFixed(1),         // Walks / Game
+      safeParseAndDivide(awayHitting?.onbase?.hr, totalGame).toStringAsFixed(1),         // HR / Game  
+      safeParseAndDivide(awayHitting?.rbi, totalGame).toStringAsFixed(1),                // RBI / Game
+      safeParseAndDivide(awayHitting?.runs?.total, totalGame).toStringAsFixed(1),        // Runs / Game
+      safeParseAndDivide(awayHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),       // Batter Strike Out / Game
+      safeParseAndDivide(awayHitting?.steal?.stolen, totalGame).toStringAsFixed(1),      // Stolen Bases / Game
+      awayHitting?.avg ?? "0",                                                           // Team Batting Average
+      awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0",                     // On Base Percentage
+      awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0"                      // Slugging Percentage
+    ];
+    
+    mlbAwayDefensiveList = [
+      safeParseAndDivide(awayPitching?.onbase?.h, totalGame).toStringAsFixed(1),         // Hits Allowed / Game
+      safeParseAndDivide(awayPitching?.onbase?.bb, totalGame).toStringAsFixed(1),        // Walks Allowed / Game
+      safeParseAndDivide(awayPitching?.onbase?.hr, totalGame).toStringAsFixed(1),        // HR Allowed / Game
+      safeParseAndDivide(awayPitching?.runs?.total, totalGame).toStringAsFixed(1),       // RBI Allowed / Game (using runs as proxy)
+      safeParseAndDivide(awayPitching?.runs?.earned, totalGame).toStringAsFixed(1),      // Runs Allowed / Game
+      safeParseAndDivide(awayPitching?.outs?.ktotal, totalGame).toStringAsFixed(1),      // Pitcher Strike Out / Game
+      safeParseAndDivide(awayPitching?.steal?.stolen, totalGame).toStringAsFixed(1),     // SB Allowed / Game
+      awayPitching?.era != null ? awayPitching!.era!.toString() : "0",                   // Team Earned Run Average
+      awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0",                   // Opponent OBP 
+      awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0"                    // Opponent SLG
+    ];
+    
     update();
   }
 
