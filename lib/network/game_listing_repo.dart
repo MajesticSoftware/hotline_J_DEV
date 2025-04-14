@@ -160,6 +160,32 @@ class GameListingRepo {
 
     return ResponseItem(data: data, message: message, status: status);
   }
+  
+  ///MLB STANDINGS & RECORDS
+  Future<ResponseItem> mlbStandingsRepo() async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        '${AppUrls.MLB_BASE_URL}seasons/$currentYear/$SEASONS/standings.json?api_key=${AppUrls.MLB_APIKEY}');
+    
+    print('📊 MLB STANDINGS API URL: $uri');
+    
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+    
+    if (status) {
+      print('✅ MLB STANDINGS API SUCCESS: Fetched team records');
+    } else {
+      print('❌ MLB STANDINGS API FAILED: $message');
+    }
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
 
   ///MLB STATICS
   Future<ResponseItem> mlbStaticsRepo(

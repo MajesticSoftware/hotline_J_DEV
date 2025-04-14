@@ -26,7 +26,7 @@ class AppUrls {
 
   // ignore: constant_identifier_names
   static const String MLB_BASE_URL =
-      "https://api.sportradar.com/mlb/production/v7/en/";
+      "https://api.sportradar.com/mlb/production/v8/en/";
 
   // ignore: constant_identifier_names
   static const String NBA_BASE_URL =
@@ -67,7 +67,7 @@ class RequestParam {
 // static const showError = "show_error"; // -> bool in String
 }
 
-String currentYear = (DateTime.now().year-1).toString();
+String currentYear = DateTime.now().year.toString();  // Use current year for stats
 String SEASONS = 'REG';
 
 class MethodNames {

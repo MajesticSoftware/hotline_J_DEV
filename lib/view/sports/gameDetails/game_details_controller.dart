@@ -635,12 +635,87 @@ class GameDetailsController extends GetxController {
     update();
   }
 
+  // Map to store MLB team records - will be populated by fetchMLBStandings
+  Map<String, Map<String, dynamic>> mlbTeamRecords = {};
+  
+  // Fetch MLB standings data once and store in the map
+  Future<void> fetchMLBStandings() async {
+    // Skip if we already have the data
+    if (mlbTeamRecords.isNotEmpty) {
+      print('📊 MLB STANDINGS: Using cached standings data');
+      return;
+    }
+    
+    print('📊 MLB STANDINGS: Fetching standings data...');
+    ResponseItem result = await GameListingRepo().mlbStandingsRepo();
+    
+    if (result.status) {
+      try {
+        // Parse the response and extract team records
+        var standingsData = result.data;
+        if (standingsData != null && standingsData['league'] != null) {
+          var league = standingsData['league'];
+          
+          // The structure is different in API v8: league -> season -> leagues -> [league] -> divisions
+          if (league['season'] != null && league['season']['leagues'] != null) {
+            var leagues = league['season']['leagues'];
+            
+            // Process all leagues (AL and NL)
+            for (var leagueItem in leagues) {
+              if (leagueItem['divisions'] != null) {
+                // Process all divisions
+                for (var division in leagueItem['divisions']) {
+                  if (division['teams'] != null) {
+                    // Process all teams in this division
+                    for (var team in division['teams']) {
+                      String teamId = team['id'] ?? '';
+                      if (teamId.isNotEmpty) {
+                        mlbTeamRecords[teamId] = {
+                          'win': team['win'] ?? 0,
+                          'loss': team['loss'] ?? 0,
+                          'name': team['name'] ?? '',
+                          'market': team['market'] ?? '',
+                          'abbr': team['abbr'] ?? ''
+                        };
+                        print('📊 MLB STANDINGS: Team ${team['abbr']} (${team['market']} ${team['name']}): W-${team['win']} L-${team['loss']}');
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            print('✅ MLB STANDINGS: Loaded ${mlbTeamRecords.length} team records');
+          } else {
+            print('⚠️ MLB STANDINGS: Could not find season/leagues data in the response');
+          }
+        } else {
+          print('❌ MLB STANDINGS: Invalid response format');
+        }
+      } catch (e) {
+        print('❌ MLB STANDINGS ERROR: $e');
+      }
+    } else {
+      print('❌ MLB STANDINGS API FAILED: ${result.message}');
+    }
+  }
+
   ///MLB STATICS
   Future mlbStaticsHomeTeamResponse(
       {String homeTeamId = '',
       bool isLoad = false,
       required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
+    
+    // Fetch MLB standings first (will only fetch once)
+    await fetchMLBStandings();
+    
+    // Update win/loss records from standings data
+    if (mlbTeamRecords.containsKey(homeTeamId)) {
+      gameDetails.homeWin = mlbTeamRecords[homeTeamId]!['win'].toString();
+      gameDetails.homeLoss = mlbTeamRecords[homeTeamId]!['loss'].toString();
+      print('📊 HOME TEAM RECORD UPDATED: W-${gameDetails.homeWin} L-${gameDetails.homeLoss}');
+    }
+    
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -764,15 +839,6 @@ class GameDetailsController extends GetxController {
             }
           }
 
-          // Log raw values being used for calculations
-          int runsTotal = 0;
-          try {
-            runsTotal = int.parse(homeHitting?.runs?.total.toString() ?? "0");
-          } catch (e) {
-            print('❌ ERROR parsing home team runs total for logging: $e');
-          }
-          print('📊 HOME TEAM RAW STATS: Runs Total=$runsTotal, Games=$totalGame');
-          
           // Use the class-level helper method for calculations
           
           mlbHomeHittingList = [
@@ -837,31 +903,50 @@ class GameDetailsController extends GetxController {
       totalGame = 162;
     }
     
-    // Populate the new offensive and defensive arrays for home team
+    // Log raw values from API before calculating
+    print('📊 HOME TEAM RAW VALUES:');
+    print('- Games from API (games.play): ${homeHitting?.games?.play}');
+    print('- Games from wins/losses: $totalGame (Wins: ${gameDetails.homeWin}, Losses: ${gameDetails.homeLoss})');
+    print('- Total hits: ${homeHitting?.onbase?.h}');
+    print('- Total runs: ${homeHitting?.runs?.total}');
+    print('- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
+    
+    // Get the actual number of games played from the API response if available
+    int gamesPlayed = homeHitting?.games?.play?.toInt() ?? totalGame;
+    
+    // Make sure we have a valid number of games to avoid division by zero
+    if (gamesPlayed <= 0) {
+      gamesPlayed = totalGame > 0 ? totalGame : 1;
+    }
+    
+    // Log the final games played count used for calculations
+    print('📊 HOME TEAM: Using games played count: $gamesPlayed for per-game calculations');
+    
+    // Calculate actual per-game stats without any scaling
     mlbHomeOffensiveList = [
-      safeParseAndDivide(homeHitting?.onbase?.h, totalGame).toStringAsFixed(1),          // Hits / Game
-      safeParseAndDivide(homeHitting?.onbase?.bb, totalGame).toStringAsFixed(1),         // Walks / Game
-      safeParseAndDivide(homeHitting?.onbase?.hr, totalGame).toStringAsFixed(1),         // HR / Game  
-      safeParseAndDivide(homeHitting?.rbi, totalGame).toStringAsFixed(1),                // RBI / Game
-      safeParseAndDivide(homeHitting?.runs?.total, totalGame).toStringAsFixed(1),        // Runs / Game
-      safeParseAndDivide(homeHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),       // Batter Strike Out / Game
-      safeParseAndDivide(homeHitting?.steal?.stolen, totalGame).toStringAsFixed(1),      // Stolen Bases / Game
-      homeHitting?.avg ?? "0",                                                           // Team Batting Average
-      homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0",                     // On Base Percentage
-      homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0"                      // Slugging Percentage
+      (homeHitting?.onbase?.h != null ? (homeHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits / Game
+      (homeHitting?.onbase?.bb != null ? (homeHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks / Game
+      (homeHitting?.onbase?.hr != null ? (homeHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR / Game
+      (homeHitting?.rbi != null ? (homeHitting!.rbi! / gamesPlayed).toStringAsFixed(1) : "0.0"),                    // RBI / Game
+      (homeHitting?.runs?.total != null ? (homeHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
+      (homeHitting?.outs?.ktotal != null ? (homeHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
+      (homeHitting?.steal?.stolen != null ? (homeHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
+      homeHitting?.avg ?? "0",                                                                                       // Team Batting Average
+      homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0",                                                 // On Base Percentage
+      homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0"                                                  // Slugging Percentage
     ];
     
     mlbHomeDefensiveList = [
-      safeParseAndDivide(homePitching?.onbase?.h, totalGame).toStringAsFixed(1),         // Hits Allowed / Game
-      safeParseAndDivide(homePitching?.onbase?.bb, totalGame).toStringAsFixed(1),        // Walks Allowed / Game
-      safeParseAndDivide(homePitching?.onbase?.hr, totalGame).toStringAsFixed(1),        // HR Allowed / Game
-      safeParseAndDivide(homePitching?.runs?.total, totalGame).toStringAsFixed(1),       // RBI Allowed / Game (using runs as proxy)
-      safeParseAndDivide(homePitching?.runs?.earned, totalGame).toStringAsFixed(1),      // Runs Allowed / Game
-      safeParseAndDivide(homePitching?.outs?.ktotal, totalGame).toStringAsFixed(1),      // Pitcher Strike Out / Game
-      safeParseAndDivide(homePitching?.steal?.stolen, totalGame).toStringAsFixed(1),     // SB Allowed / Game
-      homePitching?.era != null ? homePitching!.era!.toString() : "0",                   // Team Earned Run Average
-      homePitching?.obp != null ? homePitching!.obp!.toString() : "0",                   // Opponent OBP 
-      homePitching?.slg != null ? homePitching!.slg!.toString() : "0"                    // Opponent SLG
+      (homePitching?.onbase?.h != null ? (homePitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits Allowed / Game
+      (homePitching?.onbase?.bb != null ? (homePitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks Allowed / Game
+      (homePitching?.onbase?.hr != null ? (homePitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR Allowed / Game
+      (homePitching?.runs?.total != null ? (homePitching!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // RBI Allowed / Game
+      (homePitching?.runs?.earned != null ? (homePitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
+      (homePitching?.outs?.ktotal != null ? (homePitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
+      (homePitching?.steal?.stolen != null ? (homePitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
+      homePitching?.era != null ? homePitching!.era!.toString() : "0",                                                // Team Earned Run Average
+      homePitching?.obp != null ? homePitching!.obp!.toString() : "0",                                                // Opponent OBP 
+      homePitching?.slg != null ? homePitching!.slg!.toString() : "0"                                                 // Opponent SLG
     ];
     
     update();
@@ -874,6 +959,17 @@ class GameDetailsController extends GetxController {
       bool isLoad = false,
       required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
+    
+    // Fetch MLB standings first (will only fetch once)
+    await fetchMLBStandings();
+    
+    // Update win/loss records from standings data
+    if (mlbTeamRecords.containsKey(awayTeamId)) {
+      gameDetails.awayWin = mlbTeamRecords[awayTeamId]!['win'].toString();
+      gameDetails.awayLoss = mlbTeamRecords[awayTeamId]!['loss'].toString();
+      print('📊 AWAY TEAM RECORD UPDATED: W-${gameDetails.awayWin} L-${gameDetails.awayLoss}');
+    }
+    
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
@@ -1001,15 +1097,6 @@ class GameDetailsController extends GetxController {
           }
         }
 
-        // Log raw values being used for calculations
-        int runsTotal = 0;
-        try {
-          runsTotal = int.parse(awayHitting?.runs?.total.toString() ?? "0");
-        } catch (e) {
-          print('❌ ERROR parsing away team runs total for logging: $e');
-        }
-        print('📊 AWAY TEAM RAW STATS: Runs Total=$runsTotal, Games=$totalGame');
-          
         // Use the class-level helper method for calculations
         
         mlbAwayHittingList = [
@@ -1073,31 +1160,50 @@ class GameDetailsController extends GetxController {
       totalGame = 162;
     }
     
-    // Populate the new offensive and defensive arrays for away team
+    // Log raw values from API before calculating
+    print('📊 AWAY TEAM RAW VALUES:');
+    print('- Games from API (games.play): ${awayHitting?.games?.play}');
+    print('- Games from wins/losses: $totalGame (Wins: ${gameDetails.awayWin}, Losses: ${gameDetails.awayLoss})');
+    print('- Total hits: ${awayHitting?.onbase?.h}');
+    print('- Total runs: ${awayHitting?.runs?.total}');
+    print('- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
+    
+    // Get the actual number of games played from the API response if available
+    int gamesPlayed = awayHitting?.games?.play?.toInt() ?? totalGame;
+    
+    // Make sure we have a valid number of games to avoid division by zero
+    if (gamesPlayed <= 0) {
+      gamesPlayed = totalGame > 0 ? totalGame : 1;
+    }
+    
+    // Log the final games played count used for calculations
+    print('📊 AWAY TEAM: Using games played count: $gamesPlayed for per-game calculations');
+    
+    // Calculate actual per-game stats without any scaling
     mlbAwayOffensiveList = [
-      safeParseAndDivide(awayHitting?.onbase?.h, totalGame).toStringAsFixed(1),          // Hits / Game
-      safeParseAndDivide(awayHitting?.onbase?.bb, totalGame).toStringAsFixed(1),         // Walks / Game
-      safeParseAndDivide(awayHitting?.onbase?.hr, totalGame).toStringAsFixed(1),         // HR / Game  
-      safeParseAndDivide(awayHitting?.rbi, totalGame).toStringAsFixed(1),                // RBI / Game
-      safeParseAndDivide(awayHitting?.runs?.total, totalGame).toStringAsFixed(1),        // Runs / Game
-      safeParseAndDivide(awayHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),       // Batter Strike Out / Game
-      safeParseAndDivide(awayHitting?.steal?.stolen, totalGame).toStringAsFixed(1),      // Stolen Bases / Game
-      awayHitting?.avg ?? "0",                                                           // Team Batting Average
-      awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0",                     // On Base Percentage
-      awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0"                      // Slugging Percentage
+      (awayHitting?.onbase?.h != null ? (awayHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits / Game
+      (awayHitting?.onbase?.bb != null ? (awayHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks / Game
+      (awayHitting?.onbase?.hr != null ? (awayHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR / Game
+      (awayHitting?.rbi != null ? (awayHitting!.rbi! / gamesPlayed).toStringAsFixed(1) : "0.0"),                    // RBI / Game
+      (awayHitting?.runs?.total != null ? (awayHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
+      (awayHitting?.outs?.ktotal != null ? (awayHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
+      (awayHitting?.steal?.stolen != null ? (awayHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
+      awayHitting?.avg ?? "0",                                                                                       // Team Batting Average
+      awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0",                                                 // On Base Percentage
+      awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0"                                                  // Slugging Percentage
     ];
     
     mlbAwayDefensiveList = [
-      safeParseAndDivide(awayPitching?.onbase?.h, totalGame).toStringAsFixed(1),         // Hits Allowed / Game
-      safeParseAndDivide(awayPitching?.onbase?.bb, totalGame).toStringAsFixed(1),        // Walks Allowed / Game
-      safeParseAndDivide(awayPitching?.onbase?.hr, totalGame).toStringAsFixed(1),        // HR Allowed / Game
-      safeParseAndDivide(awayPitching?.runs?.total, totalGame).toStringAsFixed(1),       // RBI Allowed / Game (using runs as proxy)
-      safeParseAndDivide(awayPitching?.runs?.earned, totalGame).toStringAsFixed(1),      // Runs Allowed / Game
-      safeParseAndDivide(awayPitching?.outs?.ktotal, totalGame).toStringAsFixed(1),      // Pitcher Strike Out / Game
-      safeParseAndDivide(awayPitching?.steal?.stolen, totalGame).toStringAsFixed(1),     // SB Allowed / Game
-      awayPitching?.era != null ? awayPitching!.era!.toString() : "0",                   // Team Earned Run Average
-      awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0",                   // Opponent OBP 
-      awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0"                    // Opponent SLG
+      (awayPitching?.onbase?.h != null ? (awayPitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits Allowed / Game
+      (awayPitching?.onbase?.bb != null ? (awayPitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks Allowed / Game
+      (awayPitching?.onbase?.hr != null ? (awayPitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR Allowed / Game
+      (awayPitching?.runs?.total != null ? (awayPitching!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // RBI Allowed / Game
+      (awayPitching?.runs?.earned != null ? (awayPitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
+      (awayPitching?.outs?.ktotal != null ? (awayPitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
+      (awayPitching?.steal?.stolen != null ? (awayPitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
+      awayPitching?.era != null ? awayPitching!.era!.toString() : "0",                                                // Team Earned Run Average
+      awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0",                                                // Opponent OBP 
+      awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0"                                                 // Opponent SLG
     ];
     
     update();
