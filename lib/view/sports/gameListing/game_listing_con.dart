@@ -1058,7 +1058,6 @@ class GameListingController extends GetxController {
             }
             if (game.away?.id == awayTeamId) {
               mlbSportEventsList[index].awayScore = (game.away?.runs).toString();
-              print("::DEBUG:: ${game.away?.runs}");
               mlbSportEventsList[index].awayWin = (game.away?.win).toString();
               mlbSportEventsList[index].awayLoss = (game.away?.loss).toString();
               mlbSportEventsList[index].awayPlayerId =
