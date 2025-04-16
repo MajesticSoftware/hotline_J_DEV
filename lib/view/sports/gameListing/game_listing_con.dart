@@ -52,9 +52,9 @@ class GameListingController extends GetxController {
     dev.log('I am closed');
   }
 
-  String sportId = ncaabSportId;
+  String sportId = mlbSportId;
 
-  String _sportKey = SportName.NCAAB.name;
+  String _sportKey = SportName.MLB.name;
 
   String get sportKey => _sportKey;
 
@@ -68,7 +68,7 @@ class GameListingController extends GetxController {
 
   List<String> _isSelected = [
     /*PreferenceManager.getFavoriteSport() ?? */
-    SportName.NCAAB.name
+    SportName.MLB.name
   ];
 
   List<String> get isSelected => _isSelected;
@@ -78,7 +78,7 @@ class GameListingController extends GetxController {
     update();
   }
 
-  String _isSelectedGame = SportName.NCAAB.name;
+  String _isSelectedGame = SportName.MLB.name;
 
   String get isSelectedGame => _isSelectedGame;
 

@@ -48,7 +48,7 @@ class SelectGameScreen extends StatelessWidget {
     return GetBuilder<GameListingController>(initState: (state) async {
       // await gameListingController.favoriteGameCall();
       await gameListingController
-          .getResponse(true, SportName.NCAAB.name)
+          .getResponse(true, SportName.MLB.name)
           .then((value) {});
       if (PreferenceManager.getIsLogin() ?? false) {
         Future.delayed(Duration.zero)
@@ -539,6 +539,7 @@ class SelectGameScreen extends StatelessWidget {
 
   Widget tableDetailWidget(
       BuildContext context, GameListingController controller) {
+        print("::DEBUG:: ${controller.mlbTodayEventsList}");
     return Stack(
       children: [
         Column(
