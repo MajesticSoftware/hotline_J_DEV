@@ -55,22 +55,23 @@ dependencies:
   anim_search_bar: ^2.0.3
   collection:
   flutter_screenutil: ^5.9.0
-  device_info: ^2.0.3
-  package_info: ^2.0.2
-  permission_handler: ^10.0.2
+  device_info_plus: ^11.3.3
+  package_info_plus: ^8.3.0
+  permission_handler: ^12.0.0
   image_picker: ^0.8.6+1
   file_picker: ^9.0.0
-  sign_in_with_apple: ^5.0.0
+  sign_in_with_apple: ^7.0.1
   flutter_branch_sdk: ^6.6.0
   in_app_purchase: ^3.1.11
   in_app_purchase_storekit: ^0.3.7
 #  for key security
   flutter_dotenv: ^5.1.0
-  facebook_app_events: ^0.16.0
+  facebook_app_events: ^0.19.6
 
 
 
 
+  in_app_purchase_android: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

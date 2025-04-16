@@ -194,7 +194,7 @@ class SelectGameScreen extends StatelessWidget {
             drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesMlb,
-                color: Colors.white,
+                color: Colors.red,
                 height: MediaQuery.of(context).size.height * .035,
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
@@ -639,7 +639,6 @@ class SelectGameScreen extends StatelessWidget {
       String dateTime = DateFormat.jm().format(
           DateTime.parse(spotList(controller)[index].scheduled ?? '')
               .toLocal());
-
       return (spotList(controller)[index].status == GameStatus.postponed.name)
           ? const SizedBox()
           : Column(
@@ -699,7 +698,7 @@ class SelectGameScreen extends StatelessWidget {
                   awayTeamAbb: (mobileView.size.shortestSide < 600
                       ? spotList(controller)[index].awayTeamAbb
                       : spotList(controller)[index].awayTeam),
-                  awayTeamScore: (spotList(controller)[index].awayScore),
+                  awayTeamScore: spotList(controller)[index].awayScore,
                   homeTeamImageUrl: homeLogo(spotList(controller)[index]),
                   homeTeamRank: (spotList(controller)[index].homeRank == '0'
                       ? ''

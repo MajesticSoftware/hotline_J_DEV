@@ -1,4 +1,3 @@
-import 'dart:developer' as dev;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hotlines/extras/extras.dart';
 

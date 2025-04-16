@@ -30,11 +30,11 @@ class StartingPlayerModel {
   
   // Update with seasonal stats for each team
   void updateWithSeasonalStats(Map<String, dynamic> homeStats, Map<String, dynamic> awayStats) {
-    if (homeTeam != null && homeStats != null) {
+    if (homeTeam != null) {
       homeTeam!.updateWithSeasonalStats(homeStats);
     }
     
-    if (awayTeam != null && awayStats != null) {
+    if (awayTeam != null) {
       awayTeam!.updateWithSeasonalStats(awayStats);
     }
   }

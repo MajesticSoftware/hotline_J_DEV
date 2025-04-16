@@ -333,7 +333,7 @@ class GameWidget extends StatelessWidget {
                             getWeatherIcon(weather, context,
                                 MediaQuery.of(context).size.height * .035,
                                 iconUrl: weatherIconUrl),
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width * .13,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -345,7 +345,7 @@ class GameWidget extends StatelessWidget {
                                 Text(
                                   temp == 273.15 || temp == 0 || temp == 32
                                       ? "TBD"
-                                      : '${temp.toString().split('.').first}',
+                                      : temp.toString().split('.').first,
                                   style: GoogleFonts.nunitoSans(
                                       color: Theme.of(context).highlightColor,
                                       fontWeight: FontWeight.w600,
@@ -630,42 +630,7 @@ class GameTabCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return /*index == 5 */ /*|| index == 4*/ /*
-                      ? InkWell(
-                          highlightColor: Colors.transparent,
-                          onTap: */
-                      /* Platform.isIOS && index == 3
-                              ? onTapContact
-                              : index == 3
-                                  ?*/
-                      /*
-                              onTapGambling */ /*  : onTapContact*/ /*,
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * .05,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.r),
-                                color: Theme.of(context).primaryColor),
-                            child: Center(
-                              child:
-                                  (*/ /*Platform.isIOS && index == 3
-                                      ? 'Contact'
-                                      : index == 3
-                                          ?*/ /*
-                                          gambling */ /*: 'Contact'*/ /*)
-                                      .appCommonText(
-                                          color: Theme.of(context).cardColor,
-                                          align: TextAlign.start,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .018,
-                                          weight: FontWeight.w700)
-                                      .paddingSymmetric(horizontal: 20.w),
-                            ),
-                          ),
-                        )
-                      :*/
-                      GestureDetector(
+                  return GestureDetector(
                     onTap: () {
                       controller.tabClick(context, index);
                       controller.isCallApi = false;

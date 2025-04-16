@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -624,7 +623,7 @@ class GameListingController extends GetxController {
                 print("🌍 Category Name: ${event.tournament?.category?.name}");
                 print("🌍 Category Country: ${event.tournament?.category?.countryCode}");
                 print("⚾ Teams: ${event.awayTeam} vs ${event.homeTeam}");
-                print("🌡️ Weather: ${event.weather}, IconURL: ${event.weatherIconUrl?.isNotEmpty}");
+                print("🌡️ Weather: ${event.weather}, IconURL: ${event.weatherIconUrl.isNotEmpty}");
                 
                 // Only add official MLB games (filter out minor leagues and international games)
                 bool isOfficialMLB = 
@@ -1041,8 +1040,7 @@ class GameListingController extends GetxController {
             mlbSportEventsList[index].outs =
                 "${(game.outcome?.count?.outs ?? "0").toString()} Outs";
             if (game.home?.id == homeTeamId) {
-              mlbSportEventsList[index].homeScore =
-                  (game.home?.runs).toString();
+              mlbSportEventsList[index].homeScore = (game.home?.runs).toString();
               mlbSportEventsList[index].homeWin = (game.home?.win).toString();
               mlbSportEventsList[index].homeLoss = (game.home?.loss).toString();
               mlbSportEventsList[index].homePlayerId =
@@ -1059,8 +1057,8 @@ class GameListingController extends GetxController {
               }
             }
             if (game.away?.id == awayTeamId) {
-              mlbSportEventsList[index].awayScore =
-                  (game.away?.runs).toString();
+              mlbSportEventsList[index].awayScore = (game.away?.runs).toString();
+              print("::DEBUG:: ${game.away?.runs}");
               mlbSportEventsList[index].awayWin = (game.away?.win).toString();
               mlbSportEventsList[index].awayLoss = (game.away?.loss).toString();
               mlbSportEventsList[index].awayPlayerId =
@@ -2381,8 +2379,8 @@ class GameListingController extends GetxController {
                   boxScoreResponse(
                       gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
                       index: i,
-                      homeTeamId: mlbSportEventsList[i].competitors[0].id ?? "",
-                      awayTeamId: mlbSportEventsList[i].competitors[1].id ?? "");
+                      homeTeamId: mlbSportEventsList[i].competitors[0].uuids ?? "",
+                      awayTeamId: mlbSportEventsList[i].competitors[1].uuids ?? "");
                 }
               }
             }
@@ -3093,7 +3091,7 @@ class GameListingController extends GetxController {
             }
           }
           
-          print('🌡️ Using forecast for hour closest to game time (${gameHour}:00)');
+          print('🌡️ Using forecast for hour closest to game time ($gameHour:00)');
           
           // Process the forecast for the specific game hour
           if (closestHourForecast != null && closestHourForecast['condition'] != null) {
@@ -3163,7 +3161,7 @@ class GameListingController extends GetxController {
   
   // Helper method to process current weather data (for fallback)
   void processCurrentWeather(Map<String, dynamic> currentData, String sportKey, int index) {
-    if (currentData == null || currentData['condition'] == null) {
+    if (currentData['condition'] == null) {
       print('⚠️ Invalid current weather data');
       return;
     }

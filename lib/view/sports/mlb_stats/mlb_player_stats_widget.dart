@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../model/starting_player_model.dart';
-import '../../../theme/app_color.dart';
 
 /// A widget that displays MLB pitcher and batter stats in a comparison format
 class MlbPlayerStatsWidget extends StatelessWidget {

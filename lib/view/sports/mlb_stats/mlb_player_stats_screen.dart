@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../theme/app_color.dart';
-import '../../../utils/app_helper.dart';
 import 'mlb_player_stats_controller.dart';
 import 'mlb_player_stats_widget.dart';
 

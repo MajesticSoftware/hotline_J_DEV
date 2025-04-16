@@ -37,8 +37,8 @@ class StartingPlayerRepo {
           
           // Update model with seasonal stats
           model.updateWithSeasonalStats(
-            homeTeamSeasonalStats?.data ?? {}, 
-            awayTeamSeasonalStats?.data ?? {}
+            homeTeamSeasonalStats.data ?? {}, 
+            awayTeamSeasonalStats.data ?? {}
           );
         }
       }
@@ -106,18 +106,18 @@ class StartingPlayerRepo {
           final homeTeamSeasonalStats = await _getTeamSeasonalStats(year, homeTeamId);
           final awayTeamSeasonalStats = await _getTeamSeasonalStats(year, awayTeamId);
           
-          if (homeTeamSeasonalStats?.error != null) {
-            print("⚾ MLB STATS ERROR: Home team stats error: ${homeTeamSeasonalStats?.error?.message}");
+          if (homeTeamSeasonalStats.error != null) {
+            print("⚾ MLB STATS ERROR: Home team stats error: ${homeTeamSeasonalStats.error?.message}");
           }
           
-          if (awayTeamSeasonalStats?.error != null) {
-            print("⚾ MLB STATS ERROR: Away team stats error: ${awayTeamSeasonalStats?.error?.message}");
+          if (awayTeamSeasonalStats.error != null) {
+            print("⚾ MLB STATS ERROR: Away team stats error: ${awayTeamSeasonalStats.error?.message}");
           }
           
           // Update model with seasonal stats
           model.updateWithSeasonalStats(
-            homeTeamSeasonalStats?.data ?? {}, 
-            awayTeamSeasonalStats?.data ?? {}
+            homeTeamSeasonalStats.data ?? {}, 
+            awayTeamSeasonalStats.data ?? {}
           );
           
           // Log the pitcher stats after update

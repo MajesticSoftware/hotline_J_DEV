@@ -801,11 +801,11 @@ class GameDetailsController extends GetxController {
               } else if (runsTotal > 0) {
                 // Early season or partial data
                 totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
-                print('⚠️ Partial season stats detected for home team, estimating ${totalGame} games');
+                print('⚠️ Partial season stats detected for home team, estimating $totalGame games');
               } else {
                 // For Orioles with no meaningful data, use more reliable default
                 totalGame = isOrioles ? 162 : 40; // Full season for Orioles, otherwise 40
-                print('⚠️ No meaningful stats for home team, using default (${totalGame} games)');
+                print('⚠️ No meaningful stats for home team, using default ($totalGame games)');
               }
             }
           }
@@ -1056,11 +1056,11 @@ class GameDetailsController extends GetxController {
             } else if (runsTotal > 0) {
               // Early season or partial data
               totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
-              print('⚠️ Partial season stats detected for away team, estimating ${totalGame} games');
+              print('⚠️ Partial season stats detected for away team, estimating $totalGame games');
             } else {
               // For Orioles with no meaningful data, use more reliable default
               totalGame = isOrioles ? 162 : 40; // Full season for Orioles, otherwise 40
-              print('⚠️ No meaningful stats for away team, using default (${totalGame} games)');
+              print('⚠️ No meaningful stats for away team, using default ($totalGame games)');
             }
           }
         }
