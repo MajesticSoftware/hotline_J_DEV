@@ -194,7 +194,7 @@ class SelectGameScreen extends StatelessWidget {
             drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesMlb,
-                color: Colors.red,
+                color: Colors.white,
                 height: MediaQuery.of(context).size.height * .035,
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
@@ -217,22 +217,22 @@ class SelectGameScreen extends StatelessWidget {
                 controller.update();
               },
             ).paddingOnly(top: 30.h),*/
-            drawerCard(
-              widget: SvgPicture.asset(
-                Assets.imagesNcaab,
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height * .035,
-                width: MediaQuery.of(context).size.width * .035,
-                fit: BoxFit.cover,
-              ),
-              title: SportName.NCAAB.name,
-              context: context,
-              onTap: () {
-                scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 0);
-                controller.update();
-              },
-            ),
+            // drawerCard(
+            //   widget: SvgPicture.asset(
+            //     Assets.imagesNcaab,
+            //     color: Colors.white,
+            //     height: MediaQuery.of(context).size.height * .035,
+            //     width: MediaQuery.of(context).size.width * .035,
+            //     fit: BoxFit.cover,
+            //   ),
+            //   title: SportName.NCAAB.name,
+            //   context: context,
+            //   onTap: () {
+            //     scaffoldKey.currentState?.closeDrawer();
+            //     controller.tabClick(context, 0);
+            //     controller.update();
+            //   },
+            // ),
             /*drawerCard(
               icon: Assets.imagesNcaa,
               title: SportName.NCAAF.name,
