@@ -194,7 +194,7 @@ class SelectGameScreen extends StatelessWidget {
             drawerCard(
               widget: SvgPicture.asset(
                 Assets.imagesMlb,
-                color: Colors.white,
+                color: whiteColor,
                 height: MediaQuery.of(context).size.height * .035,
                 width: MediaQuery.of(context).size.width * .035,
                 fit: BoxFit.cover,
