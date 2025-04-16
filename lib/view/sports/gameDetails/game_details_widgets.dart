@@ -280,131 +280,131 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Toggle header for home/away teams
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.width * .01),
-                        color: Theme.of(context).canvasColor
-                      ),
-                      child: Row(
-                        children: [
-                          20.h.W(),
-                          // Home team tab
-                          InkWell(
-                            onTap: () {
-                              controller.showMLBHomeTeam = true;
-                              controller.update();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: controller.showMLBHomeTeam 
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
-                                vertical: 5.h,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      gameDetails.gameHomeLogoLink,
-                                      height: 20.h,
-                                      width: 20.h,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(
-                                          Icons.sports_baseball,
-                                          size: 20.h,
-                                          color: controller.showMLBHomeTeam
-                                              ? Colors.white
-                                              : Theme.of(context).primaryColor,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  10.w.W(),
-                                  Text(
-                                    homeTeam?.name ?? 'Home',
-                                    style: GoogleFonts.nunitoSans(
-                                      color: controller.showMLBHomeTeam
-                                          ? Colors.white
-                                          : Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          20.h.W(),
-                          // Away team tab
-                          InkWell(
-                            onTap: () {
-                              controller.showMLBHomeTeam = false;
-                              controller.update();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: !controller.showMLBHomeTeam 
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 1,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
-                                vertical: 5.h,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      gameDetails.gameLogoAwayLink,
-                                      height: 20.h,
-                                      width: 20.h,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(
-                                          Icons.sports_baseball,
-                                          size: 20.h,
-                                          color: !controller.showMLBHomeTeam
-                                              ? Colors.white
-                                              : Theme.of(context).primaryColor,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  10.w.W(),
-                                  Text(
-                                    awayTeam?.name ?? 'Away',
-                                    style: GoogleFonts.nunitoSans(
-                                      color: !controller.showMLBHomeTeam
-                                          ? Colors.white
-                                          : Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ).paddingSymmetric(vertical: 10.h),
-                    ).paddingSymmetric(vertical: 10.h),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(
+                    //         MediaQuery.of(context).size.width * .01),
+                    //     color: Theme.of(context).canvasColor
+                    //   ),
+                    //   child: Row(
+                    //     children: [
+                    //       20.h.W(),
+                    //       // Home team tab
+                    //       // InkWell(
+                    //       //   onTap: () {
+                    //       //     controller.showMLBHomeTeam = true;
+                    //       //     controller.update();
+                    //       //   },
+                    //       //   child: Container(
+                    //       //     decoration: BoxDecoration(
+                    //       //       color: controller.showMLBHomeTeam 
+                    //       //           ? Theme.of(context).primaryColor
+                    //       //           : Colors.transparent,
+                    //       //       borderRadius: BorderRadius.circular(5),
+                    //       //       border: Border.all(
+                    //       //         color: Theme.of(context).primaryColor,
+                    //       //         width: 1,
+                    //       //       ),
+                    //       //     ),
+                    //       //     padding: EdgeInsets.symmetric(
+                    //       //       horizontal: 10.w,
+                    //       //       vertical: 5.h,
+                    //       //     ),
+                    //       //     child: Row(
+                    //       //       mainAxisSize: MainAxisSize.min,
+                    //       //       children: [
+                    //       //         ClipRRect(
+                    //       //           borderRadius: BorderRadius.circular(10),
+                    //       //           child: Image.network(
+                    //       //             gameDetails.gameHomeLogoLink,
+                    //       //             height: 20.h,
+                    //       //             width: 20.h,
+                    //       //             errorBuilder: (context, error, stackTrace) {
+                    //       //               return Icon(
+                    //       //                 Icons.sports_baseball,
+                    //       //                 size: 20.h,
+                    //       //                 color: controller.showMLBHomeTeam
+                    //       //                     ? Colors.white
+                    //       //                     : Theme.of(context).primaryColor,
+                    //       //               );
+                    //       //             },
+                    //       //           ),
+                    //       //         ),
+                    //       //         10.w.W(),
+                    //       //         Text(
+                    //       //           homeTeam?.name ?? 'Home',
+                    //       //           style: GoogleFonts.nunitoSans(
+                    //       //             color: controller.showMLBHomeTeam
+                    //       //                 ? Colors.white
+                    //       //                 : Theme.of(context).primaryColor,
+                    //       //             fontWeight: FontWeight.w600,
+                    //       //             fontSize: 14.sp,
+                    //       //           ),
+                    //       //         ),
+                    //       //       ],
+                    //       //     ),
+                    //       //   ),
+                    //       // ),
+                    //       // 20.h.W(),
+                    //       // // Away team tab
+                    //       // InkWell(
+                    //       //   onTap: () {
+                    //       //     controller.showMLBHomeTeam = false;
+                    //       //     controller.update();
+                    //       //   },
+                    //       //   child: Container(
+                    //       //     decoration: BoxDecoration(
+                    //       //       color: !controller.showMLBHomeTeam 
+                    //       //           ? Theme.of(context).primaryColor
+                    //       //           : Colors.transparent,
+                    //       //       borderRadius: BorderRadius.circular(5),
+                    //       //       border: Border.all(
+                    //       //         color: Theme.of(context).primaryColor,
+                    //       //         width: 1,
+                    //       //       ),
+                    //       //     ),
+                    //       //     padding: EdgeInsets.symmetric(
+                    //       //       horizontal: 10.w,
+                    //       //       vertical: 5.h,
+                    //       //     ),
+                    //       //     child: Row(
+                    //       //       mainAxisSize: MainAxisSize.min,
+                    //       //       children: [
+                    //       //         ClipRRect(
+                    //       //           borderRadius: BorderRadius.circular(10),
+                    //       //           child: Image.network(
+                    //       //             gameDetails.gameLogoAwayLink,
+                    //       //             height: 20.h,
+                    //       //             width: 20.h,
+                    //       //             errorBuilder: (context, error, stackTrace) {
+                    //       //               return Icon(
+                    //       //                 Icons.sports_baseball,
+                    //       //                 size: 20.h,
+                    //       //                 color: !controller.showMLBHomeTeam
+                    //       //                     ? Colors.white
+                    //       //                     : Theme.of(context).primaryColor,
+                    //       //               );
+                    //       //             },
+                    //       //           ),
+                    //       //         ),
+                    //       //         10.w.W(),
+                    //       //         Text(
+                    //       //           awayTeam?.name ?? 'Away',
+                    //       //           style: GoogleFonts.nunitoSans(
+                    //       //             color: !controller.showMLBHomeTeam
+                    //       //                 ? Colors.white
+                    //       //                 : Theme.of(context).primaryColor,
+                    //       //             fontWeight: FontWeight.w600,
+                    //       //             fontSize: 14.sp,
+                    //       //           ),
+                    //       //         ),
+                    //       //       ],
+                    //       //     ),
+                    //       //   ),
+                    //       // ),
+                    //     ],
+                    //   ).paddingSymmetric(vertical: 10.h),
+                    // ).paddingSymmetric(vertical: 10.h),
                     
                     // Title for stats section
                     Container(

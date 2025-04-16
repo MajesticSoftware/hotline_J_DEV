@@ -181,6 +181,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                         awayLogo(awayTeam, widget.gameDetails),
                                     onTap: () {
                                       con.isTeamReportTab = true;
+                                      con.showMLBHomeTeam = true;
+                                      con.update();
                                     },
                                   ),
                                   80.h.W(),
@@ -188,6 +190,8 @@ class _SportDetailsScreenState extends State<SportDetailsScreen>
                                     isSelected: !con.isTeamReportTab,
                                     onTap: () {
                                       con.isTeamReportTab = false;
+                                      con.showMLBHomeTeam = false;
+                                      con.update();
                                     },
                                     teamLogo:
                                         homeLogo(homeTeam, widget.gameDetails),
