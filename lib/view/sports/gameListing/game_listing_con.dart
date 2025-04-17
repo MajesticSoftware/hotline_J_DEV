@@ -404,6 +404,7 @@ class GameListingController extends GetxController {
   }
 
   tabClick(BuildContext context, int index) {
+    print("::DEBUG:: 3 $index ${sportsLeagueList[index].gameName}");
     searchCon.clear();
     searchList.clear();
     isSelectedGame = sportsLeagueList[index].gameName;
@@ -2424,8 +2425,8 @@ class GameListingController extends GetxController {
                     boxScoreResponse(
                         gameId: replaceId(mlbTodayEventsList[i].uuids ?? ''),
                         index: i,
-                        homeTeamId: mlbTodayEventsList[i].competitors[0].id ?? "",
-                        awayTeamId: mlbTodayEventsList[i].competitors[1].id ?? "");
+                        homeTeamId: mlbTodayEventsList[i].competitors[0].uuids ?? "",
+                        awayTeamId: mlbTodayEventsList[i].competitors[1].uuids ?? "");
                   }
                 }
               }
@@ -2486,8 +2487,8 @@ class GameListingController extends GetxController {
                   boxScoreResponse(
                       gameId: replaceId(mlbSportEventsList[i].uuids ?? ''),
                       index: i,
-                      homeTeamId: mlbSportEventsList[i].competitors[0].id ?? "",
-                      awayTeamId: mlbSportEventsList[i].competitors[1].id ?? "");
+                      homeTeamId: mlbSportEventsList[i].competitors[0].uuids ?? "",
+                      awayTeamId: mlbSportEventsList[i].competitors[1].uuids ?? "");
                 }
               }
             }

@@ -69,25 +69,25 @@ class SelectGameScreen extends StatelessWidget {
               drawerEnableOpenDragGesture: false,
               body: Column(
                 children: [
-                  GameTabCard(
-                    onTapContact: () {
-                      toggle = 0;
-                      if (Platform.isIOS) {
-                        controller.launchEmailSubmission();
-                      } else {
-                        controller.isSelectedGame = 'Contact';
-                      }
-                      controller.update();
-                    },
-                    onTapGambling: () {
-                      toggle = 0;
-                      controller.isSelectedGame = 'Gambling 101';
-                      controller.update();
-                      // showDataAlert(context);
-                    },
-                    controller: controller,
-                  ),
-                  10.w.H(),
+                  // GameTabCard(
+                  //   onTapContact: () {
+                  //     toggle = 0;
+                  //     if (Platform.isIOS) {
+                  //       controller.launchEmailSubmission();
+                  //     } else {
+                  //       controller.isSelectedGame = 'Contact';
+                  //     }
+                  //     controller.update();
+                  //   },
+                  //   onTapGambling: () {
+                  //     toggle = 0;
+                  //     controller.isSelectedGame = 'Gambling 101';
+                  //     controller.update();
+                  //     // showDataAlert(context);
+                  //   },
+                  //   controller: controller,
+                  // ),
+                  20.w.H(),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -203,7 +203,7 @@ class SelectGameScreen extends StatelessWidget {
               context: context,
               onTap: () {
                 scaffoldKey.currentState?.closeDrawer();
-                controller.tabClick(context, 1);
+                controller.tabClick(context, 0);
                 controller.update();
               },
             ).paddingOnly(top: 10.h),
@@ -539,7 +539,6 @@ class SelectGameScreen extends StatelessWidget {
 
   Widget tableDetailWidget(
       BuildContext context, GameListingController controller) {
-        print("::DEBUG:: ${controller.mlbTodayEventsList}");
     return Stack(
       children: [
         Column(
