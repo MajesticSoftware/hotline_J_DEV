@@ -249,6 +249,84 @@ AppBar commonAppBarWidget(BuildContext context, bool isDark,
 
 Widget teamReportWidget(BuildContext context, String sportKey,
     SportEvents gameDetails, Competitors? awayTeam, Competitors? homeTeam) {
+      Widget teamStatLeft(BuildContext context, GameDetailsController controller, int index){
+        return Expanded(
+          child: Column(
+            children: [
+              // Stat value
+              Text(
+                (controller.showMLBHomeTeam 
+                    ? (controller.mlbHomeOffensiveList.isEmpty
+                        ? '0'
+                        : (index < controller.mlbHomeOffensiveList.length 
+                            ? controller.mlbHomeOffensiveList[index] 
+                            : '0')) 
+                    : (controller.mlbAwayOffensiveList.isEmpty
+                        ? '0'
+                        : (index < controller.mlbAwayOffensiveList.length 
+                            ? controller.mlbAwayOffensiveList[index] 
+                            : '0'))),
+                style: GoogleFonts.nunitoSans(
+                  color: Theme.of(context).highlightColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: MediaQuery.of(context).size.height * .014,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              
+              // Stat name
+              Text(
+                controller.mlbOffensive[index],
+                style: GoogleFonts.nunitoSans(
+                  color: darkGreyColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: MediaQuery.of(context).size.height * .012,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+      Widget teamStatRight(BuildContext context, GameDetailsController controller, int index){
+        return Expanded(
+          child: Column(
+            children: [
+              // Stat value
+              Text(
+                (controller.showMLBHomeTeam 
+                    ? (controller.mlbHomeDefensiveList.isEmpty
+                        ? '0'
+                        : (index < controller.mlbHomeDefensiveList.length 
+                            ? controller.mlbHomeDefensiveList[index] 
+                            : '0')) 
+                    : (controller.mlbAwayDefensiveList.isEmpty
+                        ? '0'
+                        : (index < controller.mlbAwayDefensiveList.length 
+                            ? controller.mlbAwayDefensiveList[index] 
+                            : '0'))),
+                style: GoogleFonts.nunitoSans(
+                  color: Theme.of(context).highlightColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: MediaQuery.of(context).size.height * .014,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              
+              // Stat name
+              Text(
+                controller.mlbDefensive[index],
+                style: GoogleFonts.nunitoSans(
+                  color: darkGreyColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: MediaQuery.of(context).size.height * .012,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
   return Padding(
     padding: EdgeInsets.all(MediaQuery
         .of(context)
@@ -413,7 +491,7 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                         children: [
                           Expanded(
                             child: Text(
-                              'Offensive Stats',
+                              controller.showMLBHomeTeam ? 'Defensive Stats':'Offensive Stats',
                               style: GoogleFonts.nunitoSans(
                                 color: Theme.of(context).highlightColor,
                                 fontWeight: FontWeight.bold,
@@ -424,7 +502,7 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                           ),
                           Expanded(
                             child: Text(
-                              'Defensive Stats',
+                              controller.showMLBHomeTeam ? 'Offensive Stats':'Defensive Stats',
                               style: GoogleFonts.nunitoSans(
                                 color: Theme.of(context).highlightColor,
                                 fontWeight: FontWeight.bold,
@@ -453,89 +531,15 @@ Widget teamReportWidget(BuildContext context, String sportKey,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               // Left column - Offensive stats
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    // Stat value
-                                    Text(
-                                      (controller.showMLBHomeTeam 
-                                          ? (controller.mlbHomeOffensiveList.isEmpty
-                                              ? '0'
-                                              : (index < controller.mlbHomeOffensiveList.length 
-                                                  ? controller.mlbHomeOffensiveList[index] 
-                                                  : '0')) 
-                                          : (controller.mlbAwayOffensiveList.isEmpty
-                                              ? '0'
-                                              : (index < controller.mlbAwayOffensiveList.length 
-                                                  ? controller.mlbAwayOffensiveList[index] 
-                                                  : '0'))),
-                                      style: GoogleFonts.nunitoSans(
-                                        color: Theme.of(context).highlightColor,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: MediaQuery.of(context).size.height * .014,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    
-                                    // Stat name
-                                    Text(
-                                      controller.mlbOffensive[index],
-                                      style: GoogleFonts.nunitoSans(
-                                        color: darkGreyColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: MediaQuery.of(context).size.height * .012,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
+                              controller.showMLBHomeTeam ? teamStatRight(context, controller, index): teamStatLeft(context, controller, index),
                               // Divider
                               Container(
                                 width: 1,
                                 height: MediaQuery.of(context).size.height * .044,
                                 color: Theme.of(context).indicatorColor,
                               ),
-                              
+                              controller.showMLBHomeTeam ? teamStatLeft(context, controller, index): teamStatRight(context, controller, index),
                               // Right column - Defensive stats
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    // Stat value
-                                    Text(
-                                      (controller.showMLBHomeTeam 
-                                          ? (controller.mlbHomeDefensiveList.isEmpty
-                                              ? '0'
-                                              : (index < controller.mlbHomeDefensiveList.length 
-                                                  ? controller.mlbHomeDefensiveList[index] 
-                                                  : '0')) 
-                                          : (controller.mlbAwayDefensiveList.isEmpty
-                                              ? '0'
-                                              : (index < controller.mlbAwayDefensiveList.length 
-                                                  ? controller.mlbAwayDefensiveList[index] 
-                                                  : '0'))),
-                                      style: GoogleFonts.nunitoSans(
-                                        color: Theme.of(context).highlightColor,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: MediaQuery.of(context).size.height * .014,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    
-                                    // Stat name
-                                    Text(
-                                      controller.mlbDefensive[index],
-                                      style: GoogleFonts.nunitoSans(
-                                        color: darkGreyColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: MediaQuery.of(context).size.height * .012,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
                         );
@@ -2842,6 +2846,8 @@ SizedBox receivingHomePlayerCard(BuildContext context, SportEvents gameDetails,
 }
 
 ListView hitterPlayerDetailCard(GameDetailsController con) {
+  String totalBase = 'TB/Game', stolenBase = 'SB/Game';
+
   return ListView.separated(
     shrinkWrap: true,
     padding: EdgeInsets.zero,
@@ -2878,8 +2884,7 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
                       expandableTileCard(context, con,
                           value1: con
                               .hitterAwayPlayerMainList[i].stolenBaseValue,
-                          title1:
-                          con.hitterAwayPlayerMainList[i].stolenBase,
+                          title1: con.hitterAwayPlayerMainList[i].stolenBase,
                           title2: con.hitterAwayPlayerMainList[i].hAb,
                           value2: con.hitterAwayPlayerMainList[i].hAbValue),
                     ],
@@ -2915,8 +2920,7 @@ ListView hitterPlayerDetailCard(GameDetailsController con) {
                     expandableTileCard(context, con,
                         value1: con
                             .hitterHomePlayerMainList[i].stolenBaseValue,
-                        title1:
-                        con.hitterHomePlayerMainList[i].stolenBase,
+                        title1: con.hitterHomePlayerMainList[i].stolenBase,
                         title2: con.hitterHomePlayerMainList[i].hAb,
                         value2: con.hitterHomePlayerMainList[i].hAbValue),
                   ],

@@ -247,7 +247,7 @@ class GameDetailsController extends GetxController {
   List mlbAwayOffensiveList = [];
   List mlbHomeDefensiveList = [];
   List mlbAwayDefensiveList = [];
-  bool showMLBHomeTeam = true; // Toggle between home and away team view
+  bool showMLBHomeTeam = false; // Toggle between home and away team view
   List teamQuarterBacks = [
     'Passing Yards/Game',
     'Passing TDs/Game',
@@ -844,11 +844,11 @@ class GameDetailsController extends GetxController {
                       runValue: safeParseAndDivide(
                           player.statistics?.hitting?.overall?.runs?.total,
                           totalGame).toStringAsFixed(1),
-                      totalBase: 'Total Bases/Game',
+                      totalBase: 'TB/Game',
                       totalBaseValue: safeParseAndDivide(
                           player.statistics?.hitting?.overall?.onbase?.tb,
                           totalGame).toStringAsFixed(1),
-                      stolenBase: 'Stolen Bases/Game',
+                      stolenBase: 'SB/Game',
                       ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                       stolenBaseValue: safeParseAndDivide(
                           player.statistics?.hitting?.overall?.steal?.stolen,
@@ -1102,11 +1102,11 @@ class GameDetailsController extends GetxController {
                     runValue: safeParseAndDivide(
                         player.statistics?.hitting?.overall?.runs?.total,
                         totalGame).toStringAsFixed(1),
-                    totalBase: 'Total Bases/Game',
+                    totalBase: 'TB/Game',
                     totalBaseValue: safeParseAndDivide(
                         player.statistics?.hitting?.overall?.onbase?.tb,
                         totalGame).toStringAsFixed(1),
-                    stolenBase: 'Stolen Bases/Game',
+                    stolenBase: 'SB/Game',
                     ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     stolenBaseValue: safeParseAndDivide(
                         player.statistics?.hitting?.overall?.steal?.stolen,
