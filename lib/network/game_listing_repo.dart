@@ -99,6 +99,25 @@ class GameListingRepo {
     return ResponseItem(data: data, message: message, status: status);
   }
 
+  ///BOX SCORE API
+  Future<ResponseItem> gameSummaryRepo({String gameId = ''}) async {
+    ResponseItem result;
+    bool status = true;
+    dynamic data;
+    String message = "";
+
+    Uri uri = Uri.parse(
+        '${AppUrls.MLB_BASE_URL}games/$gameId/summary.json?api_key=${AppUrls.MLB_APIKEY}');
+
+    result = await BaseApiHelper.getRequest(uri, {});
+    status = result.status;
+    data = result.data;
+    message = result.message;
+
+    return ResponseItem(data: data, message: message, status: status);
+  }
+
+
   Future<ResponseItem> boxScoreNBARepo(
       {String gameId = '', String sportKey = ''}) async {
     ResponseItem result;
