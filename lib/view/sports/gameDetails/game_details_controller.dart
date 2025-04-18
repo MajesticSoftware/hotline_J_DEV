@@ -988,7 +988,7 @@ class GameDetailsController extends GetxController {
       (homePitching?.runs?.earned != null ? (homePitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
       (homePitching?.outs?.ktotal != null ? (homePitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
       (homePitching?.steal?.stolen != null ? (homePitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      formatDecimal(homePitching?.era != null ? homePitching!.era!.toString() : "0"),                                 // Team Earned Run Average
+      formatDecimal(homePitching?.era != null ? homePitching!.era!.toDouble().toPrecision(2).toString() : "0"),                                 // Team Earned Run Average
       formatDecimal(homePitching?.obp != null ? homePitching!.obp!.toString() : "0"),                                 // Opponent OBP 
       formatDecimal(homePitching?.slg != null ? homePitching!.slg!.toString() : "0")                                  // Opponent SLG
     ];
@@ -1245,7 +1245,7 @@ class GameDetailsController extends GetxController {
       (awayPitching?.runs?.earned != null ? (awayPitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
       (awayPitching?.outs?.ktotal != null ? (awayPitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
       (awayPitching?.steal?.stolen != null ? (awayPitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      formatDecimal(awayPitching?.era != null ? awayPitching!.era!.toString() : "0"),                                 // Team Earned Run Average
+      formatDecimal(awayPitching?.era != null ? awayPitching!.era!.toDouble().toPrecision(2).toString() : "0"),                                 // Team Earned Run Average
       formatDecimal(awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0"),                                 // Opponent OBP 
       formatDecimal(awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0")                                  // Opponent SLG
     ];
