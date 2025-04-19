@@ -620,7 +620,7 @@ class Overall {
   Overall.fromJson(Map<String, dynamic> json) {
     oba = json['oba'];
     lob = json['lob'];
-    era = json['era'];
+    era = json['era'] is String ? double.tryParse(json['era']): json['era'];
     k9 = json['k9'];
     whip = json['whip'];
     kbb = json['kbb'];
@@ -953,7 +953,7 @@ class Starters {
   Starters.fromJson(Map<String, dynamic> json) {
     oba = json['oba'];
     lob = json['lob'];
-    era = json['era'];
+    era = json['era'] is String ? double.tryParse(json['era']): json['era'];
     k9 = json['k9'];
     whip = json['whip'];
     kbb = json['kbb'];
@@ -1094,7 +1094,7 @@ class Bullpen {
   Bullpen.fromJson(Map<String, dynamic> json) {
     oba = json['oba'];
     lob = json['lob'];
-    era = json['era'];
+    era = json['era'] is String ? double.tryParse(json['era']): json['era'];
     k9 = json['k9'];
     whip = json['whip'];
     kbb = json['kbb'];

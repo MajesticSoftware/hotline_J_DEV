@@ -1279,10 +1279,10 @@ class GameDetailsController extends GetxController {
         //   result.message,
         // );
       }
-    } catch (e) {
+    } catch (e, st) {
       // isLoading.value = false;
       log('ERROR AWAY STATIC RES -------$e');
-      print("::DEBUG:: err | ${e.toString()}");
+      print("::DEBUG:: err | ${e.toString()} | ${st}");
       showAppSnackBar(
         e.toString(),
       );
