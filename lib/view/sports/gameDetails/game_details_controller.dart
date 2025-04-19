@@ -30,7 +30,6 @@ import '../../../network/game_listing_repo.dart';
 import '../../../theme/helper.dart';
 
 class GameDetailsController extends GetxController {
-  
   /// Safely parses a value and divides it by a divisor
   /// Returns 0 if the divisor is 0 or value is null/can't be parsed
   num safeParseAndDivide(dynamic value, int divisor) {
@@ -44,6 +43,7 @@ class GameDetailsController extends GetxController {
       return 0;
     }
   }
+
   List offensive = [
     'Points Per Game',
     'Rushing Yards/Game',
@@ -185,7 +185,7 @@ class GameDetailsController extends GetxController {
   ];
   // Keeping this for backward compatibility
   List pitchingMLB = [];
-  
+
   // Old array values kept for reference
   /*
     'Earned Run Average (ERA)',
@@ -216,7 +216,7 @@ class GameDetailsController extends GetxController {
     'Avg',
     'RBI',
   ];
-  
+
   // New MLB stats arrays for offense/defense layout
   List mlbOffensive = [
     'Hits / Game',
@@ -227,10 +227,10 @@ class GameDetailsController extends GetxController {
     'Batter Strike Out / Game',
     'Stolen Bases / Game',
     'Team Batting Average',
-    'On Base Percentage', 
+    'On Base Percentage',
     'Slugging Percentage'
   ];
-  
+
   List mlbDefensive = [
     'Hits Allowed / Game',
     'Walks Allowed / Game',
@@ -243,7 +243,7 @@ class GameDetailsController extends GetxController {
     'Opponent OBP',
     'Opponent SLG'
   ];
-  
+
   // Store data for these stats
   List mlbHomeOffensiveList = [];
   List mlbAwayOffensiveList = [];
@@ -310,7 +310,7 @@ class GameDetailsController extends GetxController {
   List<MLBPitchingStaticsModel> mlbHomePlayerPitchingList = [];
   List<HitterPlayerStatMainModel> _hitterHomePlayerMainList = [];
   List<HitterPlayerStatMainModel> _hitterAwayPlayerMainList = [];
-  
+
   // Class variables for MLB statistics to fix scope issues
   stat.OverallHitting? homeHitting;
   stat.Overall? homePitching;
@@ -324,7 +324,7 @@ class GameDetailsController extends GetxController {
     _hitterHomePlayerMainList = value;
     update();
   }
-  
+
   List<HitterPlayerStatMainModel> get hitterAwayPlayerMainList =>
       _hitterAwayPlayerMainList;
 
@@ -443,15 +443,12 @@ class GameDetailsController extends GetxController {
 
   ///PLAYER PROFILE
   Future profileHomeResponse(
-      {String homeTeamId = '', bool isLoad = false, String gameId = ''}) async {
+      {String homeTeamId = '', bool isLoad = false}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    ResponseItem result2 =
-        ResponseItem(data: null, message: errorText.tr, status: false);
     result =
         await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: homeTeamId);
-    result2 = await GameListingRepo().gameSummaryRepo(gameId: gameId);
     try {
       if (result.status) {
         if (result.data != null) {
@@ -460,30 +457,25 @@ class GameDetailsController extends GetxController {
           final playerData = response.player;
           homePlayerName =
               '${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
-          if (result2.status) {
-            if (result2.data != null){
-              GameData game = GameData.fromJson(result2.data);
-              for (var player in playerData.seasons) {
-                if (player.type == '$SEASONS' &&
-                  player.year == DateTime.now().year) {
-                  whipHome =
-                      player.totals.statistics.pitching.overall.whip.toString();
-                  for(gs.Player starter in game.game?.home?.players ?? []){
-                    if(starter.id == game.game?.home?.startingPitcher?.id){
-                      homeBb =
-                          // (player.totals.statistics.pitching.overall.onbase?.bb ?? "0")
-                          //     .toString();
-                          starter.statistics?.pitching?.overall?.onbase?.bb.toString() ?? "0";
-                      homeKk =
-                          starter.statistics?.pitching?.overall?.outs?.ktotal.toString() ?? "0";
-                      homeH =
-                          (starter.statistics?.pitching?.overall?.onbase?.h ?? "0")
-                              .toString();
-                      homeIp = starter.statistics?.pitching?.overall?.ip2.toString() ?? "0";
-                    }
-                  }
-                }
-              }
+          
+          for (var player in playerData.seasons) {
+            if (player.type == '$SEASONS' &&
+                player.year == DateTime.now().year) {
+              int gamesPlayed = player.totals.statistics.pitching.overall.games?.play?.toInt() ?? 0;
+              whipHome = 
+                  player.totals.statistics.pitching.overall.whip.toString();
+              homeBb = ((player.totals.statistics.pitching.overall.onbase?.bb ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              homeKk = ((player.totals.statistics.pitching.overall.outs?.ktotal ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              homeH = ((player.totals.statistics.pitching.overall.onbase?.h ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              homeIp = ((player.totals.statistics.pitching.overall.ip2 ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
             }
           }
         } else {
@@ -598,15 +590,12 @@ class GameDetailsController extends GetxController {
   }
 
   Future profileAwayResponse(
-      {String awayTeamId = '', bool isLoad = false, String gameId = ''}) async {
+      {String awayTeamId = '', bool isLoad = false}) async {
     // isLoading.value = !isLoad ? false : true;
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
-    ResponseItem result2 =
-        ResponseItem(data: null, message: errorText.tr, status: false);
     result =
         await GameListingRepo().mlbPlayerPitcherStatsRepo(playerId: awayTeamId);
-    result2 = await GameListingRepo().gameSummaryRepo(gameId: gameId);
     try {
       if (result.status) {
         if (result.data != null) {
@@ -615,30 +604,25 @@ class GameDetailsController extends GetxController {
           final playerData = response.player;
           awayPlayerName =
               '${playerData.fullName.split(" ").first[0]}. ${playerData.fullName.split(" ").last}';
-          if (result2.status) {
-            if (result2.data != null){
-              GameData game = GameData.fromJson(result2.data);
-              for (var player in playerData.seasons) {
-                if (player.type == '$SEASONS' &&
-                  player.year == DateTime.now().year) {
-                  whipAway =
-                      player.totals.statistics.pitching.overall.whip.toString();
-                  for(gs.Player starter in game.game?.away?.players ?? []){
-                    if(starter.id == game.game?.away?.startingPitcher?.id){
-                      awayBb =
-                          // (player.totals.statistics.pitching.overall.onbase?.bb ?? "0")
-                          //     .toString();
-                          starter.statistics?.pitching?.overall?.onbase?.bb.toString() ?? "0";
-                      awayKk =
-                          starter.statistics?.pitching?.overall?.outs?.ktotal.toString() ?? "0";
-                      awayH =
-                          (starter.statistics?.pitching?.overall?.onbase?.h ?? "0")
-                              .toString();
-                      awayIp = starter.statistics?.pitching?.overall?.ip2.toString() ?? "0";
-                    }
-                  }
-                }
-              }
+          
+          for (var player in playerData.seasons) {
+            if (player.type == '$SEASONS' &&
+                player.year == DateTime.now().year) {
+              int gamesPlayed = player.totals.statistics.pitching.overall.games?.play?.toInt() ?? 0;
+              whipAway =
+                  player.totals.statistics.pitching.overall.whip.toString();
+              awayBb = ((player.totals.statistics.pitching.overall.onbase?.bb ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              awayKk = ((player.totals.statistics.pitching.overall.outs?.ktotal ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              awayH = ((player.totals.statistics.pitching.overall.onbase?.h ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
+              awayIp = ((player.totals.statistics.pitching.overall.ip2 ?? 0) /
+                gamesPlayed
+              ).toPrecision(1).toString();
             }
           }
         } else {
@@ -662,7 +646,7 @@ class GameDetailsController extends GetxController {
 
   // Map to store MLB team records - will be populated by fetchMLBStandings
   Map<String, Map<String, dynamic>> mlbTeamRecords = {};
-  
+
   // Fetch MLB standings data once and store in the map
   Future<void> fetchMLBStandings() async {
     // Skip if we already have the data
@@ -670,21 +654,21 @@ class GameDetailsController extends GetxController {
       print('📊 MLB STANDINGS: Using cached standings data');
       return;
     }
-    
+
     print('📊 MLB STANDINGS: Fetching standings data...');
     ResponseItem result = await GameListingRepo().mlbStandingsRepo();
-    
+
     if (result.status) {
       try {
         // Parse the response and extract team records
         var standingsData = result.data;
         if (standingsData != null && standingsData['league'] != null) {
           var league = standingsData['league'];
-          
+
           // The structure is different in API v8: league -> season -> leagues -> [league] -> divisions
           if (league['season'] != null && league['season']['leagues'] != null) {
             var leagues = league['season']['leagues'];
-            
+
             // Process all leagues (AL and NL)
             for (var leagueItem in leagues) {
               if (leagueItem['divisions'] != null) {
@@ -702,16 +686,19 @@ class GameDetailsController extends GetxController {
                           'market': team['market'] ?? '',
                           'abbr': team['abbr'] ?? ''
                         };
-                        print('📊 MLB STANDINGS: Team ${team['abbr']} (${team['market']} ${team['name']}): W-${team['win']} L-${team['loss']}');
+                        print(
+                            '📊 MLB STANDINGS: Team ${team['abbr']} (${team['market']} ${team['name']}): W-${team['win']} L-${team['loss']}');
                       }
                     }
                   }
                 }
               }
             }
-            print('✅ MLB STANDINGS: Loaded ${mlbTeamRecords.length} team records');
+            print(
+                '✅ MLB STANDINGS: Loaded ${mlbTeamRecords.length} team records');
           } else {
-            print('⚠️ MLB STANDINGS: Could not find season/leagues data in the response');
+            print(
+                '⚠️ MLB STANDINGS: Could not find season/leagues data in the response');
           }
         } else {
           print('❌ MLB STANDINGS: Invalid response format');
@@ -731,12 +718,12 @@ class GameDetailsController extends GetxController {
     try {
       // Handle both numeric and string inputs
       String strValue = value is String ? value : value.toString();
-      
+
       // If it's a decimal number starting with "0."
       if (strValue.startsWith('0.')) {
         return strValue.substring(1); // Remove the leading zero
       }
-      
+
       return strValue;
     } catch (e) {
       print('Error formatting decimal: $e');
@@ -749,17 +736,18 @@ class GameDetailsController extends GetxController {
       bool isLoad = false,
       required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
-    
+
     // Fetch MLB standings first (will only fetch once)
     await fetchMLBStandings();
-    
+
     // Update win/loss records from standings data
     if (mlbTeamRecords.containsKey(homeTeamId)) {
       gameDetails.homeWin = mlbTeamRecords[homeTeamId]!['win'].toString();
       gameDetails.homeLoss = mlbTeamRecords[homeTeamId]!['loss'].toString();
-      print('📊 HOME TEAM RECORD UPDATED: W-${gameDetails.homeWin} L-${gameDetails.homeLoss}');
+      print(
+          '📊 HOME TEAM RECORD UPDATED: W-${gameDetails.homeWin} L-${gameDetails.homeLoss}');
     }
-    
+
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
@@ -778,29 +766,31 @@ class GameDetailsController extends GetxController {
           int totalHomeWins = int.tryParse(gameDetails.homeWin) ?? 0;
           int totalHomeLosses = int.tryParse(gameDetails.homeLoss) ?? 0;
           int totalGame = totalHomeWins + totalHomeLosses;
-          
+
           // Add debug print to check the values
-          print('🏠 HOME TEAM STATS: Wins=${gameDetails.homeWin}, Losses=${gameDetails.homeLoss}, Total Games=$totalGame');
-          
+          print(
+              '🏠 HOME TEAM STATS: Wins=${gameDetails.homeWin}, Losses=${gameDetails.homeLoss}, Total Games=$totalGame');
+
           // Special handling for Baltimore Orioles (BAL) or when totalGame is zero
           // The Orioles sometimes has missing win-loss data
           bool isOrioles = response.abbr == "BAL" || response.name == "Orioles";
           if (isOrioles) {
-            print('🔍 DETECTING BALTIMORE ORIOLES TEAM - Using special handling');
+            print(
+                '🔍 DETECTING BALTIMORE ORIOLES TEAM - Using special handling');
           }
-          
+
           // Ensure we never divide by zero and use a realistic game count
           if (totalGame <= 0 || isOrioles) {
             // If this is the Orioles or we get season totals but no game count,
             // estimate based on more reliable metrics
             int runsTotal = 0;
             int gamesPlayed = 0;
-            
+
             try {
               // Try to get runs total first
               runsTotal = int.parse(homeHitting?.runs?.total.toString() ?? "0");
               print('📊 HOME TEAM: Parsed runs total: $runsTotal');
-              
+
               // For Orioles specifically, check if games data is available
               if (isOrioles && homeHitting?.games?.play != null) {
                 gamesPlayed = homeHitting!.games!.play!.toInt();
@@ -812,33 +802,42 @@ class GameDetailsController extends GetxController {
             } catch (e) {
               print('❌ ERROR parsing home team data: $e');
             }
-            
+
             // If we still don't have a valid game count, estimate based on runs
             if (totalGame <= 0) {
               if (runsTotal > 500) {
                 // Full season's worth of data (or close to it)
                 totalGame = 162;
-                print('⚠️ Season stats detected for home team, using full season (162 games)');
+                print(
+                    '⚠️ Season stats detected for home team, using full season (162 games)');
               } else if (runsTotal > 300) {
                 // Roughly mid-season
                 totalGame = 81;
-                print('⚠️ Mid-season stats detected for home team, using half season (81 games)');
+                print(
+                    '⚠️ Mid-season stats detected for home team, using half season (81 games)');
               } else if (runsTotal > 0) {
                 // Early season or partial data
-                totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
-                print('⚠️ Partial season stats detected for home team, estimating $totalGame games');
+                totalGame = math.max(runsTotal ~/ 4,
+                    20); // Average ~4 runs per game, minimum 20 games
+                print(
+                    '⚠️ Partial season stats detected for home team, estimating $totalGame games');
               } else {
                 // For Orioles with no meaningful data, use more reliable default
-                totalGame = isOrioles ? 162 : 40; // Full season for Orioles, otherwise 40
-                print('⚠️ No meaningful stats for home team, using default ($totalGame games)');
+                totalGame = isOrioles
+                    ? 162
+                    : 40; // Full season for Orioles, otherwise 40
+                print(
+                    '⚠️ No meaningful stats for home team, using default ($totalGame games)');
               }
             }
           }
-          
+
           // Force a reasonable game count based on typical season length
           // This is to prevent massively inflated per-game stats
-          if (totalGame > 162) { // MLB teams play 162 games in a season
-            print('⚠️ WARNING: Unrealistic game count $totalGame for home team, using 162 instead');
+          if (totalGame > 162) {
+            // MLB teams play 162 games in a season
+            print(
+                '⚠️ WARNING: Unrealistic game count $totalGame for home team, using 162 instead');
             totalGame = 162;
           }
           for (var player in mlbPlayerPitchingData) {
@@ -847,7 +846,8 @@ class GameDetailsController extends GetxController {
                 hitterHomePlayerMainList.add(
                   HitterPlayerStatMainModel(
                       playerName: '${player.firstName?[0]}. ${player.lastName}',
-                      avg: formatDecimal(player.statistics?.hitting?.overall?.avg ?? "0"),
+                      avg: formatDecimal(
+                          player.statistics?.hitting?.overall?.avg ?? "0"),
                       bb:
                           '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                       hAbValue:
@@ -859,62 +859,84 @@ class GameDetailsController extends GetxController {
                       sb:
                           '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
                       obp: 'OBP',
-                      obpValue:
-                          formatDecimal(player.statistics?.hitting?.overall?.obp ?? "0"),
+                      obpValue: formatDecimal(
+                          player.statistics?.hitting?.overall?.obp?.toStringAsFixed(3) ??
+                              "0"),
                       hAb: 'H-AB',
                       slg: 'SLG',
-                      slgValue:
-                          formatDecimal(player.statistics?.hitting?.overall?.slg ?? "0"),
+                      slgValue: formatDecimal(
+                          player.statistics?.hitting?.overall?.slg?.toStringAsFixed(3) ??
+                              "0"),
                       run: 'Runs/Game',
-                      runValue: safeParseAndDivide(
-                          player.statistics?.hitting?.overall?.runs?.total,
-                          totalGame).toStringAsFixed(1),
+                      runValue: safeParseAndDivide(player.statistics?.hitting?.overall?.runs?.total, totalGame)
+                          .toStringAsFixed(1),
                       totalBase: 'TB/Game',
-                      totalBaseValue: safeParseAndDivide(
-                          player.statistics?.hitting?.overall?.onbase?.tb,
-                          totalGame).toStringAsFixed(1),
+                      totalBaseValue:
+                          safeParseAndDivide(player.statistics?.hitting?.overall?.onbase?.tb, totalGame)
+                              .toStringAsFixed(1),
                       stolenBase: 'SB/Game',
                       ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                       stolenBaseValue: safeParseAndDivide(
-                          player.statistics?.hitting?.overall?.steal?.stolen,
-                          totalGame).toStringAsFixed(1)),
+                              player.statistics?.hitting?.overall?.steal?.stolen,
+                              totalGame)
+                          .toStringAsFixed(1)),
                 );
               }
             }
           }
 
           // Use the class-level helper method for calculations
-          
+
           mlbHomeHittingList = [
-            safeParseAndDivide(homeHitting?.runs?.total, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homeHitting?.onbase?.h, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homeHitting?.onbase?.hr, totalGame).toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.runs?.total, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.onbase?.h, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.onbase?.hr, totalGame)
+                .toStringAsFixed(1),
             safeParseAndDivide(homeHitting?.rbi, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homeHitting?.onbase?.bb, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homeHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homeHitting?.steal?.stolen, totalGame).toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.onbase?.bb, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.outs?.ktotal, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homeHitting?.steal?.stolen, totalGame)
+                .toStringAsFixed(1),
             formatDecimal(homeHitting?.avg ?? "0"),
-            homeHitting?.slg != null ? '.${(homeHitting!.slg!).toString().split('.').last}' : "0",
+            homeHitting?.slg != null
+                ? '.${(homeHitting!.slg!).toString().split('.').last}'
+                : "0",
             formatDecimal(homeHitting?.ops ?? '0'),
-            safeParseAndDivide(homeHitting?.outs?.gidp, totalGame).toStringAsFixed(1),
-            homeHitting?.abhr != null ? homeHitting!.abhr!.toStringAsFixed(1) : "0",
+            safeParseAndDivide(homeHitting?.outs?.gidp, totalGame)
+                .toStringAsFixed(1),
+            homeHitting?.abhr != null
+                ? homeHitting!.abhr!.toStringAsFixed(1)
+                : "0",
           ];
-          // Safe pitching stats calculations 
+          // Safe pitching stats calculations
           mlbHomePitchingList = [
             formatDecimal(homePitching?.era ?? '0'),
             '${homePitching?.games?.shutout ?? '0'}',
-            homePitching?.games?.save != null && homePitching?.games?.svo != null && (homePitching?.games?.svo ?? 0) > 0 
+            homePitching?.games?.save != null &&
+                    homePitching?.games?.svo != null &&
+                    (homePitching?.games?.svo ?? 0) > 0
                 ? '.${((homePitching!.games!.save! / homePitching!.games!.svo!).toStringAsFixed(3).split('.').last)}'
                 : '0',
             '${homePitching?.games?.blownSave ?? '0'}',
             '${homePitching?.games?.qstart ?? '0'}',
-            safeParseAndDivide(homePitching?.runs?.total, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homePitching?.onbase?.hr, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homePitching?.onbase?.bb, totalGame).toStringAsFixed(1),
-            safeParseAndDivide(homePitching?.outs?.ktotal, totalGame).toStringAsFixed(1),
+            safeParseAndDivide(homePitching?.runs?.total, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homePitching?.onbase?.hr, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homePitching?.onbase?.bb, totalGame)
+                .toStringAsFixed(1),
+            safeParseAndDivide(homePitching?.outs?.ktotal, totalGame)
+                .toStringAsFixed(1),
             formatDecimal(homePitching?.whip ?? "0"),
-            homePitching?.oba != null ? '.${(homePitching!.oba!).toString().split('.').last}' : '0',
-            safeParseAndDivide(homePitching?.outs?.gidp, totalGame).toStringAsFixed(1),
+            homePitching?.oba != null
+                ? '.${(homePitching!.oba!).toString().split('.').last}'
+                : '0',
+            safeParseAndDivide(homePitching?.outs?.gidp, totalGame)
+                .toStringAsFixed(1),
           ];
         }
       } else {
@@ -932,12 +954,12 @@ class GameDetailsController extends GetxController {
       //   result.message,
       // );
     }
-    
+
     // Get total games played from wins and losses
     int totalHomeWins = int.tryParse(gameDetails.homeWin) ?? 0;
     int totalHomeLosses = int.tryParse(gameDetails.homeLoss) ?? 0;
     int totalGame = totalHomeWins + totalHomeLosses;
-    
+
     // Handle edge cases: Baltimore Orioles and zero games
     if (totalGame == 0) {
       totalGame = 1; // Prevent division by zero
@@ -946,53 +968,94 @@ class GameDetailsController extends GetxController {
     if (totalGame > 162) {
       totalGame = 162;
     }
-    
+
     // Log raw values from API before calculating
     print('📊 HOME TEAM RAW VALUES:');
     print('- Games from API (games.play): ${homeHitting?.games?.play}');
-    print('- Games from wins/losses: $totalGame (Wins: ${gameDetails.homeWin}, Losses: ${gameDetails.homeLoss})');
+    print(
+        '- Games from wins/losses: $totalGame (Wins: ${gameDetails.homeWin}, Losses: ${gameDetails.homeLoss})');
     print('- Total hits: ${homeHitting?.onbase?.h}');
     print('- Total runs: ${homeHitting?.runs?.total}');
-    print('- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
-    
+    print(
+        '- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
+
     // Get the actual number of games played from the API response if available
     int gamesPlayed = homeHitting?.games?.play?.toInt() ?? totalGame;
-    
+
     // Make sure we have a valid number of games to avoid division by zero
     if (gamesPlayed <= 0) {
       gamesPlayed = totalGame > 0 ? totalGame : 1;
     }
-    
+
     // Log the final games played count used for calculations
-    print('📊 HOME TEAM: Using games played count: $gamesPlayed for per-game calculations');
-    
+    print(
+        '📊 HOME TEAM: Using games played count: $gamesPlayed for per-game calculations');
+
     // Calculate actual per-game stats without any scaling
     mlbHomeOffensiveList = [
-      (homeHitting?.onbase?.h != null ? (homeHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits / Game
-      (homeHitting?.onbase?.bb != null ? (homeHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks / Game
-      (homeHitting?.onbase?.hr != null ? (homeHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR / Game
-      (homeHitting?.rbi != null ? (homeHitting!.rbi! / gamesPlayed).toStringAsFixed(1) : "0.0"),                    // RBI / Game
-      (homeHitting?.runs?.total != null ? (homeHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
-      (homeHitting?.outs?.ktotal != null ? (homeHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
-      (homeHitting?.steal?.stolen != null ? (homeHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
-      formatDecimal(homeHitting?.avg ?? "0"),                                                                        // Team Batting Average
-      formatDecimal(homeHitting?.obp != null ? homeHitting!.obp!.toString() : "0"),                                  // On Base Percentage
-      formatDecimal(homeHitting?.slg != null ? homeHitting!.slg!.toString() : "0")                                   // Slugging Percentage
+      (homeHitting?.onbase?.h != null
+          ? (homeHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Hits / Game
+      (homeHitting?.onbase?.bb != null
+          ? (homeHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Walks / Game
+      (homeHitting?.onbase?.hr != null
+          ? (homeHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // HR / Game
+      (homeHitting?.rbi != null
+          ? (homeHitting!.rbi! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // RBI / Game
+      (homeHitting?.runs?.total != null
+          ? (homeHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Runs / Game
+      (homeHitting?.outs?.ktotal != null
+          ? (homeHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Strikeouts / Game
+      (homeHitting?.steal?.stolen != null
+          ? (homeHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Stolen Bases / Game
+      formatDecimal(homeHitting?.avg ?? "0"), // Team Batting Average
+      formatDecimal(homeHitting?.obp != null
+          ? homeHitting!.obp!.toString()
+          : "0"), // On Base Percentage
+      formatDecimal(homeHitting?.slg != null
+          ? homeHitting!.slg!.toString()
+          : "0") // Slugging Percentage
     ];
-    
+
     mlbHomeDefensiveList = [
-      (homePitching?.onbase?.h != null ? (homePitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits Allowed / Game
-      (homePitching?.onbase?.bb != null ? (homePitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks Allowed / Game
-      (homePitching?.onbase?.hr != null ? (homePitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR Allowed / Game
-      (homePitching?.runs?.total != null ? (homePitching!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // RBI Allowed / Game
-      (homePitching?.runs?.earned != null ? (homePitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
-      (homePitching?.outs?.ktotal != null ? (homePitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
-      (homePitching?.steal?.stolen != null ? (homePitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      formatDecimal(homePitching?.era != null ? homePitching!.era!.toDouble().toPrecision(2).toString() : "0"),                                 // Team Earned Run Average
-      formatDecimal(homePitching?.obp != null ? homePitching!.obp!.toString() : "0"),                                 // Opponent OBP 
-      formatDecimal(homePitching?.slg != null ? homePitching!.slg!.toString() : "0")                                  // Opponent SLG
+      (homePitching?.onbase?.h != null
+          ? (homePitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Hits Allowed / Game
+      (homePitching?.onbase?.bb != null
+          ? (homePitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Walks Allowed / Game
+      (homePitching?.onbase?.hr != null
+          ? (homePitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // HR Allowed / Game
+      (homePitching?.runs?.total != null
+          ? (homePitching!.runs!.total! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // RBI Allowed / Game
+      (homePitching?.runs?.earned != null
+          ? (homePitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Runs Allowed / Game
+      (homePitching?.outs?.ktotal != null
+          ? (homePitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Pitcher Strike Out / Game
+      (homePitching?.steal?.stolen != null
+          ? (homePitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // SB Allowed / Game
+      formatDecimal(homePitching?.era != null
+          ? homePitching!.era!.toDouble().toPrecision(2).toString()
+          : "0"), // Team Earned Run Average
+      formatDecimal(homePitching?.obp != null
+          ? homePitching!.obp!.toString()
+          : "0"), // Opponent OBP
+      formatDecimal(homePitching?.slg != null
+          ? homePitching!.slg!.toString()
+          : "0") // Opponent SLG
     ];
-    
+
     update();
   }
 
@@ -1003,17 +1066,18 @@ class GameDetailsController extends GetxController {
       bool isLoad = false,
       required SportEvents gameDetails}) async {
     // isLoading.value = !isLoad ? false : true;
-    
+
     // Fetch MLB standings first (will only fetch once)
     await fetchMLBStandings();
-    
+
     // Update win/loss records from standings data
     if (mlbTeamRecords.containsKey(awayTeamId)) {
       gameDetails.awayWin = mlbTeamRecords[awayTeamId]!['win'].toString();
       gameDetails.awayLoss = mlbTeamRecords[awayTeamId]!['loss'].toString();
-      print('📊 AWAY TEAM RECORD UPDATED: W-${gameDetails.awayWin} L-${gameDetails.awayLoss}');
+      print(
+          '📊 AWAY TEAM RECORD UPDATED: W-${gameDetails.awayWin} L-${gameDetails.awayLoss}');
     }
-    
+
     ResponseItem result =
         ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo().mlbStaticsRepo(
@@ -1033,33 +1097,36 @@ class GameDetailsController extends GetxController {
         int totalAwayWins = int.tryParse(gameDetails.awayWin) ?? 0;
         int totalAwayLosses = int.tryParse(gameDetails.awayLoss) ?? 0;
         int totalGame = totalAwayWins + totalAwayLosses;
-        
+
         // Add debug print to check the values
-        print('🏃 AWAY TEAM STATS: Wins=${gameDetails.awayWin}, Losses=${gameDetails.awayLoss}, Total Games=$totalGame');
-        
+        print(
+            '🏃 AWAY TEAM STATS: Wins=${gameDetails.awayWin}, Losses=${gameDetails.awayLoss}, Total Games=$totalGame');
+
         // Special handling for Baltimore Orioles (BAL) or when totalGame is zero
         // The Orioles sometimes has missing win-loss data
         bool isOrioles = response.abbr == "BAL" || response.name == "Orioles";
         if (isOrioles) {
-          print('🔍 DETECTING BALTIMORE ORIOLES TEAM (AWAY) - Using special handling');
+          print(
+              '🔍 DETECTING BALTIMORE ORIOLES TEAM (AWAY) - Using special handling');
         }
-        
+
         // Ensure we never divide by zero and use a realistic game count
         if (totalGame <= 0 || isOrioles) {
           // If this is the Orioles or we get season totals but no game count,
           // estimate based on more reliable metrics
           int runsTotal = 0;
           int gamesPlayed = 0;
-          
+
           try {
             // Try to get runs total first
             runsTotal = int.parse(awayHitting?.runs?.total.toString() ?? "0");
             print('📊 AWAY TEAM: Parsed runs total: $runsTotal');
-            
+
             // For Orioles specifically, check if games data is available
             if (isOrioles && awayHitting?.games?.play != null) {
               gamesPlayed = awayHitting!.games!.play!.toInt();
-              print('🏟️ ORIOLES (AWAY): Found games played in stats: $gamesPlayed');
+              print(
+                  '🏟️ ORIOLES (AWAY): Found games played in stats: $gamesPlayed');
               if (gamesPlayed > 0) {
                 totalGame = gamesPlayed;
               }
@@ -1067,36 +1134,44 @@ class GameDetailsController extends GetxController {
           } catch (e) {
             print('❌ ERROR parsing away team data: $e');
           }
-          
+
           // If we still don't have a valid game count, estimate based on runs
           if (totalGame <= 0) {
             if (runsTotal > 500) {
               // Full season's worth of data (or close to it)
               totalGame = 162;
-              print('⚠️ Season stats detected for away team, using full season (162 games)');
+              print(
+                  '⚠️ Season stats detected for away team, using full season (162 games)');
             } else if (runsTotal > 300) {
               // Roughly mid-season
               totalGame = 81;
-              print('⚠️ Mid-season stats detected for away team, using half season (81 games)');
+              print(
+                  '⚠️ Mid-season stats detected for away team, using half season (81 games)');
             } else if (runsTotal > 0) {
               // Early season or partial data
-              totalGame = math.max(runsTotal ~/ 4, 20); // Average ~4 runs per game, minimum 20 games
-              print('⚠️ Partial season stats detected for away team, estimating $totalGame games');
+              totalGame = math.max(runsTotal ~/ 4,
+                  20); // Average ~4 runs per game, minimum 20 games
+              print(
+                  '⚠️ Partial season stats detected for away team, estimating $totalGame games');
             } else {
               // For Orioles with no meaningful data, use more reliable default
-              totalGame = isOrioles ? 162 : 40; // Full season for Orioles, otherwise 40
-              print('⚠️ No meaningful stats for away team, using default ($totalGame games)');
+              totalGame =
+                  isOrioles ? 162 : 40; // Full season for Orioles, otherwise 40
+              print(
+                  '⚠️ No meaningful stats for away team, using default ($totalGame games)');
             }
           }
         }
-        
+
         awayHitting = mlbStaticsAwayList?.hitting?.overall;
         awayPitching = mlbStaticsAwayList?.pitching?.overall;
-        
+
         // Force a reasonable game count based on typical season length
         // This is to prevent massively inflated per-game stats
-        if (totalGame > 162) { // MLB teams play 162 games in a season
-          print('⚠️ WARNING: Unrealistic game count $totalGame for away team, using 162 instead');
+        if (totalGame > 162) {
+          // MLB teams play 162 games in a season
+          print(
+              '⚠️ WARNING: Unrealistic game count $totalGame for away team, using 162 instead');
           totalGame = 162;
         }
         for (var player in mlbPlayerPitchingData) {
@@ -1107,7 +1182,8 @@ class GameDetailsController extends GetxController {
                     bb:
                         '${player.statistics?.hitting?.overall?.onbase?.bb ?? "0"}',
                     playerName: '${player.firstName?[0]}. ${player.lastName}',
-                    avg: formatDecimal(player.statistics?.hitting?.overall?.avg ?? "0"),
+                    avg: formatDecimal(
+                        player.statistics?.hitting?.overall?.avg ?? "0"),
                     hAbValue:
                         '${player.statistics?.hitting?.overall?.onbase?.h ?? "0"}-${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     hr:
@@ -1117,62 +1193,84 @@ class GameDetailsController extends GetxController {
                     sb:
                         '${player.statistics?.hitting?.overall?.steal?.stolen ?? "0"}',
                     obp: 'OBP',
-                    obpValue:
-                        formatDecimal(player.statistics?.hitting?.overall?.obp ?? "0"),
+                    obpValue: formatDecimal(
+                        player.statistics?.hitting?.overall?.obp?.toStringAsFixed(3) ??
+                            "0"),
                     hAb: 'H-AB',
                     slg: 'SLG',
-                    slgValue:
-                        formatDecimal(player.statistics?.hitting?.overall?.slg ?? "0"),
+                    slgValue: formatDecimal(
+                        player.statistics?.hitting?.overall?.slg?.toStringAsFixed(3) ??
+                            "0"),
                     run: 'Runs/Game',
-                    runValue: safeParseAndDivide(
-                        player.statistics?.hitting?.overall?.runs?.total,
-                        totalGame).toStringAsFixed(1),
+                    runValue: safeParseAndDivide(player.statistics?.hitting?.overall?.runs?.total, totalGame)
+                        .toStringAsFixed(1),
                     totalBase: 'TB/Game',
-                    totalBaseValue: safeParseAndDivide(
-                        player.statistics?.hitting?.overall?.onbase?.tb,
-                        totalGame).toStringAsFixed(1),
+                    totalBaseValue:
+                        safeParseAndDivide(player.statistics?.hitting?.overall?.onbase?.tb, totalGame)
+                            .toStringAsFixed(1),
                     stolenBase: 'SB/Game',
                     ab: '${player.statistics?.hitting?.overall?.ab ?? "0"}',
                     stolenBaseValue: safeParseAndDivide(
-                        player.statistics?.hitting?.overall?.steal?.stolen,
-                        totalGame).toStringAsFixed(1)),
+                            player.statistics?.hitting?.overall?.steal?.stolen,
+                            totalGame)
+                        .toStringAsFixed(1)),
               );
             }
           }
         }
 
         // Use the class-level helper method for calculations
-        
+
         mlbAwayHittingList = [
-          safeParseAndDivide(awayHitting?.runs?.total, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayHitting?.onbase?.h, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayHitting?.onbase?.hr, totalGame).toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.runs?.total, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.onbase?.h, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.onbase?.hr, totalGame)
+              .toStringAsFixed(1),
           safeParseAndDivide(awayHitting?.rbi, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayHitting?.onbase?.bb, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayHitting?.outs?.ktotal, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayHitting?.steal?.stolen, totalGame).toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.onbase?.bb, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.outs?.ktotal, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayHitting?.steal?.stolen, totalGame)
+              .toStringAsFixed(1),
           awayHitting?.avg ?? "0",
-          awayHitting?.slg != null ? '.${(awayHitting!.slg!).toString().split('.').last}' : "0",
+          awayHitting?.slg != null
+              ? '.${(awayHitting!.slg!).toString().split('.').last}'
+              : "0",
           '${awayHitting?.ops ?? '0'}',
-          safeParseAndDivide(awayHitting?.outs?.gidp, totalGame).toStringAsFixed(1),
-          awayHitting?.abhr != null ? awayHitting!.abhr!.toStringAsFixed(1) : "0",
+          safeParseAndDivide(awayHitting?.outs?.gidp, totalGame)
+              .toStringAsFixed(1),
+          awayHitting?.abhr != null
+              ? awayHitting!.abhr!.toStringAsFixed(1)
+              : "0",
         ];
         // Safe pitching stats calculations for away team
         mlbAwayPitchingList = [
           '${awayPitching?.era ?? '0'}',
           '${awayPitching?.games?.shutout ?? '0'}',
-          awayPitching?.games?.save != null && awayPitching?.games?.svo != null && (awayPitching?.games?.svo ?? 0) > 0 
+          awayPitching?.games?.save != null &&
+                  awayPitching?.games?.svo != null &&
+                  (awayPitching?.games?.svo ?? 0) > 0
               ? '.${((awayPitching!.games!.save! / awayPitching!.games!.svo!).toStringAsFixed(3).split('.').last)}'
               : '0',
           '${awayPitching?.games?.blownSave ?? '0'}',
           '${awayPitching?.games?.qstart ?? '0'}',
-          safeParseAndDivide(awayPitching?.runs?.total, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayPitching?.onbase?.hr, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayPitching?.onbase?.bb, totalGame).toStringAsFixed(1),
-          safeParseAndDivide(awayPitching?.outs?.ktotal, totalGame).toStringAsFixed(1),
+          safeParseAndDivide(awayPitching?.runs?.total, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayPitching?.onbase?.hr, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayPitching?.onbase?.bb, totalGame)
+              .toStringAsFixed(1),
+          safeParseAndDivide(awayPitching?.outs?.ktotal, totalGame)
+              .toStringAsFixed(1),
           '${awayPitching?.whip ?? "0"}',
-          awayPitching?.oba != null ? '.${(awayPitching!.oba!).toString().split('.').last}' : '0',
-          safeParseAndDivide(awayPitching?.outs?.gidp, totalGame).toStringAsFixed(1),
+          awayPitching?.oba != null
+              ? '.${(awayPitching!.oba!).toString().split('.').last}'
+              : '0',
+          safeParseAndDivide(awayPitching?.outs?.gidp, totalGame)
+              .toStringAsFixed(1),
         ];
 
         // isLoading.value = false;
@@ -1189,12 +1287,12 @@ class GameDetailsController extends GetxController {
         e.toString(),
       );
     }
-    
+
     // Get total games played from wins and losses
     int totalAwayWins = int.tryParse(gameDetails.awayWin) ?? 0;
     int totalAwayLosses = int.tryParse(gameDetails.awayLoss) ?? 0;
     int totalGame = totalAwayWins + totalAwayLosses;
-    
+
     // Handle edge cases: Baltimore Orioles and zero games
     if (totalGame == 0) {
       totalGame = 1; // Prevent division by zero
@@ -1203,53 +1301,94 @@ class GameDetailsController extends GetxController {
     if (totalGame > 162) {
       totalGame = 162;
     }
-    
+
     // Log raw values from API before calculating
     print('📊 AWAY TEAM RAW VALUES:');
     print('- Games from API (games.play): ${awayHitting?.games?.play}');
-    print('- Games from wins/losses: $totalGame (Wins: ${gameDetails.awayWin}, Losses: ${gameDetails.awayLoss})');
+    print(
+        '- Games from wins/losses: $totalGame (Wins: ${gameDetails.awayWin}, Losses: ${gameDetails.awayLoss})');
     print('- Total hits: ${awayHitting?.onbase?.h}');
     print('- Total runs: ${awayHitting?.runs?.total}');
-    print('- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
-    
+    print(
+        '- Team abbreviation: ${result.status ? stat.MLBStaticsModel.fromJson(result.data).abbr : "Unknown"}');
+
     // Get the actual number of games played from the API response if available
     int gamesPlayed = awayHitting?.games?.play?.toInt() ?? totalGame;
-    
+
     // Make sure we have a valid number of games to avoid division by zero
     if (gamesPlayed <= 0) {
       gamesPlayed = totalGame > 0 ? totalGame : 1;
     }
-    
+
     // Log the final games played count used for calculations
-    print('📊 AWAY TEAM: Using games played count: $gamesPlayed for per-game calculations');
-    
+    print(
+        '📊 AWAY TEAM: Using games played count: $gamesPlayed for per-game calculations');
+
     // Calculate actual per-game stats without any scaling
     mlbAwayOffensiveList = [
-      (awayHitting?.onbase?.h != null ? (awayHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits / Game
-      (awayHitting?.onbase?.bb != null ? (awayHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks / Game
-      (awayHitting?.onbase?.hr != null ? (awayHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR / Game
-      (awayHitting?.rbi != null ? (awayHitting!.rbi! / gamesPlayed).toStringAsFixed(1) : "0.0"),                    // RBI / Game
-      (awayHitting?.runs?.total != null ? (awayHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // Runs / Game
-      (awayHitting?.outs?.ktotal != null ? (awayHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Strikeouts / Game
-      (awayHitting?.steal?.stolen != null ? (awayHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // Stolen Bases / Game
-      formatDecimal(awayHitting?.avg ?? "0"),                                                                        // Team Batting Average
-      formatDecimal(awayHitting?.obp != null ? awayHitting!.obp!.toString() : "0"),                                  // On Base Percentage
-      formatDecimal(awayHitting?.slg != null ? awayHitting!.slg!.toString() : "0")                                   // Slugging Percentage
+      (awayHitting?.onbase?.h != null
+          ? (awayHitting!.onbase!.h! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Hits / Game
+      (awayHitting?.onbase?.bb != null
+          ? (awayHitting!.onbase!.bb! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Walks / Game
+      (awayHitting?.onbase?.hr != null
+          ? (awayHitting!.onbase!.hr! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // HR / Game
+      (awayHitting?.rbi != null
+          ? (awayHitting!.rbi! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // RBI / Game
+      (awayHitting?.runs?.total != null
+          ? (awayHitting!.runs!.total! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Runs / Game
+      (awayHitting?.outs?.ktotal != null
+          ? (awayHitting!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Strikeouts / Game
+      (awayHitting?.steal?.stolen != null
+          ? (awayHitting!.steal!.stolen! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Stolen Bases / Game
+      formatDecimal(awayHitting?.avg ?? "0"), // Team Batting Average
+      formatDecimal(awayHitting?.obp != null
+          ? awayHitting!.obp!.toString()
+          : "0"), // On Base Percentage
+      formatDecimal(awayHitting?.slg != null
+          ? awayHitting!.slg!.toString()
+          : "0") // Slugging Percentage
     ];
-    
+
     mlbAwayDefensiveList = [
-      (awayPitching?.onbase?.h != null ? (awayPitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1) : "0.0"),       // Hits Allowed / Game
-      (awayPitching?.onbase?.bb != null ? (awayPitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // Walks Allowed / Game
-      (awayPitching?.onbase?.hr != null ? (awayPitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1) : "0.0"),      // HR Allowed / Game
-      (awayPitching?.runs?.total != null ? (awayPitching!.runs!.total! / gamesPlayed).toStringAsFixed(1) : "0.0"),    // RBI Allowed / Game
-      (awayPitching?.runs?.earned != null ? (awayPitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Runs Allowed / Game
-      (awayPitching?.outs?.ktotal != null ? (awayPitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1) : "0.0"),  // Pitcher Strike Out / Game
-      (awayPitching?.steal?.stolen != null ? (awayPitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1) : "0.0"), // SB Allowed / Game
-      formatDecimal(awayPitching?.era != null ? awayPitching!.era!.toDouble().toPrecision(2).toString() : "0"),                                 // Team Earned Run Average
-      formatDecimal(awayPitching?.obp != null ? awayPitching!.obp!.toString() : "0"),                                 // Opponent OBP 
-      formatDecimal(awayPitching?.slg != null ? awayPitching!.slg!.toString() : "0")                                  // Opponent SLG
+      (awayPitching?.onbase?.h != null
+          ? (awayPitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Hits Allowed / Game
+      (awayPitching?.onbase?.bb != null
+          ? (awayPitching!.onbase!.bb! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Walks Allowed / Game
+      (awayPitching?.onbase?.hr != null
+          ? (awayPitching!.onbase!.hr! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // HR Allowed / Game
+      (awayPitching?.runs?.total != null
+          ? (awayPitching!.runs!.total! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // RBI Allowed / Game
+      (awayPitching?.runs?.earned != null
+          ? (awayPitching!.runs!.earned! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Runs Allowed / Game
+      (awayPitching?.outs?.ktotal != null
+          ? (awayPitching!.outs!.ktotal! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // Pitcher Strike Out / Game
+      (awayPitching?.steal?.stolen != null
+          ? (awayPitching!.steal!.stolen! / gamesPlayed).toStringAsFixed(1)
+          : "0.0"), // SB Allowed / Game
+      formatDecimal(awayPitching?.era != null
+          ? awayPitching!.era!.toDouble().toPrecision(2).toString()
+          : "0"), // Team Earned Run Average
+      formatDecimal(awayPitching?.obp != null
+          ? awayPitching!.obp!.toString()
+          : "0"), // Opponent OBP
+      formatDecimal(awayPitching?.slg != null
+          ? awayPitching!.slg!.toString()
+          : "0") // Opponent SLG
     ];
-    
+
     update();
   }
 
@@ -2224,8 +2363,9 @@ class GameDetailsController extends GetxController {
     isLoading.value = !isLoad ? false : true;
 
     ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
-    result = await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
+        ResponseItem(data: null, message: errorText.tr, status: false);
+    result =
+        await GameListingRepo().nbaStaticsRepo(sportKey: key, teamId: awayId);
 
     try {
       if (result.status) {
@@ -2248,13 +2388,15 @@ class GameDetailsController extends GetxController {
           // Assign the first position as pgPlayer and second position as sgPlayer
           if (topPlayers.isNotEmpty) {
             gameDetails.pgDataAway = topPlayers[0];
-            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-              ..add(topPlayers[0]); // First position
+            gameDetails.startingAwayFiveList =
+                List.from(gameDetails.startingAwayFiveList)
+                  ..add(topPlayers[0]); // First position
           }
           if (topPlayers.length > 1) {
             gameDetails.sgDataAway = topPlayers[1];
-            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-              ..add(topPlayers[1]); // Second position
+            gameDetails.startingAwayFiveList =
+                List.from(gameDetails.startingAwayFiveList)
+                  ..add(topPlayers[1]); // Second position
           }
 
           // Finding the top 3 players based on minutes for the 'F' position
@@ -2267,13 +2409,15 @@ class GameDetailsController extends GetxController {
           // Assign the top 3 players to respective positions if available
           if (topFPlayers.isNotEmpty) {
             gameDetails.sfDataAway = topFPlayers[0];
-            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-              ..add(topFPlayers[0]); // First position (most minutes)
+            gameDetails.startingAwayFiveList =
+                List.from(gameDetails.startingAwayFiveList)
+                  ..add(topFPlayers[0]); // First position (most minutes)
           }
           if (topFPlayers.length > 1) {
             gameDetails.pfDataAway = topFPlayers[1];
-            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-              ..add(topFPlayers[1]); // Second position
+            gameDetails.startingAwayFiveList =
+                List.from(gameDetails.startingAwayFiveList)
+                  ..add(topFPlayers[1]); // Second position
           }
           var topCPlayers = response.players!
               .where((element) => element.position == 'C')
@@ -2282,13 +2426,15 @@ class GameDetailsController extends GetxController {
                 (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
           if (topCPlayers.isNotEmpty) {
             gameDetails.cDataAway = topCPlayers[0];
-            gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-              ..add(topCPlayers[0]); // Third position
-          }else{
+            gameDetails.startingAwayFiveList =
+                List.from(gameDetails.startingAwayFiveList)
+                  ..add(topCPlayers[0]); // Third position
+          } else {
             if (topFPlayers.length > 2) {
               gameDetails.cDataAway = topFPlayers[2];
-              gameDetails.startingAwayFiveList = List.from(gameDetails.startingAwayFiveList)
-                ..add(topFPlayers[2]); // Second position
+              gameDetails.startingAwayFiveList =
+                  List.from(gameDetails.startingAwayFiveList)
+                    ..add(topFPlayers[2]); // Second position
             }
           }
         }
@@ -2304,9 +2450,6 @@ class GameDetailsController extends GetxController {
     update();
   }
 
-
-
-
   Future staticsHomeNBA({
     String homeId = '',
     bool isLoad = false,
@@ -2314,11 +2457,11 @@ class GameDetailsController extends GetxController {
     String sportKey = '',
   }) async {
     gameDetails.homeRushingPlayer = [];
-    gameDetails.startingHomeFiveList = [];// Ensure this list is mutable
+    gameDetails.startingHomeFiveList = []; // Ensure this list is mutable
     isLoading.value = !isLoad ? false : true;
 
     ResponseItem result =
-    ResponseItem(data: null, message: errorText.tr, status: false);
+        ResponseItem(data: null, message: errorText.tr, status: false);
     result = await GameListingRepo()
         .nbaStaticsRepo(sportKey: sportKey, teamId: homeId);
 
@@ -2343,13 +2486,15 @@ class GameDetailsController extends GetxController {
           // Assign the first position as pgPlayer and second position as sgPlayer
           if (topPlayers.isNotEmpty) {
             gameDetails.pgDataHome = topPlayers[0];
-            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-              ..add(topPlayers[0]); // First position
+            gameDetails.startingHomeFiveList =
+                List.from(gameDetails.startingHomeFiveList)
+                  ..add(topPlayers[0]); // First position
           }
           if (topPlayers.length > 1) {
             gameDetails.sgDataHome = topPlayers[1];
-            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-              ..add(topPlayers[1]); // Second position
+            gameDetails.startingHomeFiveList =
+                List.from(gameDetails.startingHomeFiveList)
+                  ..add(topPlayers[1]); // Second position
           }
 
           // Finding the top 3 players based on minutes for the 'F' position
@@ -2362,13 +2507,15 @@ class GameDetailsController extends GetxController {
           // Assign the top 3 players to respective positions if available
           if (topFPlayers.isNotEmpty) {
             gameDetails.sfDataHome = topFPlayers[0];
-            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-              ..add(topFPlayers[0]); // First position (most minutes)
+            gameDetails.startingHomeFiveList =
+                List.from(gameDetails.startingHomeFiveList)
+                  ..add(topFPlayers[0]); // First position (most minutes)
           }
           if (topFPlayers.length > 1) {
             gameDetails.pfDataHome = topFPlayers[1];
-            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-              ..add(topFPlayers[1]); // Second position
+            gameDetails.startingHomeFiveList =
+                List.from(gameDetails.startingHomeFiveList)
+                  ..add(topFPlayers[1]); // Second position
           }
 
           var topCPlayers = response.players!
@@ -2378,13 +2525,15 @@ class GameDetailsController extends GetxController {
                 (b.average?.minutes ?? 0).compareTo(a.average?.minutes ?? 0));
           if (topCPlayers.isNotEmpty) {
             gameDetails.cDataHome = topCPlayers[0];
-            gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-              ..add(topCPlayers[0]); // Third position
-          }else{
+            gameDetails.startingHomeFiveList =
+                List.from(gameDetails.startingHomeFiveList)
+                  ..add(topCPlayers[0]); // Third position
+          } else {
             if (topFPlayers.length > 2) {
               gameDetails.cDataHome = topFPlayers[2];
-              gameDetails.startingHomeFiveList = List.from(gameDetails.startingHomeFiveList)
-                ..add(topFPlayers[2]); // Second position
+              gameDetails.startingHomeFiveList =
+                  List.from(gameDetails.startingHomeFiveList)
+                    ..add(topFPlayers[2]); // Second position
             }
           }
         }
@@ -2399,8 +2548,6 @@ class GameDetailsController extends GetxController {
 
     update();
   }
-
-
 
   ///MLB INJURY REPORT
   Future mlbInjuriesResponse(
@@ -2531,17 +2678,13 @@ class GameDetailsController extends GetxController {
           homeTeamId: replaceId(homeTeam?.uuids ?? ''));
       if ((gameDetails.awayPlayerId).isNotEmpty) {
         profileAwayResponse(
-          isLoad: false,
-          awayTeamId: gameDetails.awayPlayerId,
-          gameId: gameDetails.uuids ?? ""
-        );
+            isLoad: false,
+            awayTeamId: gameDetails.awayPlayerId);
       }
       if ((gameDetails.homePlayerId).isNotEmpty) {
         profileHomeResponse(
-          isLoad: false,
-          homeTeamId: gameDetails.homePlayerId,
-          gameId: gameDetails.uuids ?? ""
-        );
+            isLoad: false,
+            homeTeamId: gameDetails.homePlayerId);
       }
       // await hotlinesDataResponse(
       //     awayTeamId: awayTeam?.id ?? "",

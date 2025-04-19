@@ -63,7 +63,7 @@ class Player {
 
   factory Player.fromJson(Map<String, dynamic> json) => Player(
         id: json["id"],
-    fullName: json["full_name"],
+        fullName: json["full_name"],
         seasons:
             List<Season>.from(json["seasons"].map((x) => Season.fromJson(x))),
       );
@@ -254,6 +254,7 @@ class Bullpen {
   Onbase? onbase;
   Outcome? outcome;
   Outs? outs;
+  Games? games;
 
   Bullpen({
     required this.whip,
@@ -261,22 +262,23 @@ class Bullpen {
     required this.ip2,
     required this.outcome,
     required this.outs,
+    required this.games,
   });
 
-  Bullpen copyWith({
-    num? whip,
-    num? ip1,
-    Outcome? outcome,
-    Onbase? onbase,
-    Outs? outs,
-  }) =>
+  Bullpen copyWith(
+          {num? whip,
+          num? ip1,
+          Outcome? outcome,
+          Onbase? onbase,
+          Outs? outs,
+          Games? games}) =>
       Bullpen(
-        whip: whip ?? this.whip,
-        ip2: ip2 ?? ip2,
-        outcome: outcome ?? this.outcome,
-        onbase: onbase ?? this.onbase,
-        outs: outs ?? this.outs,
-      );
+          whip: whip ?? this.whip,
+          ip2: ip2 ?? ip2,
+          outcome: outcome ?? this.outcome,
+          onbase: onbase ?? this.onbase,
+          outs: outs ?? this.outs,
+          games: games ?? this.games);
 
   factory Bullpen.fromRawJson(String str) => Bullpen.fromJson(json.decode(str));
 
@@ -288,6 +290,7 @@ class Bullpen {
         ip2: json["ip_2"] ?? 0,
         onbase: Onbase.fromJson(json["onbase"]),
         outs: Outs.fromJson(json["outs"]),
+        games: Games.fromJson(json["games"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -296,7 +299,35 @@ class Bullpen {
         "outcome": outcome?.toJson(),
         "onbase": onbase?.toJson(),
         "outs": outs?.toJson(),
+        "games": games?.toJson(),
       };
+}
+
+class Games {
+  num? play;
+
+  Games({required this.play});
+
+  Games copyWith({
+    num? play,
+  }) =>
+      Games(
+        play: play ?? this.play,
+      );
+
+  String toRawJson() => json.encode(toJson());
+  
+  factory Games.fromJson(Map<String, dynamic> json) {
+    return Games(
+      play: json['play'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'play': play,
+    };
+  }
 }
 
 class Outs {

@@ -3560,9 +3560,9 @@ Expanded hitterDataCard(String title, BuildContext context, String value,
         ),
         Expanded(
             flex: 2,
-            child: (double.tryParse(value) ?? value)
+            child: (value)
                 .toString()
-                .replaceAll(regex, "")
+                // .replaceAll(regex, "")
                 .appCommonText(
                 color: Theme
                     .of(context)
