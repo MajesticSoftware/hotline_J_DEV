@@ -205,11 +205,11 @@ class GameDetailsController extends GetxController {
     'W-L',
     'ERA',
     'WHIP',
-    'IP',
-    'H',
-    'K',
-    'BB',
-    'HR',
+    'IP / Game',
+    'H / Game',
+    'K / Game',
+    'BB / Game',
+    'HR / Game',
   ];
   List teamBattingMLB = [
     'HRs',
@@ -1097,7 +1097,6 @@ class GameDetailsController extends GetxController {
         int totalAwayWins = int.tryParse(gameDetails.awayWin) ?? 0;
         int totalAwayLosses = int.tryParse(gameDetails.awayLoss) ?? 0;
         int totalGame = totalAwayWins + totalAwayLosses;
-
         // Add debug print to check the values
         print(
             '🏃 AWAY TEAM STATS: Wins=${gameDetails.awayWin}, Losses=${gameDetails.awayLoss}, Total Games=$totalGame');
@@ -1283,6 +1282,7 @@ class GameDetailsController extends GetxController {
     } catch (e) {
       // isLoading.value = false;
       log('ERROR AWAY STATIC RES -------$e');
+      print("::DEBUG:: err | ${e.toString()}");
       showAppSnackBar(
         e.toString(),
       );
@@ -1323,7 +1323,7 @@ class GameDetailsController extends GetxController {
     // Log the final games played count used for calculations
     print(
         '📊 AWAY TEAM: Using games played count: $gamesPlayed for per-game calculations');
-
+    print("::DEBUG:: 1 | ${mlbAwayOffensiveList}");
     // Calculate actual per-game stats without any scaling
     mlbAwayOffensiveList = [
       (awayHitting?.onbase?.h != null
@@ -1355,7 +1355,7 @@ class GameDetailsController extends GetxController {
           ? awayHitting!.slg!.toString()
           : "0") // Slugging Percentage
     ];
-
+    print("::DEBUG:: 2 | ${mlbAwayOffensiveList}");
     mlbAwayDefensiveList = [
       (awayPitching?.onbase?.h != null
           ? (awayPitching!.onbase!.h! / gamesPlayed).toStringAsFixed(1)
